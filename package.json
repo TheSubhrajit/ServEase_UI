@@ -1,7 +1,7 @@
 {
   "name": "servease_ui",
   "version": "0.1.0",
-  "homepage": "https://ServEase_UI.github.io/react-gh-pages",
+  "homepage": "."
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.0",
@@ -46,7 +46,6 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.1.1",
     "tailwindcss": "^3.4.7"
   }
 }
