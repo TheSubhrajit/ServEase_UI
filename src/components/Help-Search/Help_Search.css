@@ -1,0 +1,13 @@
+.nav-link{
+    background: black;
+    color: white;
+}
+
+.icon-div{
+    width: 100px;
+}
+
+.gender-selector{
+    display: flex;
+    justify-content: space-evenly;
+}
