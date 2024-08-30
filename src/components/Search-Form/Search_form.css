@@ -1,0 +1,57 @@
+body{
+  background-color: #f8f5f5;
+  justify-content: flex-start;
+  /* text-align: center; */
+}
+.icon-div1{
+    width: 50px;
+}
+.icon-div2{
+    justify-content:center ;
+    
+    width: 50px;
+}
+.icon-div3{
+    width: 50px;
+}
+.icon-div4{
+    width: 50px;
+}
+
+.flex-container1{
+    display: flex;
+}
+.flex-container2{
+    display: flex;
+}
+.flex-container3{
+    display: flex;
+    justify-content:space-between;
+}
+
+.gender{
+    justify-content: center;
+    display: start;
+
+}
+.times{
+   
+   
+    
+}
+.time1{
+    justify-content: center;
+    display: above;
+}
+.time2{
+    justify-content: center;
+    display: flex;
+}
+.Sbtn1{
+   display: flex;
+   justify-content: flex-start;
+}
+.Sbtn2{
+   
+    justify-content: right;
+ }

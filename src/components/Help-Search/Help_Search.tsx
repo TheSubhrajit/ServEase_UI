@@ -17,9 +17,7 @@ export const Help_Search = () =>{
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number[]);
-  };
-        
-        
+  };  
     return (
         <>
         <p className='font-sans'> Select Preffered Gender </p>
