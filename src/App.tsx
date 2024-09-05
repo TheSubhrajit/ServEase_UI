@@ -5,14 +5,16 @@ import Login from './components/Login/Login';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Header } from './components/Header/Header';
 import { Help_Search } from './components/Help-Search/Help_Search';
+import { Landingpage } from './components/Landing_Page/Landingpage';
 
 
 function App() {
   return (
     <div className="App">
-      {/* <Login /> */}
+      {/* <Login />
+      <Help_Search></Help_Search> */}
       <Header></Header>
-      <Help_Search></Help_Search>
+      <Landingpage/>
     </div>
   );
 }
