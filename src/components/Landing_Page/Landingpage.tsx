@@ -1,27 +1,33 @@
 import { Tooltip } from '@mui/material'
 import './Landingpage.css'
+import { useState } from 'react';
 
-export const Landingpage: any = () =>{
+interface ChildComponentProps {
+    sendDataToParent: (data: string) => void; // Adjust the type if needed
+  }
 
-    const handleSelectionClick = (e:any) =>{
-        console.log(e)
-        
+export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent }) =>{
+    const handleClick = (e:any) =>{
+        sendDataToParent(e)
     }
+
+   
+    
     
     return (
         <section className="landing-container">
             <Tooltip title="Cook" arrow>
-            <div className='selectors' onClick={e =>  handleSelectionClick('cook')}>
+            <div className='selectors' onClick={e =>  handleClick('cook')}>
             <img src='../cooking.png'></img>
             </div>
             </Tooltip>
             <Tooltip title="Maid" arrow>
-            <div className='selectors' onClick={e =>  handleSelectionClick('maid')}>
+            <div className='selectors' onClick={e =>  handleClick('maid')}>
                 <img src='../cleaner.png'></img>
             </div>
             </Tooltip>
             <Tooltip title="Nanny" arrow>
-            <div className='selectors' onClick={e =>  handleSelectionClick('nanny')}>
+            <div className='selectors' onClick={e =>  handleClick('nanny')}>
             <img src='../babysitter.png'></img>
             </div>
             </Tooltip>
