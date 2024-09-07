@@ -1,15 +1,14 @@
-body{
-  background-color: #f8f5f5;
-  justify-content: flex-start;
-  /* text-align: center; */
-}
+.all{
+    
+    gap: 10px;
+   margin: auto;
+    border: 1px solid black;
+ }
 .icon-div1{
-    width: 50px;
+    width: 50px;  
 }
 .icon-div2{
-    justify-content:center ;
-    
-    width: 50px;
+    width:50px;
 }
 .icon-div3{
     width: 50px;
@@ -17,41 +16,57 @@ body{
 .icon-div4{
     width: 50px;
 }
-
+.gender{
+        display: grid;
+        gap: 10px;
+}
+.sage{
+    display: grid;
+    gap: 20px;
+}
+.time{
+    display: grid;
+    gap: 10px;
+}
+.times{
+    display: grid;
+    gap: 20px;
+}
+.day{
+    display: flex;
+    gap: 40px;
+}
+.night{
+    display: flex;
+    gap:30px;
+}
+.men{
+    display: flex;
+    gap: 35px;
+}
+.women{
+    display: flex;
+    gap: 10px;
+}
 .flex-container1{
     display: flex;
+    gap: 30px;
+    margin-bottom: 1px solid black;
 }
 .flex-container2{
     display: flex;
+    gap: 100px;
+    text-align: center;
 }
 .flex-container3{
     display: flex;
-    justify-content:space-between;
-}
-
-.gender{
-    justify-content: center;
-    display: start;
-
-}
-.times{
-   
-   
-    
-}
-.time1{
-    justify-content: center;
-    display: above;
-}
-.time2{
-    justify-content: center;
-    display: flex;
+    gap: 100px;
+    text-align: center;    
 }
 .Sbtn1{
    display: flex;
    justify-content: flex-start;
 }
 .Sbtn2{
-   
     justify-content: right;
  }
