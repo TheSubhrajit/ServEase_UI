@@ -6,20 +6,40 @@ import Form from 'react-bootstrap/Form';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import React from 'react';
+import { Dialog } from '@mui/material';
 
 function valuetext(value: number) {
     return `${value}°C`;
   }
 
-export const Help_Search = () =>{
+  export interface SimpleDialogProps {
+    open: boolean;
+    selectedValue: string;
+    onClose: (value: string) => void;
+  }
+
+export const Help_Search = (props: SimpleDialogProps) =>{
 
     const [value, setValue] = React.useState<number[]>([20, 37]);
 
+    const { onClose, selectedValue, open } = props;
+
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number[]);
-  };  
+  };
+
+  const handleClose = () => {
+    onClose(selectedValue);
+  };
+
+  const handleListItemClick = (value: string) => {
+    onClose(value);
+  };
+        
+        
     return (
         <>
+        <Dialog onClose={handleClose} open={open}>
         <p className='font-sans'> Select Preffered Gender </p>
     <div className='gender-selector'>
     
@@ -59,7 +79,7 @@ export const Help_Search = () =>{
         getAriaValueText={valuetext}
       />
     </Box>
-    
+    </Dialog>
         </>
     )
 }
