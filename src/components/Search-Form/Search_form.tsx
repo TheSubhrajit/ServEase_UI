@@ -28,18 +28,18 @@ export const Search_form = (props: SimpleDialogProps) => {
 
   return (
     <>
-      <Dialog onClose={handleClose} open={open}>
+      <Dialog onClose={handleClose} open={open} className="dialog-class">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="all">
             <div className="flex-container1">
-              <div className="gender">
+              {/* <div className="gender">
                 <div className="men">
                   <Form.Check
                     {...register("Men Selected")}
                     id="custom-switch"
                     label="Men"
                   />
-                  <div className="icon-div1">
+                  <div className="icon-div">
                     <Button variant="dark">
                       <img src="man-user-circle-icon.png"></img>
                     </Button>
@@ -51,13 +51,13 @@ export const Search_form = (props: SimpleDialogProps) => {
                     id="custom-switch"
                     label="Women"
                   />
-                  <div className="icon-div2">
+                  <div className="icon-div">
                     <Button variant="dark">
                       <img src="woman-user-color-icon.png"></img>
                     </Button>
                   </div>
                 </div>
-              </div>
+              </div>s
               <div className="sage">
                 <div className="slider-1">
                   <Box sx={{ width: 300 }}>
@@ -87,17 +87,52 @@ export const Search_form = (props: SimpleDialogProps) => {
                     />
                   </Box>
                 </div>
+              </div> */}
+
+              <div className="item-viewer">
+                <div className="checkbox-style">
+                <Form.Check
+                    {...register("Men Selected")}
+                    id="custom-switch"
+                    label="Men"
+                  />
+                </div>
+
+                <div className="checkbox-style">
+                <Button variant="dark" className="icon-div">
+                      <img src="man-user-circle-icon.png"></img>
+                    </Button>
+                </div>
+              
+
+
+                <div className="checkbox-style">
+                <Box sx={{ width: 300 }}>
+                    <Slider
+                      defaultValue={20}
+                      {...register("Selected Men Age:")}
+                      getAriaValueText={valuetext}
+                      valueLabelDisplay="auto"
+                      step={1}
+                      marks
+                      min={18}
+                      max={60}
+                    />
+                  </Box>
+                </div>
+                    
+
               </div>
             </div>
-            <div className="flex-container2">
-              <div className="time">
+            <div className="flex-container1">
+              {/* <div className="time">
                 <div className="day">
                   <Form.Check
                     {...register("checkbox")}
                     id="custom-switch"
                     label="Day"
                   />
-                  <div className="icon-div3">
+                  <div className="icon-div">
                     <Button variant="dark">
                       <img src="day.png"></img>
                     </Button>
@@ -109,7 +144,7 @@ export const Search_form = (props: SimpleDialogProps) => {
                     id="custom-switch"
                     label="Night"
                   />
-                  <div className="icon-div4">
+                  <div className="icon-div">
                     <Button variant="dark">
                       <img src="night.png"></img>
                     </Button>
@@ -148,9 +183,9 @@ export const Search_form = (props: SimpleDialogProps) => {
                     />
                   </Box>
                 </div>
-              </div>
+              </div> */}
             </div>
-            <div className="flex-container3">
+            <div className="footer">
               <div className="Sbtn1">
                 <Button type="submit" id="button1"  variant="outline-dark">
                   Submit
