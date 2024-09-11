@@ -1,20 +1,20 @@
-.details-view{
+.details-view {
   margin: 10px;
   height: 90%;
 }
 
-.headers{
-    display: flex;
-    justify-content: space-evenly;
-  }
+.headers {
+  display: flex;
+  justify-content: space-evenly;
+}
 
-  .providers-view{
-    display: flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-  }
+.providers-view {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
 
-  .views{
-    margin: 10px;
-    border: 0.15px solid grey;
-  }
+.views {
+  margin: 10px;
+  border: 0.15px solid grey;
+}
