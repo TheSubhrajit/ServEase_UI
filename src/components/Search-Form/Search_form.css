@@ -2,62 +2,9 @@
     width: 50px;
 }
 
-.gender {
-    display: grid;
-    gap: 10px;
-}
-
-.sage {
-    display: grid;
-    gap: 20px;
-}
-
-.time {
-    display: grid;
-    gap: 10px;
-}
-
-.times {
-    display: grid;
-    gap: 20px;
-}
-
-.day {
-    display: flex;
-    gap: 38px;
-}
-
-.night {
-    display: flex;
-    gap: 26px;
-}
-
-.men {
-    display: flex;
-    gap: 32px;
-}
-
-.women {
-    display: flex;
-    gap: 10px;
-}
-
 .flex-container1 {
     display: flex;
-    gap: 30px;
-    margin-bottom: 1px solid black;
-}
-
-.flex-container2 {
-    display: flex;
-    gap: 100px;
-    text-align: center;
-}
-
-.flex-container3 {
-    display: flex;
-    gap: 100px;
-    text-align: center;
+    justify-content: space-evenly;
 }
 
 .Sbtn1 {
