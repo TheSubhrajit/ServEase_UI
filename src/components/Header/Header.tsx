@@ -54,7 +54,7 @@ export const Header = () => {
 
     const fetchSuggestions = async () => {
       try {
-        const response = await axios.get(PLACES_API_URL, {
+        const response = await axios.get(CORS_PROXY + PLACES_API_URL, {
           params: {
             input: inputValue,
             key: keys.api_key,
