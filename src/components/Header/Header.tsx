@@ -8,7 +8,7 @@ import { keys } from '../../env/env';
 import './Header.css'
 
 export const Header = () => {
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState('');
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -94,6 +94,7 @@ export const Header = () => {
   const handleChange = (event, newValue) => {
     if (newValue) {
       console.log('Selected Option:', newValue);
+      setLocation('Your Selected Locaion')
       // Perform any additional actions with the selected option here
     }
   };
@@ -102,29 +103,15 @@ export const Header = () => {
     <>
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand href="#home">LOGO</Navbar.Brand>
-          {/* <Nav className="me-auto">
-            <Nav.Link href="#home">Cooks</Nav.Link>
-            <Nav.Link href="#features">Maids</Nav.Link>
-            <Nav.Link href="#pricing">Nanny</Nav.Link>
-          </Nav> */}
-          {/* <div className="location">
-          <Button variant="outlined" startIcon={<MyLocationIcon />}>
-  <p>{location}</p>
-</Button>
-          </div> */}
-          
+          <Navbar.Brand href="#home">HomeServEase</Navbar.Brand>
           <div className="autocomplete">
           <Autocomplete
-          color="white"
-  disablePortal
-
   onInputChange={handleInputChange}
   onChange={handleChange}
   options={suggestions}
   sx={{ width: 300 }}
   clearIcon
-  renderInput={(params) => <TextField {...params} label={location} 
+  renderInput={(params) => <TextField {...params} label={location ? location : "Your selected location"} 
   />}
 />
           </div>

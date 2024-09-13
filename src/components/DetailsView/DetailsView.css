@@ -18,3 +18,33 @@
   margin: 10px;
   border: 0.15px solid grey;
 }
+
+/* DetailsView.css */
+.details-view {
+  display: flex;
+}
+
+.sidebar {
+  width: 50%; 
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+  border: 1px solid black;
+}
+
+.sidebar.closed {
+  width: 0; /* Width when closed */
+  border: 0px;
+}
+
+.body {
+  flex: 1;
+  padding: 20px;
+}
+
+.headers {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Add any other necessary styles */
