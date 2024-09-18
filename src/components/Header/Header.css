@@ -1,4 +1,21 @@
-.h1{
+/* .h1{
     color: black;
-    
+    justify-content: flex-start;   
 }
+.header-container{
+    display: flex;
+    justify-content: ;
+    align-items: center;
+}
+/* .header{
+    gap: 10px;
+} */
+/* .header2{
+    display: flex;
+} */ 
+.Navbar{
+    width: 200px;
+    height: 200px;
+}
+
+
