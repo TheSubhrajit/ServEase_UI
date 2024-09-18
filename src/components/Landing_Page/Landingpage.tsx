@@ -14,19 +14,19 @@ export const Landingpage: React.FC<ChildComponentProps> = ({
 
   return (
     <section className="landing-container">
-      <Tooltip title="Cook" arrow>
+      <Tooltip title="COOK" arrow>
         <div className="selectors" onClick={(e) => handleClick("cook")}>
-          <img src="../cooking.png"></img>
+          <img className="icon" src="../cooking.png"></img>
         </div>
       </Tooltip>
-      <Tooltip title="Maid" arrow>
+      <Tooltip title="MAID" arrow>
         <div className="selectors" onClick={(e) => handleClick("maid")}>
-          <img src="../cleaner.png"></img>
+          <img className="icon" src="../cleaner.png"></img>
         </div>
       </Tooltip>
-      <Tooltip title="Nanny" arrow>
+      <Tooltip title="NANNY" arrow>
         <div className="selectors" onClick={(e) => handleClick("nanny")}>
-          <img src="../babysitter.png"></img>
+          <img className="icon" src="../babysitter.png"></img>
         </div>
       </Tooltip>
     </section>
