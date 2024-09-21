@@ -10,14 +10,15 @@ export const Header = () => {
   
   return (
     <>
-      <Navbar bg="dark" data-bs-theme="dark">
+    {/*  */}
+      <Navbar bg="dark" data-bs-theme="dark" my-0>
         <Container className="header">
-          <Navbar.Brand href="#home" className="h1">
+          <Navbar.Brand href="#home" className="text">
            <h1>ServEase</h1>
-           <h4>innovative</h4>
+           <h3>innovative</h3>
           </Navbar.Brand>
           </Container>
-          
+
           <DropdownButton id="dropdown-basic-button"
            title="Location" className="header">
           <Dropdown.Item  href="#/action-1"></Dropdown.Item>
