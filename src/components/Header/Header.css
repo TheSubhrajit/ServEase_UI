@@ -1,11 +1,35 @@
-.header{
-    margin: 0px;
-    padding: 5px
-    
+.header {
+    display: flex;
+    border: 1px solid;
+    padding: 0%;
+    justify-content: flex-start;
+    align-items: center;
+    height: 80px;
+    padding-top: 10px;
 }
 
-.text{
+.header h2,
+h5 {
     color: black;
-    white-space: unset;
+    line-height: 13pt;
 }
 
+.head {
+    display: flex;
+    padding-left: 50px;
+}
+
+.head2 {
+    padding-bottom: 10px;
+    display: flex;
+    gap: 110px;
+}
+
+.head3 {
+    display: flex;
+}
+
+.head4 {
+    display: flex;
+    padding-right: 80px;
+}
