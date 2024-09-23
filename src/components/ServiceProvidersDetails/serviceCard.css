@@ -1,0 +1,41 @@
+/* src/component/serviceCard/ServiceCard.css */
+
+.service-card {
+    display: flex;
+    margin-bottom: 16px;
+    padding: 16px;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .service-avatar {
+    width: 80px;
+    height: 80px;
+    margin-right: 16px;
+  }
+  
+  .service-details {
+    flex-grow: 1;
+  }
+  
+  .location {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+  }
+  
+  .ratings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .service-ratings {
+    text-align: right;
+  }
+  
+  .availability {
+    margin-top: 8px;
+  }
+  

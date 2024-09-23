@@ -60,8 +60,11 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
           <button className="w3-bar-item w3-button w3-large" onClick={() => toggleSidebar(false)}>
             Close &times;
           </button>
-          <Search_form
-        />
+          {/* <Search_form
+          open={open}
+          selectedValue={""}
+          onClose={handleClose}
+        ></Search_form> */}
         </div>
         <div className="body">
           <header className="headers">
