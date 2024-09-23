@@ -4,7 +4,7 @@
 
 .flex-container1 {
     display: flex;
-    justify-content: space-evenly;
+    margin-top: 30px;
 }
 
 .Sbtn1 {
@@ -33,4 +33,24 @@
 .checkbox-style{
     margin-left: 10px;
     margin-right: 10px;
+}
+
+.checkbox-style-male{
+    margin-left: 32px;
+}
+
+.checkbox-style-day{
+    margin-left: 36px;
+}
+
+.checkbox-style-night{
+    margin-left: 25px;
+
+}
+
+.selectors-ser{
+    margin-top: 20px;
+    border: 0.25px solid grey;
+    width : 90%
+    
 }

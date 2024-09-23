@@ -1,6 +1,7 @@
 import { Tooltip } from "@mui/material";
 import "./Landingpage.css";
 
+
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void; // Adjust the type if needed
 }

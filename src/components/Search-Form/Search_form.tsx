@@ -1,28 +1,46 @@
+import * as React from "react";
+import "./Search_form.css";
+import Form from "react-bootstrap/Form";
+import Box from "@mui/material/Box";
+import Slider from "@mui/material/Slider";
+import Button from "react-bootstrap/Button";
+import { useForm } from "react-hook-form";
 import { Dialog } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from "react";
 
+// function valuetext(value: Number) {
+//   return `${value}°C`;
+// }
 export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
   onClose: (value: string) => void;
 }
 
-const Search_form = (props: SimpleDialogProps) => {
-    const [age, setAge] = useState<number>(14);
-    const [availability, setAvailability] = useState<string>('8.00 AM');
-    const [areaRange, setAreaRange] = useState<string>('');
-    
-      const { onClose, selectedValue, open } = props;
-    
-      const handleClose = () => {
-        onClose(selectedValue);
-      };
+export const Search_form = (props: SimpleDialogProps) => {
+  const { register, handleSubmit } = useForm();
+  const onSubmit = (d: any) => alert(JSON.stringify(d));
+  const [age, setAge] = useState<number>(14);
+  const [availability, setAvailability] = useState<string>('8.00 AM');
+  const [areaRange, setAreaRange] = useState<string>('');
+  
+    const { onClose, selectedValue, open } = props;
+  
+    const handleClose = () => {
+      onClose(selectedValue);
+    };
 
-    return (
-      <Dialog onClose={handleClose} open={open} className="dialog-class">
+  return (
+    <>
+    
+      <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="all">
+            <div className="selectors-ser"></div>
+            <div className="flex-container1"></div>
+              <div className="item-viewer"></div>
+
         <div>
             <button>Filter ⌛</button>
-            <form>
                 <div>
                     <label>Gender: </label>
                     <input type="radio" name="gender" value="Male" /> Male
@@ -68,10 +86,25 @@ const Search_form = (props: SimpleDialogProps) => {
                     <input type="radio" name="area" value="2-5 Km" onChange={() => setAreaRange('2-5 Km')} /> Within 2-5 Km Area
                     <input type="radio" name="area" value="5-10 Km" onChange={() => setAreaRange('5-10 Km')} /> Within 5-10 Km Area
                 </div>
-            </form>
-        </div>
-        </Dialog>
-    );
+                <div className="footer">
+                <div className="Sbtn1">
+                <Button type="submit" id="button1" variant="outline-dark">
+                  Submit
+                </Button>
+              </div>
+              <div className="Sbtn2 ">
+                <Button type="reset" id="button2" variant="outline-dark">
+                  {" "}
+                  Reset{" "}
+                </Button>
+              </div>
+              </div>
+              </div>
+           </div>
+         </form>
+         
+    </>
+  );
 };
 
 export default Search_form;
