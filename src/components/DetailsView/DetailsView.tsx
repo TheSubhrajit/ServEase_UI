@@ -57,7 +57,7 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
     <>
       <div className="details-view">
         <div className={`sidebar ${sidebarOpen ? '' : 'closed'}`} ref={sidebarRef}>
-          <button className="w3-bar-item w3-button w3-large" onClick={() => toggleSidebar(false)}>
+          <button className=" w3-bar-item w3-button w3-large " onClick={() => toggleSidebar(false)}>
             Close &times;
           </button>
           <Search_form
