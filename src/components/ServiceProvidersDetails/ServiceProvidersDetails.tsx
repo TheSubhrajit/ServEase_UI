@@ -10,7 +10,14 @@ import './serviceCard.css';
 
 const ServiceProvidersDetails = (props: any) => {
   const { name, age, category, service, language, address, distance, rating, ratingsCount, availability, profilePic } = props;
-
+  // Function to determine rating description based on score
+  const getRatingDescription = (rating) => {
+    if (rating >= 4.5) return "Excellent";
+    if (rating >= 3.5) return "Very Good";
+    if (rating >= 2.5) return "Good";
+    if (rating >= 1.5) return "Fair";
+    return "Poor";
+  };
   return (
     <div className="content-box"> {/* Wrapper div */}
       <Card className="service-card">
@@ -31,16 +38,25 @@ const ServiceProvidersDetails = (props: any) => {
           <Typography>Address: {address}</Typography>
         </div>
 
-        <div className="service-ratings"> {/* Section for ratings and availability */}
-          <Typography variant="body1">Good</Typography>
+        <div className="service-ratings"> 
+          <div className="rating-summary">
+            <Typography variant="body1" className="rating-description">
+              {getRatingDescription(rating)} 
+            </Typography>
+            <span className="rating-score">{rating.toFixed(1)}</span>
+          </div>
+
           <div className="ratings">
             <Rating name="read-only" value={rating} precision={0.1} readOnly />
-            <Typography variant="body2" style={{ marginLeft: "8px" }}>
-              {rating}
+            <Typography variant="body2" className="rating-count">
+              ({ratingsCount} Ratings)
             </Typography>
           </div>
-          <Typography variant="body2">{ratingsCount} Ratings</Typography>
-          <Typography variant="body2" className="availability">Availability: {availability}</Typography>
+
+          <Typography variant="body2" className="availability">
+            Availability: {availability}
+          </Typography>
+
           <div className="location">
             <LocationOnIcon fontSize="small" />
             <Typography variant="body2" color="textSecondary">
