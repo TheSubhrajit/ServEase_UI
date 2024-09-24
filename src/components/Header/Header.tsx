@@ -1,11 +1,13 @@
 import { Autocomplete, Button, TextField } from "@mui/material";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import MyLocationIcon from '@mui/icons-material/MyLocation';
+// import MyLocationIcon from '@mui/icons-material/MyLocation';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { keys } from '../../env/env';
 import './Header.css'
+import { Dropdown, DropdownButton } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const Header = () => {
   const [location, setLocation] = useState('');
@@ -101,7 +103,7 @@ export const Header = () => {
 
   return (
     <>
-      <Navbar bg="dark" data-bs-theme="dark">
+      {/* <Navbar bg="dark" data-bs-theme="dark">
         <Container>
           <Navbar.Brand href="#home">HomeServEase</Navbar.Brand>
           <div className="autocomplete">
@@ -119,7 +121,44 @@ export const Header = () => {
           
     
         </Container>
-      </Navbar>
+      </Navbar> */}
+      <Navbar className="header">
+        <Container className="head">
+          <Navbar.Brand href="#home">
+           <h2>Home-ServEase</h2>
+           {/* <h6>Care</h6> */}
+          </Navbar.Brand>
+          </Container>
+        <div className="head2">
+          <div className="head3">
+          <DropdownButton id="dropdown-button"
+          title="Location"
+          variant="dark"  >
+          <Dropdown.Item> <div className="autocomplete">
+          <Autocomplete
+  onInputChange={handleInputChange}
+  onChange={handleChange}
+  options={suggestions}
+  sx={{ width: 300 }}
+  clearIcon
+  renderInput={(params) => <TextField {...params} label={location ? location : "Your selected location"} 
+  />}
+/>
+          </div></Dropdown.Item>
+           </DropdownButton>
+           </div>
+        <div className="head4">
+          <DropdownButton id="dropdown-button-dark"
+          title="My Account"
+          variant="dark">
+      <Dropdown.Item  href="#/action-1">Login / Register</Dropdown.Item>
+      <Dropdown.Item href="#/action-2">Privacy Policy</Dropdown.Item>
+      <Dropdown.Item href="#/action-3">Notification</Dropdown.Item>
+      <Dropdown.Item href="#/action-4">Sign Out</Dropdown.Item>
+      </DropdownButton>
+      </div>
+    </div>
+    </Navbar>
     </>
   );
 };

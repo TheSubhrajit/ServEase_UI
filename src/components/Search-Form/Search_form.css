@@ -1,10 +1,9 @@
-.icon-div {
-    width: 50px;
-}
-
 .flex-container1 {
     display: flex;
-    margin-top: 30px;
+    gap: 5px;
+    padding-left: 5px;
+    padding-top: 12px;
+    align-items: center;
 }
 
 .Sbtn1 {
@@ -17,40 +16,18 @@
     justify-content: right;
 }
 
-.footer{
+.footer {
     display: flex;
     justify-content: space-evenly;
+    padding-top: 30px;
 }
 
-.dialog-class{
-    width:100%;
-}
-
-.item-viewer{
+.item-viewer {
     display: flex;
 }
 
-.checkbox-style{
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
-.checkbox-style-male{
-    margin-left: 32px;
-}
-
-.checkbox-style-day{
-    margin-left: 36px;
-}
-
-.checkbox-style-night{
-    margin-left: 25px;
-
-}
-
-.selectors-ser{
+.selectors-ser {
     margin-top: 20px;
     border: 0.25px solid grey;
-    width : 90%
-    
+    width: 90%
 }

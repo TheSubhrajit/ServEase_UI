@@ -28,8 +28,9 @@
 }
 
 .service-ratings {
-  padding-left: 70px; /* Increased padding to add more space */
-  text-align: right;
+  padding-left: 10px; 
+  padding-right: 5px;
+  text-align: center;
 }
 
 /* .ratings, .availability, .location {
@@ -43,6 +44,7 @@
   padding: 4px 8px; 
   border-radius: 4px; 
   background-color: #ba9898; 
+
 }
 /* .rating-description {
   font-weight: bold; 
@@ -52,7 +54,10 @@
   display: flex;
   align-items: center; 
   justify-content: flex-end;
+  padding-right: 5px;
   margin-bottom: 9px; 
+  gap: 4px;
+  padding-top: 5px;
 }
 .availability {
   margin-bottom: 8px;
