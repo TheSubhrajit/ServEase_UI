@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
-import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails";
+// import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails";
+import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
 
@@ -60,11 +61,9 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
           <button className="w3-bar-item w3-button w3-large" onClick={() => toggleSidebar(false)}>
             Close &times;
           </button>
-          {/* <Search_form
-          open={open}
-          selectedValue={""}
-          onClose={handleClose}
-        ></Search_form> */}
+          <Search_form
+         
+        ></Search_form>
         </div>
         <div className="body">
           <header className="headers">
@@ -78,11 +77,10 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
 
           <div className="providers-view">
             {ServiceProvidersData.map((serviceproviders) => (
-              <div className="views" key={serviceproviders.id}>
-                <ServiceProvidersDetails
-                  props={serviceproviders}
-                />
-              </div>
+             <div className="views" key={serviceproviders.id}>
+             <ServiceProvidersDetails {...serviceproviders} />
+           </div>
+           
             ))}
           </div>
         </div>

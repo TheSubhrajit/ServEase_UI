@@ -1,39 +1,18 @@
-.details-view {
-  margin: 10px;
-  height: 90%;
-}
-
-.headers {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.providers-view {
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-}
-
-.views {
-  margin: 10px;
-  border: 0.15px solid grey;
-}
-
 /* DetailsView.css */
 .details-view {
   display: flex;
 }
 
 .sidebar {
-  width: 50%; 
+  width: 50%;
   transition: width 0.3s ease;
   overflow-x: hidden;
   border: 1px solid black;
 }
 
 .sidebar.closed {
-  width: 0; /* Width when closed */
-  border: 0px;
+  width: 0;
+  border: none;
 }
 
 .body {
@@ -47,4 +26,8 @@
   margin-bottom: 20px;
 }
 
-/* Add any other necessary styles */
+.providers-view {
+  /* display: flex;
+  flex-direction: column; 
+  gap: 16px;  */
+}
