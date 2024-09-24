@@ -17,17 +17,17 @@ export const Landingpage: React.FC<ChildComponentProps> = ({
     <section className="landing-container">
       <Tooltip title="Cook" arrow>
         <div className="selectors" onClick={(e) => handleClick("cook")}>
-          <img src="../cooking.png"></img>
+          <img className="icon" src="../cooking.png"></img>
         </div>
       </Tooltip>
       <Tooltip title="Maid" arrow>
         <div className="selectors" onClick={(e) => handleClick("maid")}>
-          <img src="../cleaner.png"></img>
+          <img className="icon" src="../cleaner.png"></img>
         </div>
       </Tooltip>
       <Tooltip title="Nanny" arrow>
         <div className="selectors" onClick={(e) => handleClick("nanny")}>
-          <img src="../babysitter.png"></img>
+          <img className="icon" src="../babysitter.png"></img>
         </div>
       </Tooltip>
     </section>

@@ -25,10 +25,11 @@
 }
 
 .sidebar {
-  width: 50%; 
+  width: 25%; 
   transition: width 0.3s ease;
   overflow-x: hidden;
   border: 1px solid black;
+  height: 500px;
 }
 
 .sidebar.closed {
