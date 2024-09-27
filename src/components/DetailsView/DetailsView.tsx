@@ -1,6 +1,7 @@
 import { Box, Button, CircularProgress } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
-import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails";
+// import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails";
+import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
 import axios from "axios";
@@ -108,16 +109,15 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
          </Button>
        </header>
 
-       <div className="providers-view">
-         {ServiceProvidersData.map((serviceproviders) => (
-           <div className="views" key={serviceproviders.id}>
-             <ServiceProvidersDetails
-               props={serviceproviders}
-             />
+          <div className="providers-view">
+            {ServiceProvidersData.map((serviceproviders) => (
+             <div className="views" key={serviceproviders.id}>
+             <ServiceProvidersDetails {...serviceproviders} />
            </div>
-         ))}
-       </div>
-     </div>
+           
+            ))}
+          </div>
+        </div>
 
    </div>
     }

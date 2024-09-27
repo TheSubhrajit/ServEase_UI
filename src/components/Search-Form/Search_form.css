@@ -16,7 +16,7 @@
     justify-content: right;
 }
 
-.footer {
+.button {
     display: flex;
     justify-content: space-evenly;
     padding-top: 30px;
