@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Header } from "./components/Header/Header";
 import { Landingpage } from "./components/Landing_Page/Landingpage";
 import { DetailsView } from "./components/DetailsView/DetailsView";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   const [selection, setSelection] = useState();
@@ -22,6 +23,8 @@ function App() {
       {selection && (
         <DetailsView sendDataToParent={(e) => handleDataFromChild(e)} />
       )}
+       {/* Footer */}
+       <Footer />
     </div>
   );
 }

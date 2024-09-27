@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
-import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails";
+// import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails";
+import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
 
@@ -78,11 +79,10 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
 
           <div className="providers-view">
             {ServiceProvidersData.map((serviceproviders) => (
-              <div className="views" key={serviceproviders.id}>
-                <ServiceProvidersDetails
-                  props={serviceproviders}
-                />
-              </div>
+             <div className="views" key={serviceproviders.id}>
+             <ServiceProvidersDetails {...serviceproviders} />
+           </div>
+           
             ))}
           </div>
         </div>
