@@ -5,6 +5,7 @@ import { Header } from "./components/Header/Header";
 import { Landingpage } from "./components/Landing_Page/Landingpage";
 import { DetailsView } from "./components/DetailsView/DetailsView";
 
+
 function App() {
   const [selection, setSelection] = useState();
   const handleDataFromChild = (e: any) => {
@@ -15,6 +16,7 @@ function App() {
     <div className="App">
       {/* <Login />
        */}
+       
       <Header></Header>
       {!selection && (
         <Landingpage sendDataToParent={(e) => handleDataFromChild(e)} />

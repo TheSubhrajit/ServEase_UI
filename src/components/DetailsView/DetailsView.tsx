@@ -1,8 +1,9 @@
-import { Button } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
+import axios from "axios";
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void; // Adjust the type if needed
@@ -35,10 +36,13 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
   const toggleSidebar = (open: boolean) => {
     setSidebarOpen(open);
   };
-
+  const [loading, setLoading] = useState (false);
+  
   useEffect(() => {
+    
     const fetchData = async () => {
       try {
+        setLoading(true); 
         const response = await fetch("https://freetestapi.com/api/v1/users");
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -47,47 +51,78 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
         setServiceProvidersData(data);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 3000 );
       }
     };
 
     fetchData();
   }, []);
+  // function App() {
+  //   // State to track loading status
+  //   const [loading, setLoading] = useState(false);
+  //   const [data, setData] = useState(null);
+  
+  //   // Function to handle Axios request
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoading(true); // Start loading
+  //       const response = await axios.get("https://freetestapi.com/api/v1/users");
+  //       setData(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     } finally {
+  //       setLoading(false); // Stop loading
+  //     }
+  //   };}
 
   return (
     <>
-      <div className="details-view">
-        <div className={`sidebar ${sidebarOpen ? '' : 'closed'}`} ref={sidebarRef}>
-          <button className=" w3-bar-item w3-button w3-large " onClick={() => toggleSidebar(false)}>
-            Close &times;
-          </button>
-          <Search_form
-          open={open}
-          selectedValue={""}
-          onClose={handleClose}
-        ></Search_form>
-        </div>
-        <div className="body">
-          <header className="headers">
-            <Button onClick={handleBackClick} variant="outlined">
-              Back
-            </Button>
-            <Button variant="outlined" onClick={handleSearchClick}>
-              Search
-            </Button>
-          </header>
+    {
+      loading && <Box sx={{ display: 'flex' }}>
+      <CircularProgress/>
+      </Box>
+      
+    }
+    {
+     !loading &&  <div className="details-view">
+     <div className={`sidebar ${sidebarOpen ? '' : 'closed'}`} ref={sidebarRef}>
+       <button className=" w3-bar-item w3-button w3-large " onClick={() => toggleSidebar(false)}>
+         Close &times;
+       </button>
+       <Search_form
+       open={open}
+       selectedValue={""}
+       onClose={handleClose}
+     ></Search_form>
+     </div>
+     <div className="body">
+       <header className="headers">
+         <Button onClick={handleBackClick} variant="outlined">
+           Back
+         </Button>
+         <Button variant="outlined" onClick={handleSearchClick}>
+           Search
+         </Button>
+       </header>
 
-          <div className="providers-view">
-            {ServiceProvidersData.map((serviceproviders) => (
-              <div className="views" key={serviceproviders.id}>
-                <ServiceProvidersDetails
-                  props={serviceproviders}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+       <div className="providers-view">
+         {ServiceProvidersData.map((serviceproviders) => (
+           <div className="views" key={serviceproviders.id}>
+             <ServiceProvidersDetails
+               props={serviceproviders}
+             />
+           </div>
+         ))}
+       </div>
+     </div>
 
-      </div>
+   </div>
+    }
+    
+     
     </>
   );
 };
