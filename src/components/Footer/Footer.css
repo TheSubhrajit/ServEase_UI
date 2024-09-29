@@ -1,148 +1,151 @@
 /* Footer Styling */
 .footer {
-    background-color: #f6f6f7;
-    justify-content: flex-start;
-    width: 20;
-    border-top: 1px solid #0d0303;
-  }
-  
+  background-color: #f6f6f7;
+  justify-content: flex-start;
+  width: 20;
+  border-top: 1px solid #0d0303;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-evenly;
+  /* Pushes left and right sections to opposite sides */
+  align-items: start;
+  max-width: 200px;
+  padding: 20px;
+  gap: 160px;
+}
+
+.footer-logo-section {
+  margin-bottom: 20px;
+}
+
+.footer-logo {
+  font-size: 24px;
+  color: black;
+  font-weight: bold;
+  text-align: justify;
+}
+
+.social-media {
+  display: flex;
+  gap: 15px;
+}
+
+.social-media a {
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.social-media a:hover {
+  color: #007bff;
+}
+
+.footer-section {
+  align-items: start;
+  text-align: left;
+
+}
+
+.footer-section h4 {
+  white-space: nowrap;
+  color: black;
+  padding-left: 0;
+}
+
+.footer-section ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  color: #333;
+  white-space: nowrap;
+  list-style-type: none;
+  padding: 4px;
+}
+
+/* Tooltip styling */
+.footer-tooltip {
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  margin-top: 20px;
+  display: block;
+}
+
+.footer-section ul li a {
+  color: black;
+  text-decoration: underline;
+}
+
+.footer-section ul li a:hover {
+  color: #007bff;
+}
+
+.social-media a {
+  color: black;
+}
+
+.social-media a:hover {
+  color: #007bff;
+}
+
+/* Media  Responsiveness */
+
+/* Mobile Screens */
+@media (max-width: 600px) {
   .footer-container {
-    display: flex;
-    justify-content: space-evenly; /* Pushes left and right sections to opposite sides */
-    align-items: start;
-    max-width: 200px;
-    padding: 20px;
-    gap: 160px;
-  }
-   
-  .footer-logo-section {
-    margin-bottom: 20px;
-  } 
-  
-  .footer-logo {
-    font-size: 24px;
-    color: black;
-    font-weight: bold;
-    text-align: justify;
-  }
-  
-  .social-media {
-    display: flex;
-    gap: 15px;
-  }
-  
-  .social-media a {
-    color: #333;
-    transition: color 0.3s ease;
-  }
-  
-  .social-media a:hover {
-    color: #007bff; 
-  }
-  
-  .footer-section{
-     align-items: start;
-     text-align: left;
-     
-  }
-   .footer-section h4 {
-    white-space: nowrap;
-    color: black;
-    padding-left: 0;
-  } 
-  
-   .footer-section ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  } 
-
-  .footer-section ul li {
-    color: #333;
-    white-space: nowrap;
-    list-style-type: none;
-    padding: 4px;
-  } 
-  /* Tooltip styling */
-  .footer-tooltip {
-    text-align: center;
-    font-size: 14px;
-    color: #333;
-    margin-top: 20px;
-    display: block;
-  }
-
-  .footer-section ul li a {
-    color: black; 
-    text-decoration: underline;
-  }
-  
-  .footer-section ul li a:hover {
-    color: #007bff; 
-  }
-  
-  .social-media a {
-    color: black; 
-  }
-  
-  .social-media a:hover {
-    color: #007bff;
-  }
-  
-  /* Media  Responsiveness */
-  
-  /* Mobile Screens */
-  @media (max-width: 600px) {
-    .footer-container {
-      flex-direction: column; 
-      align-items: center;
-      text-align: center; 
-    }
-  
-    .footer-section {
-      width: 100%; 
-      margin-bottom: 20px; 
-    }
-  
-    .social-media {
-      justify-content: center; 
-    }
-  
-    .footer-logo {
-      text-align: center; 
-    }
-  }
-  
-  /* Tablet Screen */
-  @media (max-width: 900px) {
-    .footer-container {
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: center; 
-      gap: 40px; 
-    }
-  
-    .footer-section {
-      width: auto;
-      text-align: center;
-    }
-  }
-  .dropdown-section {
-    display: flex;
     flex-direction: column;
-    gap: 10px;
-    
+    align-items: center;
+    text-align: center;
   }
-  
-  .dropdown-select {
-    font-size: 16px;
-    padding: 9px;
-    border: 1px solid #010101;
-    background-color: white;
-    cursor: pointer;
+
+  .footer-section {
+    width: 100%;
+    margin-bottom: 20px;
   }
-  
-  .dropdown-select option {
-    padding: 7px;
+
+  .social-media {
+    justify-content: center;
   }
-  
+
+  .footer-logo {
+    text-align: center;
+  }
+}
+
+/* Tablet Screen */
+@media (max-width: 900px) {
+  .footer-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+  }
+
+  .footer-section {
+    width: auto;
+    text-align: center;
+  }
+}
+
+.dropdown-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+}
+
+.dropdown-select {
+  font-size: 16px;
+  padding: 9px;
+  border: 1px solid #010101;
+  background-color: white;
+  cursor: pointer;
+}
+
+.dropdown-select option {
+  padding: 7px;
+}
