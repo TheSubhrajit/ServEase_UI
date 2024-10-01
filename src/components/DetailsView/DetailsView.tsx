@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Box, CircularProgress, Button } from '@mui/material';
 import Search_form from "../Search-Form/Search_form";
-import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails"; 
+// import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails"; 
 import "./DetailsView.css";
+import React from 'react';
 
 
 interface ChildComponentProps {
@@ -129,9 +130,9 @@ axiosInstance.interceptors.response.use(
             <div className="providers-view">
               {ServiceProvidersData.map((serviceproviders) => (
                 <div className="views" key={serviceproviders}>
-                  <ServiceProvidersDetails
+                  {/* <ServiceProvidersDetails
                     props={serviceproviders}
-                  />
+                  /> */}
                 </div>
               ))}
             </div>

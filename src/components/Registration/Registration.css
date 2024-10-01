@@ -1,0 +1,15 @@
+.topic{
+    padding: 5px;
+    justify-content: flex-start;
+    gap: 1px;
+}
+.text{
+    display: flex;
+    justify-content: center;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+.button{
+    display: flex;
+    justify-content: center;
+}
