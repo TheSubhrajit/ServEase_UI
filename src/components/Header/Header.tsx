@@ -9,7 +9,18 @@ import './Header.css'
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export const Header = () => {
+interface ChildComponentProps {
+  sendDataToParent: (data: string) => void; // Adjust the type if needed
+}
+
+export const Header : React.FC<ChildComponentProps> = ({
+  sendDataToParent,
+}) => {
+
+  const handleClick = (e: any) => {
+    sendDataToParent(e);
+  };
+
   const [location, setLocation] = useState('');
   const [error, setError] = useState(null);
 
@@ -151,13 +162,15 @@ export const Header = () => {
           <DropdownButton id="dropdown-button-dark"
           title="My Account"
           variant="dark">
-      <Dropdown.Item  href="#/action-1">Login / Register</Dropdown.Item>
+      <Dropdown.Item href="#/action-1">Login / Register</Dropdown.Item>
       <Dropdown.Item href="#/action-2">Privacy Policy</Dropdown.Item>
       <Dropdown.Item href="#/action-3">Notification</Dropdown.Item>
       <Dropdown.Item href="#/action-4">Sign Out</Dropdown.Item>
+      <Dropdown.Item onClick={(e) => handleClick("admin")}>Admin - For Demo purpose Only</Dropdown.Item>
       </DropdownButton>
       </div>
     </div>
+
     </Navbar>
     </>
   );
