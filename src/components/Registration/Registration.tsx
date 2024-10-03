@@ -53,7 +53,10 @@ const phoneRegex = /^[0-9]{10}$/;
 
 const steps = ["Basic Info", "Address", "Additional Details", "Confirmation"];
 
-const Registration = () => {
+interface RegistrationProps {
+  onBackToLogin: () => void;
+}
+const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   // const [file, setFile] = useState<File | null>(null); //File Upload
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({

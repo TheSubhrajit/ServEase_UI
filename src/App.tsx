@@ -14,12 +14,13 @@ function App() {
   const handleDataFromChild = (e: any) => {
     setSelection(e);
   };
+  
 
   return (
     <div className="App">
-      {/* <Login /> */}
+      <Login />
       
-       <Registration/>
+       {/* <Registration/> */}
       {/* <Header></Header>
       {!selection && (
         <Landingpage sendDataToParent={(e) => handleDataFromChild(e)} />
@@ -27,8 +28,8 @@ function App() {
       {selection && (
         <DetailsView sendDataToParent={(e) => handleDataFromChild(e)} />
       )}
-       {/* Footer */}
-       {/* <Footer /> */} 
+       
+        <Footer />  */}
     </div>
   );
 }

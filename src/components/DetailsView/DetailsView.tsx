@@ -1,146 +1,94 @@
-import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import { Box, CircularProgress, Button } from '@mui/material';
-import Search_form from "../Search-Form/Search_form";
-// import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails"; 
-import "./DetailsView.css";
-import React from 'react';
 
+import { Button } from "@mui/material";
+import { useEffect, useState, useRef } from "react";
+// import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails";
+import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
+import Search_form from "../Search-Form/Search_form";
+import "./DetailsView.css";
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void; // Adjust the type if needed
 }
-const [ServiceProvidersData, setServiceProvidersData] = useState<any[]>([]);
-const [open, setOpen] = useState(false);
-const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
-
-const sidebarRef = useRef<HTMLDivElement>(null); // Ref for sidebar
-
-
-
-const handleSearchClick = () => {
-  //setOpen(true);
-  setSidebarOpen(true)
-
-};
-
-const handleClose = (value: string) => {
-  setOpen(false);
-  setSidebarOpen(false); // Close sidebar when search form closes
-};
-
-const toggleSidebar = (open: boolean) => {
-  setSidebarOpen(open);
-};
-
 
 export const DetailsView: React.FC<ChildComponentProps> = ({
   sendDataToParent,
 }) => {
-  
-  
-const axiosInstance = axios.create({
-  baseURL: "https://freetestapi.com/api/v1/",
-});
+  const [ServiceProvidersData, setServiceProvidersData] = useState<any[]>([]);
+  const [open, setOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
 
-// Request interceptor
-axiosInstance.interceptors.request.use(
-  (config) => {
-    // Do something before the request is sent, like adding headers
-    console.log("Request sent", config);
-    return config;
-  },
-  (error) => {
-    // Handle the error in the request
-    return Promise.reject(error);
-  }
-);
+  const sidebarRef = useRef<HTMLDivElement>(null); // Ref for sidebar
 
-// Response interceptor
-axiosInstance.interceptors.response.use(
-  (response) => {
-    // Do something with the response data
-    console.log("Response received", response);
-    return response;
-  },
-  (error) => {
-    // Handle response errors globally
-    console.error("Error in response:", error);
-    return Promise.reject(error);
-  }
-);
+  const handleBackClick = () => {
+    sendDataToParent("");
+  };
 
-// const ServiceProvidersList = () => {
-  const [loading, setLoading] = useState(false);
-  const [ServiceProvidersData, setServiceProvidersData] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const handleSearchClick = () => {
+    //setOpen(true);
+    setSidebarOpen(true)
+
+  };
+
+  const handleClose = (value: string) => {
+    setOpen(false);
+    setSidebarOpen(false); // Close sidebar when search form closes
+  };
+
+  const toggleSidebar = (open: boolean) => {
+    setSidebarOpen(open);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true); 
-        const response = await axiosInstance.get("users");
-        setServiceProvidersData(response.data);
+        const response = await fetch("https://freetestapi.com/api/v1/users");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setServiceProvidersData(data);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
-      } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 5000);
       }
     };
 
     fetchData();
   }, []);
 
-  const toggleSidebar = (isOpen) => setSidebarOpen(isOpen);
-  const handleBackClick = () => console.log("Back button clicked");
-  const handleSearchClick = () => console.log("Search button clicked");
-  const handleClose = () => console.log("Search form closed");
-
   return (
-    <>
-      {
-        loading && <Box sx={{ display: 'flex' }}>
-          <CircularProgress />
-        </Box>
-      }
-      {
-        !loading && <div className="details-view">
-          <div className={`sidebar ${sidebarOpen ? '' : 'closed'}`}>
-            <button className="w3-bar-item w3-button w3-large" onClick={() => toggleSidebar(false)}>
-              Close &times;
-            </button>
-            <Search_form
-              open={true}
-              selectedValue={""}
-              onClose={handleClose}
-            />
-          </div>
-          <div className="body">
-            <header className="headers">
-              <Button onClick={handleBackClick} variant="outlined">
-                Back
-              </Button>
-              <Button variant="outlined" onClick={handleSearchClick}>
-                Search
-              </Button>
-            </header>
-
-            <div className="providers-view">
-              {ServiceProvidersData.map((serviceproviders) => (
-                <div className="views" key={serviceproviders}>
-                  {/* <ServiceProvidersDetails
-                    props={serviceproviders}
-                  /> */}
-                </div>
-              ))}
-            </div>
-          </div>
-
+    
+      <div className="details-view">
+        <div className={`sidebar ${sidebarOpen ? '' : 'closed'}`} ref={sidebarRef}>
+          <button className=" w3-bar-item w3-button w3-large " onClick={() => toggleSidebar(false)}>
+            Close &times;
+          </button>
+          <Search_form
+          open={open}
+          selectedValue={""}
+          onClose={handleClose}
+        ></Search_form>
         </div>
-      }
-    </>
+        <div className="body">
+          <header className="headers">
+            <Button onClick={handleBackClick} variant="outlined">
+              Back
+            </Button>
+            <Button variant="outlined" onClick={handleSearchClick}>
+              Search
+            </Button>
+          </header>
+
+          <div className="providers-view">
+            {ServiceProvidersData.map((serviceproviders) => (
+             <div className="views" key={serviceproviders.id}>
+             <ServiceProvidersDetails {...serviceproviders} />
+           </div>
+           
+            ))}
+          </div>
+        </div>
+
+      </div>
+    
   );
 };
-
