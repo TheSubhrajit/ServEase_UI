@@ -1,7 +1,6 @@
 .topic{
-    padding: 5px;
-    justify-content: flex-start;
-    gap: 1px;
+    padding-top: 15px;
+    padding-bottom: 5px;
 }
 .text{
     display: flex;
