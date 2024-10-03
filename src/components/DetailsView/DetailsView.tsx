@@ -78,11 +78,11 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
             </Button>
           </header>
 
-          <div className="providers-view">
+         <div className="providers-view">
             {ServiceProvidersData.map((serviceproviders) => (
              <div className="views" key={serviceproviders.id}>
              <ServiceProvidersDetails {...serviceproviders} />
-           </div>
+           </div> 
            
             ))}
           </div>

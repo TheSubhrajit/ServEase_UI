@@ -157,6 +157,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm()) {
@@ -416,6 +417,17 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             </Button>
           )}
         </Box>
+
+        <div className="flex flex-col mt-4 items-center justify-center text-sm">
+                  <h3 className="dark:text-gray-300">
+                    Already have an account? 
+                    <button
+                      className="text-blue-400 ml-2 underline"
+                    >
+                      Sign in
+                    </button>
+                  </h3>
+                </div>
       </form>
     </Box>
   );

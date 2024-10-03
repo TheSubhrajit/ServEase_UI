@@ -2,9 +2,11 @@ import { Button, TextField } from "@mui/material";
 import './Login.css';
 import React, { useState } from 'react';
 import Registration from "../Registration/Registration";
+import ServiceProviderRegistration from "../Registration/ServiceProviderRegistration";
 
 export const Login: React.FC = () => {
   const [isRegistration, setIsRegistration] = useState(false); // State to toggle between forms
+  const [isServiceRegistration , setServiceregistration] = useState(false);
 
   const handleSignUpClick = () => {
     setIsRegistration(true); // Show Register component when the button is clicked
@@ -15,8 +17,17 @@ export const Login: React.FC = () => {
   };
 
 
+  const handleSignUpClickServiceProvider = () =>{
+    setServiceregistration(true)
+  }
+
+
   return (
-    <div className={`h-[80%] w-screen flex justify-center items-center dark:bg-gray-900 parent-box ${isRegistration ? 'top-[30%]' : 'top-[7%]'}`}>
+    <div className={`h-[80%] w-screen flex justify-center items-center dark:bg-gray-900 parent-box ${
+    isServiceRegistration ? 'top-[10%]' :
+    isRegistration ? 'top-[30%]' :
+    'top-[7%]'
+  }`}>
       <div className="m-0">
         <div
           id="back-div"
@@ -27,7 +38,11 @@ export const Login: React.FC = () => {
           >
             {isRegistration ? (
               <Registration onBackToLogin={handleBackToLogin} />
-            ) : (
+            ) :
+            isServiceRegistration ? (
+              <ServiceProviderRegistration />
+            ):
+             (
               <>
                 <h1 className="pt-8 pb-6 font-bold dark:text-gray-400 text-5xl text-center cursor-default">
                   Log in
@@ -68,42 +83,44 @@ export const Login: React.FC = () => {
                 <div className="flex flex-col mt-4 items-center justify-center text-sm">
                   <h3 className="dark:text-gray-300">
                     Don't have an account? 
-                    <button
+                  </h3>
+                  <button
                       onClick={handleSignUpClick}
                       className="text-blue-400 ml-2 underline"
                     >
-                      Sign Up
+                      Sign Up As User
                     </button>
-                  </h3>
+                    <button
+                      onClick={handleSignUpClickServiceProvider}
+                      className="text-blue-400 ml-2 underline"
+                    >
+                      Sign Up As Service Provider
+                    </button>
                 </div>
               </>
             )}
+            {!isRegistration && 
             <div id="third-party-auth" className="flex items-center justify-center mt-5 flex-wrap">
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img className="max-w-[25px]" src="https://ucarecdn.com/8f25a2ba-bdcf-4ff1-b596-088f330416ef/" alt="Google" />
-              </button>
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img className="max-w-[25px]" src="https://ucarecdn.com/95eebb9c-85cf-4d12-942f-3c40d7044dc6/" alt="Linkedin" />
-              </button>
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img className="max-w-[25px] filter dark:invert" src="https://ucarecdn.com/be5b0ffd-85e8-4639-83a6-5162dfa15a16/" alt="Github" />
-              </button>
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img className="max-w-[25px]" src="https://ucarecdn.com/6f56c0f1-c9c0-4d72-b44d-51a79ff38ea9/" alt="Facebook" />
-              </button>
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img className="max-w-[25px] dark:gray-100" src="https://ucarecdn.com/82d7ca0a-c380-44c4-ba24-658723e2ab07/" alt="twitter" />
-              </button>
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img className="max-w-[25px]" src="https://ucarecdn.com/3277d952-8e21-4aad-a2b7-d484dad531fb/" alt="apple" />
-              </button>
-            </div>
-            <div className="text-gray-500 flex text-center flex-col mt-4 items-center text-sm">
-              <p className="cursor-default">
-                By signing in, you agree to our
-                <a className="group text-blue-400 transition-all duration-100 ease-in-out"></a>
-              </p>
-            </div>
+            <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
+              <img className="max-w-[25px]" src="https://ucarecdn.com/8f25a2ba-bdcf-4ff1-b596-088f330416ef/" alt="Google" />
+            </button>
+            <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
+              <img className="max-w-[25px]" src="https://ucarecdn.com/95eebb9c-85cf-4d12-942f-3c40d7044dc6/" alt="Linkedin" />
+            </button>
+            <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
+              <img className="max-w-[25px] filter dark:invert" src="https://ucarecdn.com/be5b0ffd-85e8-4639-83a6-5162dfa15a16/" alt="Github" />
+            </button>
+            <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
+              <img className="max-w-[25px]" src="https://ucarecdn.com/6f56c0f1-c9c0-4d72-b44d-51a79ff38ea9/" alt="Facebook" />
+            </button>
+            <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
+              <img className="max-w-[25px] dark:gray-100" src="https://ucarecdn.com/82d7ca0a-c380-44c4-ba24-658723e2ab07/" alt="twitter" />
+            </button>
+            <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
+              <img className="max-w-[25px]" src="https://ucarecdn.com/3277d952-8e21-4aad-a2b7-d484dad531fb/" alt="apple" />
+            </button>
+          </div>}
+            
           </div>
         </div>
       </div>
