@@ -102,7 +102,7 @@ export const Search_form = (props: SimpleDialogProps) => {
               />{" "}
               Within 5-10 Km Area
             </div>
-            <div className="footer">
+            <div className="button">
               <div className="Sbtn1">
                 <Button type="submit" id="button1" variant="outline-dark">
                   Submit

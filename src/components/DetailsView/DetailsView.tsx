@@ -1,3 +1,4 @@
+
 import { Button } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 // import { ServiceProvidersDetails } from "../ServiceProvidersDetails/ServiceProvidersDetails";
@@ -55,7 +56,7 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
   }, []);
 
   return (
-    <>
+    
       <div className="details-view">
         <div className={`sidebar ${sidebarOpen ? '' : 'closed'}`} ref={sidebarRef}>
           <button className=" w3-bar-item w3-button w3-large " onClick={() => toggleSidebar(false)}>
@@ -88,6 +89,6 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
         </div>
 
       </div>
-    </>
+    
   );
 };
