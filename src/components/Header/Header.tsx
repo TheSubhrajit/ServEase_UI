@@ -136,7 +136,7 @@ export const Header : React.FC<ChildComponentProps> = ({
       <Navbar className="header">
         <Container className="head">
           <Navbar.Brand href="#home">
-           <h2>Home-ServEase</h2>
+           <img src="../logo.png" style={{width : "68px"}}/>
            {/* <h6>Care</h6> */}
           </Navbar.Brand>
           </Container>

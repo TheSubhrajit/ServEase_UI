@@ -2,9 +2,11 @@ import { Button, TextField } from "@mui/material";
 import './Login.css';
 import React, { useState } from 'react';
 import Registration from "../Registration/Registration";
+import ServiceProviderRegistration from "../Registration/ServiceProviderRegistration";
 
 export const Login: React.FC = () => {
   const [isRegistration, setIsRegistration] = useState(false); // State to toggle between forms
+  const [isServiceRegistration , setServiceregistration] = useState(false);
 
   const handleSignUpClick = () => {
     setIsRegistration(true); // Show Register component when the button is clicked
@@ -15,8 +17,17 @@ export const Login: React.FC = () => {
   };
 
 
+  const handleSignUpClickServiceProvider = () =>{
+    setServiceregistration(true)
+  }
+
+
   return (
-    <div className={`h-[80%] w-screen flex justify-center items-center dark:bg-gray-900 parent-box ${isRegistration ? 'top-[30%]' : 'top-[7%]'}`}>
+    <div className={`h-[80%] w-screen flex justify-center items-center dark:bg-gray-900 parent-box ${
+    isServiceRegistration ? 'top-[10%]' :
+    isRegistration ? 'top-[30%]' :
+    'top-[7%]'
+  }`}>
       <div className="m-0">
         <div
           id="back-div"
@@ -27,7 +38,11 @@ export const Login: React.FC = () => {
           >
             {isRegistration ? (
               <Registration onBackToLogin={handleBackToLogin} />
-            ) : (
+            ) :
+            isServiceRegistration ? (
+              <ServiceProviderRegistration />
+            ):
+             (
               <>
                 <h1 className="pt-8 pb-6 font-bold dark:text-gray-400 text-5xl text-center cursor-default">
                   Log in
@@ -68,13 +83,19 @@ export const Login: React.FC = () => {
                 <div className="flex flex-col mt-4 items-center justify-center text-sm">
                   <h3 className="dark:text-gray-300">
                     Don't have an account? 
-                    <button
+                  </h3>
+                  <button
                       onClick={handleSignUpClick}
                       className="text-blue-400 ml-2 underline"
                     >
-                      Sign Up
+                      Sign Up As User
                     </button>
-                  </h3>
+                    <button
+                      onClick={handleSignUpClickServiceProvider}
+                      className="text-blue-400 ml-2 underline"
+                    >
+                      Sign Up As Service Provider
+                    </button>
                 </div>
               </>
             )}
