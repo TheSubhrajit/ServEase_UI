@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  TextField, Button, Grid, Typography, Box, Stepper, Step, StepLabel, Checkbox, FormControlLabel
+  TextField,Input, Button, Grid, Typography, Box, Stepper, Step, StepLabel, Checkbox, FormControlLabel
 } from '@mui/material';
 
 // Define the shape of formData using an interface
@@ -18,6 +18,11 @@ interface FormData {
   aadhaar: string;
   pan: string;
   agreeToTerms: boolean;
+  aadhaarImage: File | null; // New field for Aadhaar image upload
+  panImage: File | null; // New field for PAN image upload
+  serviceType: string;   // Dropdown for Service Type
+  description: string;   // Text area for business description
+  experience: string;    // Experience in years
 }
 
 // Define the shape of errors to hold string messages
@@ -35,12 +40,18 @@ interface FormErrors {
   aadhaar?: string;
   pan?: string;
   agreeToTerms?: string; // This is now a string for error messages
+  document?: string; // Error message for document
+  serviceType?: string;   // Error message for Service Type
+  description?: string;   // Error message for Description
+  experience?: string;    // Error message for Experience
 }
 
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
+const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const phoneRegex = /^[0-9]{10}$/;
+const zipCodeRegex = /^[0-9]{6}$/;
 const aadhaarRegex = /^[0-9]{12}$/;
 const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
@@ -68,16 +79,79 @@ const ServiceProviderRegistration = () => {
     aadhaar: '',
     pan: '',
     agreeToTerms: false,
+    aadhaarImage: null, // Initialize Aadhaar image field
+    panImage: null, // Initialize PAN image field
+    serviceType: '',
+    description: '',
+    experience: '',
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
 
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setFormData({
+  //     ...formData,
+  //     [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value,
+  //   });
+  // };
+  // Add a state to hold the image preview URL
+  const [aadhaarImagePreview, setAadhaarImagePreview] = useState<string | null>(null);
+  const [panImagePreview, setPanImagePreview] = useState<string | null>(null);
+
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, type, value, checked, files } = e.target;
+  
+  //   if (name === 'aadhaarImage' && files) {
+  //     const file = files[0];
+  //     setFormData({
+  //       ...formData,
+  //       aadhaarImage: file,
+  //     });
+  //     setAadhaarImagePreview(URL.createObjectURL(file)); // Aadhaar image preview
+  //   } else if (name === 'panImage' && files) {
+  //     const file = files[0];
+  //     setFormData({
+  //       ...formData,
+  //       panImage: file,
+  //     });
+  //     setPanImagePreview(URL.createObjectURL(file)); // PAN image preview
+  //   } else {
+  //     setFormData({
+  //       ...formData,
+  //       [name]: type === 'checkbox' ? checked : value,
+  //     });
+  //   }
+  // };
+  const [aadhaarImageName, setAadhaarImageName] = useState<string>('');
+  const [panImageName, setPanImageName] = useState<string>('');
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value,
-    });
+    const { name, type, value, checked, files } = e.target;
+  
+    if (name === 'aadhaarImage' && files) {
+      const file = files[0];
+      setFormData({
+        ...formData,
+        aadhaarImage: file,
+      });
+      setAadhaarImagePreview(URL.createObjectURL(file)); // Aadhaar image preview
+      setAadhaarImageName(file.name); // Set Aadhaar image file name
+    } else if (name === 'panImage' && files) {
+      const file = files[0];
+      setFormData({
+        ...formData,
+        panImage: file,
+      });
+      setPanImagePreview(URL.createObjectURL(file)); // PAN image preview
+      setPanImageName(file.name); // Set PAN image file name
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value,
+      });
+    }
   };
+  
 
   const validateForm = () => {
     let tempErrors: FormErrors = {};
@@ -93,8 +167,8 @@ const ServiceProviderRegistration = () => {
       if (!formData.email || !emailRegex.test(formData.email)) {
         tempErrors.email = 'Valid email is required.';
       }
-      if (!formData.password || formData.password.length < 8) {
-        tempErrors.password = 'Password must be at least 8 characters long.';
+      if (!formData.password || !strongPasswordRegex.test(formData.password)) {
+        tempErrors.password = 'Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character.';
       }
       if (formData.password !== formData.confirmPassword) {
         tempErrors.confirmPassword = 'Passwords do not match.';
@@ -115,9 +189,9 @@ const ServiceProviderRegistration = () => {
       if (!formData.state) {
         tempErrors.state = 'State is required.';
       }
-      if (!formData.zipCode) {
-        tempErrors.zipCode = 'Zip/Postal Code is required.';
-      }
+      if (!formData.zipCode || !zipCodeRegex.test(formData.zipCode)) {
+        tempErrors.zipCode = 'Zip/Postal Code must be exactly 6 digits.';
+    }
     }
 
     if (activeStep === 2) {
@@ -125,6 +199,18 @@ const ServiceProviderRegistration = () => {
       if (!formData.agreeToTerms) {
         tempErrors.agreeToTerms = 'You must agree to the Terms of Service and Privacy Policy.';
       }
+       if (!formData.serviceType) {
+       tempErrors.serviceType = 'Please select a service type.';
+      }
+      
+      // if (!formData.description) {
+      //   tempErrors.description = 'Description is required.';
+      // }
+    
+      
+      // if (!formData.experience || isNaN(Number(formData.experience))) {
+      //   tempErrors.experience = 'Experience must be a valid number.';
+      // }
     }
 
     if (activeStep === 3) {
@@ -293,26 +379,140 @@ const ServiceProviderRegistration = () => {
             </Grid>
           </Grid>
         );
-      case 2:
-        return (
-          <>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={formData.agreeToTerms}
-                  onChange={handleChange}
-                  name="agreeToTerms"
-                />
-              }
-              label="I agree to the Terms of Service and Privacy Policy"
-              required
-            />
-            {errors.agreeToTerms && (
-              <Typography color="error">{errors.agreeToTerms}</Typography>
-            )}
-          </>
+        case 2:
+       return (
+    <>
+      <Grid container spacing={2}>
+        {/* Service Type Dropdown */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            select
+            label={formData.serviceType ? 'Service Type' : 'Select Service Type'}
+            name="serviceType"
+            fullWidth
+            required
+            SelectProps={{ native: true }}
+            value={formData.serviceType}
+            onChange={handleChange}
+            error={!!errors.serviceType}
+            helperText={errors.serviceType || 'Select the service category'}
+          >
+            <option value="" disabled>
+              Select Service Type
+            </option>
+            <option value="Cook">Cook</option>
+            <option value="Nannies">Nannies</option>
+            <option value="Maid">Maid</option>
+          </TextField>
+        </Grid>
+
+        {/* Description Field */}
+        <Grid item xs={12}>
+          <TextField
+            label="Description"
+            name="description"
+            fullWidth
+            // required
+            multiline
+            rows={4}
+            value={formData.description}
+            onChange={handleChange}
+            error={!!errors.description}
+            helperText={errors.description || 'Provide a brief overview of the business'}
+          />
+        </Grid>
+
+        {/* Experience Field */}
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Experience"
+            name="experience"
+            fullWidth
+            // required
+            value={formData.experience}
+            onChange={handleChange}
+            error={!!errors.experience}
+            helperText={errors.experience || 'Years in business or relevant experience'}
+          />
+        </Grid>
+      </Grid>
+
+      {/* Checkbox for agreeing to Terms of Service */}
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={formData.agreeToTerms}
+            onChange={handleChange}
+            name="agreeToTerms"
+            required
+          />
+        }
+        label="I agree to the Terms of Service and Privacy Policy"
+      />
+      {errors.agreeToTerms && (
+        <Typography color="error">{errors.agreeToTerms}</Typography>
+      )}
+    </>
         );
+
+        
       case 3:
+        // return (
+        //   <Grid container spacing={2}>
+        //     <Grid item xs={12}>
+        //       <TextField
+        //         label="Aadhaar Number"
+        //         name="aadhaar"
+        //         fullWidth
+        //         required
+        //         value={formData.aadhaar}
+        //         onChange={handleChange}
+        //         error={!!errors.aadhaar}
+        //         helperText={errors.aadhaar}
+        //       />
+        //       <Input
+        //         type="file"
+        //         inputProps={{ accept: 'image/*' }}
+        //         name="aadhaarImage"
+        //         onChange={handleChange}
+        //         required
+        //       />
+        //       {aadhaarImagePreview && (
+        //         <Box mt={2}>
+        //           <Typography variant="h6">Aadhaar Preview:</Typography>
+        //           <img src={aadhaarImagePreview} alt="Aadhaar Card" width="500" />
+        //         </Box>
+        //       )}
+        //       {errors.document && <Typography color="error">{errors.document}</Typography>}
+        //     </Grid>
+        //     <Grid item xs={12}>
+        //       <TextField
+        //         label="PAN Number"
+        //         name="pan"
+        //         fullWidth
+        //         required
+        //         value={formData.pan}
+        //         onChange={handleChange}
+        //         error={!!errors.pan}
+        //         helperText={errors.pan}
+        //       />
+        //       <Input
+        //         type="file"
+        //         inputProps={{ accept: 'image/*' }}
+        //         name="panImage"
+        //         onChange={handleChange}
+        //         required
+        //       />
+        //       {panImagePreview && (
+        //         <Box mt={2}>
+        //           <Typography variant="h6">PAN Preview:</Typography>
+        //           <img src={panImagePreview} alt="PAN Card" width="500" />
+        //         </Box>
+        //       )}
+        //       {errors.document && <Typography color="error">{errors.document}</Typography>}
+        //     </Grid>
+        //   </Grid>
+        // );
         return (
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -326,6 +526,23 @@ const ServiceProviderRegistration = () => {
                 error={!!errors.aadhaar}
                 helperText={errors.aadhaar}
               />
+              <Input
+                type="file"
+                inputProps={{ accept: 'image/*' }}
+                name="aadhaarImage"
+                onChange={handleChange}
+                required
+              />
+              {aadhaarImageName && (
+                <Typography variant="body2">Selected File: {aadhaarImageName}</Typography>
+              )}
+              {aadhaarImagePreview && (
+                <Box mt={2}>
+                  <Typography variant="h6">Aadhaar Preview:</Typography>
+                  <img src={aadhaarImagePreview} alt="Aadhaar Card" width="500" />
+                </Box>
+              )}
+              {errors.document && <Typography color="error">{errors.document}</Typography>}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -338,6 +555,23 @@ const ServiceProviderRegistration = () => {
                 error={!!errors.pan}
                 helperText={errors.pan}
               />
+              <Input
+                type="file"
+                inputProps={{ accept: 'image/*' }}
+                name="panImage"
+                onChange={handleChange}
+                required
+              />
+              {panImageName && (
+                <Typography variant="body2">Selected File: {panImageName}</Typography>
+              )}
+              {panImagePreview && (
+                <Box mt={2}>
+                  <Typography variant="h6">PAN Preview:</Typography>
+                  <img src={panImagePreview} alt="PAN Card" width="500" />
+                </Box>
+              )}
+              {errors.document && <Typography color="error">{errors.document}</Typography>}
             </Grid>
           </Grid>
         );
