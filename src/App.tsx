@@ -1,32 +1,34 @@
+
 import React, { useState } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import { Header } from "./components/Header/Header";
-// import { Landingpage } from "./components/Landing_Page/Landingpage";
-// import { DetailsView } from "./components/DetailsView/DetailsView";
-// import Footer from "./components/Footer/Footer";
-import ServiceProviderRegistration from './components/Registration/ServiceProviderRegistration';
+import { Header } from "./components/Header/Header";
+import { Landingpage } from "./components/Landing_Page/Landingpage";
+import { DetailsView } from "./components/DetailsView/DetailsView";
+import Footer from "./components/Footer/Footer";
+import Login from "./components/Login/Login";
+
+
 function App() {
   const [selection, setSelection] = useState();
   const handleDataFromChild = (e: any) => {
     setSelection(e);
   };
+  
 
   return (
     <div className="App">
-      {/* <Login />
-       */}
-      {/* <Header></Header> */}
+      
+      <Header></Header>
+      <Login />
       {/* {!selection && (
         <Landingpage sendDataToParent={(e) => handleDataFromChild(e)} />
-      )} */}
-      {/* {selection && (
+      )}
+      {selection && (
         <DetailsView sendDataToParent={(e) => handleDataFromChild(e)} />
       )} */}
-       {/* Footer */}
-       {/* <Footer /> */}
-
-       <ServiceProviderRegistration />
+       
+        {/* <Footer />  */}
     </div>
   );
 }
