@@ -5,6 +5,7 @@
 
 .sidebar {
   width: 25%; 
+  padding-left: 10px;
   transition: width 0.3s ease;
   overflow-x: hidden;
   border: 1px solid black;
