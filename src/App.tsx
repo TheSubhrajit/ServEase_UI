@@ -6,6 +6,7 @@ import { Landingpage } from "./components/Landing_Page/Landingpage";
 import { DetailsView } from "./components/DetailsView/DetailsView";
 import Footer from "./components/Footer/Footer";
 import Admin from "./components/Admin/Admin";
+import Login from "./components/Login/Login";
 
 function App() {
   const [selection, setSelection] = useState();
@@ -23,20 +24,23 @@ function App() {
   return (
     <div className="App">
       <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />
+{
+  handleDropDownValue === 'login' ? (
+    <Login />
+  ) : handleDropDownValue === 'admin' ? (
+    <Admin />
+  ) : (
+    <>
+      {!selection ? (
+        <Landingpage sendDataToParent={(e) => handleDataFromChild(e)} />
+      ) : (
+        <DetailsView sendDataToParent={(e) => handleDataFromChild(e)} />
+      )}
+    </>
+  )
+}
 
-{handleDropDownValue === 'admin' ? (
-  <Admin />
-) : (
-  <>
-    {!selection && (
-      <Landingpage sendDataToParent={(e) => handleDataFromChild(e)} />
-    )}
-    {selection && (
-      <DetailsView sendDataToParent={(e) => handleDataFromChild(e)} />
-    )}
-  </>
-)}
-<Footer></Footer>
+{/* <Footer></Footer> */}
     </div>
   );
 }
