@@ -378,7 +378,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }}>
+    <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }} className="parent">
       <Typography variant="h5" gutterBottom className="text">
         User Registration
       </Typography>

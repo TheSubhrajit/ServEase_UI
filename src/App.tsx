@@ -6,7 +6,6 @@ import { Landingpage } from "./components/Landing_Page/Landingpage";
 import { DetailsView } from "./components/DetailsView/DetailsView";
 import Footer from "./components/Footer/Footer";
 import Login from "./components/Login/Login";
-import Registration from "./components/Registration/Registration";
 
 
 function App() {
@@ -18,18 +17,17 @@ function App() {
 
   return (
     <div className="App">
-      <Login />
       
-       {/* <Registration/> */}
-      {/* <Header></Header>
-      {!selection && (
+      <Header></Header>
+      <Login />
+      {/* {!selection && (
         <Landingpage sendDataToParent={(e) => handleDataFromChild(e)} />
       )}
       {selection && (
         <DetailsView sendDataToParent={(e) => handleDataFromChild(e)} />
-      )}
+      )} */}
        
-        <Footer />  */}
+        {/* <Footer />  */}
     </div>
   );
 }
