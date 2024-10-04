@@ -23,33 +23,33 @@ function App() {
 
   return (
     <div className="App">
-      <div className="header-class">
-        <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />
-      </div>
-{/* {
-  handleDropDownValue === 'login' ? (
-    <Login />
-  ) : handleDropDownValue === 'admin' ? (
-    <Admin />
-  ) : (
-    <>
-      {!selection ? (
-        <Landingpage sendDataToParent={(e) => handleDataFromChild(e)} />
-      ) : (
-        <DetailsView sendDataToParent={(e) => handleDataFromChild(e)} />
-      )}
-    </>
-  )
-} */}
-
-<section style={{height : "80%"}}>
-  Hello
-</section>
-<footer style={{height : "10%"}}>
-<Footer></Footer>
-</footer>
-
+    <div className="header-class">
+      <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />
     </div>
+  
+    <section className="content-section">
+      {
+        handleDropDownValue === 'login' ? (
+          <Login />
+        ) : handleDropDownValue === 'admin' ? (
+          <Admin />
+        ) : (
+          <>
+            {!selection ? (
+              <Landingpage sendDataToParent={(e) => handleDataFromChild(e)} />
+            ) : (
+              <DetailsView sendDataToParent={(e) => handleDataFromChild(e)} />
+            )}
+          </>
+        )
+      }
+    </section>
+  
+    <footer className="footer-container">
+      <Footer />
+    </footer>
+  </div>
+  
   );
 }
 

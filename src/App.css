@@ -5,3 +5,56 @@
 .header-class{
   height: 10%;
 }
+
+/* Ensure the body and html take up the full height */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Main container for the whole app */
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Fixed header */
+.header-class {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Keep the header above other content */
+  background-color: #fff; /* Background color for header */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for the header */
+}
+
+/* Fixed footer */
+.footer-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f6f6f7;
+  border-top: 1px solid #0d0303;
+  z-index: 1000; /* Keep the footer above content */
+  text-align: center;
+  height: 10%;
+}
+
+/* Main content area */
+.content-section {
+  flex-grow: 1;
+  margin-top: 80px; /* Adjust this based on header height */
+  margin-bottom: 80px; /* Adjust this based on footer height */
+  overflow-y: auto; /* Make content scrollable */
+}
+
+/* Adjust the content section for small screens */
+@media (max-width: 600px) {
+  .content-section {
+    margin-top: 70px; /* Adjust header height for small screens */
+    margin-bottom: 60px; /* Adjust footer height for small screens */
+  }
+}
