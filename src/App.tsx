@@ -17,7 +17,6 @@ function App() {
   };
 
   const getSelectedFromDropDown = (e:any) =>{
-    console.log(e)
     setSelection(undefined)
       setDropDownvalue(e);
   }
