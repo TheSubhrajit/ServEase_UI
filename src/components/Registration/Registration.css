@@ -1,19 +1,51 @@
-.topic{
-    padding-top: 15px; 
-}
-.text{
+/* Reset unnecessary top padding in the topic */
+.topic {
+    padding-top: 0; /* Remove extra top padding */
+  }
+  
+  /* Center and reduce padding in the title */
+  .text {
     display: flex;
     justify-content: center;
-    padding-top: 130px;
-    padding-bottom: 4px;
-}
-/* .button{
-    display: flex;
-    justify-content: center;
-} */
-
-
-.parent{
+    padding-top: 40px; /* Reduced padding */
+    padding-bottom: 0; /* Removed bottom padding */
+  }
+  
+  /* Adjust the container to fit content */
+  .parent {
     position: relative;
-    top: 29%;
-}
+    margin-top: 0; /* Reset any top offset */
+    height: fit-content; /* Allow the container to adjust to its content height */
+    width: 100%;
+    max-width: 600px; /* Ensuring it doesn't get too wide */
+    margin-left: auto; /* Horizontally center the component */
+    margin-right: auto; /* Horizontally center the component */
+    padding: 16px; /* Padding for content spacing */
+    display: flex;
+    flex-direction: column; /* Ensure content stacks properly */
+    justify-content: flex-start; /* Align content at the top */
+    align-items: center; /* Center content horizontally */
+  }
+  
+  /* Remove extra margin around buttons */
+  .MuiBox-root {
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  /* Optional: Remove spacing between step labels */
+  .MuiStepLabel-root {
+    margin-bottom: 4px;
+  }
+
+  /* Reducing height of all TextField components */
+.MuiInputBase-root {
+    height: 36px !important; /* Reduce the height */
+  }
+  
+  .MuiInputBase-input {
+    padding: 10px 12px !important; /* Adjust padding to reduce internal height */
+  }
+  
+  

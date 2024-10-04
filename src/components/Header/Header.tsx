@@ -114,64 +114,51 @@ export const Header : React.FC<ChildComponentProps> = ({
 
   return (
     <>
-      {/* <Navbar bg="dark" data-bs-theme="dark">
-        <Container>
-          <Navbar.Brand href="#home">HomeServEase</Navbar.Brand>
+ <Navbar className="header" expand="lg">
+  <div className="header-alignment">
+    <img src="../logo.png" className="logo-style" alt="logo" />
+    <div className="dropdowns-container">
+      <DropdownButton
+        id="dropdown-button"
+        title="Location"
+        variant="dark"
+        className="dropdown-left"
+      >
+        <Dropdown.Item>
           <div className="autocomplete">
-          <Autocomplete
-  onInputChange={handleInputChange}
-  onChange={handleChange}
-  options={suggestions}
-  sx={{ width: 300 }}
-  clearIcon
-  renderInput={(params) => <TextField {...params} label={location ? location : "Your selected location"} 
-  />}
-/>
+            <Autocomplete
+              onInputChange={handleInputChange}
+              onChange={handleChange}
+              options={suggestions}
+              sx={{ width: 300 }}
+              clearIcon
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={location ? location : "Your selected location"}
+                />
+              )}
+            />
           </div>
-          
-          
-    
-        </Container>
-      </Navbar> */}
-      <Navbar className="header">
-        <Container className="head">
-          <Navbar.Brand href="#home">
-           <img src="../logo.png" style={{width : "68px"}}/>
-           {/* <h6>Care</h6> */}
-          </Navbar.Brand>
-          </Container>
-        <div className="head2">
-          <div className="head3">
-          <DropdownButton id="dropdown-button"
-          title="Location"
-          variant="dark"  >
-          <Dropdown.Item> <div className="autocomplete">
-          <Autocomplete
-  onInputChange={handleInputChange}
-  onChange={handleChange}
-  options={suggestions}
-  sx={{ width: 300 }}
-  clearIcon
-  renderInput={(params) => <TextField {...params} label={location ? location : "Your selected location"} 
-  />}
-/>
-          </div></Dropdown.Item>
-           </DropdownButton>
-           </div>
-        <div className="head4">
-          <DropdownButton id="dropdown-button-dark"
-          title="My Account"
-          variant="dark">
-      <Dropdown.Item onClick={(e) => handleClick("login")}>Login / Register</Dropdown.Item>
-      <Dropdown.Item>Privacy Policy</Dropdown.Item>
-      <Dropdown.Item>Notification</Dropdown.Item>
-      <Dropdown.Item onClick={(e) => handleClick("sign_out")}>Sign Out</Dropdown.Item>
-      <Dropdown.Item onClick={(e) => handleClick("admin")}>Admin - For Demo purpose Only</Dropdown.Item>
+        </Dropdown.Item>
       </DropdownButton>
-      </div>
-    </div>
 
-    </Navbar>
+      <DropdownButton
+        id="dropdown-button-dark"
+        title="My Account"
+        variant="dark"
+        className="dropdown-left"
+      >
+        <Dropdown.Item onClick={(e) => handleClick("login")}>Login / Register</Dropdown.Item>
+        <Dropdown.Item>Privacy Policy</Dropdown.Item>
+        <Dropdown.Item>Notification</Dropdown.Item>
+        <Dropdown.Item onClick={(e) => handleClick("sign_out")}>Sign Out</Dropdown.Item>
+        <Dropdown.Item onClick={(e) => handleClick("admin")}>Admin - For Demo purpose Only</Dropdown.Item>
+      </DropdownButton>
+    </div>
+  </div>
+</Navbar>
+
     </>
   );
 };
