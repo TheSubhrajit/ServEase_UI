@@ -23,8 +23,10 @@ function App() {
 
   return (
     <div className="App">
-      <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />
-{
+      <div className="header-class">
+        <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />
+      </div>
+{/* {
   handleDropDownValue === 'login' ? (
     <Login />
   ) : handleDropDownValue === 'admin' ? (
@@ -38,7 +40,7 @@ function App() {
       )}
     </>
   )
-}
+} */}
 
 {/* <Footer></Footer> */}
     </div>
