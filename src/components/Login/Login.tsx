@@ -12,13 +12,17 @@ export const Login: React.FC = () => {
     setIsRegistration(true); // Show Register component when the button is clicked
   };
 
-  const handleBackToLogin = () => {
+  const handleBackToLogin = (e : any) => {
     setIsRegistration(false); // Switch back to Login form
   };
 
 
   const handleSignUpClickServiceProvider = () =>{
     setServiceregistration(true)
+  }
+
+  const handleProviderBackToLogin = (e:any) =>{
+    setServiceregistration(false)
   }
 
 
@@ -28,6 +32,7 @@ export const Login: React.FC = () => {
     isRegistration ? 'top-[30%]' :
     'top-[7%]'
   }`}>
+    Close
       <div className="m-0">
         <div
           id="back-div"
@@ -37,10 +42,10 @@ export const Login: React.FC = () => {
             className="border-[20px] border-transparent rounded-[20px] dark:bg-gray-900 bg-white shadow-lg xl:p-10 2xl:p-10 lg:p-8 md:p-6 sm:p-4 p-2 m-0"
           >
             {isRegistration ? (
-              <Registration onBackToLogin={handleBackToLogin} />
+              <Registration onBackToLogin={(e) => handleBackToLogin(e)} />
             ) :
             isServiceRegistration ? (
-              <ServiceProviderRegistration />
+              <ServiceProviderRegistration onBackToLogin={(e) => handleProviderBackToLogin(e)}/>
             ):
              (
               <>
@@ -99,7 +104,7 @@ export const Login: React.FC = () => {
                 </div>
               </>
             )}
-            {!isRegistration && 
+            {!isRegistration && !isServiceRegistration && 
             <div id="third-party-auth" className="flex items-center justify-center mt-5 flex-wrap">
             <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
               <img className="max-w-[25px]" src="https://ucarecdn.com/8f25a2ba-bdcf-4ff1-b596-088f330416ef/" alt="Google" />
