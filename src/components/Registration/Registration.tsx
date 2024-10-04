@@ -54,9 +54,15 @@ const phoneRegex = /^[0-9]{10}$/;
 const steps = ["Basic Info", "Address", "Additional Details", "Confirmation"];
 
 interface RegistrationProps {
-  onBackToLogin: () => void;
+  onBackToLogin: (data: boolean) => void;
 }
 const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
+
+  
+  const handleBackLogin = (e : any) =>{
+    onBackToLogin(e)
+  }
+
   // const [file, setFile] = useState<File | null>(null); //File Upload
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
@@ -91,7 +97,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
         e.target.type === "checkbox" ? e.target.checked : e.target.value,
     });
   };
-
   const validateForm = () => {
     let tempErrors: FormErrors = {};
 
@@ -423,6 +428,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                     Already have an account? 
                     <button
                       className="text-blue-400 ml-2 underline"
+                      onClick={(e) => handleBackLogin("false")}
                     >
                       Sign in
                     </button>

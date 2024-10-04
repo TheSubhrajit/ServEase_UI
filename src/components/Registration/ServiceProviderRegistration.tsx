@@ -63,7 +63,16 @@ const steps = [
   'Confirmation',
 ];
 
-const ServiceProviderRegistration = () => {
+interface RegistrationProps {
+  onBackToLogin: (data: boolean) => void;
+}
+
+const ServiceProviderRegistration : React.FC<RegistrationProps> = ({ onBackToLogin }) => {
+
+  const handleBackLogin = (e : any) =>{
+    onBackToLogin(e)
+  }
+
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -587,6 +596,7 @@ const ServiceProviderRegistration = () => {
   };
 
   return (
+    <>
     <Box sx={{ maxWidth: 600, margin: 'auto', padding: 2 }}>
       <Typography variant="h5" gutterBottom>
         Service Provider Registration
@@ -621,6 +631,18 @@ const ServiceProviderRegistration = () => {
         </Box>
       </form>
     </Box>
+    <div className="flex flex-col mt-4 items-center justify-center text-sm">
+    <h3 className="dark:text-gray-300">
+      Already have an account? 
+      <button
+        className="text-blue-400 ml-2 underline"
+        onClick={(e) => handleBackLogin("false")}
+      >
+        Sign in
+      </button>
+    </h3>
+  </div>
+  </>
   );
 };
 
