@@ -48,7 +48,7 @@ interface FormErrors {
 
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[A-Z|a-z]{2,}$/;
 const phoneRegex = /^[0-9]{10}$/;
 
 const steps = ["Basic Info", "Address", "Additional Details", "Confirmation"];
@@ -56,14 +56,13 @@ const steps = ["Basic Info", "Address", "Additional Details", "Confirmation"];
 interface RegistrationProps {
   onBackToLogin: (data: boolean) => void;
 }
+
 const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
 
-  
-  const handleBackLogin = (e : any) =>{
+  const handleBackLogin = (e: any) => {
     onBackToLogin(e)
   }
 
-  // const [file, setFile] = useState<File | null>(null); //File Upload
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -82,12 +81,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     language: "",
   });
 
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files.length > 0) {
-  //     setFile(e.target.files[0]);
-  //   }
-  // }; //File upload
-
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,11 +90,11 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
         e.target.type === "checkbox" ? e.target.checked : e.target.value,
     });
   };
+
   const validateForm = () => {
     let tempErrors: FormErrors = {};
 
     if (activeStep === 0) {
-      // Basic Information validation (Step 1)
       if (!formData.firstName || !nameRegex.test(formData.firstName)) {
         tempErrors.firstName =
           "First Name is required and should contain only alphabets.";
@@ -125,7 +118,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     }
 
     if (activeStep === 1) {
-      // Address validation (Step 2)
       if (!formData.address) {
         tempErrors.address = "Address is required.";
       }
@@ -141,7 +133,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     }
 
     if (activeStep === 3) {
-      // Confirmation validation (Step 3)
       if (!formData.agreeToTerms) {
         tempErrors.agreeToTerms =
           "You must agree to the Terms of Service and Privacy Policy.";
@@ -161,7 +152,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
-
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -186,6 +176,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.firstName}
                   helperText={errors.firstName}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -197,6 +191,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.lastName}
                   helperText={errors.lastName}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -209,6 +207,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.lastName}
                   helperText={errors.lastName}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -220,6 +222,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.email}
                   helperText={errors.email}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -233,6 +239,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.password}
                   helperText={errors.password}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -246,6 +256,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.confirmPassword}
                   helperText={errors.confirmPassword}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -258,6 +272,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.phoneNumber}
                   helperText={errors.phoneNumber}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
             </Grid>
@@ -277,6 +295,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.address}
                   helperText={errors.address}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -289,6 +311,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.city}
                   helperText={errors.city}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -301,6 +327,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.state}
                   helperText={errors.state}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -313,6 +343,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.zipCode}
                   helperText={errors.zipCode}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
                 />
               </Grid>
             </Grid>
@@ -321,18 +355,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       case 2:
         return (
           <Grid container spacing={2}>
-            {/* <Grid item xs={12}>
-              <input
-                type="file"
-                className="form-control"
-                id="inputGroupFile02"
-                onChange={handleFileChange}
-              />
-              <label className="input-group-text" htmlFor="inputGroupFile02">
-                Upload
-              </label>
-            </Grid> */}
-
             <Grid item xs={12}>
               <TextField
                 label="Hobbies"
@@ -340,9 +362,12 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 fullWidth
                 value={formData.hobbies}
                 onChange={handleChange}
+                sx={{
+                  "& .MuiInputBase-root": { height: "36px" },
+                  "& .MuiInputBase-input": { padding: "10px 12px" },
+                }}
               />
             </Grid>
-
             <Grid item xs={12}>
               <TextField
                 label="Language"
@@ -350,6 +375,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 fullWidth
                 value={formData.language}
                 onChange={handleChange}
+                sx={{
+                  "& .MuiInputBase-root": { height: "36px" },
+                  "& .MuiInputBase-input": { padding: "10px 12px" },
+                }}
               />
             </Grid>
           </Grid>
@@ -424,16 +453,16 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
         </Box>
 
         <div className="flex flex-col mt-4 items-center justify-center text-sm">
-                  <h3 className="dark:text-gray-300">
-                    Already have an account? 
-                    <button
-                      className="text-blue-400 ml-2 underline"
-                      onClick={(e) => handleBackLogin("false")}
-                    >
-                      Sign in
-                    </button>
-                  </h3>
-                </div>
+          <h3 className="dark:text-gray-300">
+            Already have an account?{" "}
+            <button
+              className="text-blue-400 ml-2 underline"
+              onClick={(e) => handleBackLogin("false")}
+            >
+              Sign in
+            </button>
+          </h3>
+        </div>
       </form>
     </Box>
   );
