@@ -114,7 +114,7 @@ export const Header : React.FC<ChildComponentProps> = ({
 
   return (
     <>
-      <Navbar className="header" expand="lg">
+ <Navbar className="header" expand="lg">
   <div className="header-alignment">
     <img src="../logo.png" className="logo-style" alt="logo" />
     <div className="dropdowns-container">
@@ -158,7 +158,6 @@ export const Header : React.FC<ChildComponentProps> = ({
     </div>
   </div>
 </Navbar>
-
 
     </>
   );

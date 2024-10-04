@@ -1,84 +1,46 @@
-/* General styling for the navbar and dropdowns */
+/* Styling for the Navbar and header */
 .header {
     display: flex;
+    align-items: center; /* Vertically center the content */
     justify-content: flex-start;
-    align-items: center;
-    height: 80px;
-    padding-top: 10px;
-    border: 1px solid;
-}
-
-.header h2,
-h5 {
-    color: black;
-    line-height: 13pt;
-}
-
-.header-alignment {
+    width: 100%;
+    height: 100%; /* Ensures the navbar takes up 100% of its container's height */
+    border: 1px solid gray;
+  }
+  
+  .header-alignment {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     width: 100%;
-    justify-content: space-between;
-    /* Ensure space between the logo and dropdowns */
-}
-
-.location {
-    /* You can style your location element here if needed */
-}
-
-.autocomplete {
-    background: white;
-}
-
-.dropdowns-container {
+    height: 100%; /* The parent div should have 100% height */
+  }
+  
+  /* Styling for the logo */
+  .logo-style {
+    height: auto; /* Ensure the logo adjusts its height proportionally */
+    max-height: 100%; /* Make sure it doesn't exceed the container's height */
+  }
+  
+  /* Dropdown container */
+  .dropdowns-container {
     display: flex;
     justify-content: flex-end;
-    /* Align dropdowns to the right */
     align-items: center;
-    flex-wrap: nowrap;
-    /* Prevent items from wrapping onto the next line */
-    gap: 15px;
-    /* Set space between the dropdowns */
-    padding-right: 5%;
-}
-
-/* Spacing between the two dropdowns */
-.dropdown-left {
-    /* Allow shrinking but no wrapping */
-    flex-shrink: 1;
-    /* Set max width to make sure they shrink */
-    max-width: 200px;
-}
-
-/* Mobile responsiveness - ensure items shrink but don't go to next line */
-@media (max-width: 768px) {
-    .header {
-        flex-direction: row;
-        /* Keep items in a row */
-        align-items: center;
-        justify-content: flex-start;
-    }
-
-    .dropdowns-container {
-        flex-wrap: nowrap;
-        /* Prevent wrapping */
-        width: 100%;
-        /* Ensure it takes up full width */
-    }
-
-    .dropdown-left {
-        flex-shrink: 1;
-        max-width: 150px;
-        /* Set a max width so they shrink within the available space */
-    }
-
-    .header-alignment img {
-        width: 50px;
-    }
-}
-
-.logo-style {
-    width: 68px;
-    position: relative;
-    left: 5%;
-}
+    gap: 20px;
+    flex-grow: 1; /* Allow it to take up available space */
+  }
+  
+  /* Navbar Dropdown Button */
+  .dropdown-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Styling for Navbar items */
+  .navbar {
+    height: 100%; /* Ensure navbar inherits height */
+  }
+  
+  

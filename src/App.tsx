@@ -42,7 +42,13 @@ function App() {
   )
 } */}
 
-{/* <Footer></Footer> */}
+<section style={{height : "80%"}}>
+  Hello
+</section>
+<footer style={{height : "10%"}}>
+<Footer></Footer>
+</footer>
+
     </div>
   );
 }
