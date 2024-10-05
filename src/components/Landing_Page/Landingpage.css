@@ -18,7 +18,7 @@
   /* Selectors are the clickable areas around each icon */
   .selectors {
     margin: 10px;
-    border: 1px solid black;
+    border: 1px solid #0d6efd;
     width: 20vw;  /* 30% of the viewport width */
     height: 20vw; /* Ensure square aspect ratio */
     border-radius: 50%;
@@ -97,5 +97,11 @@
       height: auto; /* Remove full viewport height to fit content */
       padding: 10px;
     }
+  }
+  
+  .colorized-image {
+    filter: hue-rotate(180deg) saturate(3) brightness(0.9);
+    /* Adjust the filter properties to your desired result */
+    filter: invert(24%) sepia(85%) saturate(394%) hue-rotate(163deg) brightness(98%) contrast(93%);
   }
   

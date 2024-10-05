@@ -121,7 +121,6 @@ export const Header : React.FC<ChildComponentProps> = ({
       <DropdownButton
         id="dropdown-button"
         title="Location"
-        variant="dark"
         className="dropdown-left"
       >
         <Dropdown.Item>
@@ -146,7 +145,6 @@ export const Header : React.FC<ChildComponentProps> = ({
       <DropdownButton
         id="dropdown-button-dark"
         title="My Account"
-        variant="dark"
         className="dropdown-left"
       >
         <Dropdown.Item onClick={(e) => handleClick("login")}>Login / Register</Dropdown.Item>
