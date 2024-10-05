@@ -87,8 +87,8 @@
   /* For phones */
   @media (max-width: 480px) {
     .selectors {
-      width: 40vw;  /* 50% of the viewport width */
-      height: 40vw; /* Ensure square aspect ratio */
+      width: 30vw;  /* 50% of the viewport width */
+      height: 30vw; /* Ensure square aspect ratio */
     }
   
     .landing-container {
