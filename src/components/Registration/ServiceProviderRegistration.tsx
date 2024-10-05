@@ -597,11 +597,11 @@ const ServiceProviderRegistration : React.FC<RegistrationProps> = ({ onBackToLog
 
   return (
     <>
-    <Box sx={{ maxWidth: 600, margin: 'auto', padding: 2 }}>
+    <Box sx={{ maxWidth: 600, margin: 'auto', padding: 2 ,display: 'block'}}>
       <Typography variant="h5" gutterBottom>
         Service Provider Registration
       </Typography>
-      <Stepper activeStep={activeStep} alternativeLabel>
+      <Stepper activeStep={activeStep} alternativeLabel style={{overflow:"overlay"}}>
         {steps.map((label, index) => (
           <Step key={index}>
             <StepLabel>{label}</StepLabel>

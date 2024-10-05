@@ -10,16 +10,16 @@ export const Login: React.FC = () => {
     setIsRegistration(true); // Show Register component when the button is clicked
   };
 
-  const handleBackToLogin = (e: any) => {
+  const handleBackToLogin = () => {
     setIsRegistration(false); // Switch back to Login form
   };
 
   const handleSignUpClickServiceProvider = () => {
-    setServiceregistration(true)
+    setServiceregistration(true);
   };
 
-  const handleProviderBackToLogin = (e: any) => {
-    setServiceregistration(false)
+  const handleProviderBackToLogin = () => {
+    setServiceregistration(false);
   };
 
   return (
@@ -37,7 +37,6 @@ export const Login: React.FC = () => {
               <ServiceProviderRegistration onBackToLogin={handleProviderBackToLogin} />
             ) : (
               <>
-                {/* Removed any excessive padding or margin from the h1 element */}
                 <h1 className="font-bold dark:text-gray-400 text-4xl text-center cursor-default my-0">
                   Log in
                 </h1>
@@ -74,7 +73,7 @@ export const Login: React.FC = () => {
                     LOG IN
                   </button>
                 </form>
-                <div className="flex flex-col items-center justify-center text-sm">
+                <div className="flex flex-col items-center justify-center text-sm mt-4">
                   <h3 className="dark:text-gray-300">
                     Don't have an account?
                   </h3>
@@ -94,7 +93,7 @@ export const Login: React.FC = () => {
               </>
             )}
             {!isRegistration && !isServiceRegistration && (
-              <div id="third-party-auth" className="flex items-center justify-center flex-wrap">
+              <div id="third-party-auth" className="flex items-center justify-center flex-wrap mt-4">
                 <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
                   <img className="max-w-[25px]" src="https://ucarecdn.com/8f25a2ba-bdcf-4ff1-b596-088f330416ef/" alt="Google" />
                 </button>
