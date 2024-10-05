@@ -1,82 +1,101 @@
+/* Base styles for the landing container */
 .landing-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80%;
-}
-
-.icon {
-    width: 160px;
-    height: 160px;
-    padding: 5px;
-}
-
-.selectors {
-
+    flex-wrap: wrap;
+    gap: 20px; /* Add some space between the icons */
+    padding: 20px;
+  }
+  
+  /* Icon styles */
+  .icon {
+    width: 60%;  /* Make the icons smaller, adjust the percentage as needed */
+    height: 60%;
+    object-fit: contain; /* Ensure the image fits inside the container without overflowing */
+  }
+  
+  /* Selectors are the clickable areas around each icon */
+  .selectors {
     margin: 10px;
     border: 1px solid black;
-    width: 230px;
-    height: 230px;
+    width: 20vw;  /* 30% of the viewport width */
+    height: 20vw; /* Ensure square aspect ratio */
     border-radius: 50%;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     font-family: 'Nunito', sans-serif;
-    align-items: center;
-    justify-content: center;
-    outline: none;
     position: relative;
-}
-
-.selectors::before {
-    min-width: calc(300px + 12px);
-    min-height: calc(60px + 12px);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-}
-
-.selectors:hover,
-/* .selectors::content, */
-.selectors:focus {
-    /* color: #313133; */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Ensures that the image doesn't overflow out of the circle */
+  }
+  
+  /* Hover and focus effect for selectors */
+  .selectors:hover,
+  .selectors:focus {
     transform: translateY(-6px);
-}
-/* .selectors:hover::before, */
-.selectors:hover::before,
-.selectors:focus::before {
-    opacity: 1;
-}
-
-.selectors::after {
-
-    width: 30px;
-    height: 30px;
-    border-radius: 100%;
-
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Pseudo-element for hover background effect */
+  .selectors::before {
+    content: "";
     position: absolute;
-    z-index: -1;
     top: 50%;
     left: 50%;
-}
-
-/* .selectors:hover::after, */
-.selectors:hover:after,
-.selectors:focus::after {
-    animation: none;
-    display: none;
-}
-
-@keyframes ring {
-    0% {
-        width: 30px;
-        height: 30px;
-        opacity: 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Hover and focus state for the pseudo-element */
+  .selectors:hover::before,
+  .selectors:focus::before {
+    opacity: 1;
+  }
+  
+  /* Pseudo-element for an inner circle */
+  .selectors::after {
+    content: "";
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-color: #fff;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+  }
+  
+  /* Media queries for responsiveness */
+  
+  /* For smaller tablets or large phones */
+  @media (max-width: 768px) {
+    .selectors {
+      width: 40vw;  /* 40% of the viewport width */
+      height: 40vw; /* Ensure square aspect ratio */
     }
-
-    100% {
-        width: 300px;
-        height: 300px;
-        opacity: 0;
+  }
+  
+  /* For phones */
+  @media (max-width: 480px) {
+    .selectors {
+      width: 50vw;  /* 50% of the viewport width */
+      height: 50vw; /* Ensure square aspect ratio */
     }
-}
+  
+    .landing-container {
+      flex-direction: column; /* Stack the icons vertically on small screens */
+      justify-content: space-evenly; /* Equal space between them */
+      height: auto; /* Remove full viewport height to fit content */
+      padding: 10px;
+    }
+  }
+  
