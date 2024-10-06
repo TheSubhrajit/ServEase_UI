@@ -8,6 +8,7 @@ import { keys } from '../../env/env';
 import './Header.css'
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Menu, MenuItem } from '@mui/material';
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void; // Adjust the type if needed
@@ -122,6 +123,7 @@ export const Header : React.FC<ChildComponentProps> = ({
         id="dropdown-button"
         title="Location"
         className="dropdown-left"
+         variant="outlined"
       >
         <Dropdown.Item>
           <div className="autocomplete">
@@ -146,6 +148,7 @@ export const Header : React.FC<ChildComponentProps> = ({
         id="dropdown-button-dark"
         title="My Account"
         className="dropdown-left"
+        variant="outlined"
       >
         <Dropdown.Item onClick={(e) => handleClick("login")}>Login / Register</Dropdown.Item>
         <Dropdown.Item>Privacy Policy</Dropdown.Item>

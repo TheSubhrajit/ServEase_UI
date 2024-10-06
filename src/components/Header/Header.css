@@ -29,6 +29,7 @@
     align-items: center;
     gap: 20px;
     flex-grow: 1; /* Allow it to take up available space */
+    padding-right: 25px;
   }
   
   /* Navbar Dropdown Button */
@@ -36,6 +37,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid #0d6efd;
+    border-radius: 25px 25px 25px 25px;
   }
   
   /* Styling for Navbar items */

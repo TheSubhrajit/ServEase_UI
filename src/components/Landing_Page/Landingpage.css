@@ -8,13 +8,6 @@
     padding: 20px;
   }
   
-  /* Icon styles */
-  .icon {
-    width: 60%;  /* Make the icons smaller, adjust the percentage as needed */
-    height: 60%;
-    object-fit: contain; /* Ensure the image fits inside the container without overflowing */
-  }
-  
   /* Selectors are the clickable areas around each icon */
   .selectors {
     margin: 10px;
