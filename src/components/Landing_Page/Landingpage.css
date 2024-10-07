@@ -24,7 +24,15 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden; /* Ensures that the image doesn't overflow out of the circle */
   }
-  
+/* Style for the label outside and below the image */
+  .label-text {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  }
+
   /* Hover and focus effect for selectors */
   .selectors:hover,
   .selectors:focus {
