@@ -1,5 +1,6 @@
 import { Autocomplete, TextField, IconButton, Menu, MenuItem } from "@mui/material";
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import LocationOnIcon from '@mui/icons-material/LocationOn'; // <-- Location icon import
 import Navbar from "react-bootstrap/Navbar";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -19,7 +20,7 @@ export const Header: React.FC<ChildComponentProps> = ({
     sendDataToParent(e);
   };
 
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(''); // Holds the actual location text
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export const Header: React.FC<ChildComponentProps> = ({
               }
             });
             const address = response.data.results[0]?.formatted_address;
-            setLocation(address);
+            setLocation(address); // Set the location text
           } catch (error) {
             console.log("Failed to fetch location");
           }
@@ -95,7 +96,7 @@ export const Header: React.FC<ChildComponentProps> = ({
 
   const handleChange = (event: any, newValue: any) => {
     if (newValue) {
-      setLocation('Your Selected Location');
+      setLocation(newValue); // Update the location state with the selected value
     }
   };
 
@@ -112,11 +113,23 @@ export const Header: React.FC<ChildComponentProps> = ({
     <>
       <Navbar className="header" expand="lg">
         <div className="header-alignment">
-          <img src="../logo.png" className="logo-style" alt="logo" />
+          {/* Logo and Text container */}
+    <div className="logo-container">
+      <img src="../logo.png" className="logo-style" alt="logo" />
+      <div className="logo-text">
+        <span className="home-text">Home</span>
+        <span className="servease-text">ServEase</span>
+      </div>
+    </div>
           <div className="dropdowns-container">
             <DropdownButton
               id="dropdown-button"
-              title="Location"
+              title={
+                <div className="location-icon-text">
+                  <LocationOnIcon /> {/* Location icon */}
+                  {location ? location : "Location"} {/* Display location text or fallback */}
+                </div>
+              }
               className="dropdown-left"
               variant="outlined"
             >
@@ -130,7 +143,7 @@ export const Header: React.FC<ChildComponentProps> = ({
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label={location ? location : "Your selected location"}
+                        label={location ? location : "Enter location"} // Show location in the input field as well
                       />
                     )}
                   />

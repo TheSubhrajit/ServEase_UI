@@ -16,10 +16,37 @@
   height: 100%; /* The parent div should have 100% height */
 }
 
-/* Styling for the logo */
+/* Styling for the logo and text container */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between logo and text */
+  margin-left: 20px; /* Add margin to move the logo to the right */
+}
+
 .logo-style {
   height: auto; /* Ensure the logo adjusts its height proportionally */
   max-height: 100%; /* Make sure it doesn't exceed the container's height */
+  width: 65px; /* Adjust width to fit your layout */
+  
+}
+
+/* Styling for the logo text */
+.logo-text {
+  display: flex;
+  flex-direction: column; /* Stack the 'Home' and 'ServEase' vertically */
+ 
+}
+
+.home-text {
+  font-size: 18px; /* Font size for 'Home' */
+  font-weight: 600;
+  
+}
+
+.servease-text {
+  font-size: 24px; /* Font size for 'ServEase' */
+  font-weight: 600;
 }
 
 /* Dropdown container */
@@ -40,8 +67,9 @@
   padding: 5px 15px; /* Make the dropdown smaller */
   border: 1px solid #0d6efd;
   border-radius: 25px;
-  width: 200px; /* Adjust width to make it smaller */
+  width: 150px; /* Adjust width to make it smaller */
   font-size: 14px; /* Reduce font size to make it smaller */
+  background-color: white;
 }
 
 /* Location icon with text */
