@@ -41,12 +41,14 @@
 .home-text {
   font-size: 18px; /* Font size for 'Home' */
   font-weight: 600;
+  color: #0d6efd;
   
 }
 
 .servease-text {
   font-size: 24px; /* Font size for 'ServEase' */
   font-weight: 600;
+  color: #0d6efd;
 }
 
 /* Dropdown container */
