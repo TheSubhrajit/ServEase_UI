@@ -427,7 +427,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
                             Select Service Type
                         </option>
                         <option value="Cook">Cook</option>
-                        <option value="Nannies">Nannies</option>
+                        <option value="Nanny">Nanny</option>
                         <option value="Maid">Maid</option>
                     </TextField>
                 </Grid>
