@@ -45,7 +45,7 @@ export const Login: React.FC = () => {
                     <label htmlFor="email" className="mb-2 dark:text-gray-400 text-lg">Email</label>
                     <input
                       id="email"
-                      className="border p-3 dark:bg-indigo-700 dark:text-gray-300 dark:border-gray-700 shadow-md placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
+                      className="border p-3 dark:bg-indigo-500 dark:text-gray-300 dark:border-gray-700 shadow-md placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
                       type="email"
                       placeholder="Email"
                       required
@@ -55,7 +55,7 @@ export const Login: React.FC = () => {
                     <label htmlFor="password" className="mb-2 dark:text-gray-400 text-lg">Password</label>
                     <input
                       id="password"
-                      className="border p-3 shadow-md dark:bg-indigo-700 dark:text-gray-300 dark:border-gray-700 placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
+                      className="border p-3 shadow-md dark:bg-indigo-500 dark:text-gray-300 dark:border-gray-700 placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
                       type="password"
                       placeholder="Password"
                       required
