@@ -251,8 +251,8 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     switch (step) {
       case 0:
         return (
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6} className="pt-5">
               <TextField
                 label="First Name"
                 name="firstName"
@@ -264,7 +264,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
                 helperText={errors.firstName}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} className="pt-5">
               <TextField
                 label="Last Name"
                 name="lastName"
@@ -358,7 +358,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
       case 1:
         return (
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} className='pt-5' >
               <TextField
                 label="Address"
                 name="address"
@@ -413,7 +413,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
         <> 
             <Grid container spacing={2}>
             {/* serviceType Dropdown */}
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} className='pt-5'>
                     <TextField
                         select
                         label="Select Service Type"
@@ -481,7 +481,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
       case 3:
         return (
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} className='py-4'>
               <TextField
                 label="Aadhaar Number"
                 name="aadhaar"
@@ -559,7 +559,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
   return (
     <>
       <Box sx={{ maxWidth: 600, margin: 'auto', padding: 2, display: 'block' }}>
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="h5" gutterBottom className="text-center pb-3 ">
           Service Provider Registration
         </Typography>
         <Stepper activeStep={activeStep} alternativeLabel style={{ overflow: 'overlay' }}>

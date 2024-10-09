@@ -10,8 +10,11 @@ import {
   StepLabel,
   Checkbox,
   FormControlLabel,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import "./Registration.css";
+import { Visibility, VisibilityOff,ArrowForward,ArrowBack  } from '@mui/icons-material';
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -48,8 +51,10 @@ interface FormErrors {
 
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[A-Z|a-z]{2,}$/;
+const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const phoneRegex = /^[0-9]{10}$/;
+const zipCodeRegex = /^[0-9]{6}$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
 
 const steps = ["Basic Info", "Address", "Additional Details", "Confirmation"];
 
@@ -80,10 +85,22 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     hobbies: "",
     language: "",
   });
+  
+const [showPassword, setShowPassword] = useState(false);
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+const handleTogglePasswordVisibility = () => {
+  setShowPassword(!showPassword);
+};
+
+const handleToggleConfirmPasswordVisibility = () => {
+  setShowConfirmPassword(!showConfirmPassword);
+};
 
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    
     setFormData({
       ...formData,
       [e.target.name]:
@@ -104,13 +121,14 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
           "Last Name is required and should contain only alphabets.";
       }
       if (!formData.email || !emailRegex.test(formData.email)) {
-        tempErrors.email = "Valid email is required.";
+        tempErrors.email = 'Valid email is required.';
       }
-      if (!formData.password || formData.password.length < 8) {
-        tempErrors.password = "Password must be at least 8 characters long.";
+      if (!formData.password || !strongPasswordRegex.test(formData.password)) {
+        tempErrors.password =
+          'Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character.';
       }
       if (formData.password !== formData.confirmPassword) {
-        tempErrors.confirmPassword = "Passwords do not match.";
+        tempErrors.confirmPassword = 'Passwords do not match.';
       }
       if (!formData.phoneNumber || !phoneRegex.test(formData.phoneNumber)) {
         tempErrors.phoneNumber = "Phone number must be exactly 10 digits.";
@@ -229,38 +247,56 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  label="Password"
-                  type="password"
-                  name="password"
-                  fullWidth
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  error={!!errors.password}
-                  helperText={errors.password}
-                  sx={{
-                    "& .MuiInputBase-root": { height: "36px" },
-                    "& .MuiInputBase-input": { padding: "10px 12px" },
-                  }}
-                />
+              <TextField
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                fullWidth
+                required
+                value={formData.password}
+                onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                        aria-label="toggle password visibility"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  label="Confirm Password"
-                  type="password"
-                  name="confirmPassword"
-                  fullWidth
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword}
-                  sx={{
-                    "& .MuiInputBase-root": { height: "36px" },
-                    "& .MuiInputBase-input": { padding: "10px 12px" },
-                  }}
-                />
+              <TextField
+                label="Confirm Password"
+                type={showConfirmPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                fullWidth
+                required
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleToggleConfirmPasswordVisibility}
+                        edge="end"
+                        aria-label="toggle confirm password visibility"
+                      >
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
               </Grid>
               <Grid item xs={12}>
                 <TextField

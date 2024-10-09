@@ -1,6 +1,6 @@
 /* Reset unnecessary top padding in the topic */
 .topic {
-    padding-top: 0; /* Remove extra top padding */
+    padding-top: 5px; /* Remove extra top padding */
   }
   
   /* Center and reduce padding in the title */
