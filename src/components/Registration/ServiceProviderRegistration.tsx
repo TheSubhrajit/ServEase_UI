@@ -14,7 +14,7 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@mui/material';
-import { Visibility, VisibilityOff,ArrowForward } from '@mui/icons-material';
+import { Visibility, VisibilityOff,ArrowForward,ArrowBack  } from '@mui/icons-material';
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -413,7 +413,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
         <> 
             <Grid container spacing={2}>
             {/* serviceType Dropdown */}
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={6}>
                     <TextField
                         select
                         label="Select Service Type"
@@ -427,12 +427,12 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
                             Select Service Type
                         </option>
                         <option value="Cook">Cook</option>
-                        <option value="Nannies">Nannies</option>
+                        <option value="Nanny">Nanny</option>
                         <option value="Maid">Maid</option>
                     </TextField>
                 </Grid>
                 {/* Description */}
-                <Grid item xs={12}>
+                <Grid item xs={12} >
                     <TextField
                         label="Description"
                         name="description"
@@ -577,6 +577,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
               onClick={handleBack}
               variant="contained"
               color="primary"
+              startIcon={<ArrowBack />} // Add the icon here
             >
               Back
             </Button>
