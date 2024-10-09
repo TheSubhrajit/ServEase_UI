@@ -456,11 +456,11 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }} className="parent">
+    <Box sx={{ maxWidth: 600, margin: "auto", padding: 2, display: 'block' }} className="parent">
       <Typography variant="h5" gutterBottom className="text">
         User Registration
       </Typography>
-      <Stepper activeStep={activeStep} alternativeLabel>
+      <Stepper activeStep={activeStep} alternativeLabel style={{ overflow: 'overlay' }}>
         {steps.map((label, index) => (
           <Step key={index}>
             <StepLabel>{label}</StepLabel>
