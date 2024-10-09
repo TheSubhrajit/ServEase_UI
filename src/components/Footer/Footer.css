@@ -95,6 +95,8 @@
 
   .footer-logo {
     font-size: 18px;
+    color: #007bff;
+    opacity:55%;
   }
 
   .social-media {
@@ -104,6 +106,8 @@
   .social-media a svg {
     height: 18px; /* Smaller size on mobile */
     width: 18px;
+    color: #007bff;
+    opacity:55%;
   }
 }
 
@@ -115,6 +119,8 @@
 
   .footer-logo {
     font-size: 20px;
+    color: #007bff;
+    opacity:55%;
   }
 
   .social-media {
@@ -124,6 +130,8 @@
   .social-media a svg {
     height: 18px; /* Adjust icon size for tablets */
     width: 18px;
+    color: #007bff;
+    opacity:55%;
   }
 }
 
@@ -135,6 +143,8 @@
 
   .footer-logo {
     font-size: 24px;
+    color: #007bff;
+    opacity:55%;
   }
 
   .social-media {
@@ -144,5 +154,7 @@
   .social-media a svg {
     height: 20px; /* Standard size for desktop */
     width: 20px;
+    color: #007bff;
+    opacity:55%;
   }
 }

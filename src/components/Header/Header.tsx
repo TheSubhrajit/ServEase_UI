@@ -1,29 +1,27 @@
-import { Autocomplete, Button, TextField } from "@mui/material";
-import Container from "react-bootstrap/Container";
+import { Autocomplete, TextField, IconButton, Menu, MenuItem } from "@mui/material";
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Navbar from "react-bootstrap/Navbar";
-// import MyLocationIcon from '@mui/icons-material/MyLocation';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { keys } from '../../env/env';
-import './Header.css'
-import { Dropdown, DropdownButton } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Menu, MenuItem } from '@mui/material';
+import './Header.css'; 
 
 interface ChildComponentProps {
-  sendDataToParent: (data: string) => void; // Adjust the type if needed
+  sendDataToParent: (data: string) => void;
 }
 
-export const Header : React.FC<ChildComponentProps> = ({
+export const Header: React.FC<ChildComponentProps> = ({
   sendDataToParent,
 }) => {
-
   const handleClick = (e: any) => {
     sendDataToParent(e);
   };
 
   const [location, setLocation] = useState('');
   const [error, setError] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); 
+  const [accountEl, setAccountEl] = useState<null | HTMLElement>(null); 
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -34,14 +32,13 @@ export const Header : React.FC<ChildComponentProps> = ({
             const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
               params: {
                 latlng: `${latitude},${longitude}`,
-                key: keys.api_key // Replace with your API key
+                key: keys.api_key
               }
             });
             const address = response.data.results[0]?.formatted_address;
-            console.log(response.data)
             setLocation(address);
           } catch (error) {
-            console.log("Failed to fetch location")
+            console.log("Failed to fetch location");
           }
         },
         (error) => {
@@ -55,12 +52,12 @@ export const Header : React.FC<ChildComponentProps> = ({
 
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const [selectedPlace, setSelectedPlace] = useState(null);
 
   const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
   const PLACES_API_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+
   useEffect(() => {
-    if (inputValue && inputValue?.trim() === '') {
+    if (inputValue.trim() === '') {
       setSuggestions([]);
       setError(null);
       return;
@@ -77,16 +74,13 @@ export const Header : React.FC<ChildComponentProps> = ({
         });
 
         if (response.data.status === 'OK') {
-          //setSuggestions(response.data.predictions);
-          const sub = response.data.predictions.map(res => res.description)
-          setSuggestions(sub)
-          
+          const sub = response.data.predictions.map((res) => res.description);
+          setSuggestions(sub);
         } else {
           setError(response.data.error_message || 'An error occurred');
           setSuggestions([]);
         }
       } catch (error) {
-        console.error('Error fetching places:', error);
         console.log('Failed to fetch suggestions');
         setSuggestions([]);
       }
@@ -95,71 +89,122 @@ export const Header : React.FC<ChildComponentProps> = ({
     fetchSuggestions();
   }, [inputValue]);
 
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
+  const handleInputChange = (event: React.SyntheticEvent, newValue: string) => {
+    setInputValue(newValue);
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    setSelectedPlace(suggestion);
-    setInputValue(suggestion.description);
-    setSuggestions([]);
-  };
-
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: any, newValue: any) => {
     if (newValue) {
-      console.log('Selected Option:', newValue);
-      setLocation('Your Selected Locaion')
-      // Perform any additional actions with the selected option here
+      setLocation(newValue); 
     }
+  };
+
+  const handleLocationMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget); 
+  };
+
+  const handleLocationMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleAccountMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAccountEl(event.currentTarget); 
+  };
+
+  const handleAccountMenuClose = () => {
+    setAccountEl(null); 
   };
 
   return (
     <>
- <Navbar className="header" expand="lg">
-  <div className="header-alignment">
-    <img src="../logo.png" className="logo-style" alt="logo" />
-    <div className="dropdowns-container">
-      <DropdownButton
-        id="dropdown-button"
-        title="Location"
-        className="dropdown-left"
-         variant="outlined"
-      >
-        <Dropdown.Item>
-          <div className="autocomplete">
-            <Autocomplete
-              onInputChange={handleInputChange}
-              onChange={handleChange}
-              options={suggestions}
-              sx={{ width: 300 }}
-              clearIcon
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={location ? location : "Your selected location"}
-                />
-              )}
-            />
+      <Navbar className="header" expand="lg">
+        <div className="header-alignment">
+          <div className="logo-container">
+            <img src="../logo.png" className="logo-style" alt="logo" />
+            <div className="logo-text">
+              <span className="home-text">Home</span>
+              <span className="servease-text">ServEase</span>
+            </div>
           </div>
-        </Dropdown.Item>
-      </DropdownButton>
 
-      <DropdownButton
-        id="dropdown-button-dark"
-        title="My Account"
-        className="dropdown-left"
-        variant="outlined"
-      >
-        <Dropdown.Item onClick={(e) => handleClick("login")}>Login / Register</Dropdown.Item>
-        <Dropdown.Item>Privacy Policy</Dropdown.Item>
-        <Dropdown.Item>Notification</Dropdown.Item>
-        <Dropdown.Item onClick={(e) => handleClick("sign_out")}>Sign Out</Dropdown.Item>
-        <Dropdown.Item onClick={(e) => handleClick("admin")}>Admin - For Demo purpose Only</Dropdown.Item>
-      </DropdownButton>
-    </div>
-  </div>
-</Navbar>
+          <div className="dropdowns-container">
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="location"
+              onClick={handleLocationMenuOpen} 
+              color="inherit"
+              sx={{ width: 60, height: 60 }} // Directly set size on IconButton
+            >
+              <LocationOnIcon sx={{ fontSize: 30, color: '#0d6efd' }} />{/* Increase icon size using sx */}
+            </IconButton>
 
+            <Menu
+              id="location-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleLocationMenuClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+            >
+              <MenuItem>
+                <div className="autocomplete">
+                  <Autocomplete
+                    onInputChange={handleInputChange} 
+                    onChange={handleChange}
+                    options={suggestions}
+                    sx={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={location ? location : "Enter location"} 
+                      />
+                    )}
+                  />
+                </div>
+              </MenuItem>
+            </Menu>
+
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="account"
+              onClick={handleAccountMenuOpen}
+              color="inherit"
+              sx={{ width: 60, height: 60 }} // Directly set size on IconButton
+            >
+              <AccountCircle sx={{ fontSize: 30, color: '#0d6efd' }} /> {/* Increase icon size using sx */}
+            </IconButton>
+
+            <Menu
+              id="menu-appbar"
+              anchorEl={accountEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(accountEl)}
+              onClose={handleAccountMenuClose}
+            >
+              <MenuItem onClick={() => handleClick("login")}>Login / Register</MenuItem>
+              <MenuItem>Privacy Policy</MenuItem>
+              <MenuItem>Notification</MenuItem>
+              <MenuItem onClick={() => handleClick("sign_out")}>Sign Out</MenuItem>
+              <MenuItem onClick={() => handleClick("admin")}>Admin - For Demo purpose Only</MenuItem>
+            </Menu>
+          </div>
+        </div>
+      </Navbar>
     </>
   );
 };
