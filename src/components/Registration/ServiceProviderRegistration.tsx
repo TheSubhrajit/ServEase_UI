@@ -602,10 +602,10 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
         </form>
       </Box>
       <div className="flex flex-col mt-4 items-center justify-center text-sm">
-        <Typography variant="h6" className="dark:text-gray-300">
+        <Typography variant="h6" className="dark:text-gray-300 pb-3">
           Already have an account?
           <Button
-            className="text-blue-400 ml-2 underline"
+            className="text-blue-500 ml-2 underline"
             onClick={() => handleBackLogin(false)}
           >
             Sign in
