@@ -15,6 +15,7 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import { Visibility, VisibilityOff,ArrowForward,ArrowBack  } from '@mui/icons-material';
+import { px } from 'framer-motion';
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -269,7 +270,6 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
                 label="Last Name"
                 name="lastName"
                 fullWidth
-                required
                 value={formData.lastName}
                 onChange={handleChange}
                 error={!!errors.lastName}
