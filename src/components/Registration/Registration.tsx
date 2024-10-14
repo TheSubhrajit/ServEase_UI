@@ -150,13 +150,14 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
         tempErrors.state = "State is required.";
       }
       if (!formData.zipCode || !zipCodeRegex.test(formData.zipCode)) {
-        tempErrors.zipCode = 'Zip/Postal Code must be exactly 6 digits.';
+        tempErrors.zipCode = "Zip/Postal Code must be exactly 6 digits.";
       }
     }
 
     if (activeStep === 3) {
       if (!formData.agreeToTerms) {
-        tempErrors.agreeToTerms = 'You must agree to the Terms of Service and Privacy Policy.';
+        tempErrors.agreeToTerms =
+          "You must agree to the Terms of Service and Privacy Policy.";
       }
     }
 
@@ -456,11 +457,18 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: "auto", padding: 2, display: 'block' }} className="parent">
+    <Box
+      sx={{ maxWidth: 600, margin: "auto", padding: 2, display: "block" }}
+      className="parent"
+    >
       <Typography variant="h5" gutterBottom className="text">
         User Registration
       </Typography>
-      <Stepper activeStep={activeStep} alternativeLabel style={{ overflow: 'overlay' }}>
+      <Stepper
+        activeStep={activeStep}
+        alternativeLabel
+        style={{ overflow: "overlay" }}
+      >
         {steps.map((label, index) => (
           <Step key={index}>
             <StepLabel>{label}</StepLabel>
@@ -477,27 +485,27 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
           }}
         >
           <Button
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              variant="contained"
-              color="primary"
-              startIcon={<ArrowBack />} // Add the icon here
-            >
-              Back
-            </Button>
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            variant="contained"
+            color="primary"
+            startIcon={<ArrowBack />} // Add the icon here
+          >
+            Back
+          </Button>
           {activeStep === steps.length - 1 ? (
             <Button type="submit" variant="contained" color="primary">
               Submit
             </Button>
           ) : (
             <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-                endIcon={<ArrowForward />} // This will place the icon after the text
-              >
+              variant="contained"
+              color="primary"
+              onClick={handleNext}
+              endIcon={<ArrowForward />} // This will place the icon after the text
+            >
               Next
-              </Button>
+            </Button>
           )}
         </Box>
 
