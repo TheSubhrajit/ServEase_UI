@@ -6,6 +6,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { keys } from '../../env/env';
 import './Header.css'; 
+import { Landingpage } from "../Landing_Page/Landingpage";
+
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
@@ -114,14 +116,15 @@ export const Header: React.FC<ChildComponentProps> = ({
   const handleAccountMenuClose = () => {
     setAccountEl(null); 
   };
+  
 
   return (
     <>
       <Navbar className="header" expand="lg">
         <div className="header-alignment">
           <div className="logo-container">
-            <img src="../logo.png" className="logo-style" alt="logo" />
-            <div className="logo-text">
+            <img src="../logo.png"  className="logo-style" alt="logo" onClick={() => handleClick("Landing_Page")} style={{ cursor: 'pointer' }}/>
+            <div className="logo-text"  >
               <span className="home-text">Home</span>
               <span className="servease-text">ServEase</span>
             </div>
@@ -208,3 +211,5 @@ export const Header: React.FC<ChildComponentProps> = ({
     </>
   );
 };
+
+
