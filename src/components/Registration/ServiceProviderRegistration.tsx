@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,SyntheticEvent} from 'react';
 import {
   TextField,
   Input,
@@ -13,8 +13,10 @@ import {
   StepLabel,
   Checkbox,
   FormControlLabel,
-  MenuItem
+  MenuItem,
+  Alert
 } from '@mui/material';
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff,ArrowForward,ArrowBack  } from '@mui/icons-material';
 import { px } from 'framer-motion';
 
@@ -101,6 +103,8 @@ interface RegistrationProps {
 
 const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   const [activeStep, setActiveStep] = useState(0);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     middleName:'',
@@ -280,9 +284,20 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
     return Object.keys(tempErrors).length === 0;
   };
 
+  // const handleNext = () => {
+  //   if (validateForm()) {
+  //     setActiveStep((prevStep) => prevStep + 1);
+  //   }
+  // };
+ 
   const handleNext = () => {
-    if (validateForm()) {
-      setActiveStep((prevStep) => prevStep + 1);
+    if (validateForm ()) {
+      setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+      if (activeStep === steps.length - 1) {
+        setSnackbarMessage('Registration Successful!');
+        setSnackbarOpen(true);
+        // Optionally, reset form data or redirect
+      }
     }
   };
 
@@ -290,12 +305,33 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
     setActiveStep((prevStep) => prevStep - 1);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (validateForm()) {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (validateForm ()) {
+      // Handle form submission (e.g., API call)
       console.log('Form submitted:', formData);
-      // You can perform further actions here, such as sending data to the server
+      setSnackbarMessage('Registration done Successful!');
+      setSnackbarOpen(true);
     }
+  };
+   // Close snackbar function
+   const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+  
+  //  const handleCloseSnackbar = (
+  //   event: React.SyntheticEvent<Element, Event> | null,
+  //   reason?: SnackbarCloseReason
+  // ) => {
+  //   if (reason === 'clickaway') {
+  //     return;
+  //   }
+  //   setSnackbarOpen(false);
+  // };
+  // Function to show the snackbar
+  const showSnackbar = (message: string) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
   };
 
   const renderStepContent = (step: number) => {
@@ -715,43 +751,52 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
           ))}
         </Stepper>
         <form onSubmit={handleSubmit}>
-          {renderStepContent(activeStep)}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-            <Button
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              variant="contained"
-              color="primary"
-              startIcon={<ArrowBack />} // Add the icon here
-            >
-              Back
-            </Button>
-            {activeStep === steps.length - 1 ? (
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
-            ) : (
-              // <Button onClick={handleNext} variant="contained" color="primary">
-              //   Next
-              // </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-                endIcon={<ArrowForward />} // This will place the icon after the text
-              >
-              Next
-              </Button>
-            )}
-          </Box>
-        </form>
+        {renderStepContent(activeStep)}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+          <Button
+            disabled={activeStep === 0}
+            variant="contained"
+            onClick={handleBack}
+            startIcon={<ArrowBack />}
+          >
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
+            endIcon={<ArrowForward />}
+          >
+            {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
+          </Button>
+        </Box>
+      </form>
       </Box>
+      <Snackbar open={snackbarOpen} 
+      autoHideDuration={6000} 
+      onClose={handleCloseSnackbar}   
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+      {/* Snackbar for success message */}
+      {/* <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar> */}
       <div className="flex flex-col mt-4 items-center justify-center text-sm">
-        <Typography variant="h6" className="dark:text-gray-300">
+        <Typography variant="h6">
           Already have an account?
           <Button
             className="text-blue-400 ml-2 underline"
-            onClick={() => handleBackLogin(false)}
+            onClick={() => onBackToLogin(false)}
           >
             Sign in
           </Button>
