@@ -338,8 +338,8 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
     switch (step) {
       case 0:
         return (
-          <Grid container spacing={2}>
-              <Grid item xs={12}>
+          <Grid container spacing={3}>
+               <Grid item xs={12} className="pt-5">
                 <TextField
                   label="First Name"
                   name="firstName"
@@ -479,7 +479,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       case 1:
         return (
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} className="pt-4">
               <TextField
                 label="Address"
                 name="address"
@@ -593,7 +593,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
         <> 
             <Grid container spacing={2}>
             {/* serviceType Dropdown */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6}  className='pt-4'>
                 <TextField
                 select
                 label="Select Service Type"
@@ -663,7 +663,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       case 3:
         return (
           <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid item xs={12}  className='pt-4'>
           <TextField
             select
             label="Select Document Type"
@@ -740,7 +740,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   return (
     <>
       <Box sx={{ maxWidth: 600, margin: 'auto', padding: 2, display: 'block' }}>
-        <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom className="text-center pb-3 ">
           Service Provider Registration
         </Typography>
         <Stepper activeStep={activeStep} alternativeLabel style={{ overflow: 'overlay' }}>
