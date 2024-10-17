@@ -20,13 +20,14 @@ import {
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff,ArrowForward,ArrowBack  } from '@mui/icons-material';
 import { px } from 'framer-motion';
+import axios from 'axios';
 
 // Define the shape of formData using an interface
 interface FormData {
   firstName: string;
   middleName: string;
   lastName: string;
-  email: string;
+  emailId: string;
   password: string;
   confirmPassword: string;
   mobileNo: string;
@@ -48,7 +49,7 @@ interface FormData {
   housekeepingRole: string; // Dropdown for Service Type
   description: string; // Text area for business description
   experience: string; // Experience in years
-  documentType: string;
+  kyc: string;
   documentDetails: string;
   documentImage: File | null;
 }
@@ -57,7 +58,7 @@ interface FormData {
 interface FormErrors {
   firstName?: string;
   lastName?: string;
-  email?: string;
+  emailId?: string;
   password?: string;
   confirmPassword?: string;
   mobileNo?: string;
@@ -76,14 +77,14 @@ interface FormErrors {
   housekeepingRole?: string; // Error message for Service Type
   description?: string; // Error message for Description
   experience?: string; // Error message for Experience
-  documentType?: string;
+  kyc?: string;
   documentDetails?: string;
   documentImage?: string;
 }
  
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
+const emailIdRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
 const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const phoneRegex = /^[0-9]{10}$/;
 const pincodeRegex = /^[0-9]{6}$/;
@@ -111,7 +112,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     firstName: '',
     middleName:'',
     lastName: '',
-    email: '',
+    emailId: '',
     password: '',
     confirmPassword: '',
     mobileNo: '',
@@ -133,7 +134,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     housekeepingRole: '',
     description: '',
     experience: '',
-    documentType: '',
+    kyc : '',
     documentDetails: '',
     documentImage: null,
   });
@@ -191,8 +192,8 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       if (!formData.lastName || !nameRegex.test(formData.lastName)) {
         tempErrors.lastName = 'Last Name is required and should contain only alphabets.';
       }
-      if (!formData.email || !emailRegex.test(formData.email)) {
-        tempErrors.email = 'Valid email is required.';
+      if (!formData.emailId || !emailIdRegex.test(formData.emailId)) {
+        tempErrors.emailId = 'Valid email is required.';
       }
       if (!formData.password || !strongPasswordRegex.test(formData.password)) {
         tempErrors.password =
@@ -253,23 +254,23 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
 
     if (activeStep === 3) {
       // KYC Verification validation (Step 4)
-      if (!formData.documentType) {
-        tempErrors.documentType = "Document type is required.";
+      if (!formData.kyc) {
+        tempErrors.kyc = "Document type is required.";
       }
   
-      if (formData.documentType === 'aadhaar') {
+      if (formData.kyc === 'AADHAR') {
         if (!formData.documentDetails) {
           tempErrors.documentDetails = "Aadhaar details are required.";
         } else if (!/^\d{12}$/.test(formData.documentDetails)) {
           tempErrors.documentDetails = "Aadhaar number must be exactly 12 digits.";
         }
-      } else if (formData.documentType === 'pan') {
+      } else if (formData.kyc === 'PAN') {
         if (!formData.documentDetails) {
           tempErrors.documentDetails = "PAN details are required.";
         } else if (!/^[A-Z]{5}\d{4}[A-Z]$/.test(formData.documentDetails)) {
           tempErrors.documentDetails = "PAN number must be in the format ABCDE1234F.";
         }
-      }  else if (formData.documentType === 'dl') {
+      }  else if (formData.kyc === 'DL') {
         if (!formData.documentDetails) {
           tempErrors.documentDetails = "DL details are required.";
         } else if (!/^[A-Z]{2}\d{13}$/.test(formData.documentDetails)) {
@@ -323,6 +324,11 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
     setSnackbarSeverity('success'); // Set snackbar to success (green)
     setSnackbarMessage('Registration done successfully!');
     setSnackbarOpen(true);
+
+    const response =  axios.post(
+      "http://localhost:8080/api/serviceproviders/serviceprovider/add",
+       formData
+    );
   };
    // Close snackbar function
    const handleCloseSnackbar = () => {
@@ -399,13 +405,13 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
             <Grid item xs={12}>
               <TextField
                 label="Email"
-                name="email"
+                name="emailId"
                 fullWidth
                 required
-                value={formData.email}
+                value={formData.emailId}
                 onChange={handleChange}
-                error={!!errors.email}
-                helperText={errors.email}
+                error={!!errors.emailId}
+                helperText={errors.emailId}
               />
             </Grid>
             <Grid item xs={12}>
@@ -618,9 +624,9 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
                 <MenuItem value="" disabled>
                 Select Service Type
                 </MenuItem>
-                <MenuItem value="Cook">Cook</MenuItem>
-                <MenuItem value="Nanny">Nanny</MenuItem>
-                <MenuItem value="Maid">Maid</MenuItem>
+                <MenuItem value="COOK">Cook</MenuItem>
+                <MenuItem value="NANNY">Nanny</MenuItem>
+                <MenuItem value="MAID">Maid</MenuItem>
                 </TextField>
               </Grid>
                 {/* Description */}
@@ -677,27 +683,27 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
           <TextField
             select
             label="Select Document Type"
-            name="documentType"
+            name="kyc"
             fullWidth
             required
-            value={formData.documentType}
+            value={formData.kyc}
             onChange={handleChange}
-            error={!!errors.documentType}
-            helperText={errors.documentType}
+            error={!!errors.kyc}
+            helperText={errors.kyc}
           >
-            <MenuItem value="aadhaar">Aadhaar</MenuItem>
-            <MenuItem value="pan">PAN</MenuItem>
-            <MenuItem value="dl">DL</MenuItem>
+            <MenuItem value="AADHAR">Aadhaar</MenuItem>
+            <MenuItem value="PAN">PAN</MenuItem>
+            <MenuItem value="DL">DL</MenuItem>
           </TextField>
         </Grid>
         <Grid item xs={12}>
           <TextField
             label={
-              formData.documentType === 'aadhaar'
+              formData.kyc === 'AADHAR'
                 ? "Aadhaar Number (12 digits)"
-                : formData.documentType === 'pan'
+                : formData.kyc === 'PAN'
                 ? "PAN Number (10 characters)"
-                : formData.documentType === 'dl'
+                : formData.kyc=== 'DL'
                 ? "DL Number (details required)"
                 : "Document Details"
             }
