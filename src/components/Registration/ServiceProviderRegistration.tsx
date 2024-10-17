@@ -14,7 +14,8 @@ import {
   Checkbox,
   FormControlLabel,
   MenuItem,
-  Alert
+  Alert,
+  AlertColor
 } from '@mui/material';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff,ArrowForward,ArrowBack  } from '@mui/icons-material';
@@ -105,6 +106,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
   const [activeStep, setActiveStep] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>('success'); // Use AlertColor for correct typing
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     middleName:'',
@@ -307,12 +309,20 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (validateForm ()) {
-      // Handle form submission (e.g., API call)
-      console.log('Form submitted:', formData);
-      setSnackbarMessage('Registration done Successful!');
+
+    // Check for internet connectivity
+    if (!navigator.onLine) {
+      setSnackbarSeverity('error'); // Set snackbar to error (red)
+      setSnackbarMessage('No internet connection. Please check and try again.');
       setSnackbarOpen(true);
+      return; // Exit if offline
     }
+
+    // If online, proceed with form submission
+    console.log('Form submitted successfully!');
+    setSnackbarSeverity('success'); // Set snackbar to success (green)
+    setSnackbarMessage('Registration done successfully!');
+    setSnackbarOpen(true);
   };
    // Close snackbar function
    const handleCloseSnackbar = () => {
@@ -776,7 +786,9 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       onClose={handleCloseSnackbar}   
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity="success">
+       <Alert onClose={handleCloseSnackbar}
+        severity={snackbarSeverity}  
+        sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
