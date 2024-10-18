@@ -8,8 +8,8 @@ import {
   Stepper,
   Step,
   StepLabel,
-  Radio, 
-  RadioGroup, 
+  Radio,
+  RadioGroup,
   Checkbox,
   FormControlLabel,
   InputAdornment,
@@ -18,7 +18,7 @@ import {
   FormControl,
   Alert,
   AlertColor,
-  Snackbar
+  Snackbar,
 } from "@mui/material";
 import "./Registration.css";
 import {
@@ -37,7 +37,7 @@ interface FormData {
   password: string;
   confirmPassword: string;
   phoneNumber: string;
-  gender:string;
+  gender: string;
   address: string;
   city: string;
   state: string;
@@ -82,8 +82,9 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     onBackToLogin(e);
   };
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>('success');
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<AlertColor>("success");
 
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
@@ -94,7 +95,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     password: "",
     confirmPassword: "",
     phoneNumber: "",
-    gender:"",
+    gender: "",
     address: "",
     city: "",
     state: "",
@@ -103,13 +104,12 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     hobbies: "",
     language: "",
   });
-  
 
-  const [gender, setGender] = useState('');
-  
-    const handleGenderChange = (e) => {
-      setGender(e.target.value);
-    };
+  const [gender, setGender] = useState("");
+
+  const handleGenderChange = (e) => {
+    setGender(e.target.value);
+  };
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -204,10 +204,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     }
   };
   const handleNext = () => {
-    if (validateForm ()) {
+    if (validateForm()) {
       setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
       if (activeStep === steps.length - 1) {
-        setSnackbarMessage('Registration Successful!');
+        setSnackbarMessage("Registration Successful!");
         setSnackbarOpen(true);
         // Optionally, reset form data or redirect
       }
@@ -268,35 +268,39 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 />
               </Grid>
               <Grid item xs={12}>
-              <FormControl component="fieldset" error={!!errors.gender} required>
-                <FormLabel component="legend">Gender</FormLabel>
-                <RadioGroup
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  row // Optional to make it horizontal
+                <FormControl
+                  component="fieldset"
+                  error={!!errors.gender}
+                  required
                 >
-                  <FormControlLabel
-                    value="male"
-                    control={<Radio />}
-                    label="MALE"
-                  />
-                  <FormControlLabel
-                    value="female"
-                    control={<Radio />}
-                    label="FEMALE"
-                  />
-                  <FormControlLabel
-                    value="other"
-                    control={<Radio />}
-                    label="OTHERS"
-                  />
-                </RadioGroup>
-                {errors.gender && (
-                  <Typography color="error">{errors.gender}</Typography>
-                )}
-              </FormControl>
-            </Grid>
+                  <FormLabel component="legend">Gender</FormLabel>
+                  <RadioGroup
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    row // Optional to make it horizontal
+                  >
+                    <FormControlLabel
+                      value="male"
+                      control={<Radio />}
+                      label="MALE"
+                    />
+                    <FormControlLabel
+                      value="female"
+                      control={<Radio />}
+                      label="FEMALE"
+                    />
+                    <FormControlLabel
+                      value="other"
+                      control={<Radio />}
+                      label="OTHERS"
+                    />
+                  </RadioGroup>
+                  {errors.gender && (
+                    <Typography color="error">{errors.gender}</Typography>
+                  )}
+                </FormControl>
+              </Grid>
               <Grid item xs={12}>
                 <TextField
                   label="Email"
@@ -384,7 +388,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   }}
                 />
               </Grid>
-              
             </Grid>
           </div>
         );
