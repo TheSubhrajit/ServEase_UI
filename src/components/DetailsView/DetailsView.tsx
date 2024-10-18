@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { CircularProgress, Button, Box } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
@@ -29,10 +29,11 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
     setOpen(false);
     setSidebarOpen(false); // Close sidebar when search form closes
   };
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true); 
         const response = await fetch("http://localhost:8080/api/serviceproviders/serviceproviders/all");
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -41,6 +42,10 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
         setServiceProvidersData(data);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000);
       }
     };
 
@@ -48,6 +53,13 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
   }, []);
 
   return (
+    <>
+    {
+      loading && <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box>
+    }
+    {!loading && 
     <div className="details-view">
       {/* Sidebar with conditional class for open/closed state */}
       <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
@@ -78,6 +90,7 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
           ))}
         </div>
       </div>
-    </div>
+    </div>}
+    </>
   );
 };

@@ -55,7 +55,7 @@ const ServiceProvidersDetails = (props: any) => {
           </div>
 
           <Typography variant="body2" className="availability">
-            Availability: {availability}
+            Availability: Available {availability}
           </Typography>
 
           <div className="location">
