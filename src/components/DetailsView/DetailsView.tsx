@@ -33,7 +33,7 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://freetestapi.com/api/v1/users");
+        const response = await fetch("http://localhost:8080/api/serviceproviders/serviceproviders/all");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -72,7 +72,7 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
         {/* List of Service Providers */}
         <div className="providers-view">
           {ServiceProvidersData.map((serviceProvider) => (
-            <div className="views" key={serviceProvider.id}>
+            <div className="views" key={serviceProvider.serviceproviderId}>
               <ServiceProvidersDetails {...serviceProvider} />
             </div>
           ))}
