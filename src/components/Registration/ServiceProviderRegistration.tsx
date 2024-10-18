@@ -15,7 +15,12 @@ import {
   FormControlLabel,
   MenuItem,
   Alert,
-  AlertColor
+  AlertColor,
+  RadioGroup,
+  Radio,
+  FormControl, 
+  FormLabel,
+  FormHelperText
 } from '@mui/material';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff,ArrowForward,ArrowBack  } from '@mui/icons-material';
@@ -27,6 +32,7 @@ interface FormData {
   firstName: string;
   middleName: string;
   lastName: string;
+  gender: string;
   emailId: string;
   password: string;
   confirmPassword: string;
@@ -58,6 +64,7 @@ interface FormData {
 interface FormErrors {
   firstName?: string;
   lastName?: string;
+  gender?: string;
   emailId?: string;
   password?: string;
   confirmPassword?: string;
@@ -112,6 +119,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     firstName: '',
     middleName:'',
     lastName: '',
+    gender: '',
     emailId: '',
     password: '',
     confirmPassword: '',
@@ -181,16 +189,19 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
     }
   };
 
-  const validateForm = () => {
-    let tempErrors: FormErrors = {};
-
+  const validateForm = (): boolean => {
+    let tempErrors: FormErrors = {}; // Temporary object to store errors
+  
+    // Step 1: Basic Information Validation
     if (activeStep === 0) {
-      // Basic Information validation (Step 1)
       if (!formData.firstName || !nameRegex.test(formData.firstName)) {
         tempErrors.firstName = 'First Name is required and should contain only alphabets.';
       }
       if (!formData.lastName || !nameRegex.test(formData.lastName)) {
         tempErrors.lastName = 'Last Name is required and should contain only alphabets.';
+      }
+      if (!formData.gender) {
+        tempErrors.gender = 'Please select a gender.';
       }
       if (!formData.emailId || !emailIdRegex.test(formData.emailId)) {
         tempErrors.emailId = 'Valid email is required.';
@@ -206,14 +217,14 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
         tempErrors.mobileNo = 'Phone number must be exactly 10 digits.';
       }
     }
-
+  
+    // Step 2: Address Information Validation
     if (activeStep === 1) {
-      // Address validation (Step 2)
       if (!formData.address) {
         tempErrors.address = 'Address is required.';
       }
       if (!formData.buildingName) {
-        tempErrors.buildingName = 'BuildingName is required.';
+        tempErrors.buildingName = 'Building Name is required.';
       }
       if (!formData.locality) {
         tempErrors.locality = 'Locality is required.';
@@ -221,29 +232,23 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       if (!formData.street) {
         tempErrors.street = 'Street is required.';
       }
-      // if (!formData.city) {
-      //   tempErrors.city = 'City is required.';
-      // }
       if (!formData.currentLocation) {
-        tempErrors.currentLocation = 'CurrentLocation is required.';
+        tempErrors.currentLocation = 'Current Location is required.';
       }
-      // if (!formData.state) {
-      //   tempErrors.state = 'State is required.';
-      // }
       if (!formData.pincode || !pincodeRegex.test(formData.pincode)) {
         tempErrors.pincode = 'Pin Code must be exactly 6 digits.';
       }
     }
-
+  
+    // Step 3: Additional Details Validation
     if (activeStep === 2) {
-      // Additional Details validation (Step 3)
       if (!formData.agreeToTerms) {
         tempErrors.agreeToTerms = 'You must agree to the Terms of Service and Privacy Policy.';
       }
       if (!formData.housekeepingRole) {
         tempErrors.housekeepingRole = 'Please select a service type.';
       }
-      // Uncomment if needed
+      // Optional fields (uncomment if needed)
       // if (!formData.description) {
       //   tempErrors.description = 'Description is required.';
       // }
@@ -251,42 +256,42 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       //   tempErrors.experience = 'Experience must be a valid number.';
       // }
     }
-
+  
+    // Step 4: KYC Verification Validation
     if (activeStep === 3) {
-      // KYC Verification validation (Step 4)
       if (!formData.kyc) {
-        tempErrors.kyc = "Document type is required.";
+        tempErrors.kyc = 'Document type is required.';
       }
   
       if (formData.kyc === 'AADHAR') {
         if (!formData.documentDetails) {
-          tempErrors.documentDetails = "Aadhaar details are required.";
+          tempErrors.documentDetails = 'Aadhaar details are required.';
         } else if (!/^\d{12}$/.test(formData.documentDetails)) {
-          tempErrors.documentDetails = "Aadhaar number must be exactly 12 digits.";
+          tempErrors.documentDetails = 'Aadhaar number must be exactly 12 digits.';
         }
       } else if (formData.kyc === 'PAN') {
         if (!formData.documentDetails) {
-          tempErrors.documentDetails = "PAN details are required.";
+          tempErrors.documentDetails = 'PAN details are required.';
         } else if (!/^[A-Z]{5}\d{4}[A-Z]$/.test(formData.documentDetails)) {
-          tempErrors.documentDetails = "PAN number must be in the format ABCDE1234F.";
+          tempErrors.documentDetails = 'PAN number must be in the format ABCDE1234F.';
         }
-      }  else if (formData.kyc === 'DL') {
+      } else if (formData.kyc === 'DL') {
         if (!formData.documentDetails) {
-          tempErrors.documentDetails = "DL details are required.";
+          tempErrors.documentDetails = 'DL details are required.';
         } else if (!/^[A-Z]{2}\d{13}$/.test(formData.documentDetails)) {
-          tempErrors.documentDetails = "DL number must be in the format AB123456789012.";
+          tempErrors.documentDetails = 'DL number must be in the format AB123456789012.';
         }
       }
   
       if (!formData.documentImage) {
-        tempErrors.documentImage = "Document image is required.";
+        tempErrors.documentImage = 'Document image is required.';
       }
     }
-
+  
+    // Set errors to state and return the validation result
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
-
   // const handleNext = () => {
   //   if (validateForm()) {
   //     setActiveStep((prevStep) => prevStep + 1);
@@ -314,7 +319,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
     // Check for internet connectivity
     if (!navigator.onLine) {
       setSnackbarSeverity('error'); // Set snackbar to error (red)
-      setSnackbarMessage('No internet connection. Please check and try again.');
+      setSnackbarMessage('Something went wrong , Please contact administrator');
       setSnackbarOpen(true);
       return; // Exit if offline
     }
@@ -402,6 +407,27 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
                   }}
                 />
               </Grid>
+
+           {/* Gender Radio Button Group */}
+<Grid item xs={12}>
+  <FormControl component="fieldset" error={!!errors.gender}>
+    <FormLabel component="legend">Gender</FormLabel>
+    <RadioGroup
+      row
+      name="gender"
+      value={formData.gender}
+      onChange={handleChange}
+    >
+      <FormControlLabel value="MALE" control={<Radio />} label="Male" />
+      <FormControlLabel value="FEMALE" control={<Radio />} label="Female" />
+      <FormControlLabel value="OTHER" control={<Radio />} label="Other" />
+    </RadioGroup>
+    {errors.gender && <FormHelperText>{errors.gender}</FormHelperText>}
+  </FormControl>
+</Grid>
+
+
+
             <Grid item xs={12}>
               <TextField
                 label="Email"
@@ -790,11 +816,12 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       <Snackbar open={snackbarOpen} 
       autoHideDuration={6000} 
       onClose={handleCloseSnackbar}   
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      sx={{ marginTop: '60px',}}
       >
        <Alert onClose={handleCloseSnackbar}
         severity={snackbarSeverity}  
-        sx={{ width: '100%' }}>
+        sx={{ width: '100%', fontSize: '1.5rem', padding: '16px', border: '1px solid grey',}}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
