@@ -9,8 +9,9 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import './serviceCard.css';
 
 const ServiceProvidersDetails = (props: any) => {
-  const { name, age, category, service, language, address, distance, rating, ratingsCount, availability, profilePic } = props;
+  const { firstName, lastName, category, housekeepingRole, gender, currentLocation, distance, rating, ratingsCount, availability, profilePic } = props;
   // Function to determine rating description based on score
+
   const getRatingDescription = (rating) => {
     if (rating >= 4.5) return "Excellent";
     if (rating >= 3.5) return "Very Good";
@@ -23,19 +24,19 @@ const ServiceProvidersDetails = (props: any) => {
       <Card className="service-card">
         <div className="avatar-section"> {/* Section for avatar */}
           <Avatar
-            alt={service}
+            alt={housekeepingRole}
             src={`/${profilePic}`}
             className="service-avatar"
           />
         </div>
 
         <div className="service-details"> {/* Section for service details */}
-          <Typography variant="h6">Name: {name}</Typography>
-          <Typography>Male, {age} yrs</Typography>
+          <Typography variant="h6">First Name: {firstName}</Typography>
+          <Typography variant="h6">Last Name: {lastName}</Typography>
+          <Typography>Gender: {gender}</Typography>
           <Typography>Category: {category}</Typography>
-          <Typography>Service: {service}</Typography>
-          <Typography>Language: {language}</Typography>
-          <Typography>Address: {address}</Typography>
+          <Typography>Housekeeping Role: {housekeepingRole}</Typography>
+          <Typography>Current Location: {currentLocation}</Typography>
         </div>
 
         <div className="service-ratings"> 
@@ -43,7 +44,7 @@ const ServiceProvidersDetails = (props: any) => {
             <Typography variant="body1" className="rating-description">
               {getRatingDescription(rating)} 
             </Typography>
-            <span className="rating-score">{rating.toFixed(1)}</span>
+            <span className="rating-score">4</span>
           </div>
 
           <div className="ratings">
@@ -54,13 +55,13 @@ const ServiceProvidersDetails = (props: any) => {
           </div>
 
           <Typography variant="body2" className="availability">
-            Availability: {availability}
+            Availability: Available {availability}
           </Typography>
 
           <div className="location">
             <LocationOnIcon fontSize="small" />
             <Typography variant="body2" color="textSecondary">
-              {distance} km from your location
+              {distance}2 km from your location
             </Typography>
           </div>
         </div>
@@ -69,43 +70,44 @@ const ServiceProvidersDetails = (props: any) => {
   );
 };
 
-function App() {
-  const services = [
-    {
-      name: 'John Doe',
-      age: 24,
-      category: 'A',
-      service: 'Cook',
-      language: 'Kannada',
-      address: 'U496, Surface Studio, JP Nagar, Bengaluru-560078',
-      distance: 4.2,
-      rating: 4.0,
-      ratingsCount: 272,
-      availability: '8.00 AM',
-      profilePic: 'babysitter.png',
-    },
-    {
-      name: 'Jane Smith',
-      age: 26,
-      category: 'A',
-      service: 'Cook',
-      language: 'Kannada',
-      address: 'C606, Purba Belmont, JP Nagar, Bengaluru-560078',
-      distance: 3.7,
-      rating: 4.2,
-      ratingsCount: 860,
-      availability: '8.00 AM',
-      profilePic: 'babysitter.png',
-    },
-  ];
+// function App() {
+//   const services = [
+//     {
+//       name: 'John Doe',
+//       age: 24,
+//       category: 'A',
+//       service: 'Cook',
+//       language: 'Kannada',
+//       address: 'U496, Surface Studio, JP Nagar, Bengaluru-560078',
+//       distance: 4.2,
+//       rating: 4.0,
+//       ratingsCount: 272,
+//       availability: '8.00 AM',
+//       profilePic: 'babysitter.png',
+//     },
+//     {
+//       name: 'Jane Smith',
+//       age: 26,
+//       category: 'A',
+//       service: 'Cook',
+//       language: 'Kannada',
+//       address: 'C606, Purba Belmont, JP Nagar, Bengaluru-560078',
+//       distance: 3.7,
+//       rating: 4.2,
+//       ratingsCount: 860,
+//       availability: '8.00 AM',
+//       profilePic: 'babysitter.png',
+//     },
+//   ];
 
-  return (
-    <div>
-      {services.map((service, index) => (
-        <ServiceProvidersDetails key={index} {...service} />
-      ))}
-    </div>
-  );
-}
+//   return (
+//     <div>
+//       {services.map((service, index) => (
+//         <ServiceProvidersDetails key={index} {...service} />
+//       ))}
+//     </div>
+//   );
+// }
 
-export default App;
+// export default App;
+export default ServiceProvidersDetails;
