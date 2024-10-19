@@ -125,6 +125,7 @@ export const Header: React.FC<ChildComponentProps> = ({
           <div className="logo-container">
             <img src="../logo.png"  className="logo-style" alt="logo" onClick={() => handleClick("Landing_Page")} style={{ cursor: 'pointer' }}/>
             <div className="logo-text"  >
+            
               <span className="home-text">Home</span>
               <span className="servease-text">ServEase</span>
             </div>

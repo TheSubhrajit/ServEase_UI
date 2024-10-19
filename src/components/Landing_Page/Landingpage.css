@@ -1,4 +1,7 @@
 /* Base styles for the landing container */
+body{
+  background-color: rgba(202, 214, 227, 0.59);
+}
 .landing-container {
     display: flex;
     justify-content: center;
@@ -6,6 +9,10 @@
     flex-wrap: wrap;
     gap: 20px; /* Add some space between the icons */
     padding: 20px;
+  }
+  .selector-container{
+    font: icon;
+  font-family: Georgia, 'Times New Roman', Times, serif;
   }
   
   /* Selectors are the clickable areas around each icon */

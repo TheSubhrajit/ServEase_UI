@@ -4,7 +4,8 @@
   align-items: center; /* Vertically center the content */
   justify-content: flex-start;
   width: 100%;
-  height: 100%; /* Ensures the navbar takes up 100% of its container's height */
+  height: 100%;
+   /* Ensures the navbar takes up 100% of its container's height */
   border: 1px solid gray;
 }
 
@@ -34,21 +35,26 @@
 /* Styling for the logo text */
 .logo-text {
   display: flex;
-  flex-direction: column; /* Stack the 'Home' and 'ServEase' vertically */
- 
+  flex-direction: column; 
+  /* Stack the 'Home' and 'ServEase' vertically */
+  white-space: 0;
+  font: icon;
+  font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .home-text {
-  font-size: 18px; /* Font size for 'Home' */
-  font-weight: 600;
-  color: #0d6efd;
+  font-size: 13px; /* Font size for 'Home' */
+  font-weight: 500;
+  color: #007bff; 
+  opacity: 90%;
   
 }
 
 .servease-text {
-  font-size: 24px; /* Font size for 'ServEase' */
-  font-weight: 600;
-  color: #0d6efd;
+  font-size: 20px; /* Font size for 'ServEase' */
+  font-weight: 550;
+  color: #007bff; 
+  opacity: 90%;
 }
 
 /* Dropdown container */
@@ -87,6 +93,7 @@
 }
 
 /* Navbar styling */
-.navbar {
-  height: 100%; /* Ensure navbar inherits height */
-}
+/* .navbar {
+  height: 100%; 
+  
+} */
