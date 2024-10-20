@@ -4,6 +4,7 @@ import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProviders
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
 
+
 import CloseIcon from '@mui/icons-material/Close'; 
 
 interface ChildComponentProps {
