@@ -1,7 +1,8 @@
 import React from "react";
 import { Tooltip } from "@mui/material";
 import "./Landingpage.css";
-import MapComponent from "../MapComponent/MapComponent"
+import MapAutocomplete from "../MapComponent/GooglePlacesAutocomplete";
+import GooglePlacesAutocomplete from "../MapComponent/GooglePlacesAutocomplete";
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
@@ -14,7 +15,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent })
 
   return (
     <section className="landing-container">
-       {/* <div className="selector-container">
+       <div className="selector-container">
         <Tooltip title="Cook" arrow>
           <div className="selectors" onClick={() => handleClick("cook")}>
             <img src="../cooking.png" alt="Cook" />
@@ -39,11 +40,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent })
           </div>
         </Tooltip>
         <p className="label-text">Nanny</p>
-      </div> */}
-
-<h1>Google Map with a Pin</h1>
-<MapComponent />
-     
+      </div>
     </section>
     
   );
