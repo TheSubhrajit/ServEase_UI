@@ -28,6 +28,8 @@ export const Header: React.FC<ChildComponentProps> = ({
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
+          console.log(latitude)
+          console.log(longitude)
           try {
             const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
               params: {
