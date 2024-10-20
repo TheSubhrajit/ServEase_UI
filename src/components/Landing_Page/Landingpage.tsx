@@ -45,5 +45,6 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent })
 <MapComponent />
      
     </section>
+    
   );
 };

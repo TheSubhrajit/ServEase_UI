@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { SyntheticEvent, useState } from "react";
 import {
   TextField,
   Button,
@@ -8,10 +8,25 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Radio,
+  RadioGroup,
   Checkbox,
   FormControlLabel,
+  InputAdornment,
+  IconButton,
+  FormLabel,
+  FormControl,
+  Alert,
+  AlertColor,
+  Snackbar,
 } from "@mui/material";
 import "./Registration.css";
+import {
+  Visibility,
+  VisibilityOff,
+  ArrowForward,
+  ArrowBack,
+} from "@mui/icons-material";
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -22,6 +37,7 @@ interface FormData {
   password: string;
   confirmPassword: string;
   phoneNumber: string;
+  gender: string;
   address: string;
   city: string;
   state: string;
@@ -39,6 +55,7 @@ interface FormErrors {
   password?: string;
   confirmPassword?: string;
   phoneNumber?: string;
+  gender?: string;
   address?: string;
   city?: string;
   state?: string;
@@ -48,8 +65,11 @@ interface FormErrors {
 
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zAZ0-9.-]+\.[A-Z|a-z]{2,}$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
+const strongPasswordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const phoneRegex = /^[0-9]{10}$/;
+const zipCodeRegex = /^[0-9]{6}$/;
 
 const steps = ["Basic Info", "Address", "Additional Details", "Confirmation"];
 
@@ -58,10 +78,13 @@ interface RegistrationProps {
 }
 
 const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
-
   const handleBackLogin = (e: any) => {
-    onBackToLogin(e)
-  }
+    onBackToLogin(e);
+  };
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<AlertColor>("success");
 
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
@@ -72,6 +95,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     password: "",
     confirmPassword: "",
     phoneNumber: "",
+    gender: "",
     address: "",
     city: "",
     state: "",
@@ -80,6 +104,22 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     hobbies: "",
     language: "",
   });
+
+  const [gender, setGender] = useState("");
+
+  const handleGenderChange = (e) => {
+    setGender(e.target.value);
+  };
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleToggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -106,14 +146,18 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       if (!formData.email || !emailRegex.test(formData.email)) {
         tempErrors.email = "Valid email is required.";
       }
-      if (!formData.password || formData.password.length < 8) {
-        tempErrors.password = "Password must be at least 8 characters long.";
+      if (!formData.password || !strongPasswordRegex.test(formData.password)) {
+        tempErrors.password =
+          "Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character.";
       }
       if (formData.password !== formData.confirmPassword) {
         tempErrors.confirmPassword = "Passwords do not match.";
       }
       if (!formData.phoneNumber || !phoneRegex.test(formData.phoneNumber)) {
         tempErrors.phoneNumber = "Phone number must be exactly 10 digits.";
+      }
+      if (!formData.gender) {
+        tempErrors.gender = "Select Your Gender.";
       }
     }
 
@@ -127,8 +171,8 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       if (!formData.state) {
         tempErrors.state = "State is required.";
       }
-      if (!formData.zipCode) {
-        tempErrors.zipCode = "Zip/Postal Code is required.";
+      if (!formData.zipCode || !zipCodeRegex.test(formData.zipCode)) {
+        tempErrors.zipCode = "Zip/Postal Code must be exactly 6 digits.";
       }
     }
 
@@ -143,11 +187,11 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     return Object.keys(tempErrors).length === 0;
   };
 
-  const handleNext = () => {
-    if (validateForm()) {
-      setActiveStep((prevStep) => prevStep + 1);
-    }
-  };
+  // const handleNext = () => {
+  //   if (validateForm()) {
+  //     setActiveStep((prevStep) => prevStep + 1);
+  //   }
+  // };
 
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
@@ -157,6 +201,16 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     e.preventDefault();
     if (validateForm()) {
       console.log("Form submitted:", formData);
+    }
+  };
+  const handleNext = () => {
+    if (validateForm()) {
+      setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+      if (activeStep === steps.length - 1) {
+        setSnackbarMessage("Registration Successful!");
+        setSnackbarOpen(true);
+        // Optionally, reset form data or redirect
+      }
     }
   };
 
@@ -214,6 +268,40 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 />
               </Grid>
               <Grid item xs={12}>
+                <FormControl
+                  component="fieldset"
+                  error={!!errors.gender}
+                  required
+                >
+                  <FormLabel component="legend">Gender</FormLabel>
+                  <RadioGroup
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    row // Optional to make it horizontal
+                  >
+                    <FormControlLabel
+                      value="male"
+                      control={<Radio />}
+                      label="MALE"
+                    />
+                    <FormControlLabel
+                      value="female"
+                      control={<Radio />}
+                      label="FEMALE"
+                    />
+                    <FormControlLabel
+                      value="other"
+                      control={<Radio />}
+                      label="OTHERS"
+                    />
+                  </RadioGroup>
+                  {errors.gender && (
+                    <Typography color="error">{errors.gender}</Typography>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
                 <TextField
                   label="Email"
                   name="email"
@@ -231,7 +319,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               <Grid item xs={12}>
                 <TextField
                   label="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   fullWidth
                   required
@@ -239,16 +327,25 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.password}
                   helperText={errors.password}
-                  sx={{
-                    "& .MuiInputBase-root": { height: "36px" },
-                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={handleTogglePasswordVisibility}
+                          edge="end"
+                          aria-label="toggle password visibility"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
                   }}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   label="Confirm Password"
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   fullWidth
                   required
@@ -256,9 +353,22 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   onChange={handleChange}
                   error={!!errors.confirmPassword}
                   helperText={errors.confirmPassword}
-                  sx={{
-                    "& .MuiInputBase-root": { height: "36px" },
-                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={handleToggleConfirmPasswordVisibility}
+                          edge="end"
+                          aria-label="toggle confirm password visibility"
+                        >
+                          {showConfirmPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
                   }}
                 />
               </Grid>
@@ -412,12 +522,23 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     }
   };
 
+  function handleCloseSnackbar(event: SyntheticEvent<Element, Event>): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
-    <Box sx={{ maxWidth: 600, margin: "auto", padding: 2 }} className="parent">
+    <Box
+      sx={{ maxWidth: 600, margin: "auto", padding: 2, display: "block" }}
+      className="parent"
+    >
       <Typography variant="h5" gutterBottom className="text">
         User Registration
       </Typography>
-      <Stepper activeStep={activeStep} alternativeLabel>
+      <Stepper
+        activeStep={activeStep}
+        alternativeLabel
+        style={{ overflow: "overlay" }}
+      >
         {steps.map((label, index) => (
           <Step key={index}>
             <StepLabel>{label}</StepLabel>
@@ -437,7 +558,8 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             disabled={activeStep === 0}
             onClick={handleBack}
             variant="contained"
-            color="secondary"
+            color="primary"
+            startIcon={<ArrowBack />} // Add the icon here
           >
             Back
           </Button>
@@ -446,17 +568,33 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               Submit
             </Button>
           ) : (
-            <Button onClick={handleNext} variant="contained" color="primary">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleNext}
+              endIcon={<ArrowForward />} // This will place the icon after the text
+            >
               Next
             </Button>
           )}
         </Box>
+        {/* <Snackbar open={snackbarOpen} 
+         autoHideDuration={6000} 
+        onClose={handleCloseSnackbar}   
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+       <Alert onClose={handleCloseSnackbar}
+        severity={snackbarSeverity}  
+        sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar> */}
 
         <div className="flex flex-col mt-4 items-center justify-center text-sm">
           <h3 className="dark:text-gray-300">
             Already have an account?{" "}
             <button
-              className="text-blue-400 ml-2 underline"
+              className="text-blue-500 ml-2 underline"
               onClick={(e) => handleBackLogin("false")}
             >
               Sign in

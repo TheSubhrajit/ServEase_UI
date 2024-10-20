@@ -1,4 +1,5 @@
 /* Footer Styling */
+
 .footer {
   background-color: #f6f6f7;
   display: flex;
@@ -6,45 +7,76 @@
   justify-content: center;
   align-items: center;
   height: 100%; /* Full height */
-  border-top: 1px solid #0d0303;
-  padding: 20px 0;
+  border-top: 1px  grey;
+  /* padding: 20px 0; */
   overflow: hidden; /* Hide overflow */
+  
 }
 
+/* Footer Logo */
 .footer-logo {
-  font-size: 24px;
-  color: black;
-  font-weight: bold;
+  font-size: 30px;
+  /* font-weight: bold; */
+  /* font-weight: 100px; */
   text-align: center;
+  color: #007bff; 
+  opacity: 90%;
+  padding-top: 9px;
+  font: icon;
+  font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
+/* Social Media Icons */
 .social-media {
   display: flex;
-  justify-content: center; /* Center icons horizontally */
-  align-items: center; /* Center icons vertically */
+  justify-content: center;
+  align-items: center;
   gap: 20px; /* Space between icons */
   padding: 0;
   flex-wrap: wrap; /* Allow icons to wrap on small screens */
   padding-bottom: 10px;
 }
 
+/* Links and Icon Styling */
 .social-media a {
-  color: #333; /* Icon color */
-  transition: color 0.3s ease;
-  display: inline-flex; /* Make sure the icons stay inline */
-  align-items: center; /* Align the icons vertically */
-}
-
-.social-media a svg {
-  display: block; /* Ensure icons are rendered correctly */
-  height: 20px; /* Reduced size */
-  width: 20px; /* Reduced size */
+  transition: transform 0.3s ease; /* Smooth hover effect */
+  display: inline-flex;
+  align-items: center;
 }
 
 .social-media a:hover {
-  color: #007bff; /* Hover color */
+  transform: scale(1.2); /* Enlarge on hover */
 }
 
+/* Specific Brand Colors */
+.social-media a .twitter {
+  color: black;
+}
+
+.social-media a .instagram {
+  color: #E4405F;
+}
+
+.social-media a .youtube {
+  color: #FF0000;
+}
+
+.social-media a .linkedin {
+  color: #0077B5;
+}
+
+.social-media a .facebook {
+  color: #4267B2;
+}
+
+/* Ensuring Icons Render Correctly */
+.social-media a svg {
+  display: block;
+  height: 24px;
+  width: 24px;
+}
+
+/* Footer Sections */
 .footer-section {
   text-align: left;
 }
@@ -52,7 +84,6 @@
 .footer-section h4 {
   white-space: nowrap;
   color: black;
-  padding-left: 0;
 }
 
 .footer-section ul {
@@ -64,7 +95,6 @@
 .footer-section ul li {
   color: #333;
   white-space: nowrap;
-  list-style-type: none;
   padding: 4px;
 }
 
@@ -73,7 +103,6 @@
   font-size: 14px;
   color: #333;
   margin-top: 20px;
-  display: block;
 }
 
 .footer-section ul li a {
@@ -94,9 +123,7 @@
   }
 
   .footer-logo {
-    font-size: 18px;
-    color: #007bff;
-    opacity:55%;
+    font-size: 30px;
   }
 
   .social-media {
@@ -104,10 +131,8 @@
   }
 
   .social-media a svg {
-    height: 18px; /* Smaller size on mobile */
+    height: 18px;
     width: 18px;
-    color: #007bff;
-    opacity:55%;
   }
 }
 
@@ -119,8 +144,6 @@
 
   .footer-logo {
     font-size: 20px;
-    color: #007bff;
-    opacity:55%;
   }
 
   .social-media {
@@ -128,10 +151,8 @@
   }
 
   .social-media a svg {
-    height: 18px; /* Adjust icon size for tablets */
-    width: 18px;
-    color: #007bff;
-    opacity:55%;
+    height: 20px;
+    width: 20px;
   }
 }
 
@@ -143,8 +164,6 @@
 
   .footer-logo {
     font-size: 24px;
-    color: #007bff;
-    opacity:55%;
   }
 
   .social-media {
@@ -152,9 +171,7 @@
   }
 
   .social-media a svg {
-    height: 20px; /* Standard size for desktop */
-    width: 20px;
-    color: #007bff;
-    opacity:55%;
+    height: 24px;
+    width: 24px;
   }
 }
