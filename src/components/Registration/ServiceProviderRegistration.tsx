@@ -1,4 +1,4 @@
-import React, { useState ,SyntheticEvent} from 'react';
+import React, { useState ,ChangeEvent,SyntheticEvent,useRef} from 'react';
 import {
   TextField,
   Input,
@@ -20,11 +20,14 @@ import {
   Radio,
   FormControl, 
   FormLabel,
-  FormHelperText
+  FormHelperText,
+  Avatar
 } from '@mui/material';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
-import { Visibility, VisibilityOff,ArrowForward,ArrowBack  } from '@mui/icons-material';
+import { Visibility, VisibilityOff,ArrowForward,ArrowBack,CameraAlt as CameraAltIcon   } from '@mui/icons-material';
 import { px } from 'framer-motion';
+import Cropper from 'react-easy-crop'; // Import the Cropper component
+
 import axios from 'axios';
 
 // Define the shape of formData using an interface
@@ -58,6 +61,7 @@ interface FormData {
   kyc: string;
   documentDetails: string;
   documentImage: File | null;
+  profileImage: File | null; // New field for Profile Image
 }
 
 // Define the shape of errors to hold string messages
@@ -115,6 +119,9 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>('success'); // Use AlertColor for correct typing
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null!);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     middleName:'',
@@ -145,9 +152,11 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     kyc : '',
     documentDetails: '',
     documentImage: null,
+    profileImage: null,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
+  
 
   // States for image previews and names
 const [documentImageName, setDocumentImageName] = useState<string>('');
@@ -161,6 +170,19 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   // States for password visibility
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+   // File change handler to update the profile picture
+   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; 
+    if (file) {
+      setPreviewUrl(URL.createObjectURL(file));
+      setFormData((prev) => ({ ...prev, profileImage: file }));
+    }
+  };
+
+  // Click handler to trigger file input click
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -360,7 +382,82 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       case 0:
         return (
           <Grid container spacing={3}>
-               <Grid item xs={12} className="pt-5">
+            
+       {/* Profile Picture Upload Section */}
+       <Box
+  display="flex"
+  flexDirection="column"
+  alignItems="center"
+  justifyContent="center"
+  sx={{
+    height: '30vh', // Use full viewport height for centering
+    width: '55vw', // Use full viewport width
+  }}
+ 
+>
+  <Box
+    sx={{
+      position: 'relative',
+      width: '150px',
+      height: '150px',
+      borderRadius: '50%',
+      overflow: 'hidden',
+      cursor: 'pointer',
+    }}
+    onClick={handleClick}
+  >
+    <Avatar
+      src={previewUrl || ''} // Display the preview image if it exists
+      sx={{
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+      }}
+    >
+      {!previewUrl && (
+        <CameraAltIcon
+          sx={{
+            fontSize: 40,
+            color: '#fff',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            borderRadius: '50%',
+            padding: '8px',
+          }}
+        />
+      )}
+    </Avatar>
+    {/* Only show this button when there is a profile image */}
+    {previewUrl && (
+      <IconButton
+        sx={{
+          position: 'absolute',
+          bottom: '5px',
+          right: '5px',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          color: '#fff',
+        }}
+        onClick={handleClick}
+      >
+        <CameraAltIcon />
+      </IconButton>
+    )}
+  </Box>
+  <Typography variant="subtitle1" gutterBottom sx={{ marginTop: '10px' }}>
+    Upload Profile Picture
+  </Typography>
+
+  {/* Hidden File Input */}
+  <input
+    type="file"
+    accept="image/*"
+    id="profile-upload"
+    style={{ display: 'none' }}
+    onChange={handleFileChange}
+    ref={fileInputRef}
+  />
+</Box>
+
+               <Grid item xs={12} >
                 <TextField
                   label="First Name"
                   name="firstName"
