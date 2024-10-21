@@ -60,6 +60,7 @@ export const Header: React.FC<ChildComponentProps> = ({
 
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [dataFromMap , setDataFromMap] = useState('');
 
   const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
   const PLACES_API_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
@@ -136,6 +137,11 @@ export const Header: React.FC<ChildComponentProps> = ({
     setOpen(false);
   };
 
+
+  const handleSave = () =>{
+    setLocation(dataFromMap)
+    setOpen(false);
+  }
   // Handle location change
   const handleLocationChange = (e) => {
     setLocation(e.target.value);
@@ -143,6 +149,10 @@ export const Header: React.FC<ChildComponentProps> = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   
+
+  function updateLocationFromMap(data: string): void {
+    setDataFromMap(data)
+  }
 
   return (
     <>
@@ -221,14 +231,14 @@ export const Header: React.FC<ChildComponentProps> = ({
       <DialogContent  sx={{ p: 0, display: 'flex', flexDirection: 'column', width: '600px' }}>
         {/* Fixed height for the map container */}
         <div style={{ height: '400px', width: '100%' }}> {/* Fixed height for the map */}
-          <MapComponent style={{ height: '100%', width: '100%' }} />
+          <MapComponent style={{ height: '100%', width: '100%' }}  onLocationSelect={updateLocationFromMap}/>
         </div>
       </DialogContent>
 
       {/* Dialog Actions */}
       <DialogActions sx={{ padding: '10px' }}>
         <Button color="primary" onClick={handleClose}>Cancel</Button>
-        <Button color="primary">Save</Button>
+        <Button color="primary" onClick={handleSave}>Save</Button>
       </DialogActions>
     </Dialog>
 

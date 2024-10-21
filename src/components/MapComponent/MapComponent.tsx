@@ -7,25 +7,28 @@ interface Location {
   lng: number;
 }
 
-const MapComponent = ({ style }: { style: React.CSSProperties }) => {
+interface MapComponentProps {
+    style: React.CSSProperties;
+    onLocationSelect: (data : string) => void; // Callback to pass the selected location
+  }
+
+const MapComponent : React.FC<MapComponentProps> = ({ style, onLocationSelect }) => {
   const [userLocation, setUserLocation] = useState<Location | null>(null);
   const [clickedLocation, setClickedLocation] = useState<Location | null>(null); // Location to mark on the map
   const [address, setAddress] = useState<string>(''); // To store the fetched address/pincode
 
   const defaultCenter: Location = {
-    lat: 40.748817, // Default to New York City
-    lng: -73.985428, // Default to New York City
+    lat: 40.748817, // Default to Bangalore
+    lng: -73.985428, // Default to Bangalore
   };
 
+
+
   // Initialize map location when the user selects a place
-  const handlePlaceSelect = (place: google.maps.places.PlaceResult) => {
-    console.log('Selected place in MapComponent:', place); // Log selected place
-    if (place.geometry) {
-      const lat = place.geometry.location?.lat() || 0;
-      const lng = place.geometry.location?.lng() || 0;
-      setClickedLocation({ lat, lng });
-      reverseGeocode(lat, lng); // Reverse geocode to fetch the address for the selected location
-    }
+  const handlePlaceSelect = (place: google.maps.places.PlaceResult, lat: number, lng: number) => {
+
+    setClickedLocation({ lat, lng }); // Set clicked location for marker
+    reverseGeocode(lat, lng); // Reverse geocode to fetch the address for the selected location
   };
 
   // Function to perform reverse geocoding and fetch the address/pincode
@@ -41,9 +44,11 @@ const MapComponent = ({ style }: { style: React.CSSProperties }) => {
         } else {
           setAddress('No address found for this location.');
         }
+        
+
+        onLocationSelect(response.results[0].formatted_address)
       })
       .catch((error) => {
-        console.error('Geocoder failed due to: ', error);
         setAddress('Error fetching address.');
       });
   };
@@ -65,6 +70,18 @@ const MapComponent = ({ style }: { style: React.CSSProperties }) => {
     }
   }, []);
 
+  // Handle map click to place a marker
+  const handleMapClick = (e: google.maps.MapMouseEvent) => {
+    const lat = e.latLng?.lat() ?? 0;
+    const lng = e.latLng?.lng() ?? 0;
+
+    // Update clickedLocation state with the new lat/lng
+    setClickedLocation({ lat, lng });
+
+    // Reverse geocode to fetch the address for the clicked location
+    reverseGeocode(lat, lng);
+  };
+
   return (
     <div style={{ height: '100%', width: '100%' }}>
       {/* Google Places Autocomplete Component */}
@@ -80,10 +97,17 @@ const MapComponent = ({ style }: { style: React.CSSProperties }) => {
           }}
           center={clickedLocation || userLocation || defaultCenter}
           zoom={12}
+          onClick={handleMapClick} // Add click handler for the map
         >
           {/* Mark clicked location on the map */}
           {clickedLocation && <Marker position={clickedLocation} />}
         </GoogleMap>
+      </div>
+
+      {/* Display the fetched address */}
+      <div style={{ padding: '10px' }}>
+        <strong>Address: </strong>
+        <span>{address}</span>
       </div>
     </div>
   );

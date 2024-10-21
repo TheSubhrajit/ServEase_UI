@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { TextField } from '@mui/material'; // Material UI TextField for styling
 
 interface GooglePlacesAutocompleteProps {
-  onSelectPlace: (place: google.maps.places.PlaceResult) => void; // Callback when a place is selected
+  onSelectPlace: (place: google.maps.places.PlaceResult, lat: number, lng: number) => void; // Callback when a place is selected
   placeholder?: string; // Custom placeholder for the input
 }
 
@@ -25,8 +25,12 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
       autoComplete.addListener('place_changed', () => {
         const place = autoComplete.getPlace();
         if (place.geometry) {
-          onSelectPlace(place); // Call callback with selected place
+          const lat = place.geometry.location?.lat() ?? 0;  // Fallback to 0 if lat is undefined
+          const lng = place.geometry.location?.lng() ?? 0;  // Fallback to 0 if lng is undefined
+
+          onSelectPlace(place, lat, lng); // Pass place, lat, and lng to parent component
           setAddress(place.formatted_address || ''); // Optionally set address display
+          setSuggestions([]); // Clear suggestions after selection (close the dropdown)
         }
       });
 
@@ -78,8 +82,18 @@ const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
                 transition: 'background-color 0.3s ease',
               }}
               onClick={() => {
-                console.log('Selected place:', suggestion); // Log the selected suggestion
-                onSelectPlace(suggestion as google.maps.places.PlaceResult); // On place selection
+                // Use the geocode method to get the full place (with geometry)
+                const service = new google.maps.places.PlacesService(document.createElement('div'));
+                service.getDetails({ placeId: suggestion.place_id }, (place, status) => {
+                  if (status === google.maps.places.PlacesServiceStatus.OK && place && place.geometry) {
+                    const lat = place.geometry.location?.lat() ?? 0;  // Fallback to 0 if lat is undefined
+                    const lng = place.geometry.location?.lng() ?? 0;  // Fallback to 0 if lng is undefined
+
+                    onSelectPlace(place, lat, lng); // Pass place, lat, and lng to parent component
+                    setAddress(place.formatted_address || ''); // Optionally set address display
+                    setSuggestions([]); // Close the dropdown
+                  }
+                });
               }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'} // Hover effect
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'} // Reset on leave
