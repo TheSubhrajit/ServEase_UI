@@ -1,29 +1,23 @@
 const express = require('express');
-const axios = require('axios');
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+// Create an Express app
 const app = express();
+
+// The target server you want to bypass CORS for
+const targetServer = 'http://65.2.153.173:8080'; // Replace with the actual API server URL
+
+
+// Proxy all requests to the target server
+app.use('/api', createProxyMiddleware({
+  target: targetServer,            // The API server to forward the requests to
+  changeOrigin: true,              // Ensures that the `Origin` header is modified to the target server's domain
+  secure: false,                   // Disable SSL verification for development purposes (if you're using HTTP)
+  logLevel: 'debug',               // Optional: For logging and debugging
+}));
+
+// Start the server
 const PORT = 5000;
-
-app.use(express.json());
-
-app.get('/api/places', async (req, res) => {
-  const { input } = req.query;
-  const API_KEY = 'YOUR_GOOGLE_API_KEY'; // Replace with your Google API key
-
-  try {
-    const response = await axios.get('https://maps.googleapis.com/maps/api/place/autocomplete/json', {
-      params: {
-        input,
-        key: API_KEY,
-        types: 'geocode',
-      },
-    });
-    res.json(response.data);
-  } catch (error) {
-    console.error('Error fetching places:', error);
-    res.status(500).send('Failed to fetch suggestions');
-  }
-});
-
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Proxy server running on http://localhost:${PORT}`);
 });

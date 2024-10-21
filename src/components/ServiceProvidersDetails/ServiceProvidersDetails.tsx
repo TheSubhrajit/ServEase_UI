@@ -70,44 +70,4 @@ const ServiceProvidersDetails = (props: any) => {
   );
 };
 
-// function App() {
-//   const services = [
-//     {
-//       name: 'John Doe',
-//       age: 24,
-//       category: 'A',
-//       service: 'Cook',
-//       language: 'Kannada',
-//       address: 'U496, Surface Studio, JP Nagar, Bengaluru-560078',
-//       distance: 4.2,
-//       rating: 4.0,
-//       ratingsCount: 272,
-//       availability: '8.00 AM',
-//       profilePic: 'babysitter.png',
-//     },
-//     {
-//       name: 'Jane Smith',
-//       age: 26,
-//       category: 'A',
-//       service: 'Cook',
-//       language: 'Kannada',
-//       address: 'C606, Purba Belmont, JP Nagar, Bengaluru-560078',
-//       distance: 3.7,
-//       rating: 4.2,
-//       ratingsCount: 860,
-//       availability: '8.00 AM',
-//       profilePic: 'babysitter.png',
-//     },
-//   ];
-
-//   return (
-//     <div>
-//       {services.map((service, index) => (
-//         <ServiceProvidersDetails key={index} {...service} />
-//       ))}
-//     </div>
-//   );
-// }
-
-// export default App;
 export default ServiceProvidersDetails;
