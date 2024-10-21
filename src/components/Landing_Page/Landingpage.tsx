@@ -1,8 +1,6 @@
 import React from "react";
 import { Tooltip } from "@mui/material";
 import "./Landingpage.css";
-import MapAutocomplete from "../MapComponent/GooglePlacesAutocomplete";
-import GooglePlacesAutocomplete from "../MapComponent/GooglePlacesAutocomplete";
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
@@ -18,19 +16,19 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent })
        <div className="selector-container">
         <Tooltip title="Cook" arrow>
           <div className="selectors" onClick={() => handleClick("cook")}>
-            <img src="../cooking.png" alt="Cook" />
+            <img src="../cook_animated.png" alt="Cook" />
           </div>
         </Tooltip>
-        <p className="label-text">Cook</p> 
+        <p className="label-text">Cook</p> {/* Label below the circle */}
       </div>
       
       <div className="selector-container">
         <Tooltip title="Maid" arrow>
           <div className="selectors" onClick={() => handleClick("maid")}>
-            <img src="../cleaner.png" alt="Maid" />
+            <img src="../maid.png" alt="Maid" />
           </div>
         </Tooltip>
-        <p className="label-text">Maid</p>
+        <p className="label-text">Maid</p> {/* Label below the circle */}
       </div>
       
       <div className="selector-container">
@@ -39,8 +37,9 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent })
             <img src="../nanny.png" alt="Nanny" />
           </div>
         </Tooltip>
-        <p className="label-text">Nanny</p>
+        <p className="label-text">Nanny</p> {/* Label below the circle */}
       </div>
+     
     </section>
     
   );
