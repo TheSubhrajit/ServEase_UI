@@ -1,4 +1,4 @@
-import { Autocomplete, TextField, IconButton, Menu, MenuItem } from "@mui/material";
+import { Autocomplete, TextField, IconButton, Menu, MenuItem, DialogContent, DialogActions, Button, Dialog, DialogTitle, useMediaQuery, useTheme } from "@mui/material";
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Navbar from "react-bootstrap/Navbar";
@@ -7,6 +7,9 @@ import axios from 'axios';
 import { keys } from '../../env/env';
 import './Header.css'; 
 import { Landingpage } from "../Landing_Page/Landingpage";
+import { InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import MapComponent from "../MapComponent/MapComponent";
 
 
 interface ChildComponentProps {
@@ -24,12 +27,15 @@ export const Header: React.FC<ChildComponentProps> = ({
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); 
   const [accountEl, setAccountEl] = useState<null | HTMLElement>(null); 
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
+          console.log(latitude)
+          console.log(longitude)
           try {
             const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
               params: {
@@ -54,6 +60,7 @@ export const Header: React.FC<ChildComponentProps> = ({
 
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [dataFromMap , setDataFromMap] = useState('');
 
   const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
   const PLACES_API_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
@@ -116,7 +123,36 @@ export const Header: React.FC<ChildComponentProps> = ({
   const handleAccountMenuClose = () => {
     setAccountEl(null); 
   };
+
+  const openLocation = () =>{
+    alert("clicked")
+  }
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  // Handle closing the dialog
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
+  const handleSave = () =>{
+    setLocation(dataFromMap)
+    setOpen(false);
+  }
+  // Handle location change
+  const handleLocationChange = (e) => {
+    setLocation(e.target.value);
+  };
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   
+
+  function updateLocationFromMap(data: string): void {
+    setDataFromMap(data)
+  }
 
   return (
     <>
@@ -132,48 +168,30 @@ export const Header: React.FC<ChildComponentProps> = ({
           </div>
 
           <div className="dropdowns-container">
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="location"
-              onClick={handleLocationMenuOpen} 
-              color="inherit"
-              sx={{ width: 60, height: 60 }} // Directly set size on IconButton
-            >
-              <LocationOnIcon sx={{ fontSize: 30, color: '#0d6efd' }} />{/* Increase icon size using sx */}
-            </IconButton>
 
-            <Menu
-              id="location-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleLocationMenuClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-            >
-              <MenuItem>
-                <div className="autocomplete">
-                  <Autocomplete
-                    onInputChange={handleInputChange} 
-                    onChange={handleChange}
-                    options={suggestions}
-                    sx={{ width: 300 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label={location ? location : "Enter location"} 
-                      />
-                    )}
-                  />
-                </div>
-              </MenuItem>
-            </Menu>
+          <TextField
+      variant="outlined"
+      fullWidth
+      value={location}
+      onClick={handleClickOpen}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <LocationOnIcon sx={{ fontSize: 30, color: '#0d6efd', cursor: 'pointer' }} />
+          </InputAdornment>
+        ),
+      }}
+      sx={{
+        backgroundColor: 'white',
+        borderRadius: 2,
+        width: '50%', // Set the width to 30%
+        '&:hover': {
+          cursor: 'pointer',  // Change cursor on hover for the TextField
+        },
+        cursor: 'pointer'
+      }}
+    />
+      
 
             <IconButton
               size="large"
@@ -208,6 +226,23 @@ export const Header: React.FC<ChildComponentProps> = ({
             </Menu>
           </div>
         </div>
+        <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Set Location</DialogTitle>
+      <DialogContent  sx={{ p: 0, display: 'flex', flexDirection: 'column', width: '600px' }}>
+        {/* Fixed height for the map container */}
+        <div style={{ height: '400px', width: '100%' }}> {/* Fixed height for the map */}
+          <MapComponent style={{ height: '100%', width: '100%' }}  onLocationSelect={updateLocationFromMap}/>
+        </div>
+      </DialogContent>
+
+      {/* Dialog Actions */}
+      <DialogActions sx={{ padding: '10px' }}>
+        <Button color="primary" onClick={handleClose}>Cancel</Button>
+        <Button color="primary" onClick={handleSave}>Save</Button>
+      </DialogActions>
+    </Dialog>
+
+
       </Navbar>
     </>
   );
