@@ -94,9 +94,10 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ onImageSelect }
   };
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" sx={{ height: '30vh', width: '50vw' }}>
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" >
       <Box
         sx={{
+          
           position: 'relative',
           width: '150px',
           height: '150px',
