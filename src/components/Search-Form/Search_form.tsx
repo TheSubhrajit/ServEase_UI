@@ -14,7 +14,7 @@ export const Search_form = (props: SimpleDialogProps) => {
   const onSubmit = (d: any) => alert(JSON.stringify(d));
   const [age, setAge] = useState<number>(14);
   const [availability, setAvailability] = useState<string>("8.00 AM");
-  const [areaRange, setAreaRange] = useState<string>("");
+  // const [areaRange, setAreaRange] = useState<string>("");
 
   return (
     <>
@@ -57,7 +57,7 @@ export const Search_form = (props: SimpleDialogProps) => {
                 <option value="8.00 AM">8.00 AM</option>
               </select>
             </div>
-            <div className="flex-container1">
+            {/* <div className="flex-container1">
               <label>Category: </label>
               <input
                 type="checkbox"
@@ -71,6 +71,11 @@ export const Search_form = (props: SimpleDialogProps) => {
                 value="Premium Service"
               />{" "}
               Premium Service
+            </div> */}
+            <div className="flex-container1">
+              <label>Speciality: </label>
+              <input type="radio" name="speciality" value="veg" /> Veg
+              <input type="radio" name="speciality" value="Non-Veg" /> Non-Veg
             </div>
             <div className="flex-container1">
               <label>Customer Ratings: </label>
@@ -78,7 +83,7 @@ export const Search_form = (props: SimpleDialogProps) => {
               <input type="checkbox" name="rating" value="4" /> 4 ★ & above
               <input type="checkbox" name="rating" value="3" /> 3 ★ & above
             </div>
-            <div className="flex-container1">
+            {/* <div className="flex-container1">
               <label>Area Range: </label>
               <input
                 type="radio"
@@ -101,7 +106,7 @@ export const Search_form = (props: SimpleDialogProps) => {
                 onChange={() => setAreaRange("5-10 Km")}
               />{" "}
               Within 5-10 Km Area
-            </div>
+            </div> */}
             <div className="button">
               <div className="Sbtn1">
                 <Button type="submit" id="button1" variant="outline-dark">

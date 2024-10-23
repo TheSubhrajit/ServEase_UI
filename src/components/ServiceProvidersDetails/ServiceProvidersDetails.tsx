@@ -9,16 +9,16 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import './serviceCard.css';
 
 const ServiceProvidersDetails = (props: any) => {
-  const { firstName, lastName, category, housekeepingRole, gender, currentLocation, distance, rating, ratingsCount, availability, profilePic } = props;
+  const { firstName, lastName, housekeepingRole, gender, language, currentLocation, distance, rating, ratingsCount, availability, profilePic } = props;
   // Function to determine rating description based on score
 
-  const getRatingDescription = (rating) => {
-    if (rating >= 4.5) return "Excellent";
-    if (rating >= 3.5) return "Very Good";
-    if (rating >= 2.5) return "Good";
-    if (rating >= 1.5) return "Fair";
-    return "Poor";
-  };
+  // const getRatingDescription = (rating) => {
+  //   if (rating >= 4.5) return "Excellent";
+  //   if (rating >= 3.5) return "Very Good";
+  //   if (rating >= 2.5) return "Good";
+  //   if (rating >= 1.5) return "Fair";
+  //   return "Poor";
+  // };
   return (
     <div className="content-box"> {/* Wrapper div */}
       <Card className="service-card">
@@ -31,15 +31,14 @@ const ServiceProvidersDetails = (props: any) => {
         </div>
 
         <div className="service-details"> {/* Section for service details */}
-          <Typography variant="h6">First Name: {firstName}</Typography>
-          <Typography variant="h6">Last Name: {lastName}</Typography>
-          <Typography>Gender: {gender}</Typography>
-          <Typography>Category: {category}</Typography>
-          <Typography>Housekeeping Role: {housekeepingRole}</Typography>
-          <Typography>Current Location: {currentLocation}</Typography>
+        {/* <Typography> {housekeepingRole}</Typography> */}
+          <Typography variant="h6"> Name: {firstName} {lastName}, {gender}</Typography>
+          <Typography >Speciality: South Indian, Bangali, Maharastrian, Non Veg </Typography>
+          <Typography >Language: English, Kannada {language} </Typography>
+          {/* <Typography>Current Location: {currentLocation}</Typography> */}
         </div>
 
-        <div className="service-ratings"> 
+        {/* <div className="service-ratings"> 
           <div className="rating-summary">
             <Typography variant="body1" className="rating-description">
               {getRatingDescription(rating)} 
@@ -64,7 +63,7 @@ const ServiceProvidersDetails = (props: any) => {
               {distance}2 km from your location
             </Typography>
           </div>
-        </div>
+        </div> */}
       </Card>
     </div>
   );
