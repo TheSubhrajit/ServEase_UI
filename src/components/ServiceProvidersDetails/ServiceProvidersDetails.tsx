@@ -1,50 +1,133 @@
-import React, { useEffect } from "react";
-import { 
-  Card, 
-  Typography, 
-  Avatar, 
-  Rating 
+import React from "react";
+import {
+  Card,
+  Typography,
+  Avatar,
+  Rating,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // Correct import for ExpandMoreIcon
 import './serviceCard.css';
+import { Description } from "@mui/icons-material";
 
-const ServiceProvidersDetails = (props: any) => {
-  const { firstName, lastName, category, housekeepingRole, gender, currentLocation, distance, rating, ratingsCount, availability, profilePic } = props;
-  // Function to determine rating description based on score
+const ServiceProvidersDetails = (props) => {
+  const {
+    firstName,
+    lastName,
+    age,
+    gender,
+    language,
+    diet,
+    experience,
+    otherServices,
+    currentLocation,
+    distance,
+    rating,
+    ratingsCount,
+    availability,
+    profilePic
+  } = props;
 
-  const getRatingDescription = (rating) => {
-    if (rating >= 4.5) return "Excellent";
-    if (rating >= 3.5) return "Very Good";
-    if (rating >= 2.5) return "Good";
-    if (rating >= 1.5) return "Fair";
-    return "Poor";
-  };
   return (
-    <div className="content-box"> {/* Wrapper div */}
-      <Card className="service-card">
+    <div className="content-box" > {/* Wrapper div */}
+      <Card className="service-card"
+       style={{
+        background: 'linear-gradient(135deg, #e0f7fa, #ffffff)',
+        borderRadius: '15px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+      }}>
         <div className="avatar-section"> {/* Section for avatar */}
           <Avatar
-            alt={housekeepingRole}
+            alt={`${firstName} ${lastName}`}
             src={`/${profilePic}`}
             className="service-avatar"
           />
         </div>
 
         <div className="service-details"> {/* Section for service details */}
-          <Typography variant="h6">First Name: {firstName}</Typography>
-          <Typography variant="h6">Last Name: {lastName}</Typography>
-          <Typography>Gender: {gender}</Typography>
-          <Typography>Category: {category}</Typography>
-          <Typography>Housekeeping Role: {housekeepingRole}</Typography>
-          <Typography>Current Location: {currentLocation}</Typography>
+        <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '0.5px', marginTop: '0.5px' }}>
+    Name: 
+    <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
+      {firstName} {lastName}
+    </span>, 
+    <span style={{ fontWeight: 'normal', fontSize: '1.2rem', marginLeft: '4px' }}>
+      (F,20)
+    </span>
+  </Typography>
+
+  <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
+  Language: 
+  <span style={{ fontWeight: 'normal', fontSize: '1rem', display: 'inline-flex', alignItems: 'center' }}>
+    {language || 'English'}
+    <img 
+      src="nonveg.png" 
+      alt="Vegetarian Diet Symbol" 
+      style={{ width: '20px', height: '20px', marginLeft: '5px' }} 
+    />
+  </span>
+</Typography>
+
+
+  <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
+    Experience: 
+    <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
+      {experience || '1 year'}
+    </span>, 
+    Other Services: 
+    <span style={{ fontWeight: 'normal', fontSize: '1.2rem', marginLeft: '8px' }}>
+      {otherServices}
+    </span>
+  </Typography>
+
+  <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
+    Description: 
+    <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
+      Detailed description of the service provider goes here.
+    </span>
+  </Typography>
+
+
+            {/* Accordion for Description */}
+        {/* <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Description</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+             
+              Detailed description of the service provider goes here.
+            </Typography>
+          </AccordionDetails>
+        </Accordion> */}
+
+        {/* Accordion for Other Details */}
+{/*  
+        <Accordion className="accordion-sky">
+  <AccordionSummary expandIcon={<ExpandMoreIcon />} className="accordion-summary">
+    <Typography variant="subtitle2" style={{ fontWeight: 'normal' }}>
+      Other Details
+    </Typography>
+  </AccordionSummary>
+  <AccordionDetails className="accordion-details">
+    <Typography>
+      Any other relevant details about the service provider can be added here.
+    </Typography>
+  </AccordionDetails>
+</Accordion> */}
+
         </div>
 
-        <div className="service-ratings"> 
+        {/* Ratings Section (if you decide to include it later) */}
+        <div className="service-ratings">
           <div className="rating-summary">
             <Typography variant="body1" className="rating-description">
-              {getRatingDescription(rating)} 
+              {rating >= 4.5 ? "Excellent" : rating >= 3.5 ? "Very Good" : rating >= 2.5 ? "Good" : rating >= 1.5 ? "Fair" : "Poor"}
             </Typography>
-            <span className="rating-score">4</span>
+            <span className="rating-score">{rating}</span>
           </div>
 
           <div className="ratings">
@@ -55,16 +138,18 @@ const ServiceProvidersDetails = (props: any) => {
           </div>
 
           <Typography variant="body2" className="availability">
-            Availability: Available {availability}
+            Availability: {availability}
           </Typography>
 
           <div className="location">
-            <LocationOnIcon fontSize="small" />
-            <Typography variant="body2" color="textSecondary">
-              {distance}2 km from your location
-            </Typography>
+            {/* <LocationOnIcon fontSize="small" /> */}
           </div>
         </div>
+
+        {/* Add a space or margin to separate the details from the accordions */}
+        
+
+      
       </Card>
     </div>
   );
