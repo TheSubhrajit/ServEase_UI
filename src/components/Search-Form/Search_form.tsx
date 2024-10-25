@@ -1,122 +1,208 @@
 import * as React from "react";
 import "./Search_form.css";
 import Button from "react-bootstrap/Button";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-export interface SimpleDialogProps {
+import { useForm, Controller } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { Chip, TextField, Autocomplete } from "@mui/material";
+import axios from "axios";
+
+interface SearchFormProps {
   open: boolean;
   selectedValue: string;
-  onClose: (value: string) => void;
+  onClose: () => void;
 }
 
-export const Search_form = (props: SimpleDialogProps) => {
-  const { handleSubmit } = useForm();
-  const onSubmit = (d: any) => alert(JSON.stringify(d));
-  const [age, setAge] = useState<number>(14);
-  const [availability, setAvailability] = useState<string>("8.00 AM");
-  // const [areaRange, setAreaRange] = useState<string>("");
+interface Country {
+  languages?: { [key: string]: string };
+}
+
+interface FormData {
+  gender: string;
+  age: number;
+  languages: string[];
+  shift: string;
+  availability: string;
+  speciality: string;
+  diet: string;
+  rating: string[];
+}
+
+export const Search_form: React.FC<SearchFormProps> = ({ open, selectedValue, onClose }) => {
+  const { handleSubmit, control, register, reset, watch } = useForm<FormData>({
+    defaultValues: {
+      gender: "",
+      age: 14,
+      languages: [],
+      shift: "",
+      availability: "8.00 AM",
+      speciality: "",
+      diet: "",
+      rating: [],
+    },
+  });
+
+  const [availableLanguages, setAvailableLanguages] = useState<string[]>([
+    "Assamese", "Bengali", "Gujarati", "Hindi", "Kannada", "Kashmiri", "Marathi", "Malayalam", 
+    "Oriya", "Punjabi", "Sanskrit", "Tamil", "Telugu", "Urdu", "Sindhi", "Konkani", "Nepali", 
+    "Manipuri", "Bodo", "Dogri", "Maithili", "Santhali",
+  ]);
+
+  // Fetch worldwide languages and add them to the availableLanguages array
+  useEffect(() => {
+    const fetchWorldLanguages = async () => {
+      try {
+        const response = await axios.get<Country[]>("https://restcountries.com/v3.1/all");
+        const worldLanguagesSet = new Set<string>();
+
+        response.data.forEach((country) => {
+          if (country.languages) {
+            Object.values(country.languages).forEach((language) => worldLanguagesSet.add(language));
+          }
+        });
+
+        setAvailableLanguages((prevLanguages) => [
+          ...prevLanguages,
+          ...Array.from(worldLanguagesSet),
+        ]);
+      } catch (error) {
+        console.error("Error fetching world languages:", error);
+      }
+    };
+
+    fetchWorldLanguages();
+  }, []);
+
+  // Handle form submission
+  const onSubmit = (data: FormData) => {
+    console.log("Form Data:", data);
+  };
+
+  // Handle reset
+  const handleReset = () => {
+    reset();
+  };
 
   return (
     <>
       <div className="all">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
+            {/* Gender selection */}
             <div className="flex-container1">
               <label>Gender: </label>
-              <input type="radio" name="gender" value="Male" /> Male
-              <input type="radio" name="gender" value="Female" /> Female
+              <input type="radio" value="Male" {...register("gender")} /> Male
+              <input type="radio" value="Female" {...register("gender")} /> Female
             </div>
+
+            {/* Age slider */}
             <div className="flex-container1">
               <label>Age: </label>
-              <input
-                type="range"
-                min="14"
-                max="60"
-                value={age}
-                onChange={(e) => setAge(Number(e.target.value))}
+              <Controller
+                name="age"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="range"
+                    min="18"
+                    max="50"
+                    {...field}
+                    value={field.value}
+                  />
+                )}
               />
-              {age} years
+              {watch("age")} years
             </div>
-            <div className="flex-container1">
-              <label>Language: </label>
-              <input type="checkbox" name="language" value="Bengali" /> Bengali
-              <input type="checkbox" name="language" value="Hindi" /> Hindi
-              <input type="checkbox" name="language" value="English" /> English
+
+            {/* Language selection */}
+            <div className="language">
+              <h6>Select Languages (Indian and World Languages)</h6>
+              <Controller
+                name="languages"
+                control={control}
+                render={({ field }) => (
+                  <Autocomplete
+                    multiple
+                    freeSolo
+                    options={availableLanguages}
+                    value={field.value}
+                    onChange={(event, newValue) => field.onChange(newValue)}
+                    renderTags={(value: string[], getTagProps) =>
+                      value.map((option: string, index: number) => (
+                        <Chip
+                          variant="outlined"
+                          label={option}
+                          {...getTagProps({ index })}
+                        />
+                      ))
+                    }
+                    renderInput={(params) => (
+                      <TextField {...params} variant="outlined" label="Select Languages" />
+                    )}
+                  />
+                )}
+              />
             </div>
+
+            {/* Shift time */}
             <div className="flex-container1">
               <label>Shift Time: </label>
-              <input type="radio" name="shift" value="Morning" /> Morning
-              <input type="radio" name="shift" value="Evening" /> Evening
+              <input type="radio" value="Morning" {...register("shift")} /> Morning
+              <input type="radio" value="Evening" {...register("shift")} /> Evening
             </div>
+
+            {/* Availability */}
             <div className="flex-container1">
               <label>Availability: </label>
-              <select
-                value={availability}
-                onChange={(e) => setAvailability(e.target.value)}
-              >
+              <select {...register("availability")}>
                 <option value="8.00 AM">8.00 AM</option>
+                <option value="12.00 PM">12.00 PM</option>
+                <option value="4.00 PM">4.00 PM</option>
               </select>
             </div>
-            {/* <div className="flex-container1">
-              <label>Category: </label>
-              <input
-                type="checkbox"
-                name="category"
-                value="Economy Service"
-              />{" "}
-              Economy Service
-              <input
-                type="checkbox"
-                name="category"
-                value="Premium Service"
-              />{" "}
-              Premium Service
-            </div> */}
+
+            {/* Speciality section */}
             <div className="flex-container1">
               <label>Speciality: </label>
-              <input type="radio" name="speciality" value="veg" /> Veg
-              <input type="radio" name="speciality" value="Non-Veg" /> Non-Veg
+              <input type="radio" value="Veg" {...register("speciality")} /> Veg
+              <input type="radio" value="Non-Veg" {...register("speciality")} /> Non-Veg
             </div>
+
+            {/* New Diet section with symbols */}
             <div className="flex-container1">
-              <label>Customer Ratings: </label>
-              <input type="checkbox" name="rating" value="5" /> 5 ★
-              <input type="checkbox" name="rating" value="4" /> 4 ★ & above
-              <input type="checkbox" name="rating" value="3" /> 3 ★ & above
+              <label>Diet: </label>
+              <input type="radio" value="Veg" {...register("diet")} /> 
+              <span role="img" aria-label="veg">🥗</span> Veg
+              <input type="radio" value="Non-Veg" {...register("diet")} /> 
+              <span role="img" aria-label="non-veg">🍗</span> Non-Veg
             </div>
-            {/* <div className="flex-container1">
-              <label>Area Range: </label>
-              <input
-                type="radio"
-                name="area"
-                value="1-2 Km"
-                onChange={() => setAreaRange("1-2 Km")}
-              />{" "}
-              Within 1-2 Km Area
-              <input
-                type="radio"
-                name="area"
-                value="2-5 Km"
-                onChange={() => setAreaRange("2-5 Km")}
-              />{" "}
-              Within 2-5 Km Area
-              <input
-                type="radio"
-                name="area"
-                value="5-10 Km"
-                onChange={() => setAreaRange("5-10 Km")}
-              />{" "}
-              Within 5-10 Km Area
-            </div> */}
+
+            {/* Ratings */}
+            <div className="flex-container1">
+  <label>Customer Ratings: </label>
+  <input type="checkbox" value="5" {...register("rating")} /> 
+  <span style={{ color: "#FFD700" }}>★</span> 5
+  <input type="checkbox" value="4" {...register("rating")} /> 
+  <span style={{ color: "#FFD700" }}>★</span> 4 & above
+  <input type="checkbox" value="3" {...register("rating")} /> 
+  <span style={{ color: "#FFD700" }}>★</span> 3 & above
+</div>
+
+
+            {/* Submit and Reset buttons */}
             <div className="button">
               <div className="Sbtn1">
-                <Button type="submit" id="button1" variant="outline-dark">
+                <Button type="submit" id="button1" variant="outline-primary">
                   Submit
                 </Button>
               </div>
-              <div className="Sbtn2 ">
-                <Button type="reset" id="button2" variant="outline-dark">
-                  {" "}
-                  Reset{" "}
+              <div className="Sbtn2">
+                <Button
+                  type="button"
+                  id="button2"
+                  variant="outline-primary"
+                  onClick={handleReset}
+                >
+                  Reset
                 </Button>
               </div>
             </div>
