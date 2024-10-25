@@ -3,7 +3,7 @@
 }
 
 .header-class{
-  height: 12%;
+  height: 10%;
 }
 
 /* Ensure the body and html take up the full height */
@@ -40,7 +40,7 @@ html, body {
   border-top: 1px solid #0d0303;
   z-index: 1000; /* Keep the footer above content */
   text-align: center;
-  height: 12%;
+  height: 10%;
 }
 
 /* Main content area */
