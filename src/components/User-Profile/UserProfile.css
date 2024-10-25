@@ -1,0 +1,14 @@
+.accordion{
+  background-color: #0f8bff; 
+  padding: 2px;
+}
+.topic{
+    
+    justify-content: flex-start; 
+}
+.point{
+    display: flex;
+  flex-direction: column;
+    font: icon;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
