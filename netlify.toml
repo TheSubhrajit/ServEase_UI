@@ -1,0 +1,10 @@
+[build]
+  publish = "dist" # Adjust to your build output directory
+  command = "npm run build" # Adjust to your build command
+
+[[redirects]]
+  # Proxy requests to your HTTP API
+  from = "/api/*"
+  to = "http://43.205.212.94:8080/"
+  status = 200
+  force = true
