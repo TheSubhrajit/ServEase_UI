@@ -5,6 +5,6 @@
 [[redirects]]
   # Proxy requests to your HTTP API
   from = "/api/*"
-  to = "http://43.205.212.94:8080/"
+  to = "http://43.205.212.94:8080/:splat"
   status = 200
   force = true
