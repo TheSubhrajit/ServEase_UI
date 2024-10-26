@@ -1,5 +1,5 @@
 [build]
-  publish = "dist" # Ensure this is the correct output directory for your build
+  publish = "build" # Ensure this is the correct output directory for your build
    command = "CI=false npm run build -- --no-verify"
 
 [[redirects]]
