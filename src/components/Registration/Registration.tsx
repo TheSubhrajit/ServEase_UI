@@ -18,7 +18,6 @@ import {
   FormControl,
   Alert,
   AlertColor,
-  Snackbar,
 } from "@mui/material";
 import "./Registration.css";
 import {
@@ -27,6 +26,7 @@ import {
   ArrowForward,
   ArrowBack,
 } from "@mui/icons-material";
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -85,6 +85,18 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<AlertColor>("success");
+
+    const showSnackbar = (message: string, severity: AlertColor = 'success') => {
+      setSnackbarMessage(message);
+      setSnackbarSeverity(severity);
+      setSnackbarOpen(true);
+    };
+  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
 
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
@@ -197,12 +209,31 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
+  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   if (validateForm()) {
+  //     console.log("Form submitted:", formData);
+  //   }
+  // };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Ensure form validation passes
     if (validateForm()) {
-      console.log("Form submitted:", formData);
+        // Log form data in the console for now
+        console.log("Form submitted:", formData);
+        
+        // Show success message in the Snackbar
+        showSnackbar('Registration Successful!', 'success');
+
+        // Redirect or call the onBackToLogin handler with form data
+        onBackToLogin(true);  // Triggering the login component after success
+    } else {
+        // Show error message in the Snackbar if form validation fails
+        showSnackbar('Please fix the errors and try again.', 'error');
     }
-  };
+};
+
   const handleNext = () => {
     if (validateForm()) {
       setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
@@ -522,10 +553,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     }
   };
 
-  function handleCloseSnackbar(event: SyntheticEvent<Element, Event>): void {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <Box
       sx={{ maxWidth: 600, margin: "auto", padding: 2, display: "block" }}
@@ -563,10 +590,21 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
           >
             Back
           </Button>
+          {/* <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+        </Snackbar> */}
           {activeStep === steps.length - 1 ? (
             <Button type="submit" variant="contained" color="primary">
               Submit
             </Button>
+            
           ) : (
             <Button
               variant="contained"
@@ -578,18 +616,18 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             </Button>
           )}
         </Box>
-        {/* <Snackbar open={snackbarOpen} 
-         autoHideDuration={6000} 
-        onClose={handleCloseSnackbar}   
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        <Snackbar open={snackbarOpen} 
+      autoHideDuration={6000} 
+      onClose={handleCloseSnackbar}   
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      sx={{ marginTop: '60px',}}
       >
        <Alert onClose={handleCloseSnackbar}
         severity={snackbarSeverity}  
-        sx={{ width: '100%' }}>
+        sx={{ width: '100%', fontSize: '1.5rem', padding: '16px', border: '1px solid grey',}}>
           {snackbarMessage}
         </Alert>
-      </Snackbar> */}
-
+      </Snackbar>
         <div className="flex flex-col mt-4 items-center justify-center text-sm">
           <h3 className="dark:text-gray-300">
             Already have an account?{" "}

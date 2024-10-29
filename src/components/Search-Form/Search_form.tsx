@@ -27,11 +27,15 @@ interface FormData {
   rating: string[];
 }
 
-export const Search_form: React.FC<SearchFormProps> = ({ open, selectedValue, onClose }) => {
+export const Search_form: React.FC<SearchFormProps> = ({
+  open,
+  selectedValue,
+  onClose,
+}) => {
   const { handleSubmit, control, register, reset, watch } = useForm<FormData>({
     defaultValues: {
       gender: "",
-      age: 14,
+      age: 18,
       languages: [],
       shift: "",
       availability: "8.00 AM",
@@ -42,21 +46,44 @@ export const Search_form: React.FC<SearchFormProps> = ({ open, selectedValue, on
   });
 
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([
-    "Assamese", "Bengali", "Gujarati", "Hindi", "Kannada", "Kashmiri", "Marathi", "Malayalam", 
-    "Oriya", "Punjabi", "Sanskrit", "Tamil", "Telugu", "Urdu", "Sindhi", "Konkani", "Nepali", 
-    "Manipuri", "Bodo", "Dogri", "Maithili", "Santhali",
+    "Assamese",
+    "Bengali",
+    "Gujarati",
+    "Hindi",
+    "Kannada",
+    "Kashmiri",
+    "Marathi",
+    "Malayalam",
+    "Oriya",
+    "Punjabi",
+    "Sanskrit",
+    "Tamil",
+    "Telugu",
+    "Urdu",
+    "Sindhi",
+    "Konkani",
+    "Nepali",
+    "Manipuri",
+    "Bodo",
+    "Dogri",
+    "Maithili",
+    "Santhali",
   ]);
 
   // Fetch worldwide languages and add them to the availableLanguages array
   useEffect(() => {
     const fetchWorldLanguages = async () => {
       try {
-        const response = await axios.get<Country[]>("https://restcountries.com/v3.1/all");
+        const response = await axios.get<Country[]>(
+          "https://restcountries.com/v3.1/all"
+        );
         const worldLanguagesSet = new Set<string>();
 
         response.data.forEach((country) => {
           if (country.languages) {
-            Object.values(country.languages).forEach((language) => worldLanguagesSet.add(language));
+            Object.values(country.languages).forEach((language) =>
+              worldLanguagesSet.add(language)
+            );
           }
         });
 
@@ -91,7 +118,8 @@ export const Search_form: React.FC<SearchFormProps> = ({ open, selectedValue, on
             <div className="flex-container1">
               <label>Gender: </label>
               <input type="radio" value="Male" {...register("gender")} /> Male
-              <input type="radio" value="Female" {...register("gender")} /> Female
+              <input type="radio" value="Female" {...register("gender")} />{" "}
+              Female
             </div>
 
             {/* Age slider */}
@@ -129,6 +157,7 @@ export const Search_form: React.FC<SearchFormProps> = ({ open, selectedValue, on
                     renderTags={(value: string[], getTagProps) =>
                       value.map((option: string, index: number) => (
                         <Chip
+                          // key = {index}
                           variant="outlined"
                           label={option}
                           {...getTagProps({ index })}
@@ -136,7 +165,11 @@ export const Search_form: React.FC<SearchFormProps> = ({ open, selectedValue, on
                       ))
                     }
                     renderInput={(params) => (
-                      <TextField {...params} variant="outlined" label="Select Languages" />
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Select Languages"
+                      />
                     )}
                   />
                 )}
@@ -146,8 +179,12 @@ export const Search_form: React.FC<SearchFormProps> = ({ open, selectedValue, on
             {/* Shift time */}
             <div className="flex-container1">
               <label>Shift Time: </label>
-              <input type="radio" value="Morning" {...register("shift")} /> Morning
-              <input type="radio" value="Evening" {...register("shift")} /> Evening
+              <input type="radio" value="Morning" {...register("shift")} />{" "}
+              Morning
+              <input type="radio" value="Afternoon" {...register("shift")} />{" "}
+              Afternoon
+              <input type="radio" value="Evening" {...register("shift")} />{" "}
+              Evening
             </div>
 
             {/* Availability */}
@@ -160,33 +197,52 @@ export const Search_form: React.FC<SearchFormProps> = ({ open, selectedValue, on
               </select>
             </div>
 
-            {/* Speciality section */}
-            <div className="flex-container1">
-              <label>Speciality: </label>
-              <input type="radio" value="Veg" {...register("speciality")} /> Veg
-              <input type="radio" value="Non-Veg" {...register("speciality")} /> Non-Veg
-            </div>
-
             {/* New Diet section with symbols */}
             <div className="flex-container1">
               <label>Diet: </label>
-              <input type="radio" value="Veg" {...register("diet")} /> 
-              <span role="img" aria-label="veg">🥗</span> Veg
-              <input type="radio" value="Non-Veg" {...register("diet")} /> 
-              <span role="img" aria-label="non-veg">🍗</span> Non-Veg
+              <input type="radio" value="Veg" {...register("diet")} />
+              <img
+                src="veg.png"
+                alt="Vegetarian Diet Symbol"
+                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
+              />
+              <input type="radio" value="Non-Veg" {...register("diet")} />
+              <img
+                src="nonveg.png"
+                alt="Vegetarian Diet Symbol"
+                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
+              />
             </div>
+
+            {/* Speciality section */}
+            <div className="flex-container1">
+              <label>Cooking Speciality: </label>
+              <input type="radio" value="Veg" {...register("diet")} />
+              <img
+                src="veg.png"
+                alt="Vegetarian Diet Symbol"
+                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
+              />
+              <input type="radio" value="Non-Veg" {...register("diet")} />
+              <img
+                src="nonveg.png"
+                alt="Vegetarian Diet Symbol"
+                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
+              />
+            </div>
+
+            
 
             {/* Ratings */}
             <div className="flex-container1">
-  <label>Customer Ratings: </label>
-  <input type="checkbox" value="5" {...register("rating")} /> 
-  <span style={{ color: "#FFD700" }}>★</span> 5
-  <input type="checkbox" value="4" {...register("rating")} /> 
-  <span style={{ color: "#FFD700" }}>★</span> 4 & above
-  <input type="checkbox" value="3" {...register("rating")} /> 
-  <span style={{ color: "#FFD700" }}>★</span> 3 & above
-</div>
-
+              <label>Customer Ratings: </label>
+              <input type="checkbox" value="5" {...register("rating")} />
+              <span style={{ color: "#FFD700" }}>★</span> 5
+              <input type="checkbox" value="4" {...register("rating")} />
+              <span style={{ color: "#FFD700" }}>★</span> 4 & above
+              <input type="checkbox" value="3" {...register("rating")} />
+              <span style={{ color: "#FFD700" }}>★</span> 3 & above
+            </div>
 
             {/* Submit and Reset buttons */}
             <div className="button">
