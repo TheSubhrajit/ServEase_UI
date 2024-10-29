@@ -1,70 +1,157 @@
+/* Service Card Styling */
+/* Service Card Styling */
 .service-card {
   display: flex;
-  border-radius: 8px;
   flex-direction: row;
-  justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 20px;
-  border: 1px solid rgb(0, 0, 0);
+  justify-content: space-between;
+  margin-bottom: 5px;
+  padding: 16px;
+  border-radius: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Softer border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   width: 100%;
-}
-.avatar-section {
-  margin-right: 16px; 
-}
-.service-avatar {
-  width: 80px; 
-  height: 80px;
-  margin-right: 40px;
-  /* flex-shrink: 0; */
-}
-.content-box {
-  margin-bottom: 16px; /* Add some spacing between cards */
+  background: linear-gradient(135deg, #e0f7fa, #ffffff); /* Gradient background */
 }
 
+/* Hover Effect */
+.service-card:hover {
+  transform: scale(1.01); /* Subtle scaling effect on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Avatar Section */
+.avatar-section {
+  margin-right: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px; /* Increase section size to accommodate larger avatar */
+  
+}
+
+.service-avatar {
+  margin-top: 60px; /* Adjust margin to align better */
+  width: 200px;  /* Increased size for a better look */
+  height: 200px; /* Same as width to maintain circular shape */
+  border-radius: 50%; /* Circular avatar */
+  border: 3px solid #90caf9; /* Slightly thicker soft blue border */
+  object-fit: cover; /* Ensures the image fits within the circle */
+}
+
+/* Content Box */
+.content-box {
+  margin-top: 0.5px;
+}
+
+/* Service Details Section */
 .service-details {
   flex-grow: 1;
-  padding-right: 50px;
-  border-right: 1px solid black;
+  padding-right: 40px;
+  border-right: 1px solid rgba(0, 0, 0, 0.1); /* Lighter border */
 }
 
-.service-ratings {
-  padding-left: 10px; 
-  padding-right: 5px;
-  text-align: center;
-}
-
-/* .ratings, .availability, .location {
-  margin-top: 8px;
-  display: flex;
-  align-items: right;
-} */
-.rating-score {
-  font-size: 1.2rem; 
+.service-details h6 {
+  margin-bottom: 8px;
   font-weight: bold;
-  padding: 4px 8px; 
-  border-radius: 4px; 
-  background-color: #ba9898; 
-
+  color: #333;
+  font-size: 1.2rem;
 }
-/* .rating-description {
-  font-weight: bold; 
-  margin-right: 8px; 
-} */
+
+/* Ratings Section */
+.service-ratings {
+  padding-left: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  gap: 12px;
+}
+
+/* Rating Score Styling */
+.rating-score {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background-color: #ffcccb; /* Soft red background for ratings */
+  color: #000;
+}
+
+/* Rating Summary */
 .rating-summary {
   display: flex;
-  align-items: center; 
-  justify-content: flex-end;
-  padding-right: 5px;
-  margin-bottom: 9px; 
-  gap: 4px;
+  /* align-items: center; */
+  /* justify-content: flex-end; */
+  gap: 8px;
   padding-top: 5px;
+  padding-right: 5px;
+  padding-left: 20px;
 }
+
+/* Availability Section */
 .availability {
-  margin-bottom: 8px;
+  margin-top: 8px;
+  font-weight: bold;
+  color: #4caf50; /* Green for availability */
+}
+
+/* Location Section */
+.location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.location svg {
+  color: #90caf9; /* Blue icon */
+}
+
+/* Accordion Styling */
+.accordion-sky {
+  background: rgba(135, 206, 235, 0.15); /* Light sky color */
+  border-radius: 5px;
+  /* margin-top: 12px; */
+  transition: background 0.2s ease-in-out;
+  
+}
+
+.accordion-sky:hover {
+  /* background: linear-gradient(to right,#cfe6f6,#ffffff); */
+  background: linear-gradient(135deg, #ffffff, #e0f7fa);
  
 }
 
-.location {
-  display: flex; 
-  align-items: center;
+.accordion-summary {
+  background-color: rgba(224, 247, 250, 0.3); /* Soft background */
+  padding: 8px 16px;
+  font-weight: bold;
+}
+
+.accordion-details {
+  background-color: rgba(224, 247, 250, 0.15);
+  padding: 16px;
+}
+.custom-accordion {
+  box-shadow: none; /* Remove shadow */
+  border: none; /* No borders */
+  margin: 0; /* Eliminate default margin */
+}
+
+.custom-accordion-summary {
+  padding: 0; /* Remove padding from summary */
+  min-height: 0; /* Adjust height to remove box-like feel */
+}
+
+.custom-accordion-summary.Mui-expanded {
+  min-height: 0; /* Prevent boxy look when expanded */
+}
+
+.custom-accordion-details {
+  padding: 8px 0; /* Adjust padding for details */
+  margin-top: -8px; /* Close the gap between summary and details */
 }

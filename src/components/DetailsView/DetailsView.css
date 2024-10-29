@@ -1,6 +1,7 @@
 /* DetailsView.css */
 
 /* Main container */
+
 .details-view {
   display: flex;
   flex-direction: row; /* Sidebar and body side by side */

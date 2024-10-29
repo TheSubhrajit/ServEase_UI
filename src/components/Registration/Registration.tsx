@@ -18,6 +18,8 @@ import {
   FormControl,
   Alert,
   AlertColor,
+  Snackbar,
+  SnackbarCloseReason,
 } from "@mui/material";
 import "./Registration.css";
 import {
@@ -26,7 +28,7 @@ import {
   ArrowForward,
   ArrowBack,
 } from "@mui/icons-material";
-import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
+import ProfileImageUpload from './ProfileImageUpload';
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -45,6 +47,7 @@ interface FormData {
   agreeToTerms: boolean;
   hobbies: string;
   language: string;
+  speciality: string;
 }
 
 // Define the shape of errors to hold string messages
@@ -115,6 +118,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     agreeToTerms: false,
     hobbies: "",
     language: "",
+    speciality: '',
   });
 
   const [gender, setGender] = useState("");
@@ -132,6 +136,11 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   const handleToggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
+   // File change handler to update the profile picture
+   const handleImageSelect = (file: File | null) => {
+    setFormData((prevData) => ({ ...prevData, profileImage: file }));
+  };
+  
 
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -232,7 +241,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
         // Show error message in the Snackbar if form validation fails
         showSnackbar('Please fix the errors and try again.', 'error');
     }
-};
+  };
 
   const handleNext = () => {
     if (validateForm()) {
@@ -251,6 +260,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
         return (
           <div className="topic">
             <Grid container spacing={2}>
+               {/* Profile Picture Upload Section */}
+      <Grid item xs={12}>
+        <ProfileImageUpload onImageSelect={handleImageSelect} />
+      </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="First Name"

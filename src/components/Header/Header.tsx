@@ -1,4 +1,4 @@
-import { Autocomplete, TextField, IconButton, Menu, MenuItem, DialogContent, DialogActions, Button, Dialog, DialogTitle, useMediaQuery, useTheme } from "@mui/material";
+import { Autocomplete, Avatar, TextField, IconButton, Menu, MenuItem, DialogContent, DialogActions, Button, Dialog, DialogTitle, useMediaQuery, useTheme } from "@mui/material";
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Navbar from "react-bootstrap/Navbar";
@@ -10,6 +10,7 @@ import { Landingpage } from "../Landing_Page/Landingpage";
 import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MapComponent from "../MapComponent/MapComponent";
+
 
 
 interface ChildComponentProps {
@@ -97,6 +98,19 @@ export const Header: React.FC<ChildComponentProps> = ({
 
     fetchSuggestions();
   }, [inputValue]);
+
+const [profileImage, setProfileImage] = useState<string | null>(null); // State to hold uploaded image
+
+const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setProfileImage(reader.result as string); // Store image as base64
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
   const handleInputChange = (event: React.SyntheticEvent, newValue: string) => {
     setInputValue(newValue);
@@ -191,9 +205,7 @@ export const Header: React.FC<ChildComponentProps> = ({
         cursor: 'pointer'
       }}
     />
-      
-
-            <IconButton
+      <IconButton
               size="large"
               edge="end"
               aria-label="account"
@@ -203,6 +215,28 @@ export const Header: React.FC<ChildComponentProps> = ({
             >
               <AccountCircle sx={{ fontSize: 30, color: '#0d6efd' }} /> {/* Increase icon size using sx */}
             </IconButton>
+
+      {/* <IconButton
+  size="large"
+  edge="end"
+  aria-label="account"
+  color="inherit"
+  component="label"
+  sx={{ width: 60, height: 60 }}
+>
+  <input
+    type="file"
+    accept="image/*"
+    hidden
+    onChange={handleImageUpload}
+  />
+  <Avatar sx={{ width: 40, height: 40 }} src={profileImage || undefined}>
+    {!profileImage && (
+      <AccountCircle sx={{ fontSize: 30, color: '#0d6efd' }} />
+    )}
+  </Avatar>
+</IconButton> */}
+
 
             <Menu
               id="menu-appbar"
