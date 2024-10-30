@@ -9,6 +9,7 @@ import { DetailsView } from "./components/DetailsView/DetailsView";
 import Footer from "./components/Footer/Footer";
 import Admin from "./components/Admin/Admin";
 import Login from "./components/Login/Login";
+import Confirmationpage from "./components/ServiceProvidersDetails/Confirmationpage";
 
 
 
@@ -36,7 +37,7 @@ return (
     <div className="header-class">
       <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />
     </div>
-    <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
+    {/* <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
       {
         handleDropDownValue === 'login' ? (
           <div className="w-full max-w-4xl h-[75%]">
@@ -54,11 +55,12 @@ return (
           </>
         )
       }
-    </section>
-  
+    </section> */}
+    <Confirmationpage />
     <footer className="footer-container">
       <Footer />
     </footer>
+   
   </div>
   
   );
