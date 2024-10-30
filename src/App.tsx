@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import UserProfile from "./components/User-Profile/UserProfile";
 import { Header } from "./components/Header/Header";
 import { Landingpage } from "./components/Landing_Page/Landingpage";
 import { DetailsView } from "./components/DetailsView/DetailsView";
@@ -12,15 +11,6 @@ import Login from "./components/Login/Login";
 import Confirmationpage from "./components/ServiceProvidersDetails/Confirmationpage";
 
 
-
-// function App() {
-//   return (
-
-//    <>
-//   <UserProfile/>
-//    </>
-
-//   );
 function App() {
   const [selection, setSelection] = useState();
   const [handleDropDownValue , setDropDownvalue] = useState(undefined);
@@ -32,7 +22,8 @@ function App() {
     setSelection(undefined)
       setDropDownvalue(e);
   }
-return (
+
+  return (
     <div className="App">
     <div className="header-class">
       <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />
@@ -55,12 +46,13 @@ return (
           </>
         )
       }
-    </section> */}
-    <Confirmationpage />
+    </section>
+    
+   */}
+   <Confirmationpage></Confirmationpage>
     <footer className="footer-container">
       <Footer />
     </footer>
-   
   </div>
   
   );

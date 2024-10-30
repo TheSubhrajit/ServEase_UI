@@ -82,24 +82,13 @@ const ServiceProvidersDetails = (props) => {
       {otherServices}
     </span>
   </Typography>
-   
-  {/* <Accordion className="accordion-sky">
-  <AccordionSummary expandIcon={<ExpandMoreIcon />} className="accordion-summary">
-    <Typography variant="subtitle2" style={{ fontWeight: 'normal' }}>
-      Other Details
-    </Typography>
-  </AccordionSummary>
-  <AccordionDetails className="accordion-details">
+
   <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
     Description: 
     <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
       Detailed description of the service provider goes here.
     </span>
   </Typography>
-  </AccordionDetails>
-</Accordion> */}
-
-  
 
 
             {/* Accordion for Description */}
@@ -116,7 +105,19 @@ const ServiceProvidersDetails = (props) => {
         </Accordion> */}
 
         {/* Accordion for Other Details */}
-
+{/*  
+        <Accordion className="accordion-sky">
+  <AccordionSummary expandIcon={<ExpandMoreIcon />} className="accordion-summary">
+    <Typography variant="subtitle2" style={{ fontWeight: 'normal' }}>
+      Other Details
+    </Typography>
+  </AccordionSummary>
+  <AccordionDetails className="accordion-details">
+    <Typography>
+      Any other relevant details about the service provider can be added here.
+    </Typography>
+  </AccordionDetails>
+</Accordion> */}
 
         </div>
 
@@ -139,7 +140,10 @@ const ServiceProvidersDetails = (props) => {
           <Typography variant="body2" className="availability">
             Availability: {availability}
           </Typography>
-          {/* <button className="book-now-button">BOOK NOW</button> */}
+
+          <div className="location">
+            {/* <LocationOnIcon fontSize="small" /> */}
+          </div>
         </div>
 
         {/* Add a space or margin to separate the details from the accordions */}

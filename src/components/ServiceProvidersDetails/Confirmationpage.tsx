@@ -3,69 +3,49 @@ import {
   Card,
   Typography,
   Avatar,
-  Rating,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Button,
 } from "@mui/material";
-import { FaArrowLeft,FaRegHeart,FaStar,FaRegStar,FaHeart,FaAward,FaRupeeSign,FaCheckCircle, FaMapMarkerAlt, FaCalendarAlt, FaClock } from 'react-icons/fa';
+import { FaArrowLeft, FaCheckCircle, FaStar ,FaRegStar,FaAward, FaRupeeSign, FaRegHeart, FaMapMarkerAlt } from 'react-icons/fa';
 import { AiOutlineCalendar } from 'react-icons/ai';
-import { BsStarFill, BsStarHalf, BsStar, BsFillTagFill } from 'react-icons/bs';
-import "./Confirmationpage.css";
+import './Confirmationpage.css';
 
-const MoreDetails = (props) => {
+const  Confirmationpage= (props) => {
   const {
     firstName,
     lastName,
     age,
     gender,
     language,
-    diet,
     experience,
-    otherServices,
-    currentLocation,
-    distance,
-    rating,
-    ratingsCount,
-    availability,
     profilePic,
   } = props;
 
   const [formattedDate, setFormattedDate] = useState<string>("");
-  const [isDatePickerVisible, setDatePickerVisible] = useState<boolean>(false);
-  // Helper function to format the date as "Form 02 Nov"
+
   const formatDate = (inputDate: string) => {
-    if (!inputDate) return ""; // Handle empty input
-
-    const date = new Date(inputDate + "T00:00:00"); // Ensure local time interpretation
-    if (Number.isNaN(date.getTime())) return "Invalid Date"; // Use getTime() to check validity
-
-    const day = String(date.getDate()).padStart(2, '0'); // Format day as "02"
-    const month = date.toLocaleString('default', { month: 'short' }); // "Nov"
+    if (!inputDate) return "";
+    const date = new Date(inputDate + "T00:00:00");
+    if (Number.isNaN(date.getTime())) return "Invalid Date";
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = date.toLocaleString('default', { month: 'short' });
     return `Form ${day} ${month}`;
   };
 
-  // Handle the date change event
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFormattedDate = formatDate(e.target.value);
     setFormattedDate(newFormattedDate);
   };
+
   const handleBackButtonClick = () => {
     // Implement your back navigation logic here, e.g.:
     window.history.back(); // This will take the user back to the previous page
   };
+
+
   return (
     <div className="details-container">
         {/* Back Button at the top */}
-        {/* <Button 
-        onClick={handleBackButtonClick} 
-        startIcon={<FaArrowLeft />} 
-        variant="outlined" 
-        className="back-button"
-      >
-        Back
-      </Button> */}
+    
       {/* 1st Section: Profile and Info */}
       <Card className="profile-card"
       sx={{ 
@@ -194,4 +174,4 @@ const MoreDetails = (props) => {
   </div>  
   );
 };
-export default MoreDetails;
+export default Confirmationpage ;
