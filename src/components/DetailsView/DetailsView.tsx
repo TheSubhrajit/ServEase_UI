@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
+
+import axiosInstance from '../../services/axiosInstance';
+import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
+
 import CloseIcon from '@mui/icons-material/Close'; 
 
 interface ChildComponentProps {
@@ -17,22 +21,26 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false); 
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
-        const response = await fetch("http://localhost:8080/api/serviceproviders/serviceproviders/all");
-        if (!response.ok) throw new Error("Network response was not ok");
-        const data = await response.json();
-        setServiceProvidersData(data);
-      } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
-      } finally {
-        setTimeout(() => setLoading(false), 2000);
+        setLoading(true)
+        const response = await axiosInstance.get('/api/serviceproviders/serviceproviders/all'); // Change to your endpoint
+        setServiceProvidersData(response.data);
+      } catch (err) {
+        console.error("There was a problem with the fetch operation:", err);
+      }
+      finally{
+        setTimeout(() => {
+                  setLoading(false);
+                }, 2000);
       }
     };
     fetchData();
   }, []);
+
+
 
   const handleCardClick = () => {
     sendDataToParent("Confirmation");  // Trigger transition to Confirmation page
@@ -42,7 +50,7 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
     <>
       {loading ? (
         <Box sx={{ display: 'flex' }}>
-          <CircularProgress />
+          <LoadingIndicator />
         </Box>
       ) : (
         <div className="details-view">

@@ -1,25 +1,36 @@
 .flex-container1 {
     display: flex;
-    gap: 5px;
-    padding-left: 5px;
-    padding-top: 12px;
+    gap: 8px;
+    padding-left: 20px;
+    padding-top: 20px;
     align-items: center;
+    flex-wrap: wrap;
+     /* Allows wrapping on smaller screens */
+     font: icon;
+     font-size: large;
+     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.Sbtn1, .Sbtn2 {
+    display: flex;
 }
 
 .Sbtn1 {
-    display: flex;
-    justify-content: flex-start;
+        justify-content: flex-start;    
 }
 
+
 .Sbtn2 {
-    display: flex;
-    justify-content: right;
+    justify-content: flex-end;
 }
 
 .button {
     display: flex;
+    font: icon;
+     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     justify-content: space-evenly;
-    padding-top: 30px;
+    padding-top: 40px;
+    flex-wrap: wrap; /* Ensures buttons adjust on smaller screens */
 }
 
 .item-viewer {
@@ -29,5 +40,100 @@
 .selectors-ser {
     margin-top: 20px;
     border: 0.25px solid grey;
-    width: 90%
+    width: 90%;
 }
+
+/* Language selection responsiveness */
+.language {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    width: 100%;
+    height: fit-content;
+    padding-top: 10px;
+    gap:10px ;
+    padding-bottom: 5px;
+    
+}
+.language h6{
+    padding-top: 5px;
+    font: icon;
+    font-size: large;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.language .MuiAutocomplete-root {
+    width: 60%; /* Shrinks input width to 60% */
+    max-width: 100%;
+}
+
+/* Adjust padding and make the tags responsive */
+.language .MuiAutocomplete-inputRoot {
+    padding: 0px !important;
+    flex-wrap: nowrap;
+}
+
+.language .MuiAutocomplete-input {
+    padding-left: 8px;
+}
+
+.language .MuiAutocomplete-tag {
+    margin: 3px 6px 3px 0px;
+}
+
+/* Forcing the chips to display in one line */
+.language .MuiAutocomplete-inputRoot[class*='MuiFilledInput-root'] {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+/* Make chip responsive with ellipsis for overflowed text */
+.language .MuiChip-root {
+    max-width: 100px; 
+    height:20px ;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+    /* Only make the language section more responsive */
+    .language .MuiAutocomplete-root {
+        width: 80%; /* On smaller screens, increase width to 80% */
+    }
+
+    .language .MuiChip-root {
+        max-width: 80px; /* Reduce chip size on smaller screens */
+    }
+
+    .button {
+        justify-content: space-evenly;
+         /* Adjust button alignment */
+        padding-top: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Only the language selection and buttons should respond to smaller screens */
+    .language .MuiAutocomplete-root {
+        width: 100%; /* Full width on very small screens */
+    }
+
+    .language .MuiChip-root {
+        max-width: 60px; /* Further reduce chip size on very small screens */
+    }
+
+    .Sbtn1, .Sbtn2 {
+        width: 100%; /* Buttons will take full width */
+        justify-content: center;
+    }
+
+    .button {
+        flex-direction: column;
+        gap: 15px; /* Vertically stacked buttons with spacing */
+        padding-top: 15px;
+    }
+}
+
+/* No changes for the Gender, Shift Time, Availability, and Speciality sections */
