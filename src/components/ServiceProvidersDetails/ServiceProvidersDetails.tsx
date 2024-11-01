@@ -1,73 +1,19 @@
-import React, { useState, useEffect } from "react";
-
+import React from "react";
 import {
   Card,
   Typography,
   Avatar,
   Rating,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-import Confirmationpage from "./Confirmationpage"; // Import Child Component
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // Correct import for ExpandMoreIcon
 import './serviceCard.css';
-interface ServiceProvidersDetailsProps {
-  providerDetails: ProviderDetails; // Accept providerDetails as a prop
-}
+import { Description } from "@mui/icons-material";
 
-interface ProviderDetails {
-  firstName: string;
-  lastName: string;
-  age: number;
-  gender: string;
-  language: string;
-  diet: string;
-  experience: string;
-  otherServices: string;
-  currentLocation: string;
-  distance: number;
-  rating: number;
-  ratingsCount: number;
-  availability: string;
-  profilePic: string;
-}
-
-const ServiceProvidersDetails: React.FC = () => {
-  const [providerDetails, setProviderDetails] = useState<ProviderDetails | null>(null); // Store data
-  const [showConfirmation, setShowConfirmation] = useState(false); // Manage visibility of Confirmationpage
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState<string | null>(null); // Error state
-
-  // Simulate fetching data
-  useEffect(() => {
-    const fetchProviderDetails = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/api/serviceproviders/serviceproviders/all");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data: ProviderDetails[] = await response.json();
-        setProviderDetails(data[0]); // Assuming you want to show the first provider
-      } catch (error) {
-        setError("Error fetching provider details");
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProviderDetails();
-  }, []);
-
-  const handleConfirmationClick = () => {
-    setShowConfirmation(true); // Show confirmation page on button click
-  };
-  const handleBackToDetails = () => {
-    setShowConfirmation(false); // Navigate back to details
-  };
-
-  if (loading) return <p>Loading...</p>; // Loading state
-  if (error) return <p>{error}</p>; // Error state
-
-  if (!providerDetails) return null; // If provider details are still null, return null
-
+const ServiceProvidersDetails = (props) => {
   const {
     firstName,
     lastName,
@@ -82,19 +28,18 @@ const ServiceProvidersDetails: React.FC = () => {
     rating,
     ratingsCount,
     availability,
-    profilePic,
-  } = providerDetails;
+    profilePic
+  } = props;
 
   return (
-    <div className="content-box"> {/* Wrapper div */}
+    <div className="content-box" > {/* Wrapper div */}
       <Card className="service-card"
-        style={{
-          background: 'linear-gradient(135deg, #e0f7fa, #ffffff)',
-          borderRadius: '15px',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-        }}>
-        
+       style={{
+        background: 'linear-gradient(135deg, #e0f7fa, #ffffff)',
+        borderRadius: '15px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+      }}>
         <div className="avatar-section"> {/* Section for avatar */}
           <Avatar
             alt={`${firstName} ${lastName}`}
@@ -104,41 +49,79 @@ const ServiceProvidersDetails: React.FC = () => {
         </div>
 
         <div className="service-details"> {/* Section for service details */}
-          <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '0.5px', marginTop: '0.5px' }}>
-            Name:
-            <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
-              {firstName} {lastName}
-            </span>,
-            <span style={{ fontWeight: 'normal', fontSize: '1.2rem', marginLeft: '4px' }}>
-              (F, {age})
-            </span>
-          </Typography>
+        <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '0.5px', marginTop: '0.5px' }}>
+    Name: 
+    <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
+      {firstName} {lastName}
+    </span>, 
+    <span style={{ fontWeight: 'normal', fontSize: '1.2rem', marginLeft: '4px' }}>
+      (F,20)
+    </span>
+  </Typography>
 
-          <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
-            Language:
-            <span style={{ fontWeight: 'normal', fontSize: '1rem', display: 'inline-flex', alignItems: 'center' }}>
-              {language || 'English'}
-              <img
-                src="nonveg.png"
-                alt="Diet Symbol"
-                style={{ width: '20px', height: '20px', marginLeft: '5px' }}
-              />
-            </span>
-          </Typography>
+  <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
+  Language: 
+  <span style={{ fontWeight: 'normal', fontSize: '1rem', display: 'inline-flex', alignItems: 'center' }}>
+    {language || 'English'}
+    <img 
+      src="nonveg.png" 
+      alt="Vegetarian Diet Symbol" 
+      style={{ width: '20px', height: '20px', marginLeft: '5px' }} 
+    />
+  </span>
+</Typography>
 
-          <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
-            Experience:
-            <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
-              {experience || '1 year'}
-            </span>,
-            Other Services:
-            <span style={{ fontWeight: 'normal', fontSize: '1.2rem', marginLeft: '8px' }}>
-              {otherServices}
-            </span>
-          </Typography>
+
+  <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
+    Experience: 
+    <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
+      {experience || '1 year'}
+    </span>, 
+    Other Services: 
+    <span style={{ fontWeight: 'normal', fontSize: '1.2rem', marginLeft: '8px' }}>
+      {otherServices}
+    </span>
+  </Typography>
+
+  <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
+    Description: 
+    <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
+      Detailed description of the service provider goes here.
+    </span>
+  </Typography>
+
+
+            {/* Accordion for Description */}
+        {/* <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Description</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+             
+              Detailed description of the service provider goes here.
+            </Typography>
+          </AccordionDetails>
+        </Accordion> */}
+
+        {/* Accordion for Other Details */}
+{/*  
+        <Accordion className="accordion-sky">
+  <AccordionSummary expandIcon={<ExpandMoreIcon />} className="accordion-summary">
+    <Typography variant="subtitle2" style={{ fontWeight: 'normal' }}>
+      Other Details
+    </Typography>
+  </AccordionSummary>
+  <AccordionDetails className="accordion-details">
+    <Typography>
+      Any other relevant details about the service provider can be added here.
+    </Typography>
+  </AccordionDetails>
+</Accordion> */}
+
         </div>
 
-        {/* Ratings Section */}
+        {/* Ratings Section (if you decide to include it later) */}
         <div className="service-ratings">
           <div className="rating-summary">
             <Typography variant="body1" className="rating-description">
@@ -157,17 +140,17 @@ const ServiceProvidersDetails: React.FC = () => {
           <Typography variant="body2" className="availability">
             Availability: {availability}
           </Typography>
+
+          <div className="location">
+            {/* <LocationOnIcon fontSize="small" /> */}
+          </div>
         </div>
 
-      </Card>
+        {/* Add a space or margin to separate the details from the accordions */}
+        
 
-      {/* Render Confirmationpage if 'showConfirmation' is true */}
-      {showConfirmation && (
-        <Confirmationpage
-          providerDetails={providerDetails}
-          onBack={handleBackToDetails} // Pass the onBack function here
-        />
-      )}
+      
+      </Card>
     </div>
   );
 };

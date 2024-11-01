@@ -18,6 +18,7 @@ const  Confirmationpage= (props) => {
     language,
     experience,
     profilePic,
+    onBack, // Accept onBack as a prop
   } = props;
 
   const [formattedDate, setFormattedDate] = useState<string>("");
@@ -45,7 +46,10 @@ const  Confirmationpage= (props) => {
   return (
     <div className="details-container">
         {/* Back Button at the top */}
-    
+        <button className="back-button" onClick={onBack}> {/* Call onBack on click */}
+        <span>&#8592;</span> Back
+      </button>
+
       {/* 1st Section: Profile and Info */}
       <Card className="profile-card"
       sx={{ 
@@ -63,9 +67,17 @@ const  Confirmationpage= (props) => {
         </div>
         <div className="info-section">
     <Typography variant="h6">
-      Name: {firstName} {lastName} ({gender}, {age})
+    Name: {firstName} {lastName},(F, 20{age})
     </Typography>
-    <Typography>Language: {language || "English"}</Typography>
+    <Typography>Language:  <span style={{ fontWeight: 'normal', fontSize: '1rem', display: 'inline-flex', alignItems: 'center' }}>
+              {language || 'English'}
+              <img
+                src="nonveg.png"
+                alt="Diet Symbol"
+                style={{ width: '20px', height: '20px', marginLeft: '5px' }}
+              />
+            </span>
+    </Typography>
     <Typography>Experience: {experience || "1 year"}</Typography>
     <div className="other-details">
       <Typography variant="subtitle1"><strong>Other Details</strong></Typography>
