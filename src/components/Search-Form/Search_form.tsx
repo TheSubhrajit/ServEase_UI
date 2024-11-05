@@ -5,15 +5,13 @@ import { useForm, Controller } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { Chip, TextField, Autocomplete } from "@mui/material";
 import axios from "axios";
+import axiosInstance from '../../services/axiosInstance';
 
 interface SearchFormProps {
   open: boolean;
   selectedValue: string;
   onClose: () => void;
-}
-
-interface Country {
-  languages?: { [key: string]: string };
+  onSearch: (data: any[]) => void; // New prop for sending search results
 }
 
 interface FormData {
@@ -22,7 +20,7 @@ interface FormData {
   languages: string[];
   shift: string;
   availability: string;
-  speciality: string;
+  cookingspeciality: string;
   diet: string;
   rating: string[];
 }
@@ -31,6 +29,7 @@ export const Search_form: React.FC<SearchFormProps> = ({
   open,
   selectedValue,
   onClose,
+  onSearch,
 }) => {
   const { handleSubmit, control, register, reset, watch } = useForm<FormData>({
     defaultValues: {
@@ -38,8 +37,8 @@ export const Search_form: React.FC<SearchFormProps> = ({
       age: 18,
       languages: [],
       shift: "",
-      availability: "8.00 AM",
-      speciality: "",
+      availability: "8.00 AM, 12.00 pM",
+      cookingspeciality: "",
       diet: "",
       rating: [],
     },
@@ -70,50 +69,53 @@ export const Search_form: React.FC<SearchFormProps> = ({
     "Santhali",
   ]);
 
+
   // Fetch worldwide languages and add them to the availableLanguages array
-  useEffect(() => {
-    const fetchWorldLanguages = async () => {
-      try {
-        const response = await axios.get<Country[]>(
-          "https://restcountries.com/v3.1/all"
-        );
-        const worldLanguagesSet = new Set<string>();
+  // useEffect(() => {
+  //   const fetchWorldLanguages = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "https://restcountries.com/v3.1/all"
+  //       );
+  //       const worldLanguagesSet = new Set<string>();
 
-        response.data.forEach((country) => {
-          if (country.languages) {
-            Object.values(country.languages).forEach((language) =>
-              worldLanguagesSet.add(language)
-            );
-          }
-        });
+  //       response.data.forEach((country) => {
+  //         if (country.languages) {
+  //           Object.values(country.languages).forEach((language) =>
+  //             worldLanguagesSet.add(language)
+  //           );
+  //         }
+  //       });
 
-        setAvailableLanguages((prevLanguages) => [
-          ...prevLanguages,
-          ...Array.from(worldLanguagesSet),
-        ]);
-      } catch (error) {
-        console.error("Error fetching world languages:", error);
-      }
-    };
+  //       setAvailableLanguages((prevLanguages) => [
+  //         ...prevLanguages,
+  //         ...Array.from(worldLanguagesSet),
+  //       ]);
+  //     } catch (error) {
+  //       console.error("Error fetching world languages:", error);
+  //     }
+  //   };
 
-    fetchWorldLanguages();
-  }, []);
+  //   fetchWorldLanguages();
+  // }, []);
 
   // Handle form submission
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log("Form Data:", data);
-  };
 
-  // Handle reset
-  const handleReset = () => {
-    reset();
+    try {
+      const response = await axiosInstance.get('/api/serviceproviders/serviceproviders/all'); // Change this to use form data as parameters if needed
+      onSearch(response.data); // Send data back to DetailsView
+    } catch (err) {
+      console.error("There was a problem with the fetch operation:", err);
+    }
   };
 
   return (
-    <>
-      <div className="all">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div>
+    <div className="all">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* form fields... */}
+        
             {/* Gender selection */}
             <div className="flex-container1">
               <label>Gender: </label>
@@ -157,7 +159,7 @@ export const Search_form: React.FC<SearchFormProps> = ({
                     renderTags={(value: string[], getTagProps) =>
                       value.map((option: string, index: number) => (
                         <Chip
-                          // key = {index}
+                          // key={index}
                           variant="outlined"
                           label={option}
                           {...getTagProps({ index })}
@@ -175,9 +177,8 @@ export const Search_form: React.FC<SearchFormProps> = ({
                 )}
               />
             </div>
-
-            {/* Shift time */}
-            <div className="flex-container1">
+             {/* Shift time */}
+             <div className="flex-container1">
               <label>Shift Time: </label>
               <input type="radio" value="Morning" {...register("shift")} />{" "}
               Morning
@@ -217,13 +218,13 @@ export const Search_form: React.FC<SearchFormProps> = ({
             {/* Speciality section */}
             <div className="flex-container1">
               <label>Cooking Speciality: </label>
-              <input type="radio" value="Veg" {...register("diet")} />
+              <input type="radio" value="Veg" {...register("cookingspeciality")} />
               <img
                 src="veg.png"
                 alt="Vegetarian Diet Symbol"
                 style={{ width: "20px", height: "20px", marginLeft: "5px" }}
               />
-              <input type="radio" value="Non-Veg" {...register("diet")} />
+              <input type="radio" value="Non-Veg" {...register("cookingspeciality")} />
               <img
                 src="nonveg.png"
                 alt="Vegetarian Diet Symbol"
@@ -244,28 +245,27 @@ export const Search_form: React.FC<SearchFormProps> = ({
               <span style={{ color: "#FFD700" }}>★</span> 3 & above
             </div>
 
-            {/* Submit and Reset buttons */}
-            <div className="button">
-              <div className="Sbtn1">
-                <Button type="submit" id="button1" variant="outline-primary">
-                  Submit
-                </Button>
-              </div>
-              <div className="Sbtn2">
-                <Button
-                  type="button"
-                  id="button2"
-                  variant="outline-primary"
-                  onClick={handleReset}
-                >
-                  Reset
-                </Button>
-              </div>
-            </div>
+         
+        {/* Submit and Reset buttons */}
+        <div className="button">
+          <div className="Sbtn1">
+            <Button type="submit" id="button1" variant="outline-primary">
+              Search
+            </Button>
           </div>
-        </form>
-      </div>
-    </>
+          <div className="Sbtn2">
+            <Button
+              type="button"
+              id="button2"
+              variant="outline-primary"
+              onClick={() => reset()}
+            >
+              Reset
+            </Button>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 };
 

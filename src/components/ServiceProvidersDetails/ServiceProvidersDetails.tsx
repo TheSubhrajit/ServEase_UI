@@ -55,7 +55,7 @@ const ServiceProvidersDetails = (props) => {
       {firstName} {lastName}
     </span>, 
     <span style={{ fontWeight: 'normal', fontSize: '1.2rem', marginLeft: '4px' }}>
-      (F,20)
+      (M,20)
     </span>
   </Typography>
 
