@@ -1,5 +1,8 @@
-/* Service Card Styling */
-/* Service Card Styling */
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
 .service-card {
   display: flex;
   flex-direction: row;
@@ -33,12 +36,12 @@
 }
 
 .service-avatar {
-  margin-top: 60px; /* Adjust margin to align better */
-  width: 200px;  /* Increased size for a better look */
-  height: 200px; /* Same as width to maintain circular shape */
-  border-radius: 50%; /* Circular avatar */
-  border: 3px solid #90caf9; /* Slightly thicker soft blue border */
-  object-fit: cover; /* Ensures the image fits within the circle */
+  margin-top: 20px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid #90caf9;
+  object-fit: cover;
 }
 
 /* Content Box */
@@ -86,7 +89,7 @@
   display: flex;
   /* align-items: center; */
   /* justify-content: flex-end; */
-  gap: 8px;
+  /* gap: 8px; */
   padding-top: 5px;
   padding-right: 5px;
   padding-left: 20px;
@@ -94,7 +97,7 @@
 
 /* Availability Section */
 .availability {
-  margin-top: 8px;
+  margin-top: 0.5px;
   font-weight: bold;
   color: #4caf50; /* Green for availability */
 }
@@ -118,6 +121,7 @@
   /* margin-top: 12px; */
   transition: background 0.2s ease-in-out;
   
+  
 }
 
 .accordion-sky:hover {
@@ -128,7 +132,6 @@
 
 .accordion-summary {
   background-color: rgba(224, 247, 250, 0.3); /* Soft background */
-  padding: 8px 16px;
   font-weight: bold;
 }
 
@@ -154,4 +157,20 @@
 .custom-accordion-details {
   padding: 8px 0; /* Adjust padding for details */
   margin-top: -8px; /* Close the gap between summary and details */
+}
+.book-now-button {
+  margin-top: 1px; /* Space between availability and button */
+  padding: 6px 14px;
+  font-size: 1rem;
+  color: #4a4aff; /* Blue text color */
+  border: 2px solid #c9c9f7; /* Light purple border */
+  background-color: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.book-now-button:hover {
+  background-color: #e6e6ff; /* Light purple background on hover */
+  box-shadow: 0 0 8px rgba(0, 0, 255, 0.2); /* Subtle blue glow */
 }
