@@ -3,9 +3,10 @@ import "./Search_form.css";
 import Button from "react-bootstrap/Button";
 import { useForm, Controller } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { Chip, TextField, Autocomplete } from "@mui/material";
-import axios from "axios";
+import { Chip, TextField, Autocomplete, Box } from "@mui/material";
+// import axios from "axios";
 import axiosInstance from '../../services/axiosInstance';
+import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 
 interface SearchFormProps {
   open: boolean;
@@ -43,6 +44,7 @@ export const Search_form: React.FC<SearchFormProps> = ({
       rating: [],
     },
   });
+  const [loading, setLoading] = useState(false);
 
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([
     "Assamese",
@@ -104,15 +106,24 @@ export const Search_form: React.FC<SearchFormProps> = ({
     console.log("Form Data:", data);
 
     try {
+      setLoading(true);
       const response = await axiosInstance.get('/api/serviceproviders/serviceproviders/all'); // Change this to use form data as parameters if needed
       onSearch(response.data); // Send data back to DetailsView
     } catch (err) {
       console.error("There was a problem with the fetch operation:", err);
+    }finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="all">
+    // <>
+    // {loading ? (
+    //   <Box sx={{ display: 'flex' }}>
+    //     <LoadingIndicator />
+    //   </Box>
+    // ) : (
+     <div className="all">
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* form fields... */}
         
@@ -266,6 +277,8 @@ export const Search_form: React.FC<SearchFormProps> = ({
         </div>
       </form>
     </div>
+  // )}
+  // </>
   );
 };
 

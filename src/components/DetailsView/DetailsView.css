@@ -1,9 +1,10 @@
 /* Container for the details view */
 .details-view-container {
   display: flex;
-  flex-direction: row;
-  height: 100%;
-  padding-top: 30px;
+  flex-direction: row; /* Sidebar and body side by side */
+  min-height: 100vh;
+  position: relative;
+  padding-top: 50px;
 }
 
 /* Sidebar styles */
@@ -20,8 +21,8 @@
 }
 
 .sidebar.open {
-  width: 1300%; /* Opened sidebar width */
-  padding: 20px;
+  width: 50%; /* Opened sidebar width */
+  padding: 15px;
 }
 
 .sidebar.closed {
@@ -42,7 +43,7 @@
 }
 
 .providers-view {
-  display: flex;
+  /* display: flex; */
   flex-wrap: wrap;
   gap: 5px;
 }

@@ -3,17 +3,18 @@ import { useEffect, useState } from "react";
 import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
+
 import axiosInstance from '../../services/axiosInstance';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 import CloseIcon from '@mui/icons-material/Close';
+ 
+import Confirmationpage from "../ServiceProvidersDetails/Confirmationpage";// Adjust the path accordingly
 
-interface ChildComponentProps {
-  sendDataToParent: (data: string) => void;
+interface DetailsViewProps {
+  sendDataToParent: (data: string) => void; // Define the prop type
 }
 
-export const DetailsView: React.FC<ChildComponentProps> = ({
-  sendDataToParent,
-}) => {
+export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent }) => {
   const [ServiceProvidersData, setServiceProvidersData] = useState<any[]>([]);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
@@ -38,6 +39,8 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
     setSearchResults(data);
     setSidebarOpen(false); // Optionally close the sidebar after search
   };
+  const [currentView, setCurrentView] = useState("DetailsView");
+  const [selectedProvider, setSelectedProvider] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,24 +53,26 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
       } catch (err) {
         console.error("There was a problem with the fetch operation:", err);
       } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 2000);
+        setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
+  const handleCardClick = (provider: any) => {
+    setSelectedProvider(provider);
+    setCurrentView("Confirmation");
+  };
+
   return (
     <>
-      {loading && (
-        <Box sx={{ display: "flex" }}>
+      {loading ? (
+        <Box sx={{ display: 'flex' }}>
           <LoadingIndicator />
         </Box>
-      )}
-      {!loading && (
+      ) : (
         <div className="details-view-container">
+          
           {/* Sidebar with conditional class for open/closed state */}
           <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
             <Button
@@ -108,6 +113,8 @@ export const DetailsView: React.FC<ChildComponentProps> = ({
           </div>
         </div>
       )}
+     {/* confirmation page*/}
+
     </>
   );
 };
