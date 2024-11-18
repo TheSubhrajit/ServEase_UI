@@ -67,23 +67,64 @@ const  Confirmationpage= (props) => {
         </div>
         <div className="info-section">
     <Typography variant="h6">
-    Name: {firstName} {lastName},(F, 20{age})
+    {firstName} {lastName},(F, 20{age})  <img
+                src="nonveg.png"
+                alt="Diet Symbol"
+                style={{ width: '20px', height: '20px', marginLeft: '200px',marginTop:'-27px' }}
+              />
     </Typography>
     <Typography>Language:  <span style={{ fontWeight: 'normal', fontSize: '1rem', display: 'inline-flex', alignItems: 'center' }}>
               {language || 'English'}
-              <img
+              {/* <img
                 src="nonveg.png"
                 alt="Diet Symbol"
                 style={{ width: '20px', height: '20px', marginLeft: '5px' }}
-              />
+              /> */}
             </span>
     </Typography>
     <Typography>Experience: {experience || "1 year"}</Typography>
     <div className="other-details">
-      <Typography variant="subtitle1"><strong>Other Details</strong></Typography>
+      {/* <Typography variant="subtitle1"><strong>Other Details</strong></Typography> */}
       <Typography><strong>Price:</strong> ₹3000 per month</Typography>
       <Typography><strong>Cuisine:</strong> South Indian, Maharashtrian, Punjabi, Bengali</Typography>
     </div>
+  </div>
+
+   {/* Booking Section */}
+   <div className="booking-section">
+   <div className="line-divider"></div>
+    <Typography variant="h6">*Booking Date & Time</Typography>
+    <div className="date-time-container">
+
+      <div 
+       className="date-display" 
+       onClick={() => {
+         const datePicker = document.querySelector('.date-picker') as HTMLInputElement | null;
+         datePicker?.showPicker(); 
+       }}
+      >
+        <AiOutlineCalendar style={{ marginRight: '8px' }} />
+        <span>{formattedDate || "Select Date"}</span>
+      </div>
+      <input 
+        type="date" 
+        className="date-picker" 
+        onChange={handleDateChange} 
+        style={{ display: 'none' }} 
+      />
+      <div className="time-display">
+        <input type="time" className="time-picker" />
+      </div>
+    </div>
+    <div className="price-info">
+    <Typography variant="h6" className="price">₹ 3000</Typography>
+    <Typography className="taxes">+ ₹502 taxes & fees</Typography>
+  </div>
+    <div className="action">
+    {/* <Typography variant="h6" className="price">₹ 3000</Typography>
+    <Typography className="taxes">+ ₹502 taxes & fees</Typography> */}
+  <Button variant="contained" className="apply-coupon">Apply Coupon</Button>
+  </div>
   </div>
   <div className="rating-section">
     <Typography variant="h6">
@@ -99,7 +140,9 @@ const  Confirmationpage= (props) => {
       <FaMapMarkerAlt /> Kengeri, Bengaluru-56712 <br />
       (1.6 km from your location)
     </div>
+  
   </div>
+
 </Card>
 
      {/* 2nd Section: Why Book? */}
@@ -126,6 +169,17 @@ const  Confirmationpage= (props) => {
       <Typography variant="body2">No hidden T&C</Typography>
     </div>
   </div>
+  <div className="divider"></div>
+  <div className="discount-info">
+    <FaRegStar className="star-icon" />
+    <Typography variant="body2" className="earn-text"><b>earn 10% ServEase cash</b></Typography>
+  </div>
+  <div className="action-buttons">
+    <div className="heart-circle">
+      <FaRegHeart className="heart-icon" />
+    </div>
+    <Button variant="contained" className="book-now">Book Now</Button>
+  </div>
 </Card>
 
       {/* 3rd Section: Booking Date and Time */}
@@ -136,53 +190,9 @@ const  Confirmationpage= (props) => {
     <input type="time" className="time-picker" />
   </div>
       </Card> */}
-       <Card className="booking-card">
-  <Typography variant="h6">Booking Date & Time</Typography>
-  
-  <div className="date-time-container">
-  <div 
-  className="date-display" 
-  onClick={() => {
-    const datePicker = document.querySelector('.date-picker') as HTMLInputElement | null;
-    datePicker?.showPicker(); // Safely call showPicker if it exists
-  }}
->
-  <AiOutlineCalendar style={{ marginRight: '8px' }} />
-  <span>{formattedDate || "Select Date"}</span>
-</div>
-    <input 
-      type="date" 
-      className="date-picker" 
-      onChange={handleDateChange} 
-      style={{ display: 'none' }} 
-    />
-
-<div className="time-display">
-      <input type="time" className="time-picker" />
-    </div>
-  </div>
-</Card>
+     
 
       {/* 4th Section: Book Now */}
-      <Card className="book-now-card">
-  <div className="price-info">
-    <Typography variant="h6" className="price">₹ 3000</Typography>
-    <Typography className="taxes">+ ₹502 taxes & fees</Typography>
-  </div>
-  
-  <div className="discount-info">
-    <FaRegStar className="star-icon" />
-    <Typography variant="body2" className="earn-text"><b>earn 10% ServEase cash</b></Typography>
-  </div>
-  
-  <div className="action-buttons">
-    <Button variant="contained" className="apply-coupon">Apply Coupon</Button>
-    <div className="heart-circle">
-      <FaRegHeart className="heart-icon" />
-    </div>
-    <Button variant="contained" color="error" className="book-now">Book Now</Button>
-  </div>
-</Card>
   </div>  
   );
 };
