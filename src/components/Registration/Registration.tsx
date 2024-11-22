@@ -44,9 +44,13 @@ interface FormData {
   city: string;
   state: string;
   zipCode: string;
+  buildingName:string;
+  currentLocation: string;
+  nearbyLocation: string;
   agreeToTerms: boolean;
   hobbies: string;
   language: string;
+  diet:string;
   speciality: string;
 }
 
@@ -63,6 +67,10 @@ interface FormErrors {
   city?: string;
   state?: string;
   zipCode?: string;
+  buildingName?:string;
+  currentLocation?: string;
+  nearbyLocation?: string;
+  diet?:string;
   agreeToTerms?: string; // This is now a string for error messages
 }
 
@@ -115,10 +123,14 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     city: "",
     state: "",
     zipCode: "",
+    buildingName:"",
+    currentLocation: "",
+    nearbyLocation: "",
     agreeToTerms: false,
     hobbies: "",
     language: "",
     speciality: '',
+    diet:'',
   });
 
   const [gender, setGender] = useState("");
@@ -194,6 +206,15 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       }
       if (!formData.zipCode || !zipCodeRegex.test(formData.zipCode)) {
         tempErrors.zipCode = "Zip/Postal Code must be exactly 6 digits.";
+      }
+      if (!formData.currentLocation) {
+        tempErrors.currentLocation = "Current Location is required.";
+      }
+      if (!formData.nearbyLocation) {
+        tempErrors.nearbyLocation = "Nearby Location is required.";
+      }
+      if (!formData.buildingName) {
+        tempErrors.buildingName = "Building Name is required.";
       }
     }
 
@@ -503,6 +524,54 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   }}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Nearby Location"
+                  name="Nearby Location"
+                  fullWidth
+                  required
+                  value={formData.nearbyLocation}
+                  onChange={handleChange}
+                  error={!!errors.nearbyLocation}
+                  helperText={errors.nearbyLocation}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Current Location"
+                  name="Current location"
+                  fullWidth
+                  required
+                  value={formData.currentLocation}
+                  onChange={handleChange}
+                  error={!!errors.currentLocation}
+                  helperText={errors.currentLocation}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Building Name"
+                  name="Building Name"
+                  fullWidth
+                  required
+                  value={formData.buildingName}
+                  onChange={handleChange}
+                  error={!!errors.buildingName}
+                  helperText={errors.buildingName}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
+                />
+              </Grid>
             </Grid>
           </div>
         );
@@ -535,6 +604,34 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 }}
               />
             </Grid>
+            <Grid item xs={12}>
+                <FormControl
+                  component="fieldset"
+                  error={!!errors.gender}
+                >
+                  <FormLabel component="legend">Diet :</FormLabel>
+                  <RadioGroup
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    row // Optional to make it horizontal
+                  >
+                    <FormControlLabel
+                      value="Veg"
+                      control={<Radio />}
+                      label="VEG"
+                    />
+                    <FormControlLabel
+                      value="Non-veg"
+                      control={<Radio />}
+                      label="NON-VEG"
+                    />
+                  </RadioGroup>
+                  {errors.gender && (
+                    <Typography color="error">{errors.gender}</Typography>
+                  )}
+                </FormControl>
+              </Grid>
           </Grid>
         );
       case 3:

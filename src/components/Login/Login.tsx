@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios'; // Import axios
 import Registration from "../Registration/Registration";
 import ServiceProviderRegistration from "../Registration/ServiceProviderRegistration";
 import Snackbar from '@mui/material/Snackbar';
@@ -15,22 +16,23 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
 export const Login: React.FC = () => {
   const [isRegistration, setIsRegistration] = useState(false);
   const [isServiceRegistration, setServiceRegistration] = useState(false);
-  const [isForgotPassword, setIsForgotPassword] = useState(false); 
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  const [showPassword, setShowPassword] = useState(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // For loading state
 
   const handleSignUpClick = () => {
     setIsRegistration(true);
   };
 
   const handleBackToLogin = () => {
-    setIsRegistration(false); 
-    setIsForgotPassword(false); // Reset Forgot Password state
+    setIsRegistration(false);
+    setIsForgotPassword(false);
   };
 
   const handleSignUpClickServiceProvider = () => {
@@ -54,45 +56,30 @@ export const Login: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true); // Start loading
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/user/login?username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
-      );
-
-      const data = await response.text(); 
-
-      if (data === "Login successful!") {
-        setSnackbarMessage("Login successful!");
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
-        setTimeout(() => setIsLoggedIn(true), 1000); 
-      } else {
-        setSnackbarMessage("Login failed. Please check your credentials.");
-        setSnackbarSeverity("error");
-        setOpenSnackbar(true);
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      setSnackbarMessage('An error occurred during login.');
+      const response = await axios.post('https://localhost:8443/api/user/login', {
+        email,
+        password,
+      });
+      setSnackbarSeverity('success');
+      setSnackbarMessage('Login successful!');
+      setIsLoggedIn(true); // Update logged-in state
+    } catch (error: any) {
       setSnackbarSeverity('error');
+      setSnackbarMessage(error.response?.data?.message || 'Login failed. Please try again.');
+    } finally {
       setOpenSnackbar(true);
+      setLoading(false); // End loading
     }
   };
 
-  // If user is logged in, render Landingpage
   if (isLoggedIn) {
     return <Landingpage sendDataToParent={() => {}} />;
   }
 
-  // If user clicked "Forgot Password", render ForgotPassword component
   if (isForgotPassword) {
     return <ForgotPassword onBackToLogin={handleBackToLogin} />;
   }
@@ -127,7 +114,7 @@ export const Login: React.FC = () => {
                     <input
                       id="password"
                       className="border p-3 shadow-md dark:bg-indigo-500 dark:text-gray-300 dark:border-gray-700 placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
-                      type={showPassword ? 'text' : 'password'} 
+                      type={showPassword ? 'text' : 'password'}
                       placeholder="Password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -157,8 +144,9 @@ export const Login: React.FC = () => {
                   <button
                     className="bg-gradient-to-r dark:text-gray-300 from-blue-500 to-purple-500 shadow-lg mt-3 p-2 text-white rounded-lg w-full hover:scale-105 hover:from-purple-500 hover:to-blue-500 transition duration-300 ease-in-out"
                     type="submit"
+                    disabled={loading} // Disable button while loading
                   >
-                    LOG IN
+                    {loading ? 'Logging in...' : 'LOG IN'}
                   </button>
                 </form>
                 <div className="flex flex-col items-center justify-center text-sm mt-4">
