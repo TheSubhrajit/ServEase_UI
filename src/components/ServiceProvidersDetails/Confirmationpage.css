@@ -5,7 +5,7 @@
   grid-template-columns: 2fr 1fr; /* Wider left column */
   gap: 20px;
   padding: 20px;
-  margin-top: 60px;
+  margin-top: 100px;
   margin-bottom: 20px;
 }
 .back-button {
@@ -47,7 +47,7 @@
   background: linear-gradient(135deg, #e0f7fa, #ffffff);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: 100%;
+  height: 80%;
   gap: 20px;
   width: 900px;
   margin-left: 150px;
@@ -86,87 +86,40 @@
   font-size: 14px;
   color: #666;
   /* width: 600px; */
-  
   margin-top: 50px;
   margin-left: -100px;
-  /* margin-right: 40px; */
+  margin-right: 40px;
   margin-bottom: -100px;
+ 
+}
+.line-divider {
+  margin-left: -100px;
+  height: 1px;
+  background-color: #ddd;
+  width: 400%;
+  margin-bottom: 20px; /* Add space below the line */
+}
+.divider{
+  margin-left: -100px;
+  height: 1px;
+  background-color: #ddd;
+  width: 400%;
+  margin-top: 40px; 
+
+}
+
+.booking-section {
+  margin-top: 320px; /* Increase this value to add more space */
+  margin-left: -400px;
+  margin-right: 280px;
 }
 
 
-/* Rating Section */
-.rating-section {
-  padding: 10px; /* Increase padding */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border-left: 1px solid #ddd;
-  margin-top:  70px;
-}
-
-
-
-.rating-section .stars {
-  display: flex;
-  gap: 5px;
-  color: rgb(250, 240, 102);
-}
-
-.location {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-
-/* Why Book Card */
-.why-book-card {
-  background-color: #f0f0f0 !important; /* Force the color */
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 400px;
-  height: 100%;
-  margin-right: 200px;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.why-book-card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Booking Card */
-.booking-card {
-  padding: 20px;
-  background-color: #ebe8e8 !important; /* Light background */
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 650px;
-  height: fit-content; /* Adjust height */
-  margin-top: 15px;
-  margin-left: 150px;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.booking-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
 .date-time-container {
   display: flex;
-  gap: 15px;
-  justify-content: space-evenly; /* Ensure date/time are spaced evenly */
+  gap: 20px; /* Adjusted gap for better spacing */
+  /* justify-content: space-between !important; */
+  
 }
 
 .date-display {
@@ -182,6 +135,7 @@
   color: #007bff; /* Matching blue color */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  margin-right: 10px; /* Adds extra space on the right side */
 }
 
 .date-display:hover {
@@ -195,7 +149,6 @@
 }
 .time-display{
   display: inline-flex;
-  align-items: center;
   gap: 8px;
   background-color: #ffffff; /* Light background for button-like feel */
   border: 1px solid #ccc;
@@ -206,6 +159,8 @@
   color: #007bff; /* Matching blue color */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  margin-right: -20px;
+
 }
 .time-display:hover {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
@@ -238,35 +193,141 @@
   color: #555; /* Slightly muted color for the labels */
   text-align: left;
 }
-/* Book Now Card */
-.book-now-card {
-  position: relative;
-  padding: 20px;
-  background-color: #faf8f8;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+
+/* Rating Section */
+.rating-section {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
+  /* text-align: center; */
+  border-left: 1px solid #ccc; /* Light gray divider */
+ height: 82%;
+  padding-left: 20px;
+  margin-top: -40px;
+  padding-top: 40px;
   gap: 15px;
-  width: 600px;
-  height: fit-content;
-  justify-content: space-between;
-  margin-left: -200px; /* Adjust this value to move left */
-  margin-top: 20px; /* Space from the rating section */
-  transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition */
-}
-.book-now-card:hover {
-  transform: scale(1.02); /* Slight zoom effect */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  margin-left: 10px;
+  font-family: Arial, sans-serif;
 }
 
+/* Rating Text */
+.rating-section h6 {
+  font-size: 1.2em;
+  font-weight: bold;
+  line-height: 1.4; /* Adjust line height for better spacing */
+  color: #333; /* Darker color for emphasis */
+  margin: 0; /* Remove default margin */
+}
+
+/* Stars Section */
+.stars {
+  display: flex;
+  gap: 3px;
+  color: rgb(250, 240, 102); /* Gold star color */
+  line-height: 1; /* Tighter line height for stars */
+  font-size: 1.1em; /* Adjust star size if needed */
+}
+
+/* Location Section */
+.location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+  color: #555; /* Dark gray color */
+  line-height: 1.4; /* Line height for better readability */
+  margin-top: 8px;
+  text-align: center; /* Center-align the location text */
+}
 .price-info {
   display: flex;
   flex-direction: column;
   color: rgb(7, 156, 7);
   font-weight: bold;
   font-size: 18px;
+  align-items: center;
+  margin-top: -90px;
+  margin-left: 100px;
+  margin-right: -1000px;
+
 }
+ /* .price {
+  font-size: 1.5em;
+  color: green;
+ 
+} */
+
+ .taxes {
+  font-size: 0.8rem;
+  color: #888;
+
+}
+.action {
+  /* margin-top: 10px; */
+  display: flex;
+  justify-content: flex-end; /* Aligns to the right */
+  margin-top: 10px;
+  /* margin-bottom:-100px; */
+
+  margin-right: -500px;
+}
+.apply-coupon {
+  background: linear-gradient(135deg, #097304, #8cd389);
+  color: white !important;
+  font-weight: bold !important;
+  text-transform: none !important;
+  margin-right: 10px !important;
+  padding: 5px 15px !important;
+  font-size: 14px !important;
+ margin-left: 500px;
+}
+
+/* Responsive Adjustments */
+/* @media (max-width: 768px) {
+  .profile-card {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .info-section, .rating-section, .booking-section {
+    align-items: center;
+    text-align: center;
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .avatar-section img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .price-info .price {
+    font-size: 1.2em;
+  }} */
+
+
+/* Why Book Card */
+.why-book-card {
+  background-color: #f0f0f0 !important; /* Force the color */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 360px;
+  height: fit-content;
+  margin-right: 200px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.why-book-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+
 .heart-circle {
   display: flex;
   align-items: center;
@@ -280,49 +341,40 @@
 }
 
 .heart-icon {
-  color: black;
+  color: rgb(5, 4, 4);
   font-size: 1.1rem;
 }
 
 .discount-info {
   position: absolute;
-  margin-left: 350px;
+  margin-top:370px;
   display: flex;
   gap: 5px;
   font-size: 1rem;
   color: black;
   align-items: center;
+  margin-left: 70px;
 }
 .star-icon{
   font-weight: bold !important;
    font-size: 1rem;
 }
 .action-buttons {
+  margin-top: 60px;
+  margin-bottom: 30px;
   display: flex;
   /* flex-direction: row; */
   /* gap: 10px; */
   align-items: center;
   justify-content: space-evenly;
 }
-
-
-.apply-coupon {
-  background-color: rgb(51, 183, 51) !important;
-  color: white !important;
-  font-weight: bold !important;
-  text-transform: none !important;
-  margin-right: 10px !important;
-  padding: 5px 15px !important;
-  font-size: 14px !important;
-}
-
-
-.book-now {
+.book-now {  
   font-weight: bold !important;
   text-transform: none !important;
   padding: 5px 15px !important;
   font-size: 14px !important;
   width: 120px;
+  background-color: #ff5555 !important;
 }
 /* .rating-booknow-container{
   display: flex;
