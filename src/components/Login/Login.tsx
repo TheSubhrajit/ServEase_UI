@@ -1,46 +1,115 @@
 import React, { useState } from 'react';
 import Registration from "../Registration/Registration";
 import ServiceProviderRegistration from "../Registration/ServiceProviderRegistration";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { Landingpage } from '../Landing_Page/Landingpage';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import IconButton from '@mui/material/IconButton';
+import ForgotPassword from './ForgotPassword';
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export const Login: React.FC = () => {
-  const [isRegistration, setIsRegistration] = useState(false); // State to toggle between forms
-  const [isServiceRegistration, setServiceregistration] = useState(false);
+  const [isRegistration, setIsRegistration] = useState(false);
+  const [isServiceRegistration, setServiceRegistration] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false); 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false); 
 
   const handleSignUpClick = () => {
-    setIsRegistration(true); // Show Register component when the button is clicked
+    setIsRegistration(true);
   };
 
   const handleBackToLogin = () => {
-    setIsRegistration(false); // Switch back to Login form
+    setIsRegistration(false); 
+    setIsForgotPassword(false); // Reset Forgot Password state
   };
 
   const handleSignUpClickServiceProvider = () => {
-    setServiceregistration(true);
+    setServiceRegistration(true);
   };
 
   const handleProviderBackToLogin = () => {
-    setServiceregistration(false);
+    setServiceRegistration(false);
   };
+
+  const handleForgotPasswordClick = () => {
+    setIsForgotPassword(true);
+  };
+
+  const handleSnackbarClose = (_: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') return;
+    setOpenSnackbar(false);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/user/login?username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+
+      const data = await response.text(); 
+
+      if (data === "Login successful!") {
+        setSnackbarMessage("Login successful!");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+        setTimeout(() => setIsLoggedIn(true), 1000); 
+      } else {
+        setSnackbarMessage("Login failed. Please check your credentials.");
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setSnackbarMessage('An error occurred during login.');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+    }
+  };
+
+  // If user is logged in, render Landingpage
+  if (isLoggedIn) {
+    return <Landingpage sendDataToParent={() => {}} />;
+  }
+
+  // If user clicked "Forgot Password", render ForgotPassword component
+  if (isForgotPassword) {
+    return <ForgotPassword onBackToLogin={handleBackToLogin} />;
+  }
 
   return (
     <div className="h-full flex flex-col justify-center items-center p-4">
       <div className="w-full max-w-lg">
-        <div
-          className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-[26px] m-0"
-        >
-          <div
-            className="border-transparent rounded-[20px] dark:bg-gray-900 bg-white shadow-lg xl:p-10 2xl:p-10 lg:p-8 md:p-6 sm:p-4 p-2 m-0"
-          >
+        <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-[26px] m-0">
+          <div className="border-transparent rounded-[20px] dark:bg-gray-900 bg-white shadow-lg xl:p-10 2xl:p-10 lg:p-8 md:p-6 sm:p-4 p-2 m-0">
             {isRegistration ? (
               <Registration onBackToLogin={handleBackToLogin} />
             ) : isServiceRegistration ? (
               <ServiceProviderRegistration onBackToLogin={handleProviderBackToLogin} />
             ) : (
               <>
-                <h1 className="font-bold dark:text-gray-400 text-4xl text-center cursor-default my-0">
-                  Log in
-                </h1>
-                <form className="space-y-4">
+                <h1 className="font-bold dark:text-gray-400 text-4xl text-center cursor-default my-0">Log in</h1>
+                <form className="space-y-4" onSubmit={handleLogin}>
                   <div>
                     <label htmlFor="email" className="mb-2 dark:text-gray-400 text-lg">Email</label>
                     <input
@@ -48,24 +117,43 @@ export const Login: React.FC = () => {
                       className="border p-3 dark:bg-indigo-500 dark:text-gray-300 dark:border-gray-700 shadow-md placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
                       type="email"
                       placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>
-                  <div>
+                  <div className="relative">
                     <label htmlFor="password" className="mb-2 dark:text-gray-400 text-lg">Password</label>
                     <input
                       id="password"
                       className="border p-3 shadow-md dark:bg-indigo-500 dark:text-gray-300 dark:border-gray-700 placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
-                      type="password"
+                      type={showPassword ? 'text' : 'password'} 
                       placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       required
                     />
-                    <a className="group text-blue-400 transition-all duration-100 ease-in-out">
-                      <span className="bg-left-bottom bg-gradient-to-r text-sm from-blue-400 to-blue-400 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
-                        Forget your password?
-                      </span>
-                    </a>
+                    <IconButton
+                      onClick={togglePasswordVisibility}
+                      edge="end"
+                      style={{
+                        position: 'absolute',
+                        top: '50%',
+                        right: '10px',
+                        transform: 'translateY(-50%)',
+                      }}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
                   </div>
+                  <a
+                    className="group text-blue-400 transition-all duration-100 ease-in-out cursor-pointer"
+                    onClick={handleForgotPasswordClick}
+                  >
+                    <span className="bg-left-bottom bg-gradient-to-r text-sm from-blue-400 to-blue-400 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
+                      Forget your password?
+                    </span>
+                  </a>
                   <button
                     className="bg-gradient-to-r dark:text-gray-300 from-blue-500 to-purple-500 shadow-lg mt-3 p-2 text-white rounded-lg w-full hover:scale-105 hover:from-purple-500 hover:to-blue-500 transition duration-300 ease-in-out"
                     type="submit"
@@ -74,49 +162,25 @@ export const Login: React.FC = () => {
                   </button>
                 </form>
                 <div className="flex flex-col items-center justify-center text-sm mt-4">
-                  <h3 className="dark:text-gray-300">
-                    Don't have an account?
-                  </h3>
-                  <button
-                    onClick={handleSignUpClick}
-                    className="text-blue-400 ml-2 underline"
-                  >
-                    Sign Up As User
-                  </button>
-                  <button
-                    onClick={handleSignUpClickServiceProvider}
-                    className="text-blue-400 ml-2 underline"
-                  >
-                    Sign Up As Service Provider
-                  </button>
+                  <h3 className="dark:text-gray-300">Don't have an account?</h3>
+                  <button onClick={handleSignUpClick} className="text-blue-400 ml-2 underline">Sign Up As User</button>
+                  <button onClick={handleSignUpClickServiceProvider} className="text-blue-400 ml-2 underline">Sign Up As Service Provider</button>
                 </div>
               </>
-            )}
-            {!isRegistration && !isServiceRegistration && (
-              <div id="third-party-auth" className="flex items-center justify-center flex-wrap mt-4">
-                <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                  <img className="max-w-[25px]" src="https://ucarecdn.com/8f25a2ba-bdcf-4ff1-b596-088f330416ef/" alt="Google" />
-                </button>
-                <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                  <img className="max-w-[25px]" src="https://ucarecdn.com/95eebb9c-85cf-4d12-942f-3c40d7044dc6/" alt="Linkedin" />
-                </button>
-                <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                  <img className="max-w-[25px] filter dark:invert" src="https://ucarecdn.com/be5b0ffd-85e8-4639-83a6-5162dfa15a16/" alt="Github" />
-                </button>
-                <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                  <img className="max-w-[25px]" src="https://ucarecdn.com/6f56c0f1-c9c0-4d72-b44d-51a79ff38ea9/" alt="Facebook" />
-                </button>
-                <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                  <img className="max-w-[25px] dark:gray-100" src="https://ucarecdn.com/82d7ca0a-c380-44c4-ba24-658723e2ab07/" alt="twitter" />
-                </button>
-                <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                  <img className="max-w-[25px]" src="https://ucarecdn.com/3277d952-8e21-4aad-a2b7-d484dad531fb/" alt="apple" />
-                </button>
-              </div>
             )}
           </div>
         </div>
       </div>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
