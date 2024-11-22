@@ -6,6 +6,7 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Landingpage } from '../Landing_Page/Landingpage';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
+import ForgotPassword from './ForgotPassword';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -14,19 +15,22 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
 export const Login: React.FC = () => {
   const [isRegistration, setIsRegistration] = useState(false);
   const [isServiceRegistration, setServiceRegistration] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State for login status
-  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false); 
+
   const handleSignUpClick = () => {
     setIsRegistration(true);
   };
 
   const handleBackToLogin = () => {
-    setIsRegistration(false);
+    setIsRegistration(false); 
+    setIsForgotPassword(false); // Reset Forgot Password state
   };
 
   const handleSignUpClickServiceProvider = () => {
@@ -35,6 +39,10 @@ export const Login: React.FC = () => {
 
   const handleProviderBackToLogin = () => {
     setServiceRegistration(false);
+  };
+
+  const handleForgotPasswordClick = () => {
+    setIsForgotPassword(true);
   };
 
   const handleSnackbarClose = (_: React.SyntheticEvent | Event, reason?: string) => {
@@ -48,8 +56,6 @@ export const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-
     try {
       const response = await fetch(
         `http://localhost:8080/api/user/login?username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
@@ -61,13 +67,13 @@ export const Login: React.FC = () => {
         }
       );
 
-      const data = await response.text(); // Assuming plain text response
+      const data = await response.text(); 
 
       if (data === "Login successful!") {
         setSnackbarMessage("Login successful!");
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
-        setTimeout(() => setIsLoggedIn(true), 1000); // Delay to show success message before redirect
+        setTimeout(() => setIsLoggedIn(true), 1000); 
       } else {
         setSnackbarMessage("Login failed. Please check your credentials.");
         setSnackbarSeverity("error");
@@ -84,6 +90,11 @@ export const Login: React.FC = () => {
   // If user is logged in, render Landingpage
   if (isLoggedIn) {
     return <Landingpage sendDataToParent={() => {}} />;
+  }
+
+  // If user clicked "Forgot Password", render ForgotPassword component
+  if (isForgotPassword) {
+    return <ForgotPassword onBackToLogin={handleBackToLogin} />;
   }
 
   return (
@@ -116,13 +127,13 @@ export const Login: React.FC = () => {
                     <input
                       id="password"
                       className="border p-3 shadow-md dark:bg-indigo-500 dark:text-gray-300 dark:border-gray-700 placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
-                      type={showPassword ? 'text' : 'password'} // Toggle input type
+                      type={showPassword ? 'text' : 'password'} 
                       placeholder="Password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
-                     <IconButton
+                    <IconButton
                       onClick={togglePasswordVisibility}
                       edge="end"
                       style={{
@@ -135,6 +146,14 @@ export const Login: React.FC = () => {
                       {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </div>
+                  <a
+                    className="group text-blue-400 transition-all duration-100 ease-in-out cursor-pointer"
+                    onClick={handleForgotPasswordClick}
+                  >
+                    <span className="bg-left-bottom bg-gradient-to-r text-sm from-blue-400 to-blue-400 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
+                      Forget your password?
+                    </span>
+                  </a>
                   <button
                     className="bg-gradient-to-r dark:text-gray-300 from-blue-500 to-purple-500 shadow-lg mt-3 p-2 text-white rounded-lg w-full hover:scale-105 hover:from-purple-500 hover:to-blue-500 transition duration-300 ease-in-out"
                     type="submit"
