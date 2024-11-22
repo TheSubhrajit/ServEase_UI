@@ -46,8 +46,6 @@ interface FormData {
   street: string;
   currentLocation: string;
   nearbyLocation: string;
-  // city: string;
-  // state: string;
   pincode: string;
   aadhaar: string;
   pan: string;
@@ -63,7 +61,6 @@ interface FormData {
   profileImage: File | null; // New field for Profile Image
   speciality: string;
 }
-
 // Define the shape of errors to hold string messages
 interface FormErrors {
   firstName?: string;
@@ -93,15 +90,12 @@ interface FormErrors {
   documentImage?: string;
   speciality?: string;
 }
- 
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
 const emailIdRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
 const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const phoneRegex = /^[0-9]{10}$/;
 const pincodeRegex = /^[0-9]{6}$/;
-// const aadhaarRegex = /^[0-9]{12}$/;
-// const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
 const steps = [
   'Basic Information',
@@ -164,11 +158,6 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
   // States for image previews and names
 const [documentImageName, setDocumentImageName] = useState<string>('');
 const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(null);
-
-  // const [aadhaarImagePreview, setAadhaarImagePreview] = useState<string | null>(null);
-  // const [panImagePreview, setPanImagePreview] = useState<string | null>(null);
-  // const [aadhaarImageName, setAadhaarImageName] = useState<string>('');
-  // const [panImageName, setPanImageName] = useState<string>('');
 
   // States for password visibility
   const [showPassword, setShowPassword] = useState(false);
@@ -292,13 +281,6 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       if (formData.housekeepingRole === 'COOK' && !formData.speciality) {
         tempErrors.speciality = 'Please select a speciality for the cook service.';
       }
-      // Optional fields (uncomment if needed)
-      // if (!formData.description) {
-      //   tempErrors.description = 'Description is required.';
-      // }
-      // if (!formData.experience || isNaN(Number(formData.experience))) {
-      //   tempErrors.experience = 'Experience must be a valid number.';
-      // }
     }
   
     // Step 4: KYC Verification Validation
@@ -331,17 +313,9 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
         tempErrors.documentImage = 'Document image is required.';
       }
     }
-  
-    // Set errors to state and return the validation result
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
-  // const handleNext = () => {
-  //   if (validateForm()) {
-  //     setActiveStep((prevStep) => prevStep + 1);
-  //   }
-  // };
- 
   const handleNext = () => {
     if (validateForm ()) {
       setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
@@ -383,17 +357,6 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
    const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
-  
-  //  const handleCloseSnackbar = (
-  //   event: React.SyntheticEvent<Element, Event> | null,
-  //   reason?: SnackbarCloseReason
-  // ) => {
-  //   if (reason === 'clickaway') {
-  //     return;
-  //   }
-  //   setSnackbarOpen(false);
-  // };
-  // Function to show the snackbar
   const showSnackbar = (message: string) => {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
@@ -826,17 +789,6 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
           {snackbarMessage}
         </Alert>
       </Snackbar>
-      {/* Snackbar for success message */}
-      {/* <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar> */}
       <div className="flex flex-col mt-4 items-center justify-center text-sm">
         <Typography variant="h6">
           Already have an account?
