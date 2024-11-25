@@ -477,28 +477,82 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       </Grid>
 
       <Grid item xs={12}>
-        <TextField
-          label="Password"
-          type={showPassword ? 'text' : 'password'}
-          name="password"
-          fullWidth
-          required
-          value={formData.password}
-          onChange={handleChange}
-          error={!!errors.password}
-          helperText={errors.password}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={handleTogglePasswordVisibility} edge="end">
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Grid>
-    </Grid>
+              <TextField
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                fullWidth
+                required
+                value={formData.password}
+                onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                        aria-label="toggle password visibility"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                label="Confirm Password"
+                type={showConfirmPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                fullWidth
+                required
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleToggleConfirmPasswordVisibility}
+                        edge="end"
+                        aria-label="toggle confirm password visibility"
+                      >
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Mobile Number"
+                name="mobileNo"
+                fullWidth
+                required
+                value={formData.mobileNo}
+                onChange={handleChange}
+                error={!!errors.mobileNo}
+                helperText={errors.mobileNo}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Alternate Number"
+                name="AlternateNumber"
+                fullWidth
+                value={formData.AlternateNumber}
+                onChange={handleChange}
+                // error={!!errors.phoneNumber}
+                // helperText={errors.phoneNumber}
+              />
+            </Grid>
+          </Grid>
         );
       case 1:
         return (
@@ -639,7 +693,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
         </Grid>
 
         {/* Speciality Radio Buttons (Visible if 'COOK' is selected) */}
-        {isCookSelected && (
+        {/* {isCookSelected && (
           <Grid item xs={12} sm={6}>
             <FormControl component="fieldset" error={!!errors.speciality} required>
               <FormLabel component="legend">Speciality</FormLabel>
@@ -654,8 +708,54 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
               </RadioGroup>
               <FormHelperText>{errors.speciality}</FormHelperText>
             </FormControl>
-          </Grid>
-        )}
+          </Grid> */}
+          {isCookSelected && (
+  <Grid item xs={12} sm={6}>
+    <FormControl component="fieldset" error={!!errors.speciality} required>
+      <FormLabel component="legend">Cooking Speciality</FormLabel>
+      <RadioGroup
+        name="speciality"
+        value={formData.speciality}
+        onChange={handleSpecialityChange}
+      >
+        <FormControlLabel
+          value="veg"
+          control={<Radio />}
+          label={
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                src="/veg.png" // Replace with the path for your veg image
+                alt="Veg"
+                style={{ width: 20, height: 20, marginRight: 8 }}
+              />
+              Veg
+            </div>
+          }
+        />
+        <FormControlLabel
+          value="non-veg"
+          control={<Radio />}
+          label={
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                    src="/nonveg.png" // Correct path to your nonveg image
+                alt="Non-Veg"
+                style={{ width: 20, height: 20, marginRight: 8 }}
+              />
+              Non-Veg
+            </div>
+          }
+        />
+        <FormControlLabel
+          value="both"
+          control={<Radio />}
+          label="Both"
+        />
+      </RadioGroup>
+      <FormHelperText>{errors.speciality}</FormHelperText>
+    </FormControl>
+  </Grid>
+)}
     {/* Description Field */}
     <Grid item xs={12}>
       <TextField
