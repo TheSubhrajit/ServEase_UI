@@ -10,6 +10,11 @@
      font-size: large;
      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
+.gender{
+    display: flex;
+    padding-top: 25px;
+    gap: 5px;
+}
 
 .Sbtn1, .Sbtn2 {
     display: flex;
@@ -55,6 +60,156 @@
     padding-bottom: 5px;
     
 }
+/* Modal container for food speciality */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it appears above other elements */
+  }
+  
+  /* Modal content box */
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-height: 70vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* List of food specialities */
+  .food-speciality-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Each food speciality item */
+  .food-speciality-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  /* Search bar for food speciality */
+.food-speciality-search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+  }
+  
+  .food-speciality-search-bar:focus {
+    border-color: #007bff;
+  }
+  
+  
+  /* Hover effect for food speciality items */
+  .food-speciality-item:hover {
+    background-color: #e6f7ff;
+    transform: scale(1.02);
+  }
+  
+  /* Selected food speciality item */
+  .food-speciality-item.selected {
+    background-color: #cce5ff;
+    border-color: #007bff;
+    font-weight: bold;
+  }
+  
+  /* Button styles inside modal */
+  .modal-content button {
+    display: block;
+    margin: 10px auto 20px;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .modal-content button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* For responsive design */
+  @media (max-width: 480px) {
+    .modal-content {
+      width: 90%;
+      padding: 15px;
+    }
+  
+    .food-speciality-item {
+      font-size: 12px;
+    }
+  }
+  
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  
+  .language-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .language-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    background-color: #f9f9f9;
+  }
+  
+  .language-item:hover {
+    background-color: #e6f7ff;
+  }
+  
+  .language-item.selected {
+    background-color: #cce5ff;
+  }
+  
 .language h6{
     padding-top: 5px;
     font: icon;
@@ -137,3 +292,24 @@
 }
 
 /* No changes for the Gender, Shift Time, Availability, and Speciality sections */
+/* .language, .food-speciality {
+  margin-bottom: 16px;
+  
+}
+
+.chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.MuiChip-root {
+  font-size: 0.9rem;
+}
+
+.button-container {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+} */

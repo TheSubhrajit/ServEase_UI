@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import axios from 'axios';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 interface ForgotPasswordProps {
-  onBackToLogin: () => void;  // Callback to navigate back to login page
+  onBackToLogin: () => void; // Callback to navigate back to login page
 }
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -25,7 +27,6 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
   const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation: Check if at least one field is filled
     if (!email && !phone) {
       setSnackbarMessage('Please enter either your email or phone number.');
       setSnackbarSeverity('error');
@@ -33,7 +34,6 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
       return;
     }
 
-    // Validate phone number format if provided
     if (phone && !/^\d{10}$/.test(phone)) {
       setSnackbarMessage('Please enter a valid 10-digit phone number.');
       setSnackbarSeverity('error');
@@ -42,7 +42,6 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
     }
 
     try {
-      // Simulate an API call for password reset
       const response = await fetch('http://localhost:8080/api/user/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -54,9 +53,51 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
         setSnackbarSeverity('success');
         setOpenSnackbar(true);
         setEmail('');
-        setPhone(''); // Reset fields
+        setPhone('');
       } else {
         setSnackbarMessage('Failed to send password reset link.');
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setSnackbarMessage('An error occurred. Please try again later.');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!newPassword) {
+      setSnackbarMessage('Please enter a new password.');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+      return;
+    }
+
+    if (!email && !phone) {
+      setSnackbarMessage('Please enter either your email or phone number.');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+      return;
+    }
+
+    try {
+      const payload = { password: newPassword };
+      if (email) payload['email'] = email;
+      if (phone) payload['phone'] = phone;
+
+      const response = await axios.put('http://localhost:8080/api/user/update', payload);
+
+      if (response.status === 200) {
+        setSnackbarMessage('Password updated successfully!');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
+        setNewPassword('');
+      } else {
+        setSnackbarMessage('Failed to update password.');
         setSnackbarSeverity('error');
         setOpenSnackbar(true);
       }
@@ -108,11 +149,32 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
                 Send Reset Link
               </button>
             </form>
+
+            <form className="space-y-4 mt-6" onSubmit={handleUpdatePassword}>
+              <div>
+                <label htmlFor="newPassword" className="mb-2 text-lg">New Password</label>
+                <input
+                  id="newPassword"
+                  className="border p-3 shadow-md placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
+                  type="password"
+                  placeholder="Enter your new password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </div>
+              <button
+                className="bg-gradient-to-r from-green-500 to-teal-500 shadow-lg mt-3 p-2 text-white rounded-lg w-full hover:scale-105 hover:from-teal-500 hover:to-green-500 transition duration-300 ease-in-out"
+                type="submit"
+              >
+                Update Password
+              </button>
+            </form>
+
             <div className="text-center mt-4">
               <a
                 href="#"
                 className="text-blue-400 underline"
-                onClick={onBackToLogin} // Trigger the back to login callback
+                onClick={onBackToLogin}
               >
                 Back to Login
               </a>

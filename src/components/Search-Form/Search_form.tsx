@@ -1,18 +1,15 @@
-import * as React from "react";
+import React, { useState } from "react";
 import "./Search_form.css";
 import Button from "react-bootstrap/Button";
 import { useForm, Controller } from "react-hook-form";
-import { useState, useEffect } from "react";
-import { Chip, TextField, Autocomplete, Box } from "@mui/material";
-// import axios from "axios";
-import axiosInstance from '../../services/axiosInstance';
-import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
-
+import LoadingIndicator from "../LoadingIndicator/LoadingIndicator";
+import axiosInstance from "../../services/axiosInstance";
+import axios from "axios";
 interface SearchFormProps {
   open: boolean;
   selectedValue: string;
   onClose: () => void;
-  onSearch: (data: any[]) => void; // New prop for sending search results
+  onSearch: (data: any[]) => void;
 }
 
 interface FormData {
@@ -24,6 +21,7 @@ interface FormData {
   cookingspeciality: string;
   diet: string;
   rating: string[];
+  foodSpeciality: string[];
 }
 
 export const Search_form: React.FC<SearchFormProps> = ({
@@ -32,21 +30,27 @@ export const Search_form: React.FC<SearchFormProps> = ({
   onClose,
   onSearch,
 }) => {
-  const { handleSubmit, control, register, reset, watch } = useForm<FormData>({
-    defaultValues: {
-      gender: "",
-      age: 18,
-      languages: [],
-      shift: "",
-      availability: "8.00 AM, 12.00 pM",
-      cookingspeciality: "",
-      diet: "",
-      rating: [],
-    },
-  });
-  const [loading, setLoading] = useState(false);
+  const { handleSubmit, control, register, reset, watch, setValue } =
+    useForm<FormData>({
+      defaultValues: {
+        gender: "",
+        age: 18,
+        languages: [],
+        shift: "",
+        availability: "8.00 AM, 12.00 PM",
+        cookingspeciality: "",
+        diet: "",
+        foodSpeciality: [],
+        rating: [],
+      },
+    });
+  const [foodSpecialityModalVisible, setFoodSpecialityModalVisible] =
+    useState(false);
+  const [foodSpecialitySearch, setFoodSpecialitySearch] = useState("");
 
-  const [availableLanguages, setAvailableLanguages] = useState<string[]>([
+  const [loading, setLoading] = useState(false);
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  const [availableLanguages] = useState<string[]>([
     "Assamese",
     "Bengali",
     "Gujarati",
@@ -70,201 +74,298 @@ export const Search_form: React.FC<SearchFormProps> = ({
     "Maithili",
     "Santhali",
   ]);
+  const [availableFoodSpecialities] = useState<string[]>([
+    "Butter Chicken",
+    "Rogan Josh",
+    "Chole Bhature",
+    "Dal Makhani",
+    "Paneer Tikka",
+    "Aloo Paratha",
+    "Tandoori Chicken",
+    "Kadhi Pakora",
+    "Rajma-Chawal",
+    "Pindi Chana",
+    "Masala Dosa",
+    "Idli-Sambar",
+    "Vada",
+    "Hyderabadi Biryani",
+    "Pongal",
+    "Appam with Stew",
+    "Chettinad Chicken",
+    "Puliyodarai",
+    "Malabar Parotta",
+    "Puttu and Kadala Curry",
+    "Macher Jhol",
+    "Litti Chokha",
+    "Pakhala Bhata",
+    "Sandesh",
+    "Chingri Malai Curry",
+    "Rosogolla",
+    "Momos",
+    "Thukpa",
+    "Aloo Pitika",
+    "Bamboo Shoot Curry",
+    "Pav Bhaji",
+    "Dhokla",
+    "Thepla",
+    "Dal Baati Churma",
+    "Gatte Ki Sabzi",
+    "Goan Fish Curry",
+    "Puran Poli",
+    "Shrikhand",
+    "Laal Maas",
+    "Handvo",
+    "Pani Puri/Golgappa",
+    "Samosa",
+    "Kachori",
+    "Sev Puri",
+    "Aloo Tikki Chaat",
+    "Jalebi",
+    "Bhutta (Roasted Corn)",
+    "Chaat Papdi",
+    "Dabeli",
+  ]);
 
+  const toggleFoodSpecialitySelection = (speciality: string) => {
+    const selectedSpecialities = watch("foodSpeciality");
+    if (selectedSpecialities.includes(speciality)) {
+      setValue(
+        "foodSpeciality",
+        selectedSpecialities.filter((item) => item !== speciality)
+      );
+    } else {
+      setValue("foodSpeciality", [...selectedSpecialities, speciality]);
+    }
+  };
+  const filteredFoodSpecialities = availableFoodSpecialities.filter(
+    (speciality) =>
+      speciality.toLowerCase().includes(foodSpecialitySearch.toLowerCase())
+  );
 
-  // Fetch worldwide languages and add them to the availableLanguages array
-  // useEffect(() => {
-  //   const fetchWorldLanguages = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         "https://restcountries.com/v3.1/all"
-  //       );
-  //       const worldLanguagesSet = new Set<string>();
+  const handleFoodSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFoodSpecialitySearch(event.target.value);
+  };
 
-  //       response.data.forEach((country) => {
-  //         if (country.languages) {
-  //           Object.values(country.languages).forEach((language) =>
-  //             worldLanguagesSet.add(language)
-  //           );
-  //         }
-  //       });
+  const toggleLanguageSelection = (language: string) => {
+    const selectedLanguages = watch("languages");
+    if (selectedLanguages.includes(language)) {
+      setValue(
+        "languages",
+        selectedLanguages.filter((item) => item !== language)
+      );
+    } else {
+      setValue("languages", [...selectedLanguages, language]);
+    }
+  };
 
-  //       setAvailableLanguages((prevLanguages) => [
-  //         ...prevLanguages,
-  //         ...Array.from(worldLanguagesSet),
-  //       ]);
-  //     } catch (error) {
-  //       console.error("Error fetching world languages:", error);
-  //     }
-  //   };
-
-  //   fetchWorldLanguages();
-  // }, []);
-
-  // Handle form submission
+ 
   const onSubmit = async (data: FormData) => {
     console.log("Form Data:", data);
-
+  
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/api/serviceproviders/serviceproviders/all'); // Change this to use form data as parameters if needed
-      onSearch(response.data); // Send data back to DetailsView
+      const response = await axios.get(
+        "http://localhost:8080/api/serviceproviders/get-by-filters",
+      );
+  
+      onSearch(response.data); // Pass the response data to the onSearch callback
     } catch (err) {
       console.error("There was a problem with the fetch operation:", err);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    // <>
-    // {loading ? (
-    //   <Box sx={{ display: 'flex' }}>
-    //     <LoadingIndicator />
-    //   </Box>
-    // ) : (
-     <div className="all">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* form fields... */}
-        
-            {/* Gender selection */}
-            <div className="flex-container1">
+    <div className="all">
+      {loading ? (
+        <LoadingIndicator />
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Gender selection */}
+          <div className="flex-container1">
+            <div className="gender">
               <label>Gender: </label>
               <input type="radio" value="Male" {...register("gender")} /> Male
               <input type="radio" value="Female" {...register("gender")} />{" "}
               Female
             </div>
+          </div>
 
-            {/* Age slider */}
-            <div className="flex-container1">
-              <label>Age: </label>
-              <Controller
-                name="age"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    type="range"
-                    min="18"
-                    max="50"
-                    {...field}
-                    value={field.value}
-                  />
-                )}
-              />
-              {watch("age")} years
-            </div>
+          {/* Age slider */}
+          <div className="flex-container1">
+            <label>Age: </label>
+            <Controller
+              name="age"
+              control={control}
+              render={({ field }) => (
+                <input
+                  type="range"
+                  min="18"
+                  max="50"
+                  {...field}
+                  value={field.value}
+                />
+              )}
+            />
+            {watch("age")} years
+          </div>
 
-            {/* Language selection */}
-            <div className="language">
-              <h6>Select Languages (Indian and World Languages)</h6>
-              <Controller
-                name="languages"
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    multiple
-                    freeSolo
-                    options={availableLanguages}
-                    value={field.value}
-                    onChange={(event, newValue) => field.onChange(newValue)}
-                    renderTags={(value: string[], getTagProps) =>
-                      value.map((option: string, index: number) => (
-                        <Chip
-                          // key={index}
-                          variant="outlined"
-                          label={option}
-                          {...getTagProps({ index })}
-                        />
-                      ))
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        label="Select Languages"
+          {/* Language selection */}
+          <div className="language">
+            <h6>Select Languages :</h6>
+
+            <Button
+              variant="outline-primary"
+              onClick={() => setLanguageModalVisible(true)}
+            >
+              {watch("languages").length > 0
+                ? watch("languages").join(", ")
+                : "Pick Language"}
+            </Button>
+            {languageModalVisible && (
+              <div className="modal">
+                <div className="modal-content">
+                  <ul className="language-list">
+                    <Button
+                      variant="outline-primary"
+                      onClick={() => setLanguageModalVisible(false)}
+                    >
+                      Close
+                    </Button>
+                    {availableLanguages.map((language) => (
+                      <li
+                        key={language}
+                        className={`language-item ${
+                          watch("languages").includes(language)
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() => toggleLanguageSelection(language)}
+                      >
+                        {language}
+                      </li>
+                    ))}
+                  </ul>
+                  {/* <Button
+                    variant="outline-secondary"
+                    onClick={() => setLanguageModalVisible(false)}
+                  >
+                    Close
+                  </Button> */}
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="language">
+            <h6>Select Food Specialities :</h6>
+            <Button
+              variant="outline-primary"
+              onClick={() => setFoodSpecialityModalVisible(true)}
+            >
+              {watch("foodSpeciality").length > 0
+                ? watch("foodSpeciality").join(", ")
+                : "Pick Food Specialities"}
+            </Button>
+            {foodSpecialityModalVisible && (
+              <div className="modal">
+                {foodSpecialityModalVisible && (
+                  <div className="modal">
+                    <div className="modal-content">
+                      {/* Search Bar */}
+                      <input
+                        type="text"
+                        placeholder="Search Food Specialities"
+                        value={foodSpecialitySearch}
+                        onChange={handleFoodSearchChange}
+                        className="food-speciality-search-bar"
                       />
-                    )}
-                  />
+
+                      {/* Filtered List of Food Specialities */}
+                      <ul className="food-speciality-list">
+                        <Button
+                          variant="outline-primary"
+                          onClick={() => setFoodSpecialityModalVisible(false)}
+                        >
+                          Close
+                        </Button>
+                        {filteredFoodSpecialities.map((speciality) => (
+                          <li
+                            key={speciality}
+                            className={`food-speciality-item ${
+                              watch("foodSpeciality").includes(speciality)
+                                ? "selected"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              toggleFoodSpecialitySelection(speciality)
+                            }
+                          >
+                            {speciality}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 )}
-              />
-            </div>
-             {/* Shift time */}
-             <div className="flex-container1">
-              <label>Shift Time: </label>
-              <input type="radio" value="Morning" {...register("shift")} />{" "}
-              Morning
-              <input type="radio" value="Afternoon" {...register("shift")} />{" "}
-              Afternoon
-              <input type="radio" value="Evening" {...register("shift")} />{" "}
-              Evening
-            </div>
 
-            {/* Availability */}
-            <div className="flex-container1">
-              <label>Availability: </label>
-              <select {...register("availability")}>
-                <option value="8.00 AM">8.00 AM</option>
-                <option value="12.00 PM">12.00 PM</option>
-                <option value="4.00 PM">4.00 PM</option>
-              </select>
-            </div>
+                <div className="modal-content">
+                  <ul className="food-speciality-list">
+                    <Button
+                      variant="outline-primary"
+                      onClick={() => setFoodSpecialityModalVisible(false)}
+                    >
+                      Close
+                    </Button>
+                    {availableFoodSpecialities.map((speciality) => (
+                      <li
+                        key={speciality}
+                        className={`food-speciality-item ${
+                          watch("foodSpeciality").includes(speciality)
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          toggleFoodSpecialitySelection(speciality)
+                        }
+                      >
+                        {speciality}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
 
-            {/* New Diet section with symbols */}
-            <div className="flex-container1">
-              <label>Diet: </label>
-              <input type="radio" value="Veg" {...register("diet")} />
-              <img
-                src="veg.png"
-                alt="Vegetarian Diet Symbol"
-                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
-              />
-              <input type="radio" value="Non-Veg" {...register("diet")} />
-              <img
-                src="nonveg.png"
-                alt="Vegetarian Diet Symbol"
-                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
-              />
-            </div>
+          {/* Shift time */}
+          <div className="flex-container1">
+            <label>Shift Time: </label>
+            <input type="radio" value="Morning" {...register("shift")} />{" "}
+            Morning
+            <input type="radio" value="Afternoon" {...register("shift")} />{" "}
+            Afternoon
+            <input type="radio" value="Evening" {...register("shift")} />{" "}
+            Evening
+          </div>
 
-            {/* Speciality section */}
-            <div className="flex-container1">
-              <label>Cooking Speciality: </label>
-              <input type="radio" value="Veg" {...register("cookingspeciality")} />
-              <img
-                src="veg.png"
-                alt="Vegetarian Diet Symbol"
-                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
-              />
-              <input type="radio" value="Non-Veg" {...register("cookingspeciality")} />
-              <img
-                src="nonveg.png"
-                alt="Vegetarian Diet Symbol"
-                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
-              />
-            </div>
+          {/* Availability */}
+          <div className="flex-container1">
+            <label>Availability: </label>
+            <select {...register("availability")}>
+              <option value="8.00 AM">8.00 AM</option>
+              <option value="12.00 PM">12.00 PM</option>
+              <option value="4.00 PM">4.00 PM</option>
+            </select>
+          </div>
 
-            
-
-            {/* Ratings */}
-            <div className="flex-container1">
-              <label>Customer Ratings: </label>
-              <input type="checkbox" value="5" {...register("rating")} />
-              <span style={{ color: "#FFD700" }}>★</span> 5
-              <input type="checkbox" value="4" {...register("rating")} />
-              <span style={{ color: "#FFD700" }}>★</span> 4 & above
-              <input type="checkbox" value="3" {...register("rating")} />
-              <span style={{ color: "#FFD700" }}>★</span> 3 & above
-            </div>
-
-         
-        {/* Submit and Reset buttons */}
-        <div className="button">
-          <div className="Sbtn1">
+          {/* Submit and Reset buttons */}
+          <div className="button">
             <Button type="submit" id="button1" variant="outline-primary">
               Search
             </Button>
-          </div>
-          <div className="Sbtn2">
             <Button
               type="button"
               id="button2"
@@ -274,11 +375,9 @@ export const Search_form: React.FC<SearchFormProps> = ({
               Reset
             </Button>
           </div>
-        </div>
-      </form>
+        </form>
+      )}
     </div>
-  // )}
-  // </>
   );
 };
 

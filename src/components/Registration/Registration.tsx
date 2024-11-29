@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -29,58 +29,54 @@ import {
   ArrowBack,
 } from "@mui/icons-material";
 import ProfileImageUpload from './ProfileImageUpload';
+import axios from "axios";
 
 // Define the shape of formData using an interface
 interface FormData {
   firstName: string;
   middleName: string;
   lastName: string;
-  email: string;
+  emailId: string;
   password: string;
   confirmPassword: string;
   phoneNumber: string;
   gender: string;
   address: string;
-  city: string;
-  state: string;
-  zipCode: string;
+  locality: string;
+  street: string;
+  pincode: string;
   buildingName:string;
   currentLocation: string;
-  nearbyLocation: string;
   agreeToTerms: boolean;
   hobbies: string;
   language: string;
-  diet:string;
-  speciality: string;
 }
 
 // Define the shape of errors to hold string messages
 interface FormErrors {
   firstName?: string;
   lastName?: string;
-  email?: string;
+  emailId?: string;
   password?: string;
   confirmPassword?: string;
   phoneNumber?: string;
   gender?: string;
   address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
+  locality?: string;
+  street?: string;
+  pincode?: string;
   buildingName?:string;
   currentLocation?: string;
-  nearbyLocation?: string;
-  diet?:string;
   agreeToTerms?: string; // This is now a string for error messages
 }
 
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
+const emailIdRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
 const strongPasswordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const phoneRegex = /^[0-9]{10}$/;
-const zipCodeRegex = /^[0-9]{6}$/;
+const pincodeRegex = /^[0-9]{6}$/;
 
 const steps = ["Basic Info", "Address", "Additional Details", "Confirmation"];
 
@@ -114,23 +110,20 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     firstName: "",
     middleName: "",
     lastName: "",
-    email: "",
+    emailId: "",
     password: "",
     confirmPassword: "",
     phoneNumber: "",
     gender: "",
     address: "",
-    city: "",
-    state: "",
-    zipCode: "",
+    locality: "",
+    street: "",
+    pincode: "",
     buildingName:"",
     currentLocation: "",
-    nearbyLocation: "",
     agreeToTerms: false,
     hobbies: "",
     language: "",
-    speciality: '',
-    diet:'',
   });
 
   const [gender, setGender] = useState("");
@@ -152,6 +145,8 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
    const handleImageSelect = (file: File | null) => {
     setFormData((prevData) => ({ ...prevData, profileImage: file }));
   };
+
+  
   
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -176,8 +171,8 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
         tempErrors.lastName =
           "Last Name is required and should contain only alphabets.";
       }
-      if (!formData.email || !emailRegex.test(formData.email)) {
-        tempErrors.email = "Valid email is required.";
+      if (!formData.emailId || !emailIdRegex.test(formData.emailId)) {
+        tempErrors.emailId = "Valid email is required.";
       }
       if (!formData.password || !strongPasswordRegex.test(formData.password)) {
         tempErrors.password =
@@ -198,20 +193,17 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       if (!formData.address) {
         tempErrors.address = "Address is required.";
       }
-      if (!formData.city) {
-        tempErrors.city = "City is required.";
+      if (!formData.locality) {
+        tempErrors.locality = "City is required.";
       }
-      if (!formData.state) {
-        tempErrors.state = "State is required.";
+      if (!formData.street) {
+        tempErrors.street = "State is required.";
       }
-      if (!formData.zipCode || !zipCodeRegex.test(formData.zipCode)) {
-        tempErrors.zipCode = "Zip/Postal Code must be exactly 6 digits.";
+      if (!formData.pincode || !pincodeRegex.test(formData.pincode)) {
+        tempErrors.pincode = "Zip/Postal Code must be exactly 6 digits.";
       }
       if (!formData.currentLocation) {
         tempErrors.currentLocation = "Current Location is required.";
-      }
-      if (!formData.nearbyLocation) {
-        tempErrors.nearbyLocation = "Nearby Location is required.";
       }
       if (!formData.buildingName) {
         tempErrors.buildingName = "Building Name is required.";
@@ -245,24 +237,89 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   //     console.log("Form submitted:", formData);
   //   }
   // };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
     
+  //   // Ensure form validation passes
+  //   if (validateForm()) {
+  //       // Log form data in the console for now
+  //       console.log("Form submitted:", formData);
+        
+  //       // Show success message in the Snackbar
+  //       showSnackbar('Registration Successful!', 'success');
+
+  //       // Redirect or call the onBackToLogin handler with form data
+  //       onBackToLogin(true);  // Triggering the login component after success
+  //   } else {
+  //       // Show error message in the Snackbar if form validation fails
+  //       showSnackbar('Please fix the errors and try again.', 'error');
+  //   }
+  // };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
     // Ensure form validation passes
     if (validateForm()) {
-        // Log form data in the console for now
-        console.log("Form submitted:", formData);
-        
+      try {
+        // Make the POST request to the backend API
+        const response = await axios.post(
+          "http://localhost:8080/api/customer/add-customer",
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        // Log the response data
+        console.log("Server Response:", response.data);
+  
         // Show success message in the Snackbar
-        showSnackbar('Registration Successful!', 'success');
-
-        // Redirect or call the onBackToLogin handler with form data
-        onBackToLogin(true);  // Triggering the login component after success
+        showSnackbar("Registration Successful!", "success");
+  
+        // Optionally, reset the form or redirect
+        // setFormData({
+        //   firstName: "",
+        //   middleName: "",
+        //   lastName: "",
+        //   email: "",
+        //   password: "",
+        //   confirmPassword: "",
+        //   phoneNumber: "",
+        //   gender: "",
+        //   address: "",
+        //   city: "",
+        //   state: "",
+        //   zipCode: "",
+        //   buildingName: "",
+        //   currentLocation: "",
+        //   nearbyLocation: "",
+        //   agreeToTerms: false,
+        //   hobbies: "",
+        //   language: "",
+        //   speciality: "",
+        //   diet: "",
+        // });
+  
+        // Call the onBackToLogin handler to redirect to login
+        onBackToLogin(true);
+      } catch (error: any) {
+        // Handle error response
+        console.error("Error registering user:", error.response || error.message);
+  
+        // Show error message in the Snackbar
+        showSnackbar(
+          error.response?.data?.message || "Registration failed. Please try again.",
+          "error"
+        );
+      }
     } else {
-        // Show error message in the Snackbar if form validation fails
-        showSnackbar('Please fix the errors and try again.', 'error');
+      // Show error message if form validation fails
+      showSnackbar("Please fix the errors and try again.", "error");
     }
   };
+  
 
   const handleNext = () => {
     if (validateForm()) {
@@ -371,10 +428,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   label="Email"
                   name="email"
                   fullWidth
-                  value={formData.email}
+                  value={formData.emailId}
                   onChange={handleChange}
-                  error={!!errors.email}
-                  helperText={errors.email}
+                  error={!!errors.emailId}
+                  helperText={errors.emailId}
                   sx={{
                     "& .MuiInputBase-root": { height: "36px" },
                     "& .MuiInputBase-input": { padding: "10px 12px" },
@@ -482,10 +539,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   name="city"
                   fullWidth
                   required
-                  value={formData.city}
+                  value={formData.locality}
                   onChange={handleChange}
-                  error={!!errors.city}
-                  helperText={errors.city}
+                  error={!!errors.locality}
+                  helperText={errors.locality}
                   sx={{
                     "& .MuiInputBase-root": { height: "36px" },
                     "& .MuiInputBase-input": { padding: "10px 12px" },
@@ -498,10 +555,10 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   name="state"
                   fullWidth
                   required
-                  value={formData.state}
+                  value={formData.street}
                   onChange={handleChange}
-                  error={!!errors.state}
-                  helperText={errors.state}
+                  error={!!errors.street}
+                  helperText={errors.street}
                   sx={{
                     "& .MuiInputBase-root": { height: "36px" },
                     "& .MuiInputBase-input": { padding: "10px 12px" },
@@ -514,17 +571,17 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   name="zipCode"
                   fullWidth
                   required
-                  value={formData.zipCode}
+                  value={formData.pincode}
                   onChange={handleChange}
-                  error={!!errors.zipCode}
-                  helperText={errors.zipCode}
+                  error={!!errors.pincode}
+                  helperText={errors.pincode}
                   sx={{
                     "& .MuiInputBase-root": { height: "36px" },
                     "& .MuiInputBase-input": { padding: "10px 12px" },
                   }}
                 />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextField
                   label="Nearby Location"
                   name="Nearby Location"
@@ -571,7 +628,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                     "& .MuiInputBase-input": { padding: "10px 12px" },
                   }}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
           </div>
         );
