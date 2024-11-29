@@ -57,16 +57,24 @@ export const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/user/login?username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
-      );
-
+      // Prepare data to send in the request body
+      const requestData = {
+        username: email,
+        password: password,
+      };
+  
+      const response = await fetch('http://localhost:8080/api/user/login', {
+        method: 'POST', // Use POST method
+        headers: {
+          'Content-Type': 'application/json', // Set Content-Type to application/json
+        },
+        body: JSON.stringify(requestData), // Convert the data to JSON and send in the body
+      });
+  
+      // Check if the response is OK
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
       const data = await response.text(); 
 
       if (data === "Login successful!") {
