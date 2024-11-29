@@ -60,7 +60,7 @@ interface FormData {
   kyc: string;
   documentDetails: string;
   documentImage: File | null;
-  aadhaarNumber:string,
+  AADHAAR:string,
   otherDetails:string,
   profileImage: File | null; // New field for Profile Image
   speciality: string;
@@ -161,7 +161,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     kyc : '',
     documentDetails: '',
     documentImage: null,
-    aadhaarNumber:'',
+    AADHAAR:'',
     otherDetails:'',
     profileImage: null,
     speciality: '',
@@ -327,8 +327,8 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   
     // Step 4: KYC Verification Validation
     if (activeStep === 3) {
-      if (!formData.aadhaar || !aadhaarRegex.test(formData.aadhaar)) {
-        tempErrors.aadhaar = 'Aadhaar number must be exactly 12 digits.';
+      if (!formData.AADHAAR || !aadhaarRegex.test(formData.AADHAAR)) {
+        tempErrors.kyc = 'Aadhaar number must be exactly 12 digits.';
       }
       if (!formData.documentImage) {
         tempErrors.documentImage = "Please upload a document image.";
@@ -360,28 +360,36 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
     setActiveStep((prevStep) => prevStep - 1);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
 
-    // Check for internet connectivity
-    if (!navigator.onLine) {
-      setSnackbarSeverity('error'); // Set snackbar to error (red)
-      setSnackbarMessage('Something went wrong , Please contact administrator');
-      setSnackbarOpen(true);
-      return; // Exit if offline
+const handleSubmit = async (event) => {
+  event.preventDefault(); // Prevent default form submission
+
+  // Form validation (optional)
+  if (validateForm()) {
+    try {
+      // Post form data to backend
+      const response = await axios.post(
+        "http://localhost:8080/api/serviceproviders/serviceprovider/add",
+        formData, // Assuming `formData` contains the collected form data
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Handle successful response
+      console.log("Success:", response.data);
+      alert("Service provider added successfully!");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Failed to add service provider. Please try again.");
     }
+  } else {
+    alert("Please fill out all required fields.");
+  }
+};
 
-    // If online, proceed with form submission
-    console.log('Form submitted successfully!');
-    setSnackbarSeverity('success'); // Set snackbar to success (green)
-    setSnackbarMessage('Registration done successfully!');
-    setSnackbarOpen(true);
-
-    const response =  axios.post(
-      "http://localhost:8080/api/serviceproviders/serviceprovider/add",
-       formData
-    );
-  };
    // Close snackbar function
    const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
@@ -768,7 +776,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
         onChange={handledietChange}
       >
         <FormControlLabel
-          value="veg"
+          value="VEG"
           control={<Radio />}
           label={
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -782,7 +790,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
           }
         />
         <FormControlLabel
-          value="non-veg"
+          value="NONVEG"
           control={<Radio />}
           label={
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -796,7 +804,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
           }
         />
         <FormControlLabel
-          value="both"
+          value="BOTH"
           control={<Radio />}
           label="Both"
         />
@@ -861,16 +869,16 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
                 name="aadhaar"
                 fullWidth
                 required
-                value={formData.aadhaar}
+                value={formData.AADHAAR}
                 onChange={handleChange}
-                error={!!errors.aadhaar}
-                helperText={errors.aadhaar}
+                error={!!errors.kyc}
+                helperText={errors.kyc}
               />
         
             </Grid>
 
         {/* Document Image Upload */}
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Input
             type="file"
             inputProps={{ accept: "image/*" }}
@@ -896,7 +904,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
           {errors.documentImage && (
             <Typography color="error">{errors.documentImage}</Typography>
           )}
-        </Grid>
+        </Grid> */}
 
        {/* Other Details (Optional for PAN or DL) */}
        {(formData.kyc === "PAN" || formData.kyc === "DL") && (
