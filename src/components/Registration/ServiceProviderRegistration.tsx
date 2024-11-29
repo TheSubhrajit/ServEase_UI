@@ -421,7 +421,7 @@ const handleSubmit = async (event) => {
 
       <Grid item xs={12}>
         <TextField
-          label="First Name"
+          placeholder="First Name"
           name="firstName"
           fullWidth
           required
@@ -434,7 +434,7 @@ const handleSubmit = async (event) => {
 
       <Grid item xs={12}>
         <TextField
-          label="Middle Name"
+          placeholder="Middle Name"
           name="middleName"
           fullWidth
           value={formData.middleName}
@@ -444,7 +444,7 @@ const handleSubmit = async (event) => {
 
       <Grid item xs={12}>
         <TextField
-          label="Last Name"
+          placeholder="Last Name"
           name="lastName"
           fullWidth
           required
@@ -474,7 +474,7 @@ const handleSubmit = async (event) => {
 
       <Grid item xs={12}>
         <TextField
-          label="Email"
+          placeholder="Email"
           name="emailId"
           fullWidth
           required
@@ -487,7 +487,7 @@ const handleSubmit = async (event) => {
 
       <Grid item xs={12}>
               <TextField
-                label="Password"
+                placeholder="Password"
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 fullWidth
@@ -514,7 +514,7 @@ const handleSubmit = async (event) => {
 
             <Grid item xs={12}>
               <TextField
-                label="Confirm Password"
+                placeholder="Confirm Password"
                 type={showConfirmPassword ? 'text' : 'password'}
                 name="confirmPassword"
                 fullWidth
@@ -540,7 +540,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Mobile Number"
+                placeholder="Mobile Number"
                 name="mobileNo"
                 fullWidth
                 required
@@ -552,7 +552,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Alternate Number"
+                placeholder="Alternate Number"
                 name="AlternateNumber"
                 fullWidth
                 value={formData.AlternateNumber}
@@ -568,7 +568,7 @@ const handleSubmit = async (event) => {
           <Grid container spacing={2}>
             <Grid item xs={12} className="pt-4">
               <TextField
-                label="Address"
+                placeholder="Address"
                 name="address"
                 fullWidth
                 required
@@ -580,7 +580,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="BuildingName"
+                placeholder="BuildingName"
                 name="buildingName"
                 fullWidth
                 required
@@ -592,7 +592,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12} sm={6} >
               <TextField
-                label="Locality"
+                placeholder="Locality"
                 name="locality"
                 fullWidth
                 required
@@ -604,7 +604,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12} sm={6} >
               <TextField
-                label="Street"
+                placeholder="Street"
                 name="street"
                 fullWidth
                 required
@@ -616,7 +616,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12}sm={6}>
               <TextField
-                label="Pincode"
+                placeholder="Pincode"
                 name="pincode"
                 fullWidth
                 required
@@ -628,7 +628,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="CurrentLocation"
+                placeholder="CurrentLocation"
                 name="currentLocation"
                 fullWidth
                 required
@@ -640,7 +640,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="NearbyLocation"
+                placeholder="NearbyLocation"
                 name="nearbyLocation"
                 fullWidth
                 value={formData.nearbyLocation}
@@ -683,7 +683,7 @@ const handleSubmit = async (event) => {
      <Grid item xs={12} sm={6}>
           <TextField
             select
-            label="Select Service Type"
+            placeholder="Select Service Type"
             name="housekeepingRole"
             fullWidth
             value={formData.housekeepingRole}
@@ -813,7 +813,7 @@ const handleSubmit = async (event) => {
     {/* Description Field */}
     <Grid item xs={12}>
       <TextField
-        label="Description"
+        placeholder="Description"
         name="description"
         fullWidth
         value={formData.description}
@@ -824,7 +824,7 @@ const handleSubmit = async (event) => {
     {/* Experience Field */}
     <Grid item xs={12} sm={6}>
       <TextField
-        label="Experience"
+        placeholder="Experience"
         name="experience"
         fullWidth
         required
@@ -863,7 +863,7 @@ const handleSubmit = async (event) => {
        {/* Document Type Selection */}
        <Grid item xs={12}>
        <TextField
-                label="Aadhaar Number"
+                placeholder="Aadhaar Number"
                 name="aadhaar"
                 fullWidth
                 required
@@ -908,7 +908,7 @@ const handleSubmit = async (event) => {
        {(formData.kyc === "PAN" || formData.kyc === "DL") && (
           <Grid item xs={12}>
             <TextField
-              label="Other Details"
+              placeholder="Other Details"
               name="otherDetails"
               fullWidth
               value={formData.otherDetails}
