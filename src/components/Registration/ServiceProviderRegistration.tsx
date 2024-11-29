@@ -60,7 +60,6 @@ interface FormData {
   kyc: string;
   documentDetails: string;
   documentImage: File | null;
-  AADHAAR:string,
   otherDetails:string,
   profileImage: File | null; // New field for Profile Image
   speciality: string;
@@ -161,7 +160,6 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     kyc : '',
     documentDetails: '',
     documentImage: null,
-    AADHAAR:'',
     otherDetails:'',
     profileImage: null,
     speciality: '',
@@ -327,7 +325,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   
     // Step 4: KYC Verification Validation
     if (activeStep === 3) {
-      if (!formData.AADHAAR || !aadhaarRegex.test(formData.AADHAAR)) {
+      if (!formData.aadhaar || !aadhaarRegex.test(formData.aadhaar)) {
         tempErrors.kyc = 'Aadhaar number must be exactly 12 digits.';
       }
       if (!formData.documentImage) {
@@ -869,7 +867,7 @@ const handleSubmit = async (event) => {
                 name="aadhaar"
                 fullWidth
                 required
-                value={formData.AADHAAR}
+                value={formData.aadhaar}
                 onChange={handleChange}
                 error={!!errors.kyc}
                 helperText={errors.kyc}
@@ -878,7 +876,7 @@ const handleSubmit = async (event) => {
             </Grid>
 
         {/* Document Image Upload */}
-        {/* <Grid item xs={12}>
+        <Grid item xs={12}>
           <Input
             type="file"
             inputProps={{ accept: "image/*" }}
@@ -904,7 +902,7 @@ const handleSubmit = async (event) => {
           {errors.documentImage && (
             <Typography color="error">{errors.documentImage}</Typography>
           )}
-        </Grid> */}
+        </Grid>
 
        {/* Other Details (Optional for PAN or DL) */}
        {(formData.kyc === "PAN" || formData.kyc === "DL") && (
