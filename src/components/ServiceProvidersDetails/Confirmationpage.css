@@ -9,6 +9,7 @@
   margin-bottom: 20px;
 }
 .back-button {
+  padding-bottom: 40px;
   display: flex;
   align-items: center;
   gap: 5px;

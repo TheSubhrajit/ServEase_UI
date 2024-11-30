@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -29,50 +29,54 @@ import {
   ArrowBack,
 } from "@mui/icons-material";
 import ProfileImageUpload from './ProfileImageUpload';
+import axios from "axios";
 
 // Define the shape of formData using an interface
 interface FormData {
   firstName: string;
   middleName: string;
   lastName: string;
-  email: string;
+  emailId: string;
   password: string;
   confirmPassword: string;
   phoneNumber: string;
   gender: string;
   address: string;
-  city: string;
-  state: string;
-  zipCode: string;
+  locality: string;
+  street: string;
+  pincode: string;
+  buildingName:string;
+  currentLocation: string;
   agreeToTerms: boolean;
   hobbies: string;
   language: string;
-  speciality: string;
 }
 
 // Define the shape of errors to hold string messages
 interface FormErrors {
   firstName?: string;
   lastName?: string;
-  email?: string;
+  emailId?: string;
   password?: string;
   confirmPassword?: string;
   phoneNumber?: string;
   gender?: string;
   address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
+  locality?: string;
+  street?: string;
+  pincode?: string;
+  buildingName?:string;
+  currentLocation?: string;
   agreeToTerms?: string; // This is now a string for error messages
 }
 
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
+const emailIdRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
 const strongPasswordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const phoneRegex = /^[0-9]{10}$/;
-const zipCodeRegex = /^[0-9]{6}$/;
+const pincodeRegex = /^[0-9]{6}$/;
 
 const steps = ["Basic Info", "Address", "Additional Details", "Confirmation"];
 
@@ -106,19 +110,20 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     firstName: "",
     middleName: "",
     lastName: "",
-    email: "",
+    emailId: "",
     password: "",
     confirmPassword: "",
     phoneNumber: "",
     gender: "",
     address: "",
-    city: "",
-    state: "",
-    zipCode: "",
+    locality: "",
+    street: "",
+    pincode: "",
+    buildingName:"",
+    currentLocation: "",
     agreeToTerms: false,
     hobbies: "",
     language: "",
-    speciality: '',
   });
 
   const [gender, setGender] = useState("");
@@ -140,6 +145,8 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
    const handleImageSelect = (file: File | null) => {
     setFormData((prevData) => ({ ...prevData, profileImage: file }));
   };
+
+  
   
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -164,8 +171,8 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
         tempErrors.lastName =
           "Last Name is required and should contain only alphabets.";
       }
-      if (!formData.email || !emailRegex.test(formData.email)) {
-        tempErrors.email = "Valid email is required.";
+      if (!formData.emailId || !emailIdRegex.test(formData.emailId)) {
+        tempErrors.emailId = "Valid email is required.";
       }
       if (!formData.password || !strongPasswordRegex.test(formData.password)) {
         tempErrors.password =
@@ -186,14 +193,20 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       if (!formData.address) {
         tempErrors.address = "Address is required.";
       }
-      if (!formData.city) {
-        tempErrors.city = "City is required.";
+      if (!formData.locality) {
+        tempErrors.locality = "City is required.";
       }
-      if (!formData.state) {
-        tempErrors.state = "State is required.";
+      if (!formData.street) {
+        tempErrors.street = "State is required.";
       }
-      if (!formData.zipCode || !zipCodeRegex.test(formData.zipCode)) {
-        tempErrors.zipCode = "Zip/Postal Code must be exactly 6 digits.";
+      if (!formData.pincode || !pincodeRegex.test(formData.pincode)) {
+        tempErrors.pincode = "Zip/Postal Code must be exactly 6 digits.";
+      }
+      if (!formData.currentLocation) {
+        tempErrors.currentLocation = "Current Location is required.";
+      }
+      if (!formData.buildingName) {
+        tempErrors.buildingName = "Building Name is required.";
       }
     }
 
@@ -224,24 +237,89 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   //     console.log("Form submitted:", formData);
   //   }
   // };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
     
+  //   // Ensure form validation passes
+  //   if (validateForm()) {
+  //       // Log form data in the console for now
+  //       console.log("Form submitted:", formData);
+        
+  //       // Show success message in the Snackbar
+  //       showSnackbar('Registration Successful!', 'success');
+
+  //       // Redirect or call the onBackToLogin handler with form data
+  //       onBackToLogin(true);  // Triggering the login component after success
+  //   } else {
+  //       // Show error message in the Snackbar if form validation fails
+  //       showSnackbar('Please fix the errors and try again.', 'error');
+  //   }
+  // };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
     // Ensure form validation passes
     if (validateForm()) {
-        // Log form data in the console for now
-        console.log("Form submitted:", formData);
-        
+      try {
+        // Make the POST request to the backend API
+        const response = await axios.post(
+          "http://localhost:8080/api/customer/add-customer",
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        // Log the response data
+        console.log("Server Response:", response.data);
+  
         // Show success message in the Snackbar
-        showSnackbar('Registration Successful!', 'success');
-
-        // Redirect or call the onBackToLogin handler with form data
-        onBackToLogin(true);  // Triggering the login component after success
+        showSnackbar("Registration Successful!", "success");
+  
+        // Optionally, reset the form or redirect
+        // setFormData({
+        //   firstName: "",
+        //   middleName: "",
+        //   lastName: "",
+        //   email: "",
+        //   password: "",
+        //   confirmPassword: "",
+        //   phoneNumber: "",
+        //   gender: "",
+        //   address: "",
+        //   city: "",
+        //   state: "",
+        //   zipCode: "",
+        //   buildingName: "",
+        //   currentLocation: "",
+        //   nearbyLocation: "",
+        //   agreeToTerms: false,
+        //   hobbies: "",
+        //   language: "",
+        //   speciality: "",
+        //   diet: "",
+        // });
+  
+        // Call the onBackToLogin handler to redirect to login
+        onBackToLogin(true);
+      } catch (error: any) {
+        // Handle error response
+        console.error("Error registering user:", error.response || error.message);
+  
+        // Show error message in the Snackbar
+        showSnackbar(
+          error.response?.data?.message || "Registration failed. Please try again.",
+          "error"
+        );
+      }
     } else {
-        // Show error message in the Snackbar if form validation fails
-        showSnackbar('Please fix the errors and try again.', 'error');
+      // Show error message if form validation fails
+      showSnackbar("Please fix the errors and try again.", "error");
     }
   };
+  
 
   const handleNext = () => {
     if (validateForm()) {
@@ -266,7 +344,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="First Name"
+                  placeholder="First Name"
                   name="firstName"
                   fullWidth
                   required
@@ -282,7 +360,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Middle Name"
+                  placeholder="Middle Name"
                   name="middleName"
                   fullWidth
                   value={formData.middleName}
@@ -297,7 +375,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Last Name"
+                  placeholder="Last Name"
                   name="lastName"
                   fullWidth
                   required
@@ -346,23 +424,20 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  label="Email"
-                  name="email"
-                  fullWidth
-                  value={formData.email}
-                  onChange={handleChange}
-                  error={!!errors.email}
-                  helperText={errors.email}
-                  sx={{
-                    "& .MuiInputBase-root": { height: "36px" },
-                    "& .MuiInputBase-input": { padding: "10px 12px" },
-                  }}
-                />
-              </Grid>
+        <TextField
+          placeholder="Email"
+          name="emailId"
+          fullWidth
+          required
+          value={formData.emailId}
+          onChange={handleChange}
+          error={!!errors.emailId}
+          helperText={errors.emailId}
+        />
+      </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Password"
+                  placeholder="Password"
                   type={showPassword ? "text" : "password"}
                   name="password"
                   fullWidth
@@ -388,7 +463,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Confirm Password"
+                  placeholder="Confirm Password"
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   fullWidth
@@ -418,7 +493,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Phone Number"
+                  placeholder="Phone Number"
                   name="phoneNumber"
                   fullWidth
                   required
@@ -441,7 +516,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  label="Address"
+                  placeholder="Address"
                   name="address"
                   fullWidth
                   required
@@ -455,32 +530,77 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} >
+              <TextField
+                placeholder="Locality"
+                name="locality"
+                fullWidth
+                required
+                value={formData.locality}
+                onChange={handleChange}
+                error={!!errors.locality}
+                helperText={errors.locality}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} >
+              <TextField
+                placeholder="Street"
+                name="street"
+                fullWidth
+                required
+                value={formData.street}
+                onChange={handleChange}
+                error={!!errors.street}
+                helperText={errors.street}
+              />
+            </Grid>
+            <Grid item xs={12}sm={6}>
+              <TextField
+                placeholder="Pincode"
+                name="pincode"
+                fullWidth
+                required
+                value={formData.pincode}
+                onChange={handleChange}
+                error={!!errors.pincode}
+                helperText={errors.pincode}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                placeholder="BuildingName"
+                name="buildingName"
+                fullWidth
+                required
+                value={formData.buildingName}
+                onChange={handleChange}
+                error={!!errors.buildingName}
+                helperText={errors.buildingName}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                placeholder="CurrentLocation"
+                name="currentLocation"
+                fullWidth
+                required
+                value={formData.currentLocation}
+                onChange={handleChange}
+                error={!!errors.currentLocation}
+                helperText={errors.currentLocation}
+              />
+            </Grid>
+            
+              {/* <Grid item xs={12}>
                 <TextField
-                  label="City"
-                  name="city"
+                  label="Nearby Location"
+                  name="Nearby Location"
                   fullWidth
                   required
-                  value={formData.city}
+                  value={formData.nearbyLocation}
                   onChange={handleChange}
-                  error={!!errors.city}
-                  helperText={errors.city}
-                  sx={{
-                    "& .MuiInputBase-root": { height: "36px" },
-                    "& .MuiInputBase-input": { padding: "10px 12px" },
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="State"
-                  name="state"
-                  fullWidth
-                  required
-                  value={formData.state}
-                  onChange={handleChange}
-                  error={!!errors.state}
-                  helperText={errors.state}
+                  error={!!errors.nearbyLocation}
+                  helperText={errors.nearbyLocation}
                   sx={{
                     "& .MuiInputBase-root": { height: "36px" },
                     "& .MuiInputBase-input": { padding: "10px 12px" },
@@ -489,20 +609,36 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Zip/Postal Code"
-                  name="zipCode"
+                  label="Current Location"
+                  name="Current location"
                   fullWidth
                   required
-                  value={formData.zipCode}
+                  value={formData.currentLocation}
                   onChange={handleChange}
-                  error={!!errors.zipCode}
-                  helperText={errors.zipCode}
+                  error={!!errors.currentLocation}
+                  helperText={errors.currentLocation}
                   sx={{
                     "& .MuiInputBase-root": { height: "36px" },
                     "& .MuiInputBase-input": { padding: "10px 12px" },
                   }}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Building Name"
+                  name="Building Name"
+                  fullWidth
+                  required
+                  value={formData.buildingName}
+                  onChange={handleChange}
+                  error={!!errors.buildingName}
+                  helperText={errors.buildingName}
+                  sx={{
+                    "& .MuiInputBase-root": { height: "36px" },
+                    "& .MuiInputBase-input": { padding: "10px 12px" },
+                  }}
+                />
+              </Grid> */}
             </Grid>
           </div>
         );
@@ -511,7 +647,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                label="Hobbies"
+                placeholder="Hobbies"
                 name="hobbies"
                 fullWidth
                 value={formData.hobbies}
@@ -524,7 +660,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Language"
+                placeholder="Language"
                 name="language"
                 fullWidth
                 value={formData.language}
@@ -535,6 +671,34 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 }}
               />
             </Grid>
+            <Grid item xs={12}>
+                <FormControl
+                  component="fieldset"
+                  error={!!errors.gender}
+                >
+                  <FormLabel component="legend">Diet :</FormLabel>
+                  <RadioGroup
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    row // Optional to make it horizontal
+                  >
+                    <FormControlLabel
+                      value="Veg"
+                      control={<Radio />}
+                      label="VEG"
+                    />
+                    <FormControlLabel
+                      value="Non-veg"
+                      control={<Radio />}
+                      label="NON-VEG"
+                    />
+                  </RadioGroup>
+                  {errors.gender && (
+                    <Typography color="error">{errors.gender}</Typography>
+                  )}
+                </FormControl>
+              </Grid>
           </Grid>
         );
       case 3:

@@ -46,8 +46,6 @@ interface FormData {
   street: string;
   currentLocation: string;
   nearbyLocation: string;
-  // city: string;
-  // state: string;
   pincode: string;
   aadhaar: string;
   pan: string;
@@ -65,7 +63,6 @@ interface FormData {
   speciality: string;
   diet:string;
 }
-
 // Define the shape of errors to hold string messages
 interface FormErrors {
   firstName?: string;
@@ -97,7 +94,6 @@ interface FormErrors {
   speciality?: string;
   diet?:string;
 }
- 
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
 const emailIdRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
@@ -173,11 +169,6 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
   // States for image previews and names
 const [documentImageName, setDocumentImageName] = useState<string>('');
 const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(null);
-
-  // const [aadhaarImagePreview, setAadhaarImagePreview] = useState<string | null>(null);
-  // const [panImagePreview, setPanImagePreview] = useState<string | null>(null);
-  // const [aadhaarImageName, setAadhaarImageName] = useState<string>('');
-  // const [panImageName, setPanImageName] = useState<string>('');
 
   // States for password visibility
   const [showPassword, setShowPassword] = useState(false);
@@ -332,17 +323,9 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
         tempErrors.documentImage = "Please upload a document image.";
       }
     }
-  
-    // Set errors to state and return the validation result
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
-  // const handleNext = () => {
-  //   if (validateForm()) {
-  //     setActiveStep((prevStep) => prevStep + 1);
-  //   }
-  // };
- 
   const handleNext = () => {
     if (validateForm ()) {
       setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
@@ -392,17 +375,6 @@ const handleSubmit = async (event) => {
    const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
-  
-  //  const handleCloseSnackbar = (
-  //   event: React.SyntheticEvent<Element, Event> | null,
-  //   reason?: SnackbarCloseReason
-  // ) => {
-  //   if (reason === 'clickaway') {
-  //     return;
-  //   }
-  //   setSnackbarOpen(false);
-  // };
-  // Function to show the snackbar
   const showSnackbar = (message: string) => {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
@@ -980,17 +952,6 @@ const handleSubmit = async (event) => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-      {/* Snackbar for success message */}
-      {/* <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar> */}
       <div className="flex flex-col mt-4 items-center justify-center text-sm">
         <Typography variant="h6">
           Already have an account?
