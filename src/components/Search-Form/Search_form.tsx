@@ -5,6 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import LoadingIndicator from "../LoadingIndicator/LoadingIndicator";
 import axiosInstance from "../../services/axiosInstance";
 import axios from "axios";
+import ChipInput from "../Common/ChipInput/ChipInput";
 interface SearchFormProps {
   open: boolean;
   selectedValue: string;
@@ -74,6 +75,13 @@ export const Search_form: React.FC<SearchFormProps> = ({
     "Maithili",
     "Santhali",
   ]);
+  const [selectedChips, setSelectedChips] = useState<string[]>([]);
+
+  const handleChipChange = (newChips: string[]) => {
+    setSelectedChips(newChips);
+    console.log(selectedChips)
+  };
+
   const [availableFoodSpecialities] = useState<string[]>([
     "Butter Chicken",
     "Rogan Josh",
@@ -215,9 +223,9 @@ export const Search_form: React.FC<SearchFormProps> = ({
 
           {/* Language selection */}
           <div className="language">
-            <h6>Select Languages :</h6>
-
-            <Button
+{/* {To be used by Subhrajit for chip input}  */}
+      <ChipInput options={availableLanguages} onChange={handleChipChange} label="languages" placeholder="Pick/Type Your Languages" />
+            {/* <Button
               variant="outline-primary"
               onClick={() => setLanguageModalVisible(true)}
             >
@@ -249,95 +257,13 @@ export const Search_form: React.FC<SearchFormProps> = ({
                       </li>
                     ))}
                   </ul>
-                  {/* <Button
-                    variant="outline-secondary"
-                    onClick={() => setLanguageModalVisible(false)}
-                  >
-                    Close
-                  </Button> */}
+                  
                 </div>
               </div>
-            )}
+            )} */}
           </div>
           <div className="language">
-            <h6>Select Food Specialities :</h6>
-            <Button
-              variant="outline-primary"
-              onClick={() => setFoodSpecialityModalVisible(true)}
-            >
-              {watch("foodSpeciality").length > 0
-                ? watch("foodSpeciality").join(", ")
-                : "Pick Food Specialities"}
-            </Button>
-            {foodSpecialityModalVisible && (
-              <div className="modal">
-                {foodSpecialityModalVisible && (
-                  <div className="modal">
-                    <div className="modal-content">
-                      {/* Search Bar */}
-                      <input
-                        type="text"
-                        placeholder="Search Food Specialities"
-                        value={foodSpecialitySearch}
-                        onChange={handleFoodSearchChange}
-                        className="food-speciality-search-bar"
-                      />
-
-                      {/* Filtered List of Food Specialities */}
-                      <ul className="food-speciality-list">
-                        <Button
-                          variant="outline-primary"
-                          onClick={() => setFoodSpecialityModalVisible(false)}
-                        >
-                          Close
-                        </Button>
-                        {filteredFoodSpecialities.map((speciality) => (
-                          <li
-                            key={speciality}
-                            className={`food-speciality-item ${
-                              watch("foodSpeciality").includes(speciality)
-                                ? "selected"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              toggleFoodSpecialitySelection(speciality)
-                            }
-                          >
-                            {speciality}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-
-                <div className="modal-content">
-                  <ul className="food-speciality-list">
-                    <Button
-                      variant="outline-primary"
-                      onClick={() => setFoodSpecialityModalVisible(false)}
-                    >
-                      Close
-                    </Button>
-                    {availableFoodSpecialities.map((speciality) => (
-                      <li
-                        key={speciality}
-                        className={`food-speciality-item ${
-                          watch("foodSpeciality").includes(speciality)
-                            ? "selected"
-                            : ""
-                        }`}
-                        onClick={() =>
-                          toggleFoodSpecialitySelection(speciality)
-                        }
-                      >
-                        {speciality}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
+          <ChipInput options={availableFoodSpecialities} onChange={handleChipChange} label="languages" placeholder="Pick/Type Your Languages" />
           </div>
 
           {/* Shift time */}

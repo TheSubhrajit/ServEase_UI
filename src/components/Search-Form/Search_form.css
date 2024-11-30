@@ -50,14 +50,14 @@
 
 /* Language selection responsiveness */
 .language {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     padding-left: 20px;
     width: 100%;
     height: fit-content;
     padding-top: 10px;
     gap:10px ;
-    padding-bottom: 5px;
+    padding-bottom: 5px; */
     
 }
 /* Modal container for food speciality */

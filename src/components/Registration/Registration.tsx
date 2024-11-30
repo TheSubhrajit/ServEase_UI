@@ -344,7 +344,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="First Name"
+                  placeholder="First Name"
                   name="firstName"
                   fullWidth
                   required
@@ -360,7 +360,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Middle Name"
+                  placeholder="Middle Name"
                   name="middleName"
                   fullWidth
                   value={formData.middleName}
@@ -375,7 +375,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Last Name"
+                  placeholder="Last Name"
                   name="lastName"
                   fullWidth
                   required
@@ -437,7 +437,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Password"
+                  placeholder="Password"
                   type={showPassword ? "text" : "password"}
                   name="password"
                   fullWidth
@@ -463,7 +463,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Confirm Password"
+                  placeholder="Confirm Password"
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   fullWidth
@@ -493,7 +493,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Phone Number"
+                  placeholder="Phone Number"
                   name="phoneNumber"
                   fullWidth
                   required
@@ -516,7 +516,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  label="Address"
+                  placeholder="Address"
                   name="address"
                   fullWidth
                   required
@@ -647,7 +647,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                label="Hobbies"
+                placeholder="Hobbies"
                 name="hobbies"
                 fullWidth
                 value={formData.hobbies}
@@ -660,7 +660,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Language"
+                placeholder="Language"
                 name="language"
                 fullWidth
                 value={formData.language}
