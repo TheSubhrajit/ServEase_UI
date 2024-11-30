@@ -424,20 +424,17 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  label="Email"
-                  name="email"
-                  fullWidth
-                  value={formData.emailId}
-                  onChange={handleChange}
-                  error={!!errors.emailId}
-                  helperText={errors.emailId}
-                  sx={{
-                    "& .MuiInputBase-root": { height: "36px" },
-                    "& .MuiInputBase-input": { padding: "10px 12px" },
-                  }}
-                />
-              </Grid>
+        <TextField
+          placeholder="Email"
+          name="emailId"
+          fullWidth
+          required
+          value={formData.emailId}
+          onChange={handleChange}
+          error={!!errors.emailId}
+          helperText={errors.emailId}
+        />
+      </Grid>
               <Grid item xs={12}>
                 <TextField
                   label="Password"
@@ -533,54 +530,67 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="City"
-                  name="city"
-                  fullWidth
-                  required
-                  value={formData.locality}
-                  onChange={handleChange}
-                  error={!!errors.locality}
-                  helperText={errors.locality}
-                  sx={{
-                    "& .MuiInputBase-root": { height: "36px" },
-                    "& .MuiInputBase-input": { padding: "10px 12px" },
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="State"
-                  name="state"
-                  fullWidth
-                  required
-                  value={formData.street}
-                  onChange={handleChange}
-                  error={!!errors.street}
-                  helperText={errors.street}
-                  sx={{
-                    "& .MuiInputBase-root": { height: "36px" },
-                    "& .MuiInputBase-input": { padding: "10px 12px" },
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Zip/Postal Code"
-                  name="zipCode"
-                  fullWidth
-                  required
-                  value={formData.pincode}
-                  onChange={handleChange}
-                  error={!!errors.pincode}
-                  helperText={errors.pincode}
-                  sx={{
-                    "& .MuiInputBase-root": { height: "36px" },
-                    "& .MuiInputBase-input": { padding: "10px 12px" },
-                  }}
-                />
-              </Grid>
+              <Grid item xs={12} sm={6} >
+              <TextField
+                placeholder="Locality"
+                name="locality"
+                fullWidth
+                required
+                value={formData.locality}
+                onChange={handleChange}
+                error={!!errors.locality}
+                helperText={errors.locality}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} >
+              <TextField
+                placeholder="Street"
+                name="street"
+                fullWidth
+                required
+                value={formData.street}
+                onChange={handleChange}
+                error={!!errors.street}
+                helperText={errors.street}
+              />
+            </Grid>
+            <Grid item xs={12}sm={6}>
+              <TextField
+                placeholder="Pincode"
+                name="pincode"
+                fullWidth
+                required
+                value={formData.pincode}
+                onChange={handleChange}
+                error={!!errors.pincode}
+                helperText={errors.pincode}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                placeholder="BuildingName"
+                name="buildingName"
+                fullWidth
+                required
+                value={formData.buildingName}
+                onChange={handleChange}
+                error={!!errors.buildingName}
+                helperText={errors.buildingName}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                placeholder="CurrentLocation"
+                name="currentLocation"
+                fullWidth
+                required
+                value={formData.currentLocation}
+                onChange={handleChange}
+                error={!!errors.currentLocation}
+                helperText={errors.currentLocation}
+              />
+            </Grid>
+            
               {/* <Grid item xs={12}>
                 <TextField
                   label="Nearby Location"

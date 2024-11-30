@@ -58,8 +58,10 @@ interface FormData {
   kyc: string;
   documentDetails: string;
   documentImage: File | null;
+  otherDetails:string,
   profileImage: File | null; // New field for Profile Image
   speciality: string;
+  diet:string;
 }
 // Define the shape of errors to hold string messages
 interface FormErrors {
@@ -88,7 +90,9 @@ interface FormErrors {
   kyc?: string;
   documentDetails?: string;
   documentImage?: string;
+  aadhaarNumber?:string;
   speciality?: string;
+  diet?:string;
 }
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
@@ -96,6 +100,10 @@ const emailIdRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
 const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const phoneRegex = /^[0-9]{10}$/;
 const pincodeRegex = /^[0-9]{6}$/;
+const aadhaarRegex = /^[0-9]{12}$/;
+const experienceRegex=/^[0-5]/;
+// const aadhaarRegex = /^[0-9]{12}$/;
+// const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
 const steps = [
   'Basic Information',
@@ -148,9 +156,12 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     kyc : '',
     documentDetails: '',
     documentImage: null,
+    otherDetails:'',
     profileImage: null,
     speciality: '',
+    diet:'',
     });
+
 
   const [errors, setErrors] = useState<FormErrors>({});
   
@@ -198,6 +209,12 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   const handleSpecialityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setFormData((prevData) => ({ ...prevData, speciality: value }));
+  };
+
+   // Handle changes in speciality selection
+   const handledietChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setFormData((prevData) => ({ ...prevData, diet: value }));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -281,36 +298,29 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       if (formData.housekeepingRole === 'COOK' && !formData.speciality) {
         tempErrors.speciality = 'Please select a speciality for the cook service.';
       }
+      if (!formData.diet) {
+        tempErrors.diet = 'Please select diet ';
+      }
+      if (!formData.experience) {
+        tempErrors.experience = 'Please select experience ';
+      }
+    
+      // Optional fields (uncomment if needed)
+      // if (!formData.description) {
+      //   tempErrors.description = 'Description is required.';
+      // }
+      // if (!formData.experience || isNaN(Number(formData.experience))) {
+      //   tempErrors.experience = 'Experience must be a valid number.';
+      // }
     }
   
     // Step 4: KYC Verification Validation
     if (activeStep === 3) {
-      if (!formData.kyc) {
-        tempErrors.kyc = 'Document type is required.';
+      if (!formData.aadhaar || !aadhaarRegex.test(formData.aadhaar)) {
+        tempErrors.kyc = 'Aadhaar number must be exactly 12 digits.';
       }
-  
-      if (formData.kyc === 'AADHAR') {
-        if (!formData.documentDetails) {
-          tempErrors.documentDetails = 'Aadhaar details are required.';
-        } else if (!/^\d{12}$/.test(formData.documentDetails)) {
-          tempErrors.documentDetails = 'Aadhaar number must be exactly 12 digits.';
-        }
-      } else if (formData.kyc === 'PAN') {
-        if (!formData.documentDetails) {
-          tempErrors.documentDetails = 'PAN details are required.';
-        } else if (!/^[A-Z]{5}\d{4}[A-Z]$/.test(formData.documentDetails)) {
-          tempErrors.documentDetails = 'PAN number must be in the format ABCDE1234F.';
-        }
-      } else if (formData.kyc === 'DL') {
-        if (!formData.documentDetails) {
-          tempErrors.documentDetails = 'DL details are required.';
-        } else if (!/^[A-Z]{2}\d{13}$/.test(formData.documentDetails)) {
-          tempErrors.documentDetails = 'DL number must be in the format AB123456789012.';
-        }
-      }
-  
       if (!formData.documentImage) {
-        tempErrors.documentImage = 'Document image is required.';
+        tempErrors.documentImage = "Please upload a document image.";
       }
     }
     setErrors(tempErrors);
@@ -331,28 +341,36 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
     setActiveStep((prevStep) => prevStep - 1);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
 
-    // Check for internet connectivity
-    if (!navigator.onLine) {
-      setSnackbarSeverity('error'); // Set snackbar to error (red)
-      setSnackbarMessage('Something went wrong , Please contact administrator');
-      setSnackbarOpen(true);
-      return; // Exit if offline
+const handleSubmit = async (event) => {
+  event.preventDefault(); // Prevent default form submission
+
+  // Form validation (optional)
+  if (validateForm()) {
+    try {
+      // Post form data to backend
+      const response = await axios.post(
+        "http://localhost:8080/api/serviceproviders/serviceprovider/add",
+        formData, // Assuming `formData` contains the collected form data
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Handle successful response
+      console.log("Success:", response.data);
+      alert("Service provider added successfully!");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Failed to add service provider. Please try again.");
     }
+  } else {
+    alert("Please fill out all required fields.");
+  }
+};
 
-    // If online, proceed with form submission
-    console.log('Form submitted successfully!');
-    setSnackbarSeverity('success'); // Set snackbar to success (green)
-    setSnackbarMessage('Registration done successfully!');
-    setSnackbarOpen(true);
-
-    const response =  axios.post(
-      "http://localhost:8080/api/serviceproviders/serviceprovider/add",
-       formData
-    );
-  };
    // Close snackbar function
    const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
@@ -375,7 +393,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
 
       <Grid item xs={12}>
         <TextField
-          label="First Name"
+          placeholder="First Name"
           name="firstName"
           fullWidth
           required
@@ -388,7 +406,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
 
       <Grid item xs={12}>
         <TextField
-          label="Middle Name"
+          placeholder="Middle Name"
           name="middleName"
           fullWidth
           value={formData.middleName}
@@ -398,7 +416,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
 
       <Grid item xs={12}>
         <TextField
-          label="Last Name"
+          placeholder="Last Name"
           name="lastName"
           fullWidth
           required
@@ -428,7 +446,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
 
       <Grid item xs={12}>
         <TextField
-          label="Email"
+          placeholder="Email"
           name="emailId"
           fullWidth
           required
@@ -440,35 +458,89 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       </Grid>
 
       <Grid item xs={12}>
-        <TextField
-          label="Password"
-          type={showPassword ? 'text' : 'password'}
-          name="password"
-          fullWidth
-          required
-          value={formData.password}
-          onChange={handleChange}
-          error={!!errors.password}
-          helperText={errors.password}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={handleTogglePasswordVisibility} edge="end">
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Grid>
-    </Grid>
+              <TextField
+                placeholder="Password"
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                fullWidth
+                required
+                value={formData.password}
+                onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                        aria-label="toggle password visibility"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                placeholder="Confirm Password"
+                type={showConfirmPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                fullWidth
+                required
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleToggleConfirmPasswordVisibility}
+                        edge="end"
+                        aria-label="toggle confirm password visibility"
+                      >
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                placeholder="Mobile Number"
+                name="mobileNo"
+                fullWidth
+                required
+                value={formData.mobileNo}
+                onChange={handleChange}
+                error={!!errors.mobileNo}
+                helperText={errors.mobileNo}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                placeholder="Alternate Number"
+                name="AlternateNumber"
+                fullWidth
+                value={formData.AlternateNumber}
+                onChange={handleChange}
+                // error={!!errors.phoneNumber}
+                // helperText={errors.phoneNumber}
+              />
+            </Grid>
+          </Grid>
         );
       case 1:
         return (
           <Grid container spacing={2}>
             <Grid item xs={12} className="pt-4">
               <TextField
-                label="Address"
+                placeholder="Address"
                 name="address"
                 fullWidth
                 required
@@ -480,7 +552,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="BuildingName"
+                placeholder="BuildingName"
                 name="buildingName"
                 fullWidth
                 required
@@ -492,7 +564,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
             </Grid>
             <Grid item xs={12} sm={6} >
               <TextField
-                label="Locality"
+                placeholder="Locality"
                 name="locality"
                 fullWidth
                 required
@@ -504,7 +576,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
             </Grid>
             <Grid item xs={12} sm={6} >
               <TextField
-                label="Street"
+                placeholder="Street"
                 name="street"
                 fullWidth
                 required
@@ -516,7 +588,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
             </Grid>
             <Grid item xs={12}sm={6}>
               <TextField
-                label="Pincode"
+                placeholder="Pincode"
                 name="pincode"
                 fullWidth
                 required
@@ -528,7 +600,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="CurrentLocation"
+                placeholder="CurrentLocation"
                 name="currentLocation"
                 fullWidth
                 required
@@ -540,7 +612,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="NearbyLocation"
+                placeholder="NearbyLocation"
                 name="nearbyLocation"
                 fullWidth
                 value={formData.nearbyLocation}
@@ -583,7 +655,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
      <Grid item xs={12} sm={6}>
           <TextField
             select
-            label="Select Service Type"
+            placeholder="Select Service Type"
             name="housekeepingRole"
             fullWidth
             value={formData.housekeepingRole}
@@ -602,7 +674,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
         </Grid>
 
         {/* Speciality Radio Buttons (Visible if 'COOK' is selected) */}
-        {isCookSelected && (
+        {/* {isCookSelected && (
           <Grid item xs={12} sm={6}>
             <FormControl component="fieldset" error={!!errors.speciality} required>
               <FormLabel component="legend">Speciality</FormLabel>
@@ -617,12 +689,103 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
               </RadioGroup>
               <FormHelperText>{errors.speciality}</FormHelperText>
             </FormControl>
-          </Grid>
-        )}
+          </Grid> */}
+          {isCookSelected && (
+  <Grid item xs={12} sm={6}>
+    <FormControl component="fieldset" error={!!errors.speciality} required>
+      <FormLabel component="legend">Cooking Speciality</FormLabel>
+      <RadioGroup
+        name="speciality"
+        value={formData.speciality}
+        onChange={handleSpecialityChange}
+      >
+        <FormControlLabel
+          value="veg"
+          control={<Radio />}
+          label={
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                src="/veg.png" // Replace with the path for your veg image
+                alt="Veg"
+                style={{ width: 20, height: 20, marginRight: 8 }}
+              />
+              Veg
+            </div>
+          }
+        />
+        <FormControlLabel
+          value="non-veg"
+          control={<Radio />}
+          label={
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                    src="/nonveg.png" // Correct path to your nonveg image
+                alt="Non-Veg"
+                style={{ width: 20, height: 20, marginRight: 8 }}
+              />
+              Non-Veg
+            </div>
+          }
+        />
+        <FormControlLabel
+          value="both"
+          control={<Radio />}
+          label="Both"
+        />
+      </RadioGroup>
+      <FormHelperText>{errors.speciality}</FormHelperText>
+    </FormControl>
+  </Grid>
+)}
+  <Grid item xs={12} >
+    <FormControl component="fieldset" error={!!errors.diet} required>
+      <FormLabel component="legend">Diet</FormLabel>
+      <RadioGroup
+        name="diet"
+        value={formData.diet}
+        onChange={handledietChange}
+      >
+        <FormControlLabel
+          value="VEG"
+          control={<Radio />}
+          label={
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                src="/veg.png" // Replace with the path for your veg image
+                alt="Veg"
+                style={{ width: 20, height: 20, marginRight: 8 }}
+              />
+              Veg
+            </div>
+          }
+        />
+        <FormControlLabel
+          value="NONVEG"
+          control={<Radio />}
+          label={
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                    src="/nonveg.png" // Correct path to your nonveg image
+                alt="Non-Veg"
+                style={{ width: 20, height: 20, marginRight: 8 }}
+              />
+              Non-Veg
+            </div>
+          }
+        />
+        <FormControlLabel
+          value="BOTH"
+          control={<Radio />}
+          label="Both"
+        />
+      </RadioGroup>
+      <FormHelperText>{errors.diet}</FormHelperText>
+    </FormControl>
+  </Grid>
     {/* Description Field */}
     <Grid item xs={12}>
       <TextField
-        label="Description"
+        placeholder="Description"
         name="description"
         fullWidth
         value={formData.description}
@@ -633,7 +796,7 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
     {/* Experience Field */}
     <Grid item xs={12} sm={6}>
       <TextField
-        label="Experience"
+        placeholder="Experience"
         name="experience"
         fullWidth
         required
@@ -669,62 +832,62 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       case 3:
         return (
           <Grid container spacing={2}>
-        <Grid item xs={12}  className='pt-4'>
-          <TextField
-            select
-            label="Select Document Type"
-            name="kyc"
-            fullWidth
-            required
-            value={formData.kyc}
-            onChange={handleChange}
-            error={!!errors.kyc}
-            helperText={errors.kyc}
-          >
-            <MenuItem value="AADHAR">Aadhaar</MenuItem>
-            <MenuItem value="PAN">PAN</MenuItem>
-            <MenuItem value="DL">DL</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label={
-              formData.kyc === 'AADHAR'
-                ? "Aadhaar Number (12 digits)"
-                : formData.kyc === 'PAN'
-                ? "PAN Number (10 characters)"
-                : formData.kyc=== 'DL'
-                ? "DL Number (details required)"
-                : "Document Details"
-            }
-            name="documentDetails"
-            fullWidth
-            required
-            value={formData.documentDetails}
-            onChange={handleChange}
-            error={!!errors.documentDetails}
-            helperText={errors.documentDetails}
-          />
-        </Grid>
+       {/* Document Type Selection */}
+       <Grid item xs={12}>
+       <TextField
+                placeholder="Aadhaar Number"
+                name="aadhaar"
+                fullWidth
+                required
+                value={formData.aadhaar}
+                onChange={handleChange}
+                error={!!errors.kyc}
+                helperText={errors.kyc}
+              />
+        
+            </Grid>
+
+        {/* Document Image Upload */}
         <Grid item xs={12}>
           <Input
             type="file"
-            inputProps={{ accept: 'image/*' }}
+            inputProps={{ accept: "image/*" }}
             name="documentImage"
             onChange={handleChange}
             required
           />
           {formData.documentImage && (
-            <Typography variant="body2">Selected File: {formData.documentImage.name}</Typography>
+            <Typography variant="body2">
+              Selected File: {formData.documentImage.name}
+            </Typography>
           )}
           {formData.documentImage && (
             <Box mt={2}>
               <Typography variant="h6">Document Preview:</Typography>
-              <img src={URL.createObjectURL(formData.documentImage)} alt="Document" width="300" />
+              <img
+                src={URL.createObjectURL(formData.documentImage)}
+                alt="Document"
+                width="300"
+              />
             </Box>
           )}
-          {errors.documentImage && <Typography color="error">{errors.documentImage}</Typography>}
+          {errors.documentImage && (
+            <Typography color="error">{errors.documentImage}</Typography>
+          )}
         </Grid>
+
+       {/* Other Details (Optional for PAN or DL) */}
+       {(formData.kyc === "PAN" || formData.kyc === "DL") && (
+          <Grid item xs={12}>
+            <TextField
+              placeholder="Other Details"
+              name="otherDetails"
+              fullWidth
+              value={formData.otherDetails}
+              onChange={handleChange}
+            />
+          </Grid>
+        )}
       </Grid>
         );
       

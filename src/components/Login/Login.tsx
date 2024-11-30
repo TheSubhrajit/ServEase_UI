@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Import axios
 import Registration from "../Registration/Registration";
 import ServiceProviderRegistration from "../Registration/ServiceProviderRegistration";
 import Snackbar from '@mui/material/Snackbar';
@@ -9,7 +8,6 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import ForgotPassword from './ForgotPassword';
 
-
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -17,23 +15,22 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
 export const Login: React.FC = () => {
   const [isRegistration, setIsRegistration] = useState(false);
   const [isServiceRegistration, setServiceRegistration] = useState(false);
-  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false); // For loading state
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false); 
 
   const handleSignUpClick = () => {
     setIsRegistration(true);
   };
 
   const handleBackToLogin = () => {
-    setIsRegistration(false);
-    setIsForgotPassword(false);
+    setIsRegistration(false); 
+    setIsForgotPassword(false); // Reset Forgot Password state
   };
 
   const handleSignUpClickServiceProvider = () => {
@@ -57,30 +54,53 @@ export const Login: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setLoading(true); // Start loading
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      const response = await axios.post('https://localhost:8443/api/user/login', {
-        email,
-        password,
+      // Prepare data to send in the request body
+      const requestData = {
+        username: email,
+        password: password,
+      };
+  
+      const response = await fetch('http://localhost:8080/api/user/login', {
+        method: 'POST', // Use POST method
+        headers: {
+          'Content-Type': 'application/json', // Set Content-Type to application/json
+        },
+        body: JSON.stringify(requestData), // Convert the data to JSON and send in the body
       });
-      setSnackbarSeverity('success');
-      setSnackbarMessage('Login successful!');
-      setIsLoggedIn(true); // Update logged-in state
-    } catch (error: any) {
+  
+      // Check if the response is OK
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+      const data = await response.text(); 
+
+      if (data === "Login successful!") {
+        setSnackbarMessage("Login successful!");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+        setTimeout(() => setIsLoggedIn(true), 1000); 
+      } else {
+        setSnackbarMessage("Login failed. Please check your credentials.");
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setSnackbarMessage('An error occurred during login.');
       setSnackbarSeverity('error');
-      setSnackbarMessage(error.response?.data?.message || 'Login failed. Please try again.');
-    } finally {
       setOpenSnackbar(true);
-      setLoading(false); // End loading
     }
   };
 
+  // If user is logged in, render Landingpage
   if (isLoggedIn) {
     return <Landingpage sendDataToParent={() => {}} />;
   }
 
+  // If user clicked "Forgot Password", render ForgotPassword component
   if (isForgotPassword) {
     return <ForgotPassword onBackToLogin={handleBackToLogin} />;
   }
@@ -115,7 +135,7 @@ export const Login: React.FC = () => {
                     <input
                       id="password"
                       className="border p-3 shadow-md dark:bg-indigo-500 dark:text-gray-300 dark:border-gray-700 placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? 'text' : 'password'} 
                       placeholder="Password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -145,9 +165,8 @@ export const Login: React.FC = () => {
                   <button
                     className="bg-gradient-to-r dark:text-gray-300 from-blue-500 to-purple-500 shadow-lg mt-3 p-2 text-white rounded-lg w-full hover:scale-105 hover:from-purple-500 hover:to-blue-500 transition duration-300 ease-in-out"
                     type="submit"
-                    disabled={loading} // Disable button while loading
                   >
-                    {loading ? 'Logging in...' : 'LOG IN'}
+                    LOG IN
                   </button>
                 </form>
                 <div className="flex flex-col items-center justify-center text-sm mt-4">
