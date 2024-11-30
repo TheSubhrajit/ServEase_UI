@@ -1,33 +1,43 @@
-import { Autocomplete, Avatar, TextField, IconButton, Menu, MenuItem, DialogContent, DialogActions, Button, Dialog, DialogTitle, useMediaQuery, useTheme } from "@mui/material";
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import {
+  Autocomplete,
+  Avatar,
+  TextField,
+  IconButton,
+  Menu,
+  MenuItem,
+  DialogContent,
+  DialogActions,
+  Button,
+  Dialog,
+  DialogTitle,
+  useMediaQuery,
+  useTheme,
+  InputAdornment,
+} from "@mui/material";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Navbar from "react-bootstrap/Navbar";
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { keys } from '../../env/env';
-import './Header.css'; 
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { keys } from "../../env/env";
+import "./Header.css";
 import { Landingpage } from "../Landing_Page/Landingpage";
-import { InputAdornment } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import MapComponent from "../MapComponent/MapComponent";
-
-
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
 }
 
-export const Header: React.FC<ChildComponentProps> = ({
-  sendDataToParent,
-}) => {
+export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
   const handleClick = (e: any) => {
     sendDataToParent(e);
   };
 
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState("");
   const [error, setError] = useState(null);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); 
-  const [accountEl, setAccountEl] = useState<null | HTMLElement>(null); 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [accountEl, setAccountEl] = useState<null | HTMLElement>(null);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -35,15 +45,16 @@ export const Header: React.FC<ChildComponentProps> = ({
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          console.log(latitude)
-          console.log(longitude)
           try {
-            const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
-              params: {
-                latlng: `${latitude},${longitude}`,
-                key: keys.api_key
+            const response = await axios.get(
+              `https://maps.googleapis.com/maps/api/geocode/json`,
+              {
+                params: {
+                  latlng: `${latitude},${longitude}`,
+                  key: keys.api_key,
+                },
               }
-            });
+            );
             const address = response.data.results[0]?.formatted_address;
             setLocation(address);
           } catch (error) {
@@ -55,19 +66,20 @@ export const Header: React.FC<ChildComponentProps> = ({
         }
       );
     } else {
-      console.log('Geolocation is not supported by this browser.');
+      console.log("Geolocation is not supported by this browser.");
     }
   }, []);
 
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [dataFromMap , setDataFromMap] = useState('');
+  const [dataFromMap, setDataFromMap] = useState("");
 
-  const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
-  const PLACES_API_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+  const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+  const PLACES_API_URL =
+    "https://maps.googleapis.com/maps/api/place/autocomplete/json";
 
   useEffect(() => {
-    if (inputValue.trim() === '') {
+    if (inputValue.trim() === "") {
       setSuggestions([]);
       setError(null);
       return;
@@ -79,19 +91,19 @@ export const Header: React.FC<ChildComponentProps> = ({
           params: {
             input: inputValue,
             key: keys.api_key,
-            types: 'geocode',
+            types: "geocode",
           },
         });
 
-        if (response.data.status === 'OK') {
+        if (response.data.status === "OK") {
           const sub = response.data.predictions.map((res) => res.description);
           setSuggestions(sub);
         } else {
-          setError(response.data.error_message || 'An error occurred');
+          setError(response.data.error_message || "An error occurred");
           setSuggestions([]);
         }
       } catch (error) {
-        console.log('Failed to fetch suggestions');
+        console.log("Failed to fetch suggestions");
         setSuggestions([]);
       }
     };
@@ -99,18 +111,18 @@ export const Header: React.FC<ChildComponentProps> = ({
     fetchSuggestions();
   }, [inputValue]);
 
-const [profileImage, setProfileImage] = useState<string | null>(null); // State to hold uploaded image
+  const [profileImage, setProfileImage] = useState<string | null>(null);
 
-const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      setProfileImage(reader.result as string); // Store image as base64
-    };
-    reader.readAsDataURL(file);
-  }
-};
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleInputChange = (event: React.SyntheticEvent, newValue: string) => {
     setInputValue(newValue);
@@ -118,12 +130,12 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 
   const handleChange = (event: any, newValue: any) => {
     if (newValue) {
-      setLocation(newValue); 
+      setLocation(newValue);
     }
   };
 
   const handleLocationMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget); 
+    setAnchorEl(event.currentTarget);
   };
 
   const handleLocationMenuClose = () => {
@@ -131,41 +143,31 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
   };
 
   const handleAccountMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAccountEl(event.currentTarget); 
+    setAccountEl(event.currentTarget);
   };
 
   const handleAccountMenuClose = () => {
-    setAccountEl(null); 
+    setAccountEl(null);
   };
-
-  const openLocation = () =>{
-    alert("clicked")
-  }
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  // Handle closing the dialog
   const handleClose = () => {
     setOpen(false);
   };
 
-
-  const handleSave = () =>{
-    setLocation(dataFromMap)
+  const handleSave = () => {
+    setLocation(dataFromMap);
     setOpen(false);
-  }
-  // Handle location change
-  const handleLocationChange = (e) => {
-    setLocation(e.target.value);
   };
+
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-  
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   function updateLocationFromMap(data: string): void {
-    setDataFromMap(data)
+    setDataFromMap(data);
   }
 
   return (
@@ -173,113 +175,121 @@ const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       <Navbar className="header" expand="lg">
         <div className="header-alignment">
           <div className="logo-container">
-            <img src="../logo.png"  className="logo-style" alt="logo" onClick={() => handleClick("Landing_Page")} style={{ cursor: 'pointer' }}/>
-            <div className="logo-text"  >
-            
+            <img
+              src="../logo.png"
+              className="logo-style"
+              alt="logo"
+              onClick={() => handleClick("Landing_Page")}
+              style={{ cursor: "pointer" }}
+            />
+            <div className="logo-text">
               <span className="home-text">Home</span>
               <span className="servease-text">ServEase</span>
             </div>
           </div>
 
           <div className="dropdowns-container">
-
-          <TextField
-      variant="outlined"
-      fullWidth
-      value={location}
-      onClick={handleClickOpen}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <LocationOnIcon sx={{ fontSize: 30, color: '#0d6efd', cursor: 'pointer' }} />
-          </InputAdornment>
-        ),
-      }}
-      sx={{
-        backgroundColor: 'white',
-        borderRadius: 2,
-        width: '50%', // Set the width to 30%
-        '&:hover': {
-          cursor: 'pointer',  // Change cursor on hover for the TextField
-        },
-        cursor: 'pointer'
-      }}
-    />
-      <IconButton
+            <TextField
+              variant="outlined"
+              fullWidth
+              value={location}
+              onClick={handleClickOpen}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LocationOnIcon
+                      sx={{ fontSize: 30, color: "#0d6efd", cursor: "pointer" }}
+                    />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: 2,
+                width: "50%",
+                "&:hover": {
+                  cursor: "pointer",
+                },
+                cursor: "pointer",
+              }}
+            />
+            <IconButton
               size="large"
               edge="end"
               aria-label="account"
               onClick={handleAccountMenuOpen}
               color="inherit"
-              sx={{ width: 60, height: 60 }} // Directly set size on IconButton
+              sx={{ width: 60, height: 60 }}
             >
-              <AccountCircle sx={{ fontSize: 30, color: '#0d6efd' }} /> {/* Increase icon size using sx */}
+              <AccountCircle sx={{ fontSize: 30, color: "#0d6efd" }} />
             </IconButton>
-
-      {/* <IconButton
-  size="large"
-  edge="end"
-  aria-label="account"
-  color="inherit"
-  component="label"
-  sx={{ width: 60, height: 60 }}
->
-  <input
-    type="file"
-    accept="image/*"
-    hidden
-    onChange={handleImageUpload}
-  />
-  <Avatar sx={{ width: 40, height: 40 }} src={profileImage || undefined}>
-    {!profileImage && (
-      <AccountCircle sx={{ fontSize: 30, color: '#0d6efd' }} />
-    )}
-  </Avatar>
-</IconButton> */}
-
 
             <Menu
               id="menu-appbar"
               anchorEl={accountEl}
               anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               open={Boolean(accountEl)}
               onClose={handleAccountMenuClose}
             >
-              <MenuItem onClick={() => handleClick("login")}>Login / Register</MenuItem>
-              <MenuItem>Privacy Policy</MenuItem>
-              <MenuItem>Notification</MenuItem>
-              <MenuItem onClick={() => handleClick("sign_out")}>Sign Out</MenuItem>
-              <MenuItem onClick={() => handleClick("admin")}>Admin - For Demo purpose Only</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleClick("login");
+                  handleAccountMenuClose();
+                }}
+              >
+                Login / Register
+              </MenuItem>
+              <MenuItem onClick={handleAccountMenuClose}>Privacy Policy</MenuItem>
+              <MenuItem onClick={handleAccountMenuClose}>Notification</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleClick("sign_out");
+                  handleAccountMenuClose();
+                }}
+              >
+                Sign Out
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleClick("admin");
+                  handleAccountMenuClose();
+                }}
+              >
+                Admin - For Demo purpose Only
+              </MenuItem>
             </Menu>
           </div>
         </div>
         <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Set Location</DialogTitle>
-      <DialogContent  sx={{ p: 0, display: 'flex', flexDirection: 'column', width: '600px' }}>
-        {/* Fixed height for the map container */}
-        <div style={{ height: '400px', width: '100%' }}> {/* Fixed height for the map */}
-          <MapComponent style={{ height: '100%', width: '100%' }}  onLocationSelect={updateLocationFromMap}/>
-        </div>
-      </DialogContent>
+          <DialogTitle>Set Location</DialogTitle>
+          <DialogContent
+            sx={{ p: 0, display: "flex", flexDirection: "column", width: "600px" }}
+          >
+            <div style={{ height: "400px", width: "100%" }}>
+              <MapComponent
+                style={{ height: "100%", width: "100%" }}
+                onLocationSelect={updateLocationFromMap}
+              />
+            </div>
+          </DialogContent>
 
-      {/* Dialog Actions */}
-      <DialogActions sx={{ padding: '10px' }}>
-        <Button color="primary" onClick={handleClose}>Cancel</Button>
-        <Button color="primary" onClick={handleSave}>Save</Button>
-      </DialogActions>
-    </Dialog>
-
-
+          <DialogActions sx={{ padding: "10px" }}>
+            <Button color="primary" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button color="primary" onClick={handleSave}>
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Navbar>
     </>
   );
 };
-
-
