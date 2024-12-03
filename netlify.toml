@@ -1,9 +1,0 @@
-[build]
-  publish = "build" # Ensure this is the correct output directory for your build
-   command = "CI=false npm run build -- --no-verify"
-
-[[redirects]]
-  from = "/api/*"
-  to = "http://43.205.212.94:8080/:splat" # Proxy requests to your API
-  status = 200
-  force = true

@@ -1,19 +1,16 @@
-import * as React from "react";
+import React, { useState } from "react";
 import "./Search_form.css";
 import Button from "react-bootstrap/Button";
 import { useForm, Controller } from "react-hook-form";
-import { useState, useEffect } from "react";
-import { Chip, TextField, Autocomplete } from "@mui/material";
+import LoadingIndicator from "../LoadingIndicator/LoadingIndicator";
+import axiosInstance from "../../services/axiosInstance";
 import axios from "axios";
-
+import ChipInput from "../Common/ChipInput/ChipInput";
 interface SearchFormProps {
   open: boolean;
   selectedValue: string;
   onClose: () => void;
-}
-
-interface Country {
-  languages?: { [key: string]: string };
+  onSearch: (data: any[]) => void;
 }
 
 interface FormData {
@@ -22,30 +19,39 @@ interface FormData {
   languages: string[];
   shift: string;
   availability: string;
-  speciality: string;
+  cookingspeciality: string;
   diet: string;
   rating: string[];
+  foodSpeciality: string[];
 }
 
 export const Search_form: React.FC<SearchFormProps> = ({
   open,
   selectedValue,
   onClose,
+  onSearch,
 }) => {
-  const { handleSubmit, control, register, reset, watch } = useForm<FormData>({
-    defaultValues: {
-      gender: "",
-      age: 18,
-      languages: [],
-      shift: "",
-      availability: "8.00 AM",
-      speciality: "",
-      diet: "",
-      rating: [],
-    },
-  });
+  const { handleSubmit, control, register, reset, watch, setValue } =
+    useForm<FormData>({
+      defaultValues: {
+        gender: "",
+        age: 18,
+        languages: [],
+        shift: "",
+        availability: "8.00 AM, 12.00 PM",
+        cookingspeciality: "",
+        diet: "",
+        foodSpeciality: [],
+        rating: [],
+      },
+    });
+  const [foodSpecialityModalVisible, setFoodSpecialityModalVisible] =
+    useState(false);
+  const [foodSpecialitySearch, setFoodSpecialitySearch] = useState("");
 
-  const [availableLanguages, setAvailableLanguages] = useState<string[]>([
+  const [loading, setLoading] = useState(false);
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  const [availableLanguages] = useState<string[]>([
     "Assamese",
     "Bengali",
     "Gujarati",
@@ -69,203 +75,235 @@ export const Search_form: React.FC<SearchFormProps> = ({
     "Maithili",
     "Santhali",
   ]);
+  const [selectedChips, setSelectedChips] = useState<string[]>([]);
 
-  // Fetch worldwide languages and add them to the availableLanguages array
-  useEffect(() => {
-    const fetchWorldLanguages = async () => {
-      try {
-        const response = await axios.get<Country[]>(
-          "https://restcountries.com/v3.1/all"
-        );
-        const worldLanguagesSet = new Set<string>();
-
-        response.data.forEach((country) => {
-          if (country.languages) {
-            Object.values(country.languages).forEach((language) =>
-              worldLanguagesSet.add(language)
-            );
-          }
-        });
-
-        setAvailableLanguages((prevLanguages) => [
-          ...prevLanguages,
-          ...Array.from(worldLanguagesSet),
-        ]);
-      } catch (error) {
-        console.error("Error fetching world languages:", error);
-      }
-    };
-
-    fetchWorldLanguages();
-  }, []);
-
-  // Handle form submission
-  const onSubmit = (data: FormData) => {
-    console.log("Form Data:", data);
+  const handleChipChange = (newChips: string[]) => {
+    setSelectedChips(newChips);
+    console.log(selectedChips)
   };
 
-  // Handle reset
-  const handleReset = () => {
-    reset();
+  const [availableFoodSpecialities] = useState<string[]>([
+    "Butter Chicken",
+    "Rogan Josh",
+    "Chole Bhature",
+    "Dal Makhani",
+    "Paneer Tikka",
+    "Aloo Paratha",
+    "Tandoori Chicken",
+    "Kadhi Pakora",
+    "Rajma-Chawal",
+    "Pindi Chana",
+    "Masala Dosa",
+    "Idli-Sambar",
+    "Vada",
+    "Hyderabadi Biryani",
+    "Pongal",
+    "Appam with Stew",
+    "Chettinad Chicken",
+    "Puliyodarai",
+    "Malabar Parotta",
+    "Puttu and Kadala Curry",
+    "Macher Jhol",
+    "Litti Chokha",
+    "Pakhala Bhata",
+    "Sandesh",
+    "Chingri Malai Curry",
+    "Rosogolla",
+    "Momos",
+    "Thukpa",
+    "Aloo Pitika",
+    "Bamboo Shoot Curry",
+    "Pav Bhaji",
+    "Dhokla",
+    "Thepla",
+    "Dal Baati Churma",
+    "Gatte Ki Sabzi",
+    "Goan Fish Curry",
+    "Puran Poli",
+    "Shrikhand",
+    "Laal Maas",
+    "Handvo",
+    "Pani Puri/Golgappa",
+    "Samosa",
+    "Kachori",
+    "Sev Puri",
+    "Aloo Tikki Chaat",
+    "Jalebi",
+    "Bhutta (Roasted Corn)",
+    "Chaat Papdi",
+    "Dabeli",
+  ]);
+
+  const toggleFoodSpecialitySelection = (speciality: string) => {
+    const selectedSpecialities = watch("foodSpeciality");
+    if (selectedSpecialities.includes(speciality)) {
+      setValue(
+        "foodSpeciality",
+        selectedSpecialities.filter((item) => item !== speciality)
+      );
+    } else {
+      setValue("foodSpeciality", [...selectedSpecialities, speciality]);
+    }
+  };
+  const filteredFoodSpecialities = availableFoodSpecialities.filter(
+    (speciality) =>
+      speciality.toLowerCase().includes(foodSpecialitySearch.toLowerCase())
+  );
+
+  const handleFoodSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFoodSpecialitySearch(event.target.value);
+  };
+
+  const toggleLanguageSelection = (language: string) => {
+    const selectedLanguages = watch("languages");
+    if (selectedLanguages.includes(language)) {
+      setValue(
+        "languages",
+        selectedLanguages.filter((item) => item !== language)
+      );
+    } else {
+      setValue("languages", [...selectedLanguages, language]);
+    }
+  };
+
+ 
+  const onSubmit = async (data: FormData) => {
+    console.log("Form Data:", data);
+  
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        "http://localhost:8080/api/serviceproviders/get-by-filters",
+      );
+  
+      onSearch(response.data); // Pass the response data to the onSearch callback
+    } catch (err) {
+      console.error("There was a problem with the fetch operation:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <>
-      <div className="all">
+    <div className="all">
+      {loading ? (
+        <LoadingIndicator />
+      ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            {/* Gender selection */}
-            <div className="flex-container1">
+          {/* Gender selection */}
+          <div className="flex-container1">
+            <div className="gender">
               <label>Gender: </label>
               <input type="radio" value="Male" {...register("gender")} /> Male
               <input type="radio" value="Female" {...register("gender")} />{" "}
               Female
             </div>
+          </div>
 
-            {/* Age slider */}
-            <div className="flex-container1">
-              <label>Age: </label>
-              <Controller
-                name="age"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    type="range"
-                    min="18"
-                    max="50"
-                    {...field}
-                    value={field.value}
-                  />
-                )}
-              />
-              {watch("age")} years
-            </div>
+          {/* Age slider */}
+          <div className="flex-container1">
+            <label>Age: </label>
+            <Controller
+              name="age"
+              control={control}
+              render={({ field }) => (
+                <input
+                  type="range"
+                  min="18"
+                  max="50"
+                  {...field}
+                  value={field.value}
+                />
+              )}
+            />
+            {watch("age")} years
+          </div>
 
-            {/* Language selection */}
-            <div className="language">
-              <h6>Select Languages (Indian and World Languages)</h6>
-              <Controller
-                name="languages"
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    multiple
-                    freeSolo
-                    options={availableLanguages}
-                    value={field.value}
-                    onChange={(event, newValue) => field.onChange(newValue)}
-                    renderTags={(value: string[], getTagProps) =>
-                      value.map((option: string, index: number) => (
-                        <Chip
-                          // key = {index}
-                          variant="outlined"
-                          label={option}
-                          {...getTagProps({ index })}
-                        />
-                      ))
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        label="Select Languages"
-                      />
-                    )}
-                  />
-                )}
-              />
-            </div>
-
-            {/* Shift time */}
-            <div className="flex-container1">
-              <label>Shift Time: </label>
-              <input type="radio" value="Morning" {...register("shift")} />{" "}
-              Morning
-              <input type="radio" value="Afternoon" {...register("shift")} />{" "}
-              Afternoon
-              <input type="radio" value="Evening" {...register("shift")} />{" "}
-              Evening
-            </div>
-
-            {/* Availability */}
-            <div className="flex-container1">
-              <label>Availability: </label>
-              <select {...register("availability")}>
-                <option value="8.00 AM">8.00 AM</option>
-                <option value="12.00 PM">12.00 PM</option>
-                <option value="4.00 PM">4.00 PM</option>
-              </select>
-            </div>
-
-            {/* New Diet section with symbols */}
-            <div className="flex-container1">
-              <label>Diet: </label>
-              <input type="radio" value="Veg" {...register("diet")} />
-              <img
-                src="veg.png"
-                alt="Vegetarian Diet Symbol"
-                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
-              />
-              <input type="radio" value="Non-Veg" {...register("diet")} />
-              <img
-                src="nonveg.png"
-                alt="Vegetarian Diet Symbol"
-                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
-              />
-            </div>
-
-            {/* Speciality section */}
-            <div className="flex-container1">
-              <label>Cooking Speciality: </label>
-              <input type="radio" value="Veg" {...register("diet")} />
-              <img
-                src="veg.png"
-                alt="Vegetarian Diet Symbol"
-                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
-              />
-              <input type="radio" value="Non-Veg" {...register("diet")} />
-              <img
-                src="nonveg.png"
-                alt="Vegetarian Diet Symbol"
-                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
-              />
-            </div>
-
-            
-
-            {/* Ratings */}
-            <div className="flex-container1">
-              <label>Customer Ratings: </label>
-              <input type="checkbox" value="5" {...register("rating")} />
-              <span style={{ color: "#FFD700" }}>★</span> 5
-              <input type="checkbox" value="4" {...register("rating")} />
-              <span style={{ color: "#FFD700" }}>★</span> 4 & above
-              <input type="checkbox" value="3" {...register("rating")} />
-              <span style={{ color: "#FFD700" }}>★</span> 3 & above
-            </div>
-
-            {/* Submit and Reset buttons */}
-            <div className="button">
-              <div className="Sbtn1">
-                <Button type="submit" id="button1" variant="outline-primary">
-                  Submit
-                </Button>
+          {/* Language selection */}
+          <div className="language">
+{/* {To be used by Subhrajit for chip input}  */}
+      <ChipInput options={availableLanguages} onChange={handleChipChange} label="languages" placeholder="Pick/Type Your Languages" />
+            {/* <Button
+              variant="outline-primary"
+              onClick={() => setLanguageModalVisible(true)}
+            >
+              {watch("languages").length > 0
+                ? watch("languages").join(", ")
+                : "Pick Language"}
+            </Button>
+            {languageModalVisible && (
+              <div className="modal">
+                <div className="modal-content">
+                  <ul className="language-list">
+                    <Button
+                      variant="outline-primary"
+                      onClick={() => setLanguageModalVisible(false)}
+                    >
+                      Close
+                    </Button>
+                    {availableLanguages.map((language) => (
+                      <li
+                        key={language}
+                        className={`language-item ${
+                          watch("languages").includes(language)
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() => toggleLanguageSelection(language)}
+                      >
+                        {language}
+                      </li>
+                    ))}
+                  </ul>
+                  
+                </div>
               </div>
-              <div className="Sbtn2">
-                <Button
-                  type="button"
-                  id="button2"
-                  variant="outline-primary"
-                  onClick={handleReset}
-                >
-                  Reset
-                </Button>
-              </div>
-            </div>
+            )} */}
+          </div>
+          <div className="language">
+          <ChipInput options={availableFoodSpecialities} onChange={handleChipChange} label="Pick Food" placeholder="Pick/Type Your Food Speciality" />
+          </div>
+
+          {/* Shift time */}
+          <div className="flex-container1">
+            <label>Shift Time: </label>
+            <input type="radio" value="Morning" {...register("shift")} />{" "}
+            Morning
+            <input type="radio" value="Afternoon" {...register("shift")} />{" "}
+            Afternoon
+            <input type="radio" value="Evening" {...register("shift")} />{" "}
+            Evening
+          </div>
+
+          {/* Availability */}
+          <div className="flex-container1">
+            <label>Availability: </label>
+            <select {...register("availability")}>
+              <option value="8.00 AM">8.00 AM</option>
+              <option value="12.00 PM">12.00 PM</option>
+              <option value="4.00 PM">4.00 PM</option>
+            </select>
+          </div>
+
+          {/* Submit and Reset buttons */}
+          <div className="button">
+            <Button type="submit" id="button1" variant="outline-primary">
+              Search
+            </Button>
+            <Button
+              type="button"
+              id="button2"
+              variant="outline-primary"
+              onClick={() => reset()}
+            >
+              Reset
+            </Button>
           </div>
         </form>
-      </div>
-    </>
+      )}
+    </div>
   );
 };
 

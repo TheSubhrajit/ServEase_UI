@@ -8,6 +8,7 @@ import Footer from "./components/Footer/Footer";
 import Admin from "./components/Admin/Admin";
 import Login from "./components/Login/Login";
 import Confirmationpage from "./components/ServiceProvidersDetails/Confirmationpage";
+import ChipInput from "./components/Common/ChipInput/ChipInput";
 // import ForgotPassword from "./components/Login/ForgotPassword";
 
 
@@ -24,6 +25,17 @@ function App() {
     setSelection(undefined); // Reset selection on dropdown change
     setDropDownvalue(e);
   };
+
+  const [selectedChips, setSelectedChips] = useState<string[]>([]);
+
+  const handleChipChange = (newChips: string[]) => {
+    setSelectedChips(newChips);
+    console.log(selectedChips)
+  };
+
+  const movieOptions = [
+    'The Shawshank Redemption', 'The Godfather', 'The Dark Knight', 'Forrest Gump', 'Inception'
+  ];
 
   return (
     <div className="App">
@@ -49,6 +61,10 @@ function App() {
         <Footer />
       </footer>
       {/* <ForgotPassword></ForgotPassword> */}
+
+
+        {/* {To be used by Subhrajit for chip input}  */}
+      {/* <ChipInput options={movieOptions} onChange={handleChipChange} label="Movie" placeholder="Select your favorite movies" /> */}
     </div>
   );
 }

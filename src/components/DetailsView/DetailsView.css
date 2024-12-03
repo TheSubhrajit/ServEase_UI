@@ -1,99 +1,78 @@
-/* DetailsView.css */
-
-/* Main container */
-
-.details-view {
+/* Container for the details view */
+.details-view-container {
   display: flex;
   flex-direction: row; /* Sidebar and body side by side */
   min-height: 100vh;
   position: relative;
+  padding-top: 50px;
 }
 
-/* Sidebar */
+/* Sidebar styles */
 .sidebar {
-  position: fixed;
+  /* width: 50px; */
+  justify-content: flex-start;
   top: 50%;
   left: 0;
-  width: 100%;
-  height: 75%; /* Sidebar height is 75% of the screen */
-  transform: translateY(-50%); /* Center vertically */
-  visibility: hidden; /* Hidden by default */
-  opacity: 0; /* Initially invisible */
-  transition: visibility 0.3s ease, opacity 0.3s ease, width 0.3s ease;
-  z-index: 1000;
+  /* width: 5px; */
+  height: 75%;
+  overflow-x: hidden;
+  transition: width 0.3s ease;
+  background-color: #f1f1f1;
 }
 
 .sidebar.open {
-  visibility: visible; /* Show sidebar when open */
-  opacity: 1; /* Make it fully visible */
+  width: 50%; /* Opened sidebar width */
+  padding: 15px;
 }
 
 .sidebar.closed {
-  visibility: hidden; /* Hide sidebar when closed */
-  opacity: 0; /* Fade out */
-  width: 0;
+  width: 0; /* Closed sidebar width */
 }
 
-.w3-bar-item.w3-button.w3-large {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-size: 24px;
-  z-index: 2;
-  cursor: pointer;
-}
-
-/* Body content */
-.body-parser {
-  flex: 1;
+/* Main content styles */
+.main-content {
+  flex-grow: 1;
   padding: 20px;
-  overflow-y: auto;
-  box-sizing: border-box;
-  margin-top: 10px;
-  transition: margin-left 0.3s ease;
+  transition: width 0.3s ease;
 }
 
-/* Hide the body content when sidebar is open */
-.body-parser.hidden {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0.3s ease, opacity 0.3s ease;
-}
-
-/* Header styles */
 .headers {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
-  gap: 10px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  position: sticky;
-  top: 10px;
-  z-index: 2;
+  margin-bottom: 20px;
 }
 
-/* Mobile responsiveness */
+.providers-view {
+  /* display: flex; */
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.views {
+  border: 1px solid #ddd;
+  padding: 10px;
+  flex: 1 1 calc(50% - 10px); /* Two-column layout */
+}
+
+/* Responsive design: stack sidebar and content vertically on smaller screens */
 @media (max-width: 768px) {
-  .details-view {
-    flex-direction: column;
+  .details-view-container {
+    display: flex;
+    flex-direction: row;
   }
 
   .sidebar {
-    width: 100%;
-    height: 75%;
+    width: 40%; /* Sidebar takes full width */
+    padding: 5px;
   }
 
-  .body-parser {
-    margin-left: 0;
-    padding-top: 80px;
+  .main-content {
+    width: 40%;
+     /* Main content also takes full width */
   }
 
-  .headers {
-    flex-direction: column;
-    gap: 10px;
+  .views {
+    flex: 1 1 100%;
+     /* Stack service provider details */
   }
 }
