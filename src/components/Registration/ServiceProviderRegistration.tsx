@@ -46,27 +46,22 @@ interface FormData {
   street: string;
   currentLocation: string;
   nearbyLocation: string;
-  // city: string;
-  // state: string;
   pincode: string;
-  aadhaar: string;
+  AADHAR: string;
   pan: string;
   agreeToTerms: boolean;
-  aadhaarImage: File | null; // New field for Aadhaar image upload
   panImage: File | null; // New field for PAN image upload
   housekeepingRole: string; // Dropdown for Service Type
   description: string; // Text area for business description
   experience: string; // Experience in years
   kyc: string;
-  documentDetails: string;
   documentImage: File | null;
-  AADHAAR:string,
   otherDetails:string,
   profileImage: File | null; // New field for Profile Image
-  speciality: string;
+  cookingSpeciality: string;
+ 
   diet:string;
 }
-
 // Define the shape of errors to hold string messages
 interface FormErrors {
   firstName?: string;
@@ -84,21 +79,19 @@ interface FormErrors {
   city?: string;
   state?: string;
   pincode?: string;
-  aadhaar?: string;
+  AADHAR?: string;
   pan?: string;
-  agreeToTerms?: string; // This is now a string for error messages
-  document?: string; // Error message for document
-  housekeepingRole?: string; // Error message for Service Type
-  description?: string; // Error message for Description
-  experience?: string; // Error message for Experience
+  agreeToTerms?: string; 
+  housekeepingRole?: string; 
+  description?: string; 
+  experience?: string; 
   kyc?: string;
-  documentDetails?: string;
   documentImage?: string;
   aadhaarNumber?:string;
-  speciality?: string;
+  cookingSpeciality?: string;
+  Speciality?: string;
   diet?:string;
 }
- 
 // Regex for validation
 const nameRegex = /^[A-Za-z\s]+$/;
 const emailIdRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Z|a-z]{2,}$/;
@@ -150,21 +143,19 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     // city: '',
     // state: '',
     pincode: '',
-    aadhaar: '',
+    AADHAR: '',
     pan: '',
     agreeToTerms: false,
-    aadhaarImage: null, 
     panImage: null, 
     housekeepingRole: '',
     description: '',
     experience: '',
-    kyc : '',
-    documentDetails: '',
+    kyc : 'AADHAR',
     documentImage: null,
-    AADHAAR:'',
     otherDetails:'',
     profileImage: null,
-    speciality: '',
+    cookingSpeciality: '',
+ 
     diet:'',
     });
 
@@ -175,11 +166,6 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
   // States for image previews and names
 const [documentImageName, setDocumentImageName] = useState<string>('');
 const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(null);
-
-  // const [aadhaarImagePreview, setAadhaarImagePreview] = useState<string | null>(null);
-  // const [panImagePreview, setPanImagePreview] = useState<string | null>(null);
-  // const [aadhaarImageName, setAadhaarImageName] = useState<string>('');
-  // const [panImageName, setPanImageName] = useState<string>('');
 
   // States for password visibility
   const [showPassword, setShowPassword] = useState(false);
@@ -201,32 +187,33 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   const handleToggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-   // Handle changes in service type selection
-   const handleServiceTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setFormData((prevData) => ({ ...prevData, housekeepingRole: value }));
+  // Handle changes in service type selection
+const handleServiceTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { value } = event.target;
+  setFormData((prevData) => ({ ...prevData, housekeepingRole: value }));
 
-    // Check if 'COOK' is selected and update isCookSelected accordingly
-    if (value === 'COOK') {
-      setIsCookSelected(true);
-    } else {
-      setIsCookSelected(false);
-      // Reset speciality if not cook
-      setFormData((prevData) => ({ ...prevData, speciality: '' }));
-    }
-  };
+  // Check if 'COOK' is selected and update isCookSelected accordingly
+  if (value === 'COOK') {
+    setIsCookSelected(true);
+  } else {
+    setIsCookSelected(false);
+    // Reset cooking speciality if not cook
+    setFormData((prevData) => ({ ...prevData, cookingSpeciality: '' }));
+  }
+};
 
-  // Handle changes in speciality selection
-  const handleSpecialityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setFormData((prevData) => ({ ...prevData, speciality: value }));
-  };
+// Handle changes in cooking speciality selection
+const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { value } = event.target;
+  setFormData((prevData) => ({ ...prevData, cookingSpeciality: value }));
+};
 
-   // Handle changes in speciality selection
-   const handledietChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setFormData((prevData) => ({ ...prevData, diet: value }));
-  };
+  
+     // Handle changes in speciality selection
+     const handledietChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      setFormData((prevData) => ({ ...prevData, diet: value }));
+    };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -306,8 +293,8 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       if (!formData.housekeepingRole) {
         tempErrors.housekeepingRole = 'Please select a service type.';
       }
-      if (formData.housekeepingRole === 'COOK' && !formData.speciality) {
-        tempErrors.speciality = 'Please select a speciality for the cook service.';
+      if (formData.housekeepingRole === 'COOK' && !formData.cookingSpeciality) {
+        tempErrors.cookingSpeciality = 'Please select a speciality for the cook service.';
       }
       if (!formData.diet) {
         tempErrors.diet = 'Please select diet ';
@@ -327,24 +314,16 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   
     // Step 4: KYC Verification Validation
     if (activeStep === 3) {
-      if (!formData.AADHAAR || !aadhaarRegex.test(formData.AADHAAR)) {
+      if (!formData.AADHAR || !aadhaarRegex.test(formData.AADHAR)) {
         tempErrors.kyc = 'Aadhaar number must be exactly 12 digits.';
       }
-      if (!formData.documentImage) {
-        tempErrors.documentImage = "Please upload a document image.";
-      }
+      // if (!formData.documentImage) {
+      //   tempErrors.documentImage = "Please upload a document image.";
+      // }
     }
-  
-    // Set errors to state and return the validation result
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
-  // const handleNext = () => {
-  //   if (validateForm()) {
-  //     setActiveStep((prevStep) => prevStep + 1);
-  //   }
-  // };
- 
   const handleNext = () => {
     if (validateForm ()) {
       setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
@@ -361,50 +340,52 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   };
 
 
-const handleSubmit = async (event) => {
-  event.preventDefault(); // Prevent default form submission
-
-  // Form validation (optional)
-  if (validateForm()) {
-    try {
-      // Post form data to backend
-      const response = await axios.post(
-        "http://localhost:8080/api/serviceproviders/serviceprovider/add",
-        formData, // Assuming `formData` contains the collected form data
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // Handle successful response
-      console.log("Success:", response.data);
-      alert("Service provider added successfully!");
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Failed to add service provider. Please try again.");
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent default form submission
+  
+    // Filter out empty values from the form data
+    const filteredPayload = Object.fromEntries(
+      Object.entries(formData).filter(([key, value]) => value !== "" && value !== null && value !== undefined)
+    );
+  
+    // Form validation (optional)
+    if (validateForm()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/serviceproviders/serviceprovider/add",
+          filteredPayload,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        // Update Snackbar for success
+        setSnackbarOpen(true);
+        setSnackbarSeverity("success");
+        setSnackbarMessage("Service provider added successfully!");
+        console.log("Success:", response.data);
+      } catch (error) {
+        // Update Snackbar for error
+        setSnackbarOpen(true);
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Failed to add service provider. Please try again.");
+        console.error("Error submitting form:", error);
+      }
+    } else {
+      // Update Snackbar for validation error
+      setSnackbarOpen(true);
+      setSnackbarSeverity("warning");
+      setSnackbarMessage("Please fill out all required fields.");
     }
-  } else {
-    alert("Please fill out all required fields.");
-  }
-};
+  };
+  
+  
 
    // Close snackbar function
    const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
-  
-  //  const handleCloseSnackbar = (
-  //   event: React.SyntheticEvent<Element, Event> | null,
-  //   reason?: SnackbarCloseReason
-  // ) => {
-  //   if (reason === 'clickaway') {
-  //     return;
-  //   }
-  //   setSnackbarOpen(false);
-  // };
-  // Function to show the snackbar
   const showSnackbar = (message: string) => {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
@@ -417,13 +398,13 @@ const handleSubmit = async (event) => {
           <Grid container spacing={3}>
             
         {/* Profile Picture Upload Section */}
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <ProfileImageUpload onImageSelect={handleImageSelect} />
-      </Grid>
+      </Grid> */}
 
       <Grid item xs={12}>
         <TextField
-          label="First Name"
+          placeholder="First Name"
           name="firstName"
           fullWidth
           required
@@ -436,7 +417,7 @@ const handleSubmit = async (event) => {
 
       <Grid item xs={12}>
         <TextField
-          label="Middle Name"
+          placeholder="Middle Name"
           name="middleName"
           fullWidth
           value={formData.middleName}
@@ -446,7 +427,7 @@ const handleSubmit = async (event) => {
 
       <Grid item xs={12}>
         <TextField
-          label="Last Name"
+          placeholder="Last Name"
           name="lastName"
           fullWidth
           required
@@ -476,7 +457,7 @@ const handleSubmit = async (event) => {
 
       <Grid item xs={12}>
         <TextField
-          label="Email"
+          placeholder="Email"
           name="emailId"
           fullWidth
           required
@@ -489,7 +470,7 @@ const handleSubmit = async (event) => {
 
       <Grid item xs={12}>
               <TextField
-                label="Password"
+                placeholder="Password"
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 fullWidth
@@ -516,7 +497,7 @@ const handleSubmit = async (event) => {
 
             <Grid item xs={12}>
               <TextField
-                label="Confirm Password"
+                placeholder="Confirm Password"
                 type={showConfirmPassword ? 'text' : 'password'}
                 name="confirmPassword"
                 fullWidth
@@ -542,7 +523,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Mobile Number"
+                placeholder="Mobile Number"
                 name="mobileNo"
                 fullWidth
                 required
@@ -554,7 +535,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Alternate Number"
+                placeholder="Alternate Number"
                 name="AlternateNumber"
                 fullWidth
                 value={formData.AlternateNumber}
@@ -570,7 +551,7 @@ const handleSubmit = async (event) => {
           <Grid container spacing={2}>
             <Grid item xs={12} className="pt-4">
               <TextField
-                label="Address"
+                placeholder="Address"
                 name="address"
                 fullWidth
                 required
@@ -582,7 +563,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="BuildingName"
+                placeholder="BuildingName"
                 name="buildingName"
                 fullWidth
                 required
@@ -594,7 +575,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12} sm={6} >
               <TextField
-                label="Locality"
+                placeholder="Locality"
                 name="locality"
                 fullWidth
                 required
@@ -606,7 +587,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12} sm={6} >
               <TextField
-                label="Street"
+                placeholder="Street"
                 name="street"
                 fullWidth
                 required
@@ -618,7 +599,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12}sm={6}>
               <TextField
-                label="Pincode"
+                placeholder="Pincode"
                 name="pincode"
                 fullWidth
                 required
@@ -630,7 +611,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="CurrentLocation"
+                placeholder="CurrentLocation"
                 name="currentLocation"
                 fullWidth
                 required
@@ -642,7 +623,7 @@ const handleSubmit = async (event) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="NearbyLocation"
+                placeholder="NearbyLocation"
                 name="nearbyLocation"
                 fullWidth
                 value={formData.nearbyLocation}
@@ -702,7 +683,6 @@ const handleSubmit = async (event) => {
             <MenuItem value="MAID">Maid</MenuItem>
           </TextField>
         </Grid>
-
         {/* Speciality Radio Buttons (Visible if 'COOK' is selected) */}
         {/* {isCookSelected && (
           <Grid item xs={12} sm={6}>
@@ -720,17 +700,17 @@ const handleSubmit = async (event) => {
               <FormHelperText>{errors.speciality}</FormHelperText>
             </FormControl>
           </Grid> */}
-          {isCookSelected && (
+                   {isCookSelected && (
   <Grid item xs={12} sm={6}>
-    <FormControl component="fieldset" error={!!errors.speciality} required>
+    <FormControl component="fieldset" error={!!errors.cookingSpeciality} required>
       <FormLabel component="legend">Cooking Speciality</FormLabel>
       <RadioGroup
         name="speciality"
-        value={formData.speciality}
-        onChange={handleSpecialityChange}
+        value={formData.cookingSpeciality}
+        onChange={handleCookingSpecialityChange}
       >
         <FormControlLabel
-          value="veg"
+          value="VEG"
           control={<Radio />}
           label={
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -744,7 +724,7 @@ const handleSubmit = async (event) => {
           }
         />
         <FormControlLabel
-          value="non-veg"
+          value="NONVEG"
           control={<Radio />}
           label={
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -758,12 +738,12 @@ const handleSubmit = async (event) => {
           }
         />
         <FormControlLabel
-          value="both"
+          value="BOTH"
           control={<Radio />}
           label="Both"
         />
       </RadioGroup>
-      <FormHelperText>{errors.speciality}</FormHelperText>
+      <FormHelperText>{errors.cookingSpeciality}</FormHelperText>
     </FormControl>
   </Grid>
 )}
@@ -815,7 +795,7 @@ const handleSubmit = async (event) => {
     {/* Description Field */}
     <Grid item xs={12}>
       <TextField
-        label="Description"
+        placeholder="Description"
         name="description"
         fullWidth
         value={formData.description}
@@ -826,7 +806,7 @@ const handleSubmit = async (event) => {
     {/* Experience Field */}
     <Grid item xs={12} sm={6}>
       <TextField
-        label="Experience"
+        placeholder="Experience"
         name="experience"
         fullWidth
         required
@@ -865,11 +845,11 @@ const handleSubmit = async (event) => {
        {/* Document Type Selection */}
        <Grid item xs={12}>
        <TextField
-                label="Aadhaar Number"
-                name="aadhaar"
+                placeholder="Aadhaar Number"
+                name="AADHAR"
                 fullWidth
                 required
-                value={formData.AADHAAR}
+                value={formData.AADHAR}
                 onChange={handleChange}
                 error={!!errors.kyc}
                 helperText={errors.kyc}
@@ -878,7 +858,7 @@ const handleSubmit = async (event) => {
             </Grid>
 
         {/* Document Image Upload */}
-        {/* <Grid item xs={12}>
+        <Grid item xs={12}>
           <Input
             type="file"
             inputProps={{ accept: "image/*" }}
@@ -901,16 +881,16 @@ const handleSubmit = async (event) => {
               />
             </Box>
           )}
-          {errors.documentImage && (
+          {/* {errors.documentImage && (
             <Typography color="error">{errors.documentImage}</Typography>
-          )}
-        </Grid> */}
+          )} */}
+        </Grid>
 
        {/* Other Details (Optional for PAN or DL) */}
        {(formData.kyc === "PAN" || formData.kyc === "DL") && (
           <Grid item xs={12}>
             <TextField
-              label="Other Details"
+              placeholder="Other Details"
               name="otherDetails"
               fullWidth
               value={formData.otherDetails}
@@ -982,17 +962,6 @@ const handleSubmit = async (event) => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-      {/* Snackbar for success message */}
-      {/* <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar> */}
       <div className="flex flex-col mt-4 items-center justify-center text-sm">
         <Typography variant="h6">
           Already have an account?

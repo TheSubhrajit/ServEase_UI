@@ -12,25 +12,27 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+
 export const Login: React.FC = () => {
   const [isRegistration, setIsRegistration] = useState(false);
   const [isServiceRegistration, setServiceRegistration] = useState(false);
-  const [isForgotPassword, setIsForgotPassword] = useState(false); 
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('101111'); // Default role for user
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  const [showPassword, setShowPassword] = useState(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUpClick = () => {
     setIsRegistration(true);
   };
 
   const handleBackToLogin = () => {
-    setIsRegistration(false); 
-    setIsForgotPassword(false); // Reset Forgot Password state
+    setIsRegistration(false);
+    setIsForgotPassword(false);
   };
 
   const handleSignUpClickServiceProvider = () => {
@@ -57,31 +59,30 @@ export const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Prepare data to send in the request body
       const requestData = {
         username: email,
         password: password,
+        role: role, // Include selected role in the request
       };
-  
+
       const response = await fetch('http://localhost:8080/api/user/login', {
-        method: 'POST', // Use POST method
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // Set Content-Type to application/json
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestData), // Convert the data to JSON and send in the body
+        body: JSON.stringify(requestData),
       });
-  
-      // Check if the response is OK
+
       if (!response.ok) {
         throw new Error('Network response was not ok.');
       }
-      const data = await response.text(); 
+      const data = await response.text();
 
       if (data === "Login successful!") {
         setSnackbarMessage("Login successful!");
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
-        setTimeout(() => setIsLoggedIn(true), 1000); 
+        setTimeout(() => setIsLoggedIn(true), 1000);
       } else {
         setSnackbarMessage("Login failed. Please check your credentials.");
         setSnackbarSeverity("error");
@@ -95,12 +96,10 @@ export const Login: React.FC = () => {
     }
   };
 
-  // If user is logged in, render Landingpage
   if (isLoggedIn) {
     return <Landingpage sendDataToParent={() => {}} />;
   }
 
-  // If user clicked "Forgot Password", render ForgotPassword component
   if (isForgotPassword) {
     return <ForgotPassword onBackToLogin={handleBackToLogin} />;
   }
@@ -118,6 +117,29 @@ export const Login: React.FC = () => {
               <>
                 <h1 className="font-bold dark:text-gray-400 text-4xl text-center cursor-default my-0">Log in</h1>
                 <form className="space-y-4" onSubmit={handleLogin}>
+                  <div className="flex flex-col">
+                    <label className="mb-2 dark:text-gray-400 text-lg">Role</label>
+                    <div className="flex gap-4">
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          value="101111"
+                          checked={role === '101111'}
+                          onChange={(e) => setRole(e.target.value)}
+                        />
+                        <span>User</span>
+                      </label>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          value="103333"
+                          checked={role === '103333'}
+                          onChange={(e) => setRole(e.target.value)}
+                        />
+                        <span>Service Provider</span>
+                      </label>
+                    </div>
+                  </div>
                   <div>
                     <label htmlFor="email" className="mb-2 dark:text-gray-400 text-lg">Email</label>
                     <input
