@@ -28,6 +28,7 @@ import { Visibility, VisibilityOff,ArrowForward,ArrowBack,CameraAlt as CameraAlt
 import { px } from 'framer-motion';
 import ProfileImageUpload from './ProfileImageUpload';
 import axios from 'axios';
+import ChipInput from "../Common/ChipInput/ChipInput";
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -213,6 +214,35 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
      const handledietChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       setFormData((prevData) => ({ ...prevData, diet: value }));
+    };
+    const [availableLanguages] = useState<string[]>([
+      "Assamese",
+      "Bengali",
+      "Gujarati",
+      "Hindi",
+      "Kannada",
+      "Kashmiri",
+      "Marathi",
+      "Malayalam",
+      "Oriya",
+      "Punjabi",
+      "Sanskrit",
+      "Tamil",
+      "Telugu",
+      "Urdu",
+      "Sindhi",
+      "Konkani",
+      "Nepali",
+      "Manipuri",
+      "Bodo",
+      "Dogri",
+      "Maithili",
+      "Santhali",
+    ]);
+    const [selectedChips, setSelectedChips] = useState<string[]>([]);
+    const handleChipChange = (newChips: string[]) => {
+      setSelectedChips(newChips);
+      console.log(selectedChips)
     };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -808,6 +838,9 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
       <FormHelperText>{errors.diet}</FormHelperText>
     </FormControl>
   </Grid>
+  <Grid item xs={12}>
+     <ChipInput options={availableLanguages} onChange={handleChipChange} label="languages" placeholder="Pick/Type Your Languages" />
+    </Grid>
     {/* Description Field */}
     <Grid item xs={12}>
       <TextField

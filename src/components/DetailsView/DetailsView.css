@@ -49,7 +49,7 @@
 }
 
 .views {
-  border: 1px solid #ddd;
+ 
   padding: 10px;
   flex: 1 1 calc(50% - 10px); /* Two-column layout */
 }
