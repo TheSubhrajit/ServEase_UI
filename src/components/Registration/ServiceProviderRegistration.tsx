@@ -29,6 +29,7 @@ import { px } from 'framer-motion';
 import ProfileImageUpload from './ProfileImageUpload';
 import axios from 'axios';
 import ChipInput from "../Common/ChipInput/ChipInput";
+import { keys } from '../../env/env';
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -160,6 +161,68 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     diet:'',
     });
 
+    // Function to fetch location data and autofill the form
+    const fetchLocationData = async () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            try {
+              // Use the latitude and longitude to fetch location data from the Geocode API
+              const response = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+                params: {
+                  latlng: `${latitude},${longitude}`,
+                  key: keys.api_key, // Ensure your API key is here
+                },
+              });
+              
+              // Extract the location data from the API response
+              const locationData = response.data.results[0];
+              
+              // Extract relevant fields from the location data
+              const address = locationData.formatted_address || "";
+              const components = locationData.address_components;
+              
+              let buildingName = "", locality = "", street = "", pincode = "", nearbyLocation = "";
+              
+              components.forEach((component: any) => {
+                if (component.types.includes("street_number")) {
+                  street = component.long_name;
+                } else if (component.types.includes("route")) {
+                  street += ` ${component.long_name}`;
+                } else if (component.types.includes("locality")) {
+                  locality = component.long_name;
+                } else if (component.types.includes("postal_code")) {
+                  pincode = component.long_name;
+                } else if (component.types.includes("administrative_area_level_1")) {
+                  nearbyLocation = component.long_name;
+                }
+              });
+    
+              // Autofill form fields with the location data
+              setFormData((prevState) => ({
+                ...prevState,
+                address: address,
+                buildingName: buildingName,
+                locality: locality,
+                street: street,
+                pincode: pincode,
+                currentLocation: address,
+                nearbyLocation: nearbyLocation,
+              }));
+            } catch (error) {
+              console.error("Error fetching location data", error);
+            }
+          },
+          (error) => {
+            console.error("Geolocation error:", error.message);
+          }
+        );
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    };
+    
 
   const [errors, setErrors] = useState<FormErrors>({});
   
@@ -420,6 +483,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     setSnackbarMessage(message);
     setSnackbarOpen(true);
   };
+  
 
   const renderStepContent = (step: number) => {
     switch (step) {
@@ -678,6 +742,12 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 // helperText={errors.nearbyLocation}
               />
             </Grid>
+            <Grid item xs={12}>
+            <Button variant="contained" color="primary" onClick={fetchLocationData}>
+  Fetch Location
+</Button>
+
+      </Grid>
             {/* <Grid item xs={12} sm={6}>
               <TextField
                 label="City"
@@ -840,7 +910,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
   </Grid>
   <Grid item xs={12}>
      <ChipInput options={availableLanguages} onChange={handleChipChange} label="languages" placeholder="Pick/Type Your Languages" />
-    </Grid>
+  </Grid>
     {/* Description Field */}
     <Grid item xs={12}>
       <TextField
