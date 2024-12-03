@@ -59,7 +59,7 @@ interface FormData {
   otherDetails:string,
   profileImage: File | null; // New field for Profile Image
   cookingSpeciality: string;
- 
+  age:'';
   diet:string;
 }
 // Define the shape of errors to hold string messages
@@ -155,7 +155,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     otherDetails:'',
     profileImage: null,
     cookingSpeciality: '',
- 
+    age:'',
     diet:'',
     });
 
@@ -437,6 +437,22 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           helperText={errors.lastName}
         />
       </Grid>
+   {/* Age / Date of Birth Field */}
+<Grid item xs={12} sm={6}>
+  <TextField
+    label="Date of Birth"
+    name="age" // Make sure this name is consistent with your form state
+    type="date"
+    fullWidth
+    required
+    value={formData.age} // This should be bound to formData.age
+    onChange={handleChange} // Ensure handleChange is updating formData.age
+    InputLabelProps={{
+      shrink: true, // Makes the label float on top
+    }}
+  />
+</Grid>
+
 
       <Grid item xs={12}>
         <FormControl component="fieldset" error={!!errors.gender}>
