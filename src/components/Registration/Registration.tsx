@@ -30,6 +30,7 @@ import {
 } from "@mui/icons-material";
 import ProfileImageUpload from './ProfileImageUpload';
 import axios from "axios";
+import ChipInput from "../Common/ChipInput/ChipInput";
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -126,6 +127,36 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     language: "",
   });
 
+  const [availableLanguages] = useState<string[]>([
+    "Assamese",
+    "Bengali",
+    "Gujarati",
+    "Hindi",
+    "Kannada",
+    "Kashmiri",
+    "Marathi",
+    "Malayalam",
+    "Oriya",
+    "Punjabi",
+    "Sanskrit",
+    "Tamil",
+    "Telugu",
+    "Urdu",
+    "Sindhi",
+    "Konkani",
+    "Nepali",
+    "Manipuri",
+    "Bodo",
+    "Dogri",
+    "Maithili",
+    "Santhali",
+  ]);
+  const [selectedChips, setSelectedChips] = useState<string[]>([]);
+
+  const handleChipChange = (newChips: string[]) => {
+    setSelectedChips(newChips);
+    console.log(selectedChips)
+  };
   const [gender, setGender] = useState("");
 
   const handleGenderChange = (e) => {
@@ -278,29 +309,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
         // Show success message in the Snackbar
         showSnackbar("Registration Successful!", "success");
   
-        // Optionally, reset the form or redirect
-        // setFormData({
-        //   firstName: "",
-        //   middleName: "",
-        //   lastName: "",
-        //   email: "",
-        //   password: "",
-        //   confirmPassword: "",
-        //   phoneNumber: "",
-        //   gender: "",
-        //   address: "",
-        //   city: "",
-        //   state: "",
-        //   zipCode: "",
-        //   buildingName: "",
-        //   currentLocation: "",
-        //   nearbyLocation: "",
-        //   agreeToTerms: false,
-        //   hobbies: "",
-        //   language: "",
-        //   speciality: "",
-        //   diet: "",
-        // });
   
         // Call the onBackToLogin handler to redirect to login
         onBackToLogin(true);
@@ -659,7 +667,8 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+            <ChipInput options={availableLanguages} onChange={handleChipChange} label="languages" placeholder="Pick/Type Your Languages" />
+              {/* <TextField
                 placeholder="Language"
                 name="language"
                 fullWidth
@@ -669,7 +678,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   "& .MuiInputBase-root": { height: "36px" },
                   "& .MuiInputBase-input": { padding: "10px 12px" },
                 }}
-              />
+              /> */}
             </Grid>
             <Grid item xs={12}>
                 <FormControl

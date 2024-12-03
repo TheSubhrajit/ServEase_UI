@@ -263,7 +263,7 @@ export const Search_form: React.FC<SearchFormProps> = ({
             )} */}
           </div>
           <div className="language">
-          <ChipInput options={availableFoodSpecialities} onChange={handleChipChange} label="languages" placeholder="Pick/Type Your Languages" />
+          <ChipInput options={availableFoodSpecialities} onChange={handleChipChange} label="Pick Food" placeholder="Pick/Type Your Food Speciality" />
           </div>
 
           {/* Shift time */}
