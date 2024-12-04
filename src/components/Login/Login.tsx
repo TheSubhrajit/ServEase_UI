@@ -7,6 +7,8 @@ import { Landingpage } from '../Landing_Page/Landingpage';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import ForgotPassword from './ForgotPassword';
+import DetailsView from '../DetailsView/DetailsView';
+import ServiceProviderDashboard from '../DetailsView/ServiceProviderDashboard';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -56,15 +58,63 @@ export const Login: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  // const handleLogin = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   try {
+  //     const requestData = {
+  //       username: email,
+  //       password: password,
+  //       role: role, // Include selected role in the request
+  //     };
+
+  //     const response = await fetch('http://localhost:8080/api/user/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(requestData),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Network response was not ok.');
+  //     }
+  //     const data = await response.text();
+
+  //     if (data === "Login successful!") {
+  //       setSnackbarMessage("Login successful!");
+  //       setSnackbarSeverity("success");
+  //       setOpenSnackbar(true);
+  //       setTimeout(() => setIsLoggedIn(true), 1000);
+  //     } else {
+  //       setSnackbarMessage("Login failed. Please check your credentials.");
+  //       setSnackbarSeverity("error");
+  //       setOpenSnackbar(true);
+  //     }
+  //   } catch (error) {
+  //     console.error('Login error:', error);
+  //     setSnackbarMessage('An error occurred during login.');
+  //     setSnackbarSeverity('error');
+  //     setOpenSnackbar(true);
+  //   }
+  // };
+ const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+  
+    if (role === '101111') {
+      setSnackbarMessage("User logged in successfully!");
+      setSnackbarSeverity("success");
+      setOpenSnackbar(true);
+      setTimeout(() => setIsLoggedIn(true), 1000);
+      return;
+    }
+  
     try {
       const requestData = {
         username: email,
         password: password,
-        role: role, // Include selected role in the request
+        role: role,
       };
-
+  
       const response = await fetch('http://localhost:8080/api/user/login', {
         method: 'POST',
         headers: {
@@ -72,14 +122,15 @@ export const Login: React.FC = () => {
         },
         body: JSON.stringify(requestData),
       });
-
+  
       if (!response.ok) {
         throw new Error('Network response was not ok.');
       }
+  
       const data = await response.text();
-
+  
       if (data === "Login successful!") {
-        setSnackbarMessage("Login successful!");
+        setSnackbarMessage("Service Provider logged in successfully!");
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
         setTimeout(() => setIsLoggedIn(true), 1000);
@@ -95,9 +146,18 @@ export const Login: React.FC = () => {
       setOpenSnackbar(true);
     }
   };
-
   if (isLoggedIn) {
-    return <Landingpage sendDataToParent={() => {}} />;
+    // Redirect based on role
+    if (role === '101111') {
+      return <DetailsView sendDataToParent={function (data: string): void {
+        throw new Error('Function not implemented.');
+      }} />;
+    }
+    // If not Service Provider, show the ServiceProviderDashboard for successful login
+    if (role === '103333') {  // Assuming the role identifier for Service Provider is 'service_provider'
+      return <ServiceProviderDashboard />;
+    }
+    
   }
 
   if (isForgotPassword) {
