@@ -14,20 +14,18 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-
 export const Login: React.FC = () => {
   const [isRegistration, setIsRegistration] = useState(false);
   const [isServiceRegistration, setServiceRegistration] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('101111'); // Default role for user
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
+  const [redirectComponent, setRedirectComponent] = useState<React.ReactNode | null>(null);
   const handleSignUpClick = () => {
     setIsRegistration(true);
   };
@@ -58,63 +56,29 @@ export const Login: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
-  // const handleLogin = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   try {
-  //     const requestData = {
-  //       username: email,
-  //       password: password,
-  //       role: role, // Include selected role in the request
-  //     };
-
-  //     const response = await fetch('http://localhost:8080/api/user/login', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(requestData),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error('Network response was not ok.');
-  //     }
-  //     const data = await response.text();
-
-  //     if (data === "Login successful!") {
-  //       setSnackbarMessage("Login successful!");
-  //       setSnackbarSeverity("success");
-  //       setOpenSnackbar(true);
-  //       setTimeout(() => setIsLoggedIn(true), 1000);
-  //     } else {
-  //       setSnackbarMessage("Login failed. Please check your credentials.");
-  //       setSnackbarSeverity("error");
-  //       setOpenSnackbar(true);
-  //     }
-  //   } catch (error) {
-  //     console.error('Login error:', error);
-  //     setSnackbarMessage('An error occurred during login.');
-  //     setSnackbarSeverity('error');
-  //     setOpenSnackbar(true);
-  //   }
-  // };
- const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    if (role === '101111') {
-      setSnackbarMessage("User logged in successfully!");
-      setSnackbarSeverity("success");
-      setOpenSnackbar(true);
-      setTimeout(() => setIsLoggedIn(true), 1000);
-      return;
-    }
-  
+
     try {
+      // Dummy user credentials check
+      if (email === "user@example.com" && password === "password123") {
+        setSnackbarMessage("User logged in successfully!");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          setRedirectComponent(
+            <DetailsView sendDataToParent={(data: string) => console.log(data)} />
+          );
+        }, 1000);
+        return;
+      }
+  
+      // For other users, make the API call
       const requestData = {
         username: email,
         password: password,
-        role: role,
       };
-  
+
       const response = await fetch('http://localhost:8080/api/user/login', {
         method: 'POST',
         headers: {
@@ -122,18 +86,30 @@ export const Login: React.FC = () => {
         },
         body: JSON.stringify(requestData),
       });
-  
+
       if (!response.ok) {
         throw new Error('Network response was not ok.');
       }
-  
-      const data = await response.text();
-  
-      if (data === "Login successful!") {
-        setSnackbarMessage("Service Provider logged in successfully!");
+
+      const data = await response.json();
+
+      if (data.message === "Login successful!") {
+        setSnackbarMessage("Login successful!");
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
-        setTimeout(() => setIsLoggedIn(true), 1000);
+
+        // Redirect based on role
+        setTimeout(() => {
+          if (data.role === "SERVICE_PROVIDER") {
+            setRedirectComponent(<ServiceProviderDashboard />);
+          } else {
+            setRedirectComponent(
+              <DetailsView sendDataToParent={function (data: string): void {
+                throw new Error('Function not implemented.');
+              }} />
+            );
+          }
+        }, 1000);
       } else {
         setSnackbarMessage("Login failed. Please check your credentials.");
         setSnackbarSeverity("error");
@@ -146,18 +122,9 @@ export const Login: React.FC = () => {
       setOpenSnackbar(true);
     }
   };
-  if (isLoggedIn) {
-    // Redirect based on role
-    if (role === '101111') {
-      return <DetailsView sendDataToParent={function (data: string): void {
-        throw new Error('Function not implemented.');
-      }} />;
-    }
-    // If not Service Provider, show the ServiceProviderDashboard for successful login
-    if (role === '103333') {  // Assuming the role identifier for Service Provider is 'service_provider'
-      return <ServiceProviderDashboard />;
-    }
-    
+
+  if (redirectComponent) {
+    return <>{redirectComponent}</>;
   }
 
   if (isForgotPassword) {
@@ -172,35 +139,12 @@ export const Login: React.FC = () => {
             {isRegistration ? (
               <Registration onBackToLogin={handleBackToLogin} />
             ) : isServiceRegistration ? (
-              <ServiceProviderRegistration onBackToLogin={handleProviderBackToLogin} />
+              <ServiceProviderRegistration onBackToLogin={handleBackToLogin} />
             ) : (
               <>
                 <h1 className="font-bold dark:text-gray-400 text-4xl text-center cursor-default my-0">Log in</h1>
                 <form className="space-y-4" onSubmit={handleLogin}>
-                  <div className="flex flex-col">
-                    <label className="mb-2 dark:text-gray-400 text-lg">Role</label>
-                    <div className="flex gap-4">
-                      <label className="flex items-center space-x-2">
-                        <input
-                          type="radio"
-                          value="101111"
-                          checked={role === '101111'}
-                          onChange={(e) => setRole(e.target.value)}
-                        />
-                        <span>User</span>
-                      </label>
-                      <label className="flex items-center space-x-2">
-                        <input
-                          type="radio"
-                          value="103333"
-                          checked={role === '103333'}
-                          onChange={(e) => setRole(e.target.value)}
-                        />
-                        <span>Service Provider</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div>
+                <div>
                     <label htmlFor="email" className="mb-2 dark:text-gray-400 text-lg">Email</label>
                     <input
                       id="email"
