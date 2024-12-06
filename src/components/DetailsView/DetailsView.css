@@ -1,4 +1,9 @@
 /* Container for the details view */
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 .details-view-container {
   display: flex;
   flex-direction: row; /* Sidebar and body side by side */
@@ -49,7 +54,7 @@
 }
 
 .views {
-  border: 1px solid #ddd;
+ 
   padding: 10px;
   flex: 1 1 calc(50% - 10px); /* Two-column layout */
 }

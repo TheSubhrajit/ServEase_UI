@@ -28,6 +28,8 @@ import { Visibility, VisibilityOff,ArrowForward,ArrowBack,CameraAlt as CameraAlt
 import { px } from 'framer-motion';
 import ProfileImageUpload from './ProfileImageUpload';
 import axios from 'axios';
+import ChipInput from "../Common/ChipInput/ChipInput";
+import { keys } from '../../env/env';
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -47,20 +49,19 @@ interface FormData {
   currentLocation: string;
   nearbyLocation: string;
   pincode: string;
-  aadhaar: string;
+  AADHAR: string;
   pan: string;
   agreeToTerms: boolean;
-  aadhaarImage: File | null; // New field for Aadhaar image upload
   panImage: File | null; // New field for PAN image upload
   housekeepingRole: string; // Dropdown for Service Type
   description: string; // Text area for business description
   experience: string; // Experience in years
   kyc: string;
-  documentDetails: string;
   documentImage: File | null;
   otherDetails:string,
   profileImage: File | null; // New field for Profile Image
-  speciality: string;
+  cookingSpeciality: string;
+  age:'';
   diet:string;
 }
 // Define the shape of errors to hold string messages
@@ -80,18 +81,17 @@ interface FormErrors {
   city?: string;
   state?: string;
   pincode?: string;
-  aadhaar?: string;
+  AADHAR?: string;
   pan?: string;
-  agreeToTerms?: string; // This is now a string for error messages
-  document?: string; // Error message for document
-  housekeepingRole?: string; // Error message for Service Type
-  description?: string; // Error message for Description
-  experience?: string; // Error message for Experience
+  agreeToTerms?: string; 
+  housekeepingRole?: string; 
+  description?: string; 
+  experience?: string; 
   kyc?: string;
-  documentDetails?: string;
   documentImage?: string;
   aadhaarNumber?:string;
-  speciality?: string;
+  cookingSpeciality?: string;
+  Speciality?: string;
   diet?:string;
 }
 // Regex for validation
@@ -145,23 +145,84 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     // city: '',
     // state: '',
     pincode: '',
-    aadhaar: '',
+    AADHAR: '',
     pan: '',
     agreeToTerms: false,
-    aadhaarImage: null, 
     panImage: null, 
     housekeepingRole: '',
     description: '',
     experience: '',
-    kyc : '',
-    documentDetails: '',
+    kyc : 'AADHAR',
     documentImage: null,
     otherDetails:'',
     profileImage: null,
-    speciality: '',
+    cookingSpeciality: '',
+    age:'',
     diet:'',
     });
 
+    // Function to fetch location data and autofill the form
+    const fetchLocationData = async () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            try {
+              // Use the latitude and longitude to fetch location data from the Geocode API
+              const response = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+                params: {
+                  latlng: `${latitude},${longitude}`,
+                  key: keys.api_key, // Ensure your API key is here
+                },
+              });
+              
+              // Extract the location data from the API response
+              const locationData = response.data.results[0];
+              
+              // Extract relevant fields from the location data
+              const address = locationData.formatted_address || "";
+              const components = locationData.address_components;
+              
+              let buildingName = "", locality = "", street = "", pincode = "", nearbyLocation = "";
+              
+              components.forEach((component: any) => {
+                if (component.types.includes("street_number")) {
+                  street = component.long_name;
+                } else if (component.types.includes("route")) {
+                  street += ` ${component.long_name}`;
+                } else if (component.types.includes("locality")) {
+                  locality = component.long_name;
+                } else if (component.types.includes("postal_code")) {
+                  pincode = component.long_name;
+                } else if (component.types.includes("administrative_area_level_1")) {
+                  nearbyLocation = component.long_name;
+                }
+              });
+    
+              // Autofill form fields with the location data
+              setFormData((prevState) => ({
+                ...prevState,
+                address: address,
+                buildingName: buildingName,
+                locality: locality,
+                street: street,
+                pincode: pincode,
+                currentLocation: address,
+                nearbyLocation: nearbyLocation,
+              }));
+            } catch (error) {
+              console.error("Error fetching location data", error);
+            }
+          },
+          (error) => {
+            console.error("Geolocation error:", error.message);
+          }
+        );
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    };
+    
 
   const [errors, setErrors] = useState<FormErrors>({});
   
@@ -190,32 +251,62 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   const handleToggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-   // Handle changes in service type selection
-   const handleServiceTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setFormData((prevData) => ({ ...prevData, housekeepingRole: value }));
+  // Handle changes in service type selection
+const handleServiceTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { value } = event.target;
+  setFormData((prevData) => ({ ...prevData, housekeepingRole: value }));
 
-    // Check if 'COOK' is selected and update isCookSelected accordingly
-    if (value === 'COOK') {
-      setIsCookSelected(true);
-    } else {
-      setIsCookSelected(false);
-      // Reset speciality if not cook
-      setFormData((prevData) => ({ ...prevData, speciality: '' }));
-    }
-  };
+  // Check if 'COOK' is selected and update isCookSelected accordingly
+  if (value === 'COOK') {
+    setIsCookSelected(true);
+  } else {
+    setIsCookSelected(false);
+    // Reset cooking speciality if not cook
+    setFormData((prevData) => ({ ...prevData, cookingSpeciality: '' }));
+  }
+};
 
-  // Handle changes in speciality selection
-  const handleSpecialityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setFormData((prevData) => ({ ...prevData, speciality: value }));
-  };
+// Handle changes in cooking speciality selection
+const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { value } = event.target;
+  setFormData((prevData) => ({ ...prevData, cookingSpeciality: value }));
+};
 
-   // Handle changes in speciality selection
-   const handledietChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setFormData((prevData) => ({ ...prevData, diet: value }));
-  };
+  
+     // Handle changes in speciality selection
+     const handledietChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      setFormData((prevData) => ({ ...prevData, diet: value }));
+    };
+    const [availableLanguages] = useState<string[]>([
+      "Assamese",
+      "Bengali",
+      "Gujarati",
+      "Hindi",
+      "Kannada",
+      "Kashmiri",
+      "Marathi",
+      "Malayalam",
+      "Oriya",
+      "Punjabi",
+      "Sanskrit",
+      "Tamil",
+      "Telugu",
+      "Urdu",
+      "Sindhi",
+      "Konkani",
+      "Nepali",
+      "Manipuri",
+      "Bodo",
+      "Dogri",
+      "Maithili",
+      "Santhali",
+    ]);
+    const [selectedChips, setSelectedChips] = useState<string[]>([]);
+    const handleChipChange = (newChips: string[]) => {
+      setSelectedChips(newChips);
+      console.log(selectedChips)
+    };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -295,8 +386,8 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
       if (!formData.housekeepingRole) {
         tempErrors.housekeepingRole = 'Please select a service type.';
       }
-      if (formData.housekeepingRole === 'COOK' && !formData.speciality) {
-        tempErrors.speciality = 'Please select a speciality for the cook service.';
+      if (formData.housekeepingRole === 'COOK' && !formData.cookingSpeciality) {
+        tempErrors.cookingSpeciality = 'Please select a speciality for the cook service.';
       }
       if (!formData.diet) {
         tempErrors.diet = 'Please select diet ';
@@ -316,12 +407,12 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   
     // Step 4: KYC Verification Validation
     if (activeStep === 3) {
-      if (!formData.aadhaar || !aadhaarRegex.test(formData.aadhaar)) {
+      if (!formData.AADHAR || !aadhaarRegex.test(formData.AADHAR)) {
         tempErrors.kyc = 'Aadhaar number must be exactly 12 digits.';
       }
-      if (!formData.documentImage) {
-        tempErrors.documentImage = "Please upload a document image.";
-      }
+      // if (!formData.documentImage) {
+      //   tempErrors.documentImage = "Please upload a document image.";
+      // }
     }
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -342,34 +433,47 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   };
 
 
-const handleSubmit = async (event) => {
-  event.preventDefault(); // Prevent default form submission
-
-  // Form validation (optional)
-  if (validateForm()) {
-    try {
-      // Post form data to backend
-      const response = await axios.post(
-        "http://localhost:8080/api/serviceproviders/serviceprovider/add",
-        formData, // Assuming `formData` contains the collected form data
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // Handle successful response
-      console.log("Success:", response.data);
-      alert("Service provider added successfully!");
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Failed to add service provider. Please try again.");
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent default form submission
+  
+    // Filter out empty values from the form data
+    const filteredPayload = Object.fromEntries(
+      Object.entries(formData).filter(([key, value]) => value !== "" && value !== null && value !== undefined)
+    );
+  
+    // Form validation (optional)
+    if (validateForm()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/serviceproviders/serviceprovider/add",
+          filteredPayload,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        // Update Snackbar for success
+        setSnackbarOpen(true);
+        setSnackbarSeverity("success");
+        setSnackbarMessage("Service provider added successfully!");
+        console.log("Success:", response.data);
+      } catch (error) {
+        // Update Snackbar for error
+        setSnackbarOpen(true);
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Failed to add service provider. Please try again.");
+        console.error("Error submitting form:", error);
+      }
+    } else {
+      // Update Snackbar for validation error
+      setSnackbarOpen(true);
+      setSnackbarSeverity("warning");
+      setSnackbarMessage("Please fill out all required fields.");
     }
-  } else {
-    alert("Please fill out all required fields.");
-  }
-};
+  };
+  
+  
 
    // Close snackbar function
    const handleCloseSnackbar = () => {
@@ -379,6 +483,7 @@ const handleSubmit = async (event) => {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
   };
+  
 
   const renderStepContent = (step: number) => {
     switch (step) {
@@ -387,9 +492,9 @@ const handleSubmit = async (event) => {
           <Grid container spacing={3}>
             
         {/* Profile Picture Upload Section */}
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <ProfileImageUpload onImageSelect={handleImageSelect} />
-      </Grid>
+      </Grid> */}
 
       <Grid item xs={12}>
         <TextField
@@ -426,6 +531,22 @@ const handleSubmit = async (event) => {
           helperText={errors.lastName}
         />
       </Grid>
+   {/* Age / Date of Birth Field */}
+<Grid item xs={12} sm={6}>
+  <TextField
+    label="Date of Birth"
+    name="age" // Make sure this name is consistent with your form state
+    type="date"
+    fullWidth
+    required
+    value={formData.age} // This should be bound to formData.age
+    onChange={handleChange} // Ensure handleChange is updating formData.age
+    InputLabelProps={{
+      shrink: true, // Makes the label float on top
+    }}
+  />
+</Grid>
+
 
       <Grid item xs={12}>
         <FormControl component="fieldset" error={!!errors.gender}>
@@ -621,6 +742,12 @@ const handleSubmit = async (event) => {
                 // helperText={errors.nearbyLocation}
               />
             </Grid>
+            <Grid item xs={12}>
+            <Button variant="contained" color="primary" onClick={fetchLocationData}>
+  Fetch Location
+</Button>
+
+      </Grid>
             {/* <Grid item xs={12} sm={6}>
               <TextField
                 label="City"
@@ -655,7 +782,7 @@ const handleSubmit = async (event) => {
      <Grid item xs={12} sm={6}>
           <TextField
             select
-            placeholder="Select Service Type"
+            label="Select Service Type"
             name="housekeepingRole"
             fullWidth
             value={formData.housekeepingRole}
@@ -672,7 +799,6 @@ const handleSubmit = async (event) => {
             <MenuItem value="MAID">Maid</MenuItem>
           </TextField>
         </Grid>
-
         {/* Speciality Radio Buttons (Visible if 'COOK' is selected) */}
         {/* {isCookSelected && (
           <Grid item xs={12} sm={6}>
@@ -690,17 +816,17 @@ const handleSubmit = async (event) => {
               <FormHelperText>{errors.speciality}</FormHelperText>
             </FormControl>
           </Grid> */}
-          {isCookSelected && (
+                   {isCookSelected && (
   <Grid item xs={12} sm={6}>
-    <FormControl component="fieldset" error={!!errors.speciality} required>
+    <FormControl component="fieldset" error={!!errors.cookingSpeciality} required>
       <FormLabel component="legend">Cooking Speciality</FormLabel>
       <RadioGroup
         name="speciality"
-        value={formData.speciality}
-        onChange={handleSpecialityChange}
+        value={formData.cookingSpeciality}
+        onChange={handleCookingSpecialityChange}
       >
         <FormControlLabel
-          value="veg"
+          value="VEG"
           control={<Radio />}
           label={
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -714,7 +840,7 @@ const handleSubmit = async (event) => {
           }
         />
         <FormControlLabel
-          value="non-veg"
+          value="NONVEG"
           control={<Radio />}
           label={
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -728,12 +854,12 @@ const handleSubmit = async (event) => {
           }
         />
         <FormControlLabel
-          value="both"
+          value="BOTH"
           control={<Radio />}
           label="Both"
         />
       </RadioGroup>
-      <FormHelperText>{errors.speciality}</FormHelperText>
+      <FormHelperText>{errors.cookingSpeciality}</FormHelperText>
     </FormControl>
   </Grid>
 )}
@@ -781,6 +907,9 @@ const handleSubmit = async (event) => {
       </RadioGroup>
       <FormHelperText>{errors.diet}</FormHelperText>
     </FormControl>
+  </Grid>
+  <Grid item xs={12}>
+     <ChipInput options={availableLanguages} onChange={handleChipChange} label="languages" placeholder="Pick/Type Your Languages" />
   </Grid>
     {/* Description Field */}
     <Grid item xs={12}>
@@ -836,10 +965,10 @@ const handleSubmit = async (event) => {
        <Grid item xs={12}>
        <TextField
                 placeholder="Aadhaar Number"
-                name="aadhaar"
+                name="AADHAR"
                 fullWidth
                 required
-                value={formData.aadhaar}
+                value={formData.AADHAR}
                 onChange={handleChange}
                 error={!!errors.kyc}
                 helperText={errors.kyc}
@@ -871,9 +1000,9 @@ const handleSubmit = async (event) => {
               />
             </Box>
           )}
-          {errors.documentImage && (
+          {/* {errors.documentImage && (
             <Typography color="error">{errors.documentImage}</Typography>
-          )}
+          )} */}
         </Grid>
 
        {/* Other Details (Optional for PAN or DL) */}
