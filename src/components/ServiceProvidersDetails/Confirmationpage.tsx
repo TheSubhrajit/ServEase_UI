@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 import {
   Card,
   Typography,
@@ -18,29 +19,88 @@ const  Confirmationpage= (props) => {
     language,
     experience,
     profilePic,
+    diet,
     onBack, // Accept onBack as a prop
   } = props;
 
-  const [formattedDate, setFormattedDate] = useState<string>("");
+  const [formattedDate, setFormattedDate] = useState("");
+  const [time, setTime] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const formatDate = (inputDate: string) => {
+  const API_ENDPOINT = "http://localhost:8080/api/customer/add-customer-request";
+
+  const formatDate = (inputDate) => {
     if (!inputDate) return "";
-    const date = new Date(inputDate + "T00:00:00");
-    if (Number.isNaN(date.getTime())) return "Invalid Date";
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = date.toLocaleString('default', { month: 'short' });
-    return `Form ${day} ${month}`;
+    const date = new Date(inputDate);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date.toLocaleString("default", { month: "short" });
+    return `${day} ${month}`;
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDateChange = (e) => {
     const newFormattedDate = formatDate(e.target.value);
     setFormattedDate(newFormattedDate);
   };
 
-  const handleBackButtonClick = () => {
-    // Implement your back navigation logic here, e.g.:
-    window.history.back(); // This will take the user back to the previous page
+  const handleBooking = async () => {
+    const payload = {
+      customerId: 123,
+      housekeepingRole: "COOK",
+      timeSlotlist: time || "09:00 AM - 12:00 PM",
+      gender,
+      languageKnown: language,
+      ageRange: `${age}-${age + 10}`,
+      locality: "Kengeri",
+      area: "Bengaluru",
+      apartment_name: "Your Apartment Name",
+      pincode: 56712,
+      cookingHabit: diet,
+      dietryHabit: diet,
+      serviceProviderId: 456,
+      assignedDate: new Date().toISOString(),
+      createdDate: new Date().toISOString(),
+      modifiedDate: new Date().toISOString(),
+      isResolved: "false",
+      supervisorId: 789,
+      isPotential: "true",
+      modifiedBy: 123,
+      startDate: formattedDate,
+      endDate: formattedDate,
+      noOfResources: "1",
+      days: "Mon-Fri",
+      amount: 3000,
+    };
+
+    setLoading(true);
+    setError(null); // Reset error state before making the API call
+
+    try {
+      const response = await axios.post(API_ENDPOINT, payload, {
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      if (response.status === 200) {
+        alert("Booking successful!");
+      } else {
+        throw new Error(`Booking failed with status code: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Booking Error:", error);
+      
+    } finally {
+      setLoading(false);
+    }
   };
+  // Map diet values to corresponding image paths
+  const dietImages = {
+    VEG: "veg.png",
+    NONVEG: "nonveg.png",
+    BOTH:"nonveg.png"
+  };
+
+  // Determine the diet image based on the diet value
+  const dietImage = dietImages[diet];
 
 
   return (
@@ -66,20 +126,33 @@ const  Confirmationpage= (props) => {
           />
         </div>
         <div className="info-section">
-    <Typography variant="h6">
-    {firstName} {lastName},(F, 20{age})  <img
-                src="nonveg.png"
-                alt="Diet Symbol"
-                style={{ width: '20px', height: '20px', marginLeft: '200px',marginTop:'-27px' }}
-              />
-    </Typography>
+        <Typography
+  variant="subtitle1"
+  style={{ fontWeight: 'bold', marginBottom: '0.5px', marginTop: '0.5px' }}
+>
+  {/* Name:  */}
+  <span style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>
+    {firstName} {lastName}
+  </span>, 
+  <span style={{ fontWeight: 'bold', fontSize: '1.2rem', marginLeft: '4px' }}>
+    ({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'}, 20 ),
+    <span style={{ display: 'inline-block', marginLeft: '5px' }}>
+      <img
+        src={dietImage}
+        alt={diet}
+        style={{
+          width: '20px',
+          height: '20px',
+          verticalAlign: 'middle', // Keeps the image aligned with the text
+        }}
+      />
+    </span>
+   
+  </span>
+</Typography>
     <Typography>Language:  <span style={{ fontWeight: 'normal', fontSize: '1rem', display: 'inline-flex', alignItems: 'center' }}>
               {language || 'English'}
-              {/* <img
-                src="nonveg.png"
-                alt="Diet Symbol"
-                style={{ width: '20px', height: '20px', marginLeft: '5px' }}
-              /> */}
+           
             </span>
     </Typography>
     <Typography>Experience: {experience || "1 year"}</Typography>

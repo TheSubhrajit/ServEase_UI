@@ -16,13 +16,13 @@ interface SearchFormProps {
 interface FormData {
   gender: string;
   age: number;
-  languages: string[];
+  language: string[];
   shift: string;
   availability: string;
   cookingspeciality: string;
   diet: string;
   rating: string[];
-  foodSpeciality: string[];
+  speciality: string[];
 }
 
 export const Search_form: React.FC<SearchFormProps> = ({
@@ -36,12 +36,12 @@ export const Search_form: React.FC<SearchFormProps> = ({
       defaultValues: {
         gender: "",
         age: 18,
-        languages: [],
+        language: [],
         shift: "",
         availability: "8.00 AM, 12.00 PM",
         cookingspeciality: "",
         diet: "",
-        foodSpeciality: [],
+        speciality: [],
         rating: [],
       },
     });
@@ -55,7 +55,7 @@ export const Search_form: React.FC<SearchFormProps> = ({
     "Assamese",
     "Bengali",
     "Gujarati",
-    "Hindi",
+    "HINDI",
     "Kannada",
     "Kashmiri",
     "Marathi",
@@ -83,6 +83,7 @@ export const Search_form: React.FC<SearchFormProps> = ({
   };
 
   const [availableFoodSpecialities] = useState<string[]>([
+    "CHINESE",
     "Butter Chicken",
     "Rogan Josh",
     "Chole Bhature",
@@ -135,14 +136,14 @@ export const Search_form: React.FC<SearchFormProps> = ({
   ]);
 
   const toggleFoodSpecialitySelection = (speciality: string) => {
-    const selectedSpecialities = watch("foodSpeciality");
+    const selectedSpecialities = watch("speciality");
     if (selectedSpecialities.includes(speciality)) {
       setValue(
-        "foodSpeciality",
+        "speciality",
         selectedSpecialities.filter((item) => item !== speciality)
       );
     } else {
-      setValue("foodSpeciality", [...selectedSpecialities, speciality]);
+      setValue("speciality", [...selectedSpecialities, speciality]);
     }
   };
   const filteredFoodSpecialities = availableFoodSpecialities.filter(
@@ -157,14 +158,14 @@ export const Search_form: React.FC<SearchFormProps> = ({
   };
 
   const toggleLanguageSelection = (language: string) => {
-    const selectedLanguages = watch("languages");
+    const selectedLanguages = watch("language");
     if (selectedLanguages.includes(language)) {
       setValue(
-        "languages",
+        "language",
         selectedLanguages.filter((item) => item !== language)
       );
     } else {
-      setValue("languages", [...selectedLanguages, language]);
+      setValue("language", [...selectedLanguages, language]);
     }
   };
 
@@ -196,8 +197,8 @@ export const Search_form: React.FC<SearchFormProps> = ({
           <div className="flex-container1">
             <div className="gender">
               <label>Gender: </label>
-              <input type="radio" value="Male" {...register("gender")} /> Male
-              <input type="radio" value="Female" {...register("gender")} />{" "}
+              <input type="radio" value="MALE" {...register("gender")} /> Male
+              <input type="radio" value="FEMALE" {...register("gender")} />{" "}
               Female
             </div>
           </div>

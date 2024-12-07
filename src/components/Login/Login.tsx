@@ -78,7 +78,7 @@ export const Login: React.FC = () => {
         username: email,
         password: password,
       };
-
+  
       const response = await fetch('http://localhost:8080/api/user/login', {
         method: 'POST',
         headers: {
@@ -86,27 +86,26 @@ export const Login: React.FC = () => {
         },
         body: JSON.stringify(requestData),
       });
-
+  
       if (!response.ok) {
         throw new Error('Network response was not ok.');
       }
-
+  
       const data = await response.json();
-
-      if (data.message === "Login successful!") {
+  
+      // Check for role to determine success
+      if (data.role) {
         setSnackbarMessage("Login successful!");
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
-
+  
         // Redirect based on role
         setTimeout(() => {
           if (data.role === "SERVICE_PROVIDER") {
             setRedirectComponent(<ServiceProviderDashboard />);
           } else {
             setRedirectComponent(
-              <DetailsView sendDataToParent={function (data: string): void {
-                throw new Error('Function not implemented.');
-              }} />
+              <DetailsView sendDataToParent={(data: string) => console.log(data)} />
             );
           }
         }, 1000);
