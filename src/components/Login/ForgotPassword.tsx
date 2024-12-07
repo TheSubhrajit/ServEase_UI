@@ -41,7 +41,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
       };
 
       // Sending the POST request to update password API
-      const response = await fetch('http://localhost:8080/api/user/update', {
+      const response = await fetch('http://localhost:8443/api/user/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

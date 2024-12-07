@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "homepage": ".",
   "private": true,
-  "proxy": "http://43.205.212.94:8080",
+  "proxy": "http://43.205.212.94:8443",
   "dependencies": {
     "@angular/material": "^19.0.1",
     "@emotion/react": "^11.13.5",
