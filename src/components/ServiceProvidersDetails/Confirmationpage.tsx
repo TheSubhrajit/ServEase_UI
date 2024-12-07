@@ -28,6 +28,7 @@ import BathroomCleaning from './BathroomCleaning/BathroomCleaning';
 import ClothDrying from './ClothDrying/ClothDrying';
 import Dusting from './Dusting/Dusting';
 import { PricingData } from '../../types/PricingData';
+import SweepingAndMopping from './SweepingAndMopping/SweepingAndMopping';
 
 const  Confirmationpage= (props) => {
   const {
@@ -123,7 +124,7 @@ const  Confirmationpage= (props) => {
     { value: 'washroomCleaning', imageSrc: 'https://via.placeholder.com/100x100?text=Image2' },
     { value: 'clothdrying', imageSrc: 'https://via.placeholder.com/100x100?text=Image3' },
     { value: 'dusting', imageSrc: 'https://via.placeholder.com/100x100?text=Image4' },
-    { value: 5, imageSrc: 'https://via.placeholder.com/100x100?text=Image5' }
+    { value: 'sweepMoping', imageSrc: 'https://via.placeholder.com/100x100?text=Image5' }
   ];
 
   const peopleButtonsSelector = [
@@ -212,6 +213,7 @@ const  Confirmationpage= (props) => {
        { selected === "washroomCleaning" && <BathroomCleaning onPriceChange={handlePriceChange} />} 
        { selected === "clothdrying" && <ClothDrying onPriceChange={handlePriceChange} />} 
        { selected === "dusting" && <Dusting onPriceChange={handlePriceChange}/>}
+       { selected === "sweepMoping" && <SweepingAndMopping onPriceChange={handlePriceChange} /> }
        
       </DialogComponent>
   </div>  
