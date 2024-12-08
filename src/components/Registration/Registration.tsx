@@ -292,9 +292,11 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     // Ensure form validation passes
     if (validateForm()) {
       try {
+        // const [formData2, setFormData2] = useState({ }){
+        // setFormData2(Object.fromEntries(FormData.entries()))}
         // Make the POST request to the backend API
         const response = await axios.post(
-          "http://localhost:8080/api/customer/add-customer",
+          "http://localhost:8443/api/customer/add-customer",
           formData,
           {
             headers: {

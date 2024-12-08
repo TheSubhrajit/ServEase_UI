@@ -10,6 +10,7 @@ body, html {
   min-height: 100vh;
   position: relative;
   padding-top: 50px;
+  width: 100%;
 }
 
 /* Sidebar styles */

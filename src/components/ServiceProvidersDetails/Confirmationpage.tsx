@@ -5,10 +5,31 @@ import {
   Typography,
   Avatar,
   Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  ButtonGroup,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  Paper,
+  FormLabel,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import { FaArrowLeft, FaCheckCircle, FaStar ,FaRegStar,FaAward, FaRupeeSign, FaRegHeart, FaMapMarkerAlt } from 'react-icons/fa';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import './Confirmationpage.css';
+import DialogComponent from '../Common/DialogComponent/DialogComponent'
+import UtilityCleaning from './UtilityCleaning/UtilityCleaning';
+import BathroomCleaning from './BathroomCleaning/BathroomCleaning';
+import ClothDrying from './ClothDrying/ClothDrying';
+import Dusting from './Dusting/Dusting';
+import { PricingData } from '../../types/PricingData';
+import SweepingAndMopping from './SweepingAndMopping/SweepingAndMopping';
 
 const  Confirmationpage= (props) => {
   const {
@@ -23,10 +44,41 @@ const  Confirmationpage= (props) => {
     onBack, // Accept onBack as a prop
   } = props;
 
-  const [formattedDate, setFormattedDate] = useState("");
-  const [time, setTime] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [formattedDate, setFormattedDate] = useState<string>("");
+  const [pax , setPax] = useState('');
+  const [open, setOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('People');
+
+  const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
+
+  // Callback function to update the price in the parent component
+  const handlePriceChange = (data: { price: number; entry: PricingData | null }) => {
+    setCalculatedPrice(data.price); // Update the price
+    console.log("price is parent ");
+    console.log("data in entry" , data.entry)
+  };
+
+  // Handle radio button selection change
+  const handleRadioChange = (event) => {
+    setSelectedValue(event.target.value);
+     console.log("selected value => ", selectedValue)
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSave = () => {
+    // Save logic here
+    console.log('Changes saved');
+    handleClose(); // Close the dialog after saving
+  };
+
+  const menuItems = Array.from({ length: 10 }, (_, i) => i + 1);
 
   const API_ENDPOINT = "http://localhost:8080/api/customer/add-customer-request";
 
@@ -43,54 +95,13 @@ const  Confirmationpage= (props) => {
     setFormattedDate(newFormattedDate);
   };
 
-  const handleBooking = async () => {
-    const payload = {
-      customerId: 123,
-      housekeepingRole: "COOK",
-      timeSlotlist: time || "09:00 AM - 12:00 PM",
-      gender,
-      languageKnown: language,
-      ageRange: `${age}-${age + 10}`,
-      locality: "Kengeri",
-      area: "Bengaluru",
-      apartment_name: "Your Apartment Name",
-      pincode: 56712,
-      cookingHabit: diet,
-      dietryHabit: diet,
-      serviceProviderId: 456,
-      assignedDate: new Date().toISOString(),
-      createdDate: new Date().toISOString(),
-      modifiedDate: new Date().toISOString(),
-      isResolved: "false",
-      supervisorId: 789,
-      isPotential: "true",
-      modifiedBy: 123,
-      startDate: formattedDate,
-      endDate: formattedDate,
-      noOfResources: "1",
-      days: "Mon-Fri",
-      amount: 3000,
-    };
+  const handleChange = (event: SelectChangeEvent) =>{
+        setPax(event.target.value as string)
+  }
 
-    setLoading(true);
-    setError(null); // Reset error state before making the API call
-
-    try {
-      const response = await axios.post(API_ENDPOINT, payload, {
-        headers: { "Content-Type": "application/json" },
-      });
-  
-      if (response.status === 200) {
-        alert("Booking successful!");
-      } else {
-        throw new Error(`Booking failed with status code: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("Booking Error:", error);
-      
-    } finally {
-      setLoading(false);
-    }
+  const handleBackButtonClick = () => {
+    // Implement your back navigation logic here, e.g.:
+    window.history.back(); // This will take the user back to the previous page
   };
   // Map diet values to corresponding image paths
   const dietImages = {
@@ -102,170 +113,110 @@ const  Confirmationpage= (props) => {
   // Determine the diet image based on the diet value
   const dietImage = dietImages[diet];
 
+  const [selected, setSelected] = useState(null);
+  const [peopleSelected, setpeopleSelected] = useState(null);
+
+  // Handle button click
+  const handleButtonClick = (value , type) => {
+    console.log("value ", value)
+    console.log("type ", type)
+    if(type === "category"){
+      setSelected(value);
+      setOpen(true);
+    }
+    else if(type === "people"){
+      setpeopleSelected(value);
+    }
+    
+  };
+
+  const buttons = [
+    { value: 'utilityCleaning', imageSrc: "../Utensil.png" },
+    { value: 'washroomCleaning', imageSrc: "../bathroom.png" },
+    { value: 'clothdrying', imageSrc: "../clothes.png" },
+    { value: 'dusting', imageSrc: "../Dusting.png" },
+    { value: 'sweepMoping', imageSrc: "../sweeping.png" }
+  ];
+
+  const peopleButtonsSelector = [
+    { key: 1 , value : '1-2'  },
+    { key: 2, value: '3-4' },
+    { key: 3, value: '5-6' },
+    { key: 4, value: '7-9' }
+  ];
+
 
   return (
     <div className="details-container">
-        {/* Back Button at the top */}
-        <button className="back-button" onClick={onBack}> {/* Call onBack on click */}
-        <span>&#8592;</span> Back
-      </button>
-
-      {/* 1st Section: Profile and Info */}
-      <Card className="profile-card"
-      sx={{ 
-        background: 'linear-gradient(135deg, #e0f7fa, #ffffff)', 
-        borderRadius: '10px', 
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' 
-      }}
-    >
-        <div className="avatar-section">
-          <Avatar
+     <div style={{width:'100%'}}> 
+      <Card style={{ width: '100%'}}> 
+      <Typography>
+        Provider Details
+        </Typography>
+        <div style={{display:'flex'}}>
+        <Avatar
             alt={`${firstName} ${lastName}`}
             src={`/${profilePic}`}
             sx={{ width: 100, height: 100 }}
           />
-        </div>
-        <div className="info-section">
-        <Typography
-  variant="subtitle1"
-  style={{ fontWeight: 'bold', marginBottom: '0.5px', marginTop: '0.5px' }}
->
-  {/* Name:  */}
-  <span style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>
-    {firstName} {lastName}
-  </span>, 
-  <span style={{ fontWeight: 'bold', fontSize: '1.2rem', marginLeft: '4px' }}>
-    ({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'}, 20 ),
-    <span style={{ display: 'inline-block', marginLeft: '5px' }}>
-      <img
-        src={dietImage}
-        alt={diet}
-        style={{
-          width: '20px',
-          height: '20px',
-          verticalAlign: 'middle', // Keeps the image aligned with the text
-        }}
-      />
-    </span>
-   
-  </span>
-</Typography>
-    <Typography>Language:  <span style={{ fontWeight: 'normal', fontSize: '1rem', display: 'inline-flex', alignItems: 'center' }}>
-              {language || 'English'}
-           
-            </span>
+          <div style={{display:'grid'}}>
+          <Typography variant="h6" style={{display:'flex'}}>
+    {firstName} {lastName},(F, 20{age})  
+    <img
+                src="nonveg.png"
+                alt="Diet Symbol"
+                style={{ width: '20px', height: '20px' , marginTop:'5px'}}
+              />
     </Typography>
-    <Typography>Experience: {experience || "1 year"}</Typography>
-    <div className="other-details">
-      {/* <Typography variant="subtitle1"><strong>Other Details</strong></Typography> */}
-      <Typography><strong>Price:</strong> ₹3000 per month</Typography>
-      <Typography><strong>Cuisine:</strong> South Indian, Maharashtrian, Punjabi, Bengali</Typography>
+    <div>
+      Languages : 
+      Specialities :
     </div>
-  </div>
-
-   {/* Booking Section */}
-   <div className="booking-section">
-   <div className="line-divider"></div>
-    <Typography variant="h6">*Booking Date & Time</Typography>
-    <div className="date-time-container">
-
-      <div 
-       className="date-display" 
-       onClick={() => {
-         const datePicker = document.querySelector('.date-picker') as HTMLInputElement | null;
-         datePicker?.showPicker(); 
-       }}
+    </div>
+     </div>
+       </Card>
+       </div>
+       <div style={{ display : "flex" , width :'100%' , marginTop:"20px"}}>
+      {buttons.map((button) => (
+        <button
+          key={button.value}
+          onClick={() => handleButtonClick(button.value , 'category')}
+          style={{
+            border: selected === button.value ? '3px solid blue' : '1px solid gray', // Highlight selected button
+            backgroundColor: selected === button.value ? '#e0f7fa' : 'transparent', // Change background color of selected button
+            padding: '10px',
+            margin: '5px',
+            cursor: 'pointer',
+            outline: 'none',
+            borderRadius: '8px',
+          }}
+        >
+          <img
+            src={button.imageSrc}
+            alt={`button-${button.value}`}
+            style={{
+              width: '100px',
+              height: '100px',
+              objectFit: 'cover',
+              opacity: selected === button.value ? 0.8 : 1, // Dim image when not selected
+            }}
+          />
+        </button>
+         ))}
+       </div>
+      <DialogComponent 
+        open={open} 
+        onClose={handleClose} 
+        title="Modal title" 
+        onSave={handleSave}
       >
-        <AiOutlineCalendar style={{ marginRight: '8px' }} />
-        <span>{formattedDate || "Select Date"}</span>
-      </div>
-      <input 
-        type="date" 
-        className="date-picker" 
-        onChange={handleDateChange} 
-        style={{ display: 'none' }} 
-      />
-      <div className="time-display">
-        <input type="time" className="time-picker" />
-      </div>
-    </div>
-    <div className="price-info">
-    <Typography variant="h6" className="price">₹ 3000</Typography>
-    <Typography className="taxes">+ ₹502 taxes & fees</Typography>
-  </div>
-    <div className="action">
-    {/* <Typography variant="h6" className="price">₹ 3000</Typography>
-    <Typography className="taxes">+ ₹502 taxes & fees</Typography> */}
-  <Button variant="contained" className="apply-coupon">Apply Coupon</Button>
-  </div>
-  </div>
-  <div className="rating-section">
-    <Typography variant="h6">
-      VeryGood <span className="rating">4.0</span>
-    </Typography>
-    <div className="stars">
-      {Array(4).fill(<FaStar />)}
-      <FaStar style={{ color: 'lightgray' }} />
-    </div>
-    <Typography variant="body2">(272 Ratings)</Typography>
-    <br /> <br />
-    <div className="location">
-      <FaMapMarkerAlt /> Kengeri, Bengaluru-56712 <br />
-      (1.6 km from your location)
-    </div>
-  
-  </div>
-
-</Card>
-
-     {/* 2nd Section: Why Book? */}
-<Card className="why-book-card">
-  <Typography variant="h6"><b>Why do you book this service?</b></Typography>
-  <div className="benefit">
-    <FaCheckCircle style={{ color: 'black', fontSize: '24px' }} />
-    <div className="benefit-text">
-      <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Verified Professional</Typography>
-      <Typography variant="body2">Identity of all the service providers verified</Typography>
-    </div>
-  </div>
-  <div className="benefit">
-    <FaAward style={{ color: 'black', fontSize: '24px' }} />
-    <div className="benefit-text">
-      <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>100% Quality Service</Typography>
-      <Typography variant="body2">Trusted by 4312 customers</Typography>
-    </div>
-  </div>
-  <div className="benefit">
-    <FaRupeeSign style={{ color: 'black', fontSize: '24px' }} />
-    <div className="benefit-text">
-      <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>Transparent Pricing</Typography>
-      <Typography variant="body2">No hidden T&C</Typography>
-    </div>
-  </div>
-  <div className="divider"></div>
-  <div className="discount-info">
-    <FaRegStar className="star-icon" />
-    <Typography variant="body2" className="earn-text"><b>earn 10% ServEase cash</b></Typography>
-  </div>
-  <div className="action-buttons">
-    <div className="heart-circle">
-      <FaRegHeart className="heart-icon" />
-    </div>
-    <Button variant="contained" className="book-now">Book Now</Button>
-  </div>
-</Card>
-
-      {/* 3rd Section: Booking Date and Time */}
-      {/* <Card className="booking-card">
-        <Typography variant="h6">Booking Date & Time</Typography>
-        <div className="date-time-container">
-    <input type="date" className="date-picker" />
-    <input type="time" className="time-picker" />
-  </div>
-      </Card> */}
-     
-
-      {/* 4th Section: Book Now */}
+       {selected === "utilityCleaning" &&  <UtilityCleaning onPriceChange={handlePriceChange}/>}
+       { selected === "washroomCleaning" && <BathroomCleaning onPriceChange={handlePriceChange} />} 
+       { selected === "clothdrying" && <ClothDrying onPriceChange={handlePriceChange} />} 
+       { selected === "dusting" && <Dusting onPriceChange={handlePriceChange}/>}
+       { selected === "sweepMoping" && <SweepingAndMopping onPriceChange={handlePriceChange} /> }
+       
+      </DialogComponent>
   </div>  
   );
 };
