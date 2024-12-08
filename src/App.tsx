@@ -42,42 +42,42 @@ function App() {
   ];
 
   return (
-    <>
-    <Router>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/edit-provider" element={<Edit_provider />} />
-      </Routes>
-    </Router>
-    </>
-  //   <div className="App">
-  //  <div className="header-class">
-  //     <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />
-  //   </div> 
-  //   <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
-  //   {handleDropDownValue === "login" ? (
-  //         <div className="w-full max-w-4xl h-[75%]">
-  //           <Login />
-  //         </div>
-  //       ) : handleDropDownValue === "admin" ? (
-  //         <Admin />
-  //       ) : selection === "Confirmation" ? (
-  //         <Confirmationpage />
-  //       ) : !selection ? (
-  //         <Landingpage sendDataToParent={handleDataFromChild} />
-  //       ) : (
-  //         <DetailsView sendDataToParent={handleDataFromChild} />
-  //       )}
-  //     </section>
-  //     <footer className="footer-container">
-  //       <Footer />
-  //     </footer>
-  //     {/* <ForgotPassword></ForgotPassword> */}
+    // <>
+    // <Router>
+    //   <Routes>
+    //     <Route path="/" element={<Dashboard />} />
+    //     <Route path="/edit-provider" element={<Edit_provider />} />
+    //   </Routes>
+    // </Router>
+    // </>
+    <div className="App">
+   <div className="header-class">
+      <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />
+    </div> 
+    <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
+    {handleDropDownValue === "login" ? (
+          <div className="w-full max-w-4xl h-[75%]">
+            <Login />
+          </div>
+        ) : handleDropDownValue === "admin" ? (
+          <Admin />
+        ) : selection === "Confirmation" ? (
+          <Confirmationpage />
+        ) : !selection ? (
+          <Landingpage sendDataToParent={handleDataFromChild} />
+        ) : (
+          <DetailsView sendDataToParent={handleDataFromChild} />
+        )}
+      </section>
+      <footer className="footer-container">
+        <Footer />
+      </footer>
+      {/* <ForgotPassword></ForgotPassword> */}
 
 
-  //       {/* {To be used by Subhrajit for chip input}  */}
-  //     {/* <ChipInput options={movieOptions} onChange={handleChipChange} label="Movie" placeholder="Select your favorite movies" /> */}
-  //   </div>
+        {/* {To be used by Subhrajit for chip input}  */}
+      {/* <ChipInput options={movieOptions} onChange={handleChipChange} label="Movie" placeholder="Select your favorite movies" /> */}
+    </div>
   );
 }
 

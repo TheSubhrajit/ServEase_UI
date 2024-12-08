@@ -62,7 +62,6 @@ const  Confirmationpage= (props) => {
      console.log("selected value => ", selectedValue)
   };
 
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -120,11 +119,11 @@ const  Confirmationpage= (props) => {
   };
 
   const buttons = [
-    { value: 'utilityCleaning', imageSrc: 'https://via.placeholder.com/100x100?text=Image1' },
-    { value: 'washroomCleaning', imageSrc: 'https://via.placeholder.com/100x100?text=Image2' },
-    { value: 'clothdrying', imageSrc: 'https://via.placeholder.com/100x100?text=Image3' },
-    { value: 'dusting', imageSrc: 'https://via.placeholder.com/100x100?text=Image4' },
-    { value: 'sweepMoping', imageSrc: 'https://via.placeholder.com/100x100?text=Image5' }
+    { value: 'utilityCleaning', imageSrc: "../Utensil.png" },
+    { value: 'washroomCleaning', imageSrc: "../bathroom.png" },
+    { value: 'clothdrying', imageSrc: "../clothes.png" },
+    { value: 'dusting', imageSrc: "../Dusting.png" },
+    { value: 'sweepMoping', imageSrc: "../sweeping.png" }
   ];
 
   const peopleButtonsSelector = [
