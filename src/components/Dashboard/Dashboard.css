@@ -1,0 +1,5 @@
+.text{
+    padding: 4px;
+    display: flex;
+    gap: 5px;
+}
