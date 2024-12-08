@@ -21,7 +21,6 @@
     "@types/react-dom": "^18.3.0",
     "ag-grid-community": "^32.2.1",
     "ag-grid-react": "^32.2.1",
-    "aws-amplify": "^6.10.2",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "framer-motion": "^11.3.24",
@@ -68,8 +67,6 @@
     ]
   },
   "devDependencies": {
-    "@aws-amplify/backend": "^1.8.0",
-    "@aws-amplify/backend-cli": "^1.4.2",
     "@types/react-easy-crop": "^1.16.0",
     "@types/react-places-autocomplete": "^7.2.14",
     "autoprefixer": "^10.4.20",

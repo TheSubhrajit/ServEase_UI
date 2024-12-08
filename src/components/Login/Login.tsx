@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import ForgotPassword from './ForgotPassword';
 import DetailsView from '../DetailsView/DetailsView';
 import ServiceProviderDashboard from '../DetailsView/ServiceProviderDashboard';
+import axiosInstance from '../../services/axiosInstance';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -79,7 +80,7 @@ export const Login: React.FC = () => {
         password: password,
       };
 
-      const response = await fetch('http://localhost:8443/api/user/login', {
+      const response = await axiosInstance.post('/api/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,11 +88,12 @@ export const Login: React.FC = () => {
         body: JSON.stringify(requestData),
       });
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error('Network response was not ok.');
       }
+      
 
-      const data = await response.json();
+      const data = await response.data;
 
       if (data.message === "Login successful!") {
         setSnackbarMessage("Login successful!");
