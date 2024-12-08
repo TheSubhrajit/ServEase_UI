@@ -31,6 +31,12 @@ import Dusting from './Dusting/Dusting';
 import { PricingData } from '../../types/PricingData';
 import SweepingAndMopping from './SweepingAndMopping/SweepingAndMopping';
 import OtherUtilityServices from './OtherUtilityServices/OtherUtilityServices';
+import SmallCart from './SmallCart/SmallCart';
+
+interface selectedServices {
+  entry: PricingData;
+  price: number;
+}
 
 const  Confirmationpage= (props) => {
   const {
@@ -52,11 +58,21 @@ const  Confirmationpage= (props) => {
 
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
 
+  const [data , setData] = useState<any>([])
+
+  const [selectedItems, setSelectedItems] = useState<any>([]);
+
   // Callback function to update the price in the parent component
   const handlePriceChange = (data: { price: number; entry: PricingData | null }) => {
-    setCalculatedPrice(data.price); // Update the price
-    console.log("price is parent ");
-    console.log("data in entry" , data.entry)
+  //   setSelectedItems((prevItems) => [
+  //     ...prevItems,
+  //     { entry: data.entry, price: data.price },
+  // ]);
+
+  // console.log(selectedItems)
+  setData(data.entry)
+  setCalculatedPrice(data.price)
+
   };
 
   // Handle radio button selection change
@@ -76,6 +92,12 @@ const  Confirmationpage= (props) => {
   const handleSave = () => {
     // Save logic here
     console.log('Changes saved');
+      setSelectedItems((prevItems) => [
+      ...prevItems,
+      { entry: data, price: calculatedPrice },
+  ]);
+
+  console.log(selectedItems)
     handleClose(); // Close the dialog after saving
   };
 
@@ -207,7 +229,7 @@ const  Confirmationpage= (props) => {
        </div>
        </Card>
        <Card style={{width:"40%"}}>
-          Hello 
+          <SmallCart data={selectedItems} />
        </Card>
        </div>
       <DialogComponent 
