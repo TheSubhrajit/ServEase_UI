@@ -7,6 +7,8 @@ import { Landingpage } from '../Landing_Page/Landingpage';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import ForgotPassword from './ForgotPassword';
+import DetailsView from '../DetailsView/DetailsView';
+import ServiceProviderDashboard from '../DetailsView/ServiceProviderDashboard';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -15,22 +17,22 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
 export const Login: React.FC = () => {
   const [isRegistration, setIsRegistration] = useState(false);
   const [isServiceRegistration, setServiceRegistration] = useState(false);
-  const [isForgotPassword, setIsForgotPassword] = useState(false); 
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  const [showPassword, setShowPassword] = useState(false); 
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [redirectComponent, setRedirectComponent] = useState<React.ReactNode | null>(null);
   const handleSignUpClick = () => {
     setIsRegistration(true);
   };
 
   const handleBackToLogin = () => {
-    setIsRegistration(false); 
-    setIsForgotPassword(false); // Reset Forgot Password state
+    setIsRegistration(false);
+    setIsForgotPassword(false);
   };
 
   const handleSignUpClickServiceProvider = () => {
@@ -56,32 +58,58 @@ export const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
-      // Prepare data to send in the request body
+      // Dummy user credentials check
+      if (email === "user@example.com" && password === "password123") {
+        setSnackbarMessage("User logged in successfully!");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          setRedirectComponent(
+            <DetailsView sendDataToParent={(data: string) => console.log(data)} />
+          );
+        }, 1000);
+        return;
+      }
+  
+      // For other users, make the API call
       const requestData = {
         username: email,
         password: password,
       };
-  
-      const response = await fetch('http://localhost:8080/api/user/login', {
-        method: 'POST', // Use POST method
+
+      const response = await fetch('http://localhost:8443/api/user/login', {
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // Set Content-Type to application/json
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestData), // Convert the data to JSON and send in the body
+        body: JSON.stringify(requestData),
       });
-  
-      // Check if the response is OK
+
       if (!response.ok) {
         throw new Error('Network response was not ok.');
       }
-      const data = await response.text(); 
 
-      if (data === "Login successful!") {
+      const data = await response.json();
+
+      if (data.message === "Login successful!") {
         setSnackbarMessage("Login successful!");
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
-        setTimeout(() => setIsLoggedIn(true), 1000); 
+
+        // Redirect based on role
+        setTimeout(() => {
+          if (data.role === "SERVICE_PROVIDER") {
+            setRedirectComponent(<ServiceProviderDashboard />);
+          } else {
+            setRedirectComponent(
+              <DetailsView sendDataToParent={function (data: string): void {
+                throw new Error('Function not implemented.');
+              }} />
+            );
+          }
+        }, 1000);
       } else {
         setSnackbarMessage("Login failed. Please check your credentials.");
         setSnackbarSeverity("error");
@@ -95,12 +123,10 @@ export const Login: React.FC = () => {
     }
   };
 
-  // If user is logged in, render Landingpage
-  if (isLoggedIn) {
-    return <Landingpage sendDataToParent={() => {}} />;
+  if (redirectComponent) {
+    return <>{redirectComponent}</>;
   }
 
-  // If user clicked "Forgot Password", render ForgotPassword component
   if (isForgotPassword) {
     return <ForgotPassword onBackToLogin={handleBackToLogin} />;
   }
@@ -113,12 +139,12 @@ export const Login: React.FC = () => {
             {isRegistration ? (
               <Registration onBackToLogin={handleBackToLogin} />
             ) : isServiceRegistration ? (
-              <ServiceProviderRegistration onBackToLogin={handleProviderBackToLogin} />
+              <ServiceProviderRegistration onBackToLogin={handleBackToLogin} />
             ) : (
               <>
                 <h1 className="font-bold dark:text-gray-400 text-4xl text-center cursor-default my-0">Log in</h1>
                 <form className="space-y-4" onSubmit={handleLogin}>
-                  <div>
+                <div>
                     <label htmlFor="email" className="mb-2 dark:text-gray-400 text-lg">Email</label>
                     <input
                       id="email"

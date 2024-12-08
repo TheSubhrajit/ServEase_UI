@@ -2,7 +2,7 @@
 import axios, { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/', // Change to your API's base URL
+  baseURL: 'http://localhost:8443/', // Change to your API's base URL
 });
 
 // Request Interceptor

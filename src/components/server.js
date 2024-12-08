@@ -5,7 +5,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const app = express();
 
 // The target server you want to bypass CORS for
-const targetServer = 'http://65.2.153.173:8080'; // Replace with the actual API server URL
+const targetServer = 'http://65.2.153.173:8443'; // Replace with the actual API server URL
 
 
 // Proxy all requests to the target server
