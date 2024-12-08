@@ -133,16 +133,6 @@ const  Confirmationpage= (props) => {
     { key: 4, value: '7-9' }
   ];
 
-  // const roomsizeButtonsSelector = [
-  //   { key: 1 , value : '2 BHK'  },
-  //   { key: 2, value: '2.5 - 3 BHK' }
-  // ];
-
-  // const roomsizeButtonsSelector = [
-  //   { key: 1 , value : '2 BHK'  },
-  //   { key: 2, value: '2.5 - 3 BHK' }
-  // ];
-
 
   return (
     <div className="details-container">
