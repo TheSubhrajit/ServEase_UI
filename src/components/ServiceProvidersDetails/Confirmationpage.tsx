@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 import {
   Card,
   Typography,
@@ -39,6 +40,7 @@ const  Confirmationpage= (props) => {
     language,
     experience,
     profilePic,
+    diet,
     onBack, // Accept onBack as a prop
   } = props;
 
@@ -78,16 +80,17 @@ const  Confirmationpage= (props) => {
 
   const menuItems = Array.from({ length: 10 }, (_, i) => i + 1);
 
-  const formatDate = (inputDate: string) => {
+  const API_ENDPOINT = "http://localhost:8080/api/customer/add-customer-request";
+
+  const formatDate = (inputDate) => {
     if (!inputDate) return "";
-    const date = new Date(inputDate + "T00:00:00");
-    if (Number.isNaN(date.getTime())) return "Invalid Date";
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = date.toLocaleString('default', { month: 'short' });
-    return `Form ${day} ${month}`;
+    const date = new Date(inputDate);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date.toLocaleString("default", { month: "short" });
+    return `${day} ${month}`;
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDateChange = (e) => {
     const newFormattedDate = formatDate(e.target.value);
     setFormattedDate(newFormattedDate);
   };
@@ -100,6 +103,15 @@ const  Confirmationpage= (props) => {
     // Implement your back navigation logic here, e.g.:
     window.history.back(); // This will take the user back to the previous page
   };
+  // Map diet values to corresponding image paths
+  const dietImages = {
+    VEG: "veg.png",
+    NONVEG: "nonveg.png",
+    BOTH:"nonveg.png"
+  };
+
+  // Determine the diet image based on the diet value
+  const dietImage = dietImages[diet];
 
   const [selected, setSelected] = useState(null);
   const [peopleSelected, setpeopleSelected] = useState(null);

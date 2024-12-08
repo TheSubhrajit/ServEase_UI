@@ -99,16 +99,14 @@ export const Login: React.FC = () => {
         setSnackbarMessage("Login successful!");
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
-
+  
         // Redirect based on role
         setTimeout(() => {
           if (data.role === "SERVICE_PROVIDER") {
             setRedirectComponent(<ServiceProviderDashboard />);
           } else {
             setRedirectComponent(
-              <DetailsView sendDataToParent={function (data: string): void {
-                throw new Error('Function not implemented.');
-              }} />
+              <DetailsView sendDataToParent={(data: string) => console.log(data)} />
             );
           }
         }, 1000);

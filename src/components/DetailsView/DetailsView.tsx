@@ -119,11 +119,18 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent }) =>
             {currentView === "Confirmation" && selectedProvider && (
               <Confirmationpage
                 firstName={selectedProvider.firstName}
+                middleName={selectedProvider.middleName}
                 lastName={selectedProvider.lastName}
                 age={selectedProvider.age}
                 gender={selectedProvider.gender}
+                diet={selectedProvider.diet}
+                cookingSpeciality={selectedProvider.cookingSpeciality}
                 language={selectedProvider.language}
                 experience={selectedProvider.experience}
+                otherServices={selectedProvider.otherServices}
+                rating={selectedProvider.rating}
+                ratingsCount={selectedProvider.ratingsCount}
+                availability={selectedProvider.availability}
                 profilePic={selectedProvider.profilePic}
                 onBack={handleBackToDetails}
               />

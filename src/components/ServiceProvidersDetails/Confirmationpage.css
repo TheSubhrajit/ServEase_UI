@@ -378,72 +378,140 @@
   gap: 20px;
 } */
 
-/* RESPONSIVE STYLES */
 
-/* Tablet View */
+/* Responsive Adjustments */
+
+/* For smaller screens (max-width: 768px) */
 @media (max-width: 768px) {
+  /* Details Container */
   .details-container {
-    grid-template-columns: 1fr; /* One column layout */
+    grid-template-columns: 1fr; /* Stack columns */
+    padding: 10px;
+    margin-top: 50px;
   }
 
-  .profile-card,
-  .why-book-card,
-  .booking-card,
-  .book-now-card {
-    margin: 0; /* Center the cards on smaller screens */
-    width: auto; /* Allow cards to take full width */
-    padding: 15px; /* Adjust padding for smaller screens */
+  /* Profile Card */
+  .profile-card {
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
   }
 
-  .rating-section {
-    width: 100%; /* Full width for the rating section */
-    border-left: none; /* Remove left border on smaller screens */
+  /* Avatar Section */
+  .avatar-section {
+    margin-left: 0;
   }
 
-  .action-buttons {
-    flex-direction: column; /* Buttons stack vertically */
-    gap: 10px; /* Space between buttons */
-  }
-
-  .apply-coupon,
-  .book-now {
-    width: 100%; /* Full width buttons */
-  }
-
-  .date-time-container {
-    flex-direction: column; /* Stack date/time pickers */
-   
-  }
-}
-
-/* Mobile View */
-@media (max-width: 480px) {
-  .details-container {
-    padding: 10px; /* Reduce padding on mobile */
-    gap: 10px;
-  }
-
-  .profile-card,
-  .why-book-card,
-  .booking-card,
-  .book-now-card {
-    margin: 0; /* Remove margins for full-width on mobile */
-    width: auto; /* Full width for mobile */
-  }
-
-  .date-picker,
-  .time-picker {
-    width: 100%; /* Full width inputs */
-  }
-
-  .rating-section {
-    padding: 10px 0;
-    border-left: none; /* Remove left border for small screens */
-    width: 100%; /* Full width for the rating section */
+  /* Info Section */
+  .info-section {
+    text-align: center;
+    align-items: center;
   }
 
   .other-details {
-    width: auto; /* Allow details section to take full width */
-    margin: 0; /* Center the other details */
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 20px;
+  }
+
+  /* Rating Section */
+  .rating-section {
+    text-align: center;
+    align-items: center;
+    margin-top: 20px;
+    border-left: none;
+  }
+
+  /* Booking Section */
+  .booking-section {
+    margin-top: 40px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Date & Time Display */
+  .date-display,
+  .time-display {
+    width: 100%;
+    justify-content: space-between;
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .input-group {
+    width: 100%;
+  }
+
+  /* Price Info */
+  .price-info {
+    margin-top: 20px;
+    margin-left: 0;
+    margin-right: 0;
+    align-items: flex-start;
+  }
+
+  .taxes {
+    font-size: 0.9rem;
+  }
+
+  .apply-coupon {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  /* Why Book Card */
+  .why-book-card {
+    margin-right: 0;
+    width: 100%;
+  }
+
+  /* Heart Circle */
+  .heart-circle {
+    margin-right: 0;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .book-now {
+    width: 100%;
+  }
+}
+
+/* For very small screens (max-width: 480px) */
+@media (max-width: 480px) {
+  /* Adjust Profile Card padding */
+  .profile-card {
+    padding: 20px;
+  }
+
+  /* Rating Section */
+  .rating-section {
+    gap: 10px;
+  }
+
+  .apply-coupon {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  /* Heart Icon */
+  .heart-icon {
+    font-size: 0.9rem;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    gap: 5px;
+  }
+
+  .book-now {
+    font-size: 12px;
+    width: 100%;
   }
 }
