@@ -9,8 +9,6 @@ import Admin from "./components/Admin/Admin";
 import Login from "./components/Login/Login";
 import Confirmationpage from "./components/ServiceProvidersDetails/Confirmationpage";
 import ChipInput from "./components/Common/ChipInput/ChipInput";
-import Dashboard from "./components/Dashboard/Dashboard";
-import Edit_provider from "./components/Edit_provider";
 import ForgotPassword from "./components/Login/ForgotPassword";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -42,14 +40,7 @@ function App() {
   ];
 
   return (
-    // <>
-    // <Router>
-    //   <Routes>
-    //     <Route path="/" element={<Dashboard />} />
-    //     <Route path="/edit-provider" element={<Edit_provider />} />
-    //   </Routes>
-    // </Router>
-    // </>
+    
     <div className="App">
    <div className="header-class">
       <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />

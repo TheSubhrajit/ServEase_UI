@@ -31,6 +31,7 @@ import ProfileImageUpload from './ProfileImageUpload';
 import axios from 'axios';
 import ChipInput from "../Common/ChipInput/ChipInput";
 import { keys } from '../../env/env';
+import axiosInstance from '../../services/axiosInstance';
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -226,7 +227,6 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
       }
     };
     
-
   const [errors, setErrors] = useState<FormErrors>({});
   
 
@@ -408,9 +408,9 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
       if (!formData.diet) {
         tempErrors.diet = 'Please select diet ';
       }
-      if (!formData.experience) {
-        tempErrors.experience = 'Please select experience ';
-      }
+      // if (!formData.experience) {
+      //   tempErrors.experience = 'Please select experience ';
+      // }
     
       // Optional fields (uncomment if needed)
       // if (!formData.description) {
@@ -947,8 +947,8 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         required
         value={formData.experience}
         onChange={handleChange}
-        error={!!errors.experience}
-        helperText={errors.experience || "Years in business or relevant experience"}
+        // error={!!errors.experience}
+        // helperText={errors.experience || "Years in business or relevant experience"}
       />
     </Grid>
 
