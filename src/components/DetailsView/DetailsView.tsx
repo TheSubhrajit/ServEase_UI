@@ -9,10 +9,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import Confirmationpage from "../ServiceProvidersDetails/Confirmationpage"; // Adjust the path accordingly
 
 interface DetailsViewProps {
-  sendDataToParent: (data: string) => void; // Define the prop type
+  sendDataToParent: (data: string) => void;
+  selected? : string; // Define the prop type
 }
 
-export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent }) => {
+export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , selected}) => {
   const [ServiceProvidersData, setServiceProvidersData] = useState<any[]>([]);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -21,11 +22,20 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent }) =>
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
 
   useEffect(() => {
+    console.log(selected)
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get('/api/serviceproviders/serviceproviders/all');
-        setServiceProvidersData(response.data);
+        let response;
+        if(selected){
+         
+          response = await axiosInstance.get('api/serviceproviders/role?role='+selected.toUpperCase());
+        } 
+        else {
+          response = await axiosInstance.get('/api/serviceproviders/serviceproviders/all');
+        }
+        
+        setServiceProvidersData(response?.data);
       } catch (err) {
         console.error("There was a problem with the fetch operation:", err);
       } finally {

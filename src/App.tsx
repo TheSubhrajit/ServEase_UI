@@ -57,7 +57,7 @@ function App() {
         ) : !selection ? (
           <Landingpage sendDataToParent={handleDataFromChild} />
         ) : (
-          <DetailsView sendDataToParent={handleDataFromChild} />
+          <DetailsView selected={selection} sendDataToParent={handleDataFromChild} />
         )}
       </section>
       <footer className="footer-container">
