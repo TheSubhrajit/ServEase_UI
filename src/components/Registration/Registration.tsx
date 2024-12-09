@@ -40,7 +40,7 @@ interface FormData {
   emailId: string;
   password: string;
   confirmPassword: string;
-  phoneNumber: string;
+  mobileNo: string;
   gender: string;
   address: string;
   locality: string;
@@ -60,7 +60,7 @@ interface FormErrors {
   emailId?: string;
   password?: string;
   confirmPassword?: string;
-  phoneNumber?: string;
+  mobileNo?: string;
   gender?: string;
   address?: string;
   locality?: string;
@@ -114,7 +114,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     emailId: "",
     password: "",
     confirmPassword: "",
-    phoneNumber: "",
+    mobileNo: "",
     gender: "",
     address: "",
     locality: "",
@@ -212,8 +212,8 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       if (formData.password !== formData.confirmPassword) {
         tempErrors.confirmPassword = "Passwords do not match.";
       }
-      if (!formData.phoneNumber || !phoneRegex.test(formData.phoneNumber)) {
-        tempErrors.phoneNumber = "Phone number must be exactly 10 digits.";
+      if (!formData.mobileNo || !phoneRegex.test(formData.mobileNo)) {
+        tempErrors.mobileNo = "Phone number must be exactly 10 digits.";
       }
       if (!formData.gender) {
         tempErrors.gender = "Select Your Gender.";
@@ -292,15 +292,13 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     // Ensure form validation passes
     if (validateForm()) {
       try {
-        // const [formData2, setFormData2] = useState({ }){
-        // setFormData2(Object.fromEntries(FormData.entries()))}
-        // Make the POST request to the backend API
         const response = await axios.post(
-          "http://localhost:8443/api/customer/add-customer",
+          "http://43.205.212.94:8080/api/customer/add-customer",
           formData,
           {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "multipart/form-data",
+              
             },
           }
         );
@@ -413,17 +411,17 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                     row // Optional to make it horizontal
                   >
                     <FormControlLabel
-                      value="male"
+                      value="MALE"
                       control={<Radio />}
                       label="MALE"
                     />
                     <FormControlLabel
-                      value="female"
+                      value="FEMALE"
                       control={<Radio />}
                       label="FEMALE"
                     />
                     <FormControlLabel
-                      value="other"
+                      value="OTHERS"
                       control={<Radio />}
                       label="OTHERS"
                     />
@@ -504,13 +502,13 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               <Grid item xs={12}>
                 <TextField
                   placeholder="Phone Number"
-                  name="phoneNumber"
+                  name="mobileNo"
                   fullWidth
                   required
-                  value={formData.phoneNumber}
+                  value={formData.mobileNo}
                   onChange={handleChange}
-                  error={!!errors.phoneNumber}
-                  helperText={errors.phoneNumber}
+                  error={!!errors.mobileNo}
+                  helperText={errors.mobileNo}
                   sx={{
                     "& .MuiInputBase-root": { height: "36px" },
                     "& .MuiInputBase-input": { padding: "10px 12px" },
@@ -682,7 +680,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 }}
               /> */}
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
                 <FormControl
                   component="fieldset"
                   error={!!errors.gender}
@@ -709,7 +707,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                     <Typography color="error">{errors.gender}</Typography>
                   )}
                 </FormControl>
-              </Grid>
+              </Grid> */}
           </Grid>
         );
       case 3:
