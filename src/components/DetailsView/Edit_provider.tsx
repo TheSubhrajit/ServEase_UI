@@ -105,7 +105,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
       };
 
       const response = await axios.put(
-        `http://localhost:8080/api/serviceproviders/update/serviceprovider/${serviceProviderId}`,
+        `http://43.205.212.94:8080/api/serviceproviders/update/serviceprovider/${serviceProviderId}`,
         updateData
       );
 

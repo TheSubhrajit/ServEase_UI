@@ -163,7 +163,7 @@ const  Confirmationpage= (props) => {
 
   const menuItems = Array.from({ length: 10 }, (_, i) => i + 1);
 
-  const API_ENDPOINT = "http://localhost:8080/api/customer/add-customer-request";
+  const API_ENDPOINT = "http://43.205.212.94:8080/api/customer/add-customer-request";
 
   const formatDate = (inputDate) => {
     if (!inputDate) return "";
