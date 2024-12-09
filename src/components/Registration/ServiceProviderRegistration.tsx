@@ -223,7 +223,6 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
       }
     };
     
-
   const [errors, setErrors] = useState<FormErrors>({});
   
 
