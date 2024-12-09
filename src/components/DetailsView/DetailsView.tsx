@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
-
 import axiosInstance from '../../services/axiosInstance';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 import CloseIcon from '@mui/icons-material/Close'; 
@@ -25,7 +24,7 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent }) =>
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get('api/serviceproviders/serviceproviders/all');
+        const response = await axiosInstance.get('/api/serviceproviders/serviceproviders/all');
         setServiceProvidersData(response.data);
       } catch (err) {
         console.error("There was a problem with the fetch operation:", err);
@@ -119,11 +118,18 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent }) =>
             {currentView === "Confirmation" && selectedProvider && (
               <Confirmationpage
                 firstName={selectedProvider.firstName}
+                middleName={selectedProvider.middleName}
                 lastName={selectedProvider.lastName}
                 age={selectedProvider.age}
                 gender={selectedProvider.gender}
+                diet={selectedProvider.diet}
+                cookingSpeciality={selectedProvider.cookingSpeciality}
                 language={selectedProvider.language}
                 experience={selectedProvider.experience}
+                otherServices={selectedProvider.otherServices}
+                rating={selectedProvider.rating}
+                ratingsCount={selectedProvider.ratingsCount}
+                availability={selectedProvider.availability}
                 profilePic={selectedProvider.profilePic}
                 onBack={handleBackToDetails}
               />

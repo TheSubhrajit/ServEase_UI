@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 import {
   Card,
   Typography,
@@ -29,6 +30,13 @@ import ClothDrying from './ClothDrying/ClothDrying';
 import Dusting from './Dusting/Dusting';
 import { PricingData } from '../../types/PricingData';
 import SweepingAndMopping from './SweepingAndMopping/SweepingAndMopping';
+import OtherUtilityServices from './OtherUtilityServices/OtherUtilityServices';
+import SmallCart from './SmallCart/SmallCart';
+
+interface selectedServices {
+  entry: PricingData;
+  price: number;
+}
 
 const  Confirmationpage= (props) => {
   const {
@@ -39,6 +47,7 @@ const  Confirmationpage= (props) => {
     language,
     experience,
     profilePic,
+    diet,
     onBack, // Accept onBack as a prop
   } = props;
 
@@ -49,11 +58,21 @@ const  Confirmationpage= (props) => {
 
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
 
+  const [data , setData] = useState<any>([])
+
+  const [selectedItems, setSelectedItems] = useState<any>([]);
+
   // Callback function to update the price in the parent component
   const handlePriceChange = (data: { price: number; entry: PricingData | null }) => {
-    setCalculatedPrice(data.price); // Update the price
-    console.log("price is parent ");
-    console.log("data in entry" , data.entry)
+  //   setSelectedItems((prevItems) => [
+  //     ...prevItems,
+  //     { entry: data.entry, price: data.price },
+  // ]);
+
+  // console.log(selectedItems)
+  setData(data.entry)
+  setCalculatedPrice(data.price)
+
   };
 
   // Handle radio button selection change
@@ -73,21 +92,28 @@ const  Confirmationpage= (props) => {
   const handleSave = () => {
     // Save logic here
     console.log('Changes saved');
+      setSelectedItems((prevItems) => [
+      ...prevItems,
+      { entry: data, price: calculatedPrice },
+  ]);
+
+  console.log(selectedItems)
     handleClose(); // Close the dialog after saving
   };
 
   const menuItems = Array.from({ length: 10 }, (_, i) => i + 1);
 
-  const formatDate = (inputDate: string) => {
+  const API_ENDPOINT = "http://localhost:8080/api/customer/add-customer-request";
+
+  const formatDate = (inputDate) => {
     if (!inputDate) return "";
-    const date = new Date(inputDate + "T00:00:00");
-    if (Number.isNaN(date.getTime())) return "Invalid Date";
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = date.toLocaleString('default', { month: 'short' });
-    return `Form ${day} ${month}`;
+    const date = new Date(inputDate);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date.toLocaleString("default", { month: "short" });
+    return `${day} ${month}`;
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDateChange = (e) => {
     const newFormattedDate = formatDate(e.target.value);
     setFormattedDate(newFormattedDate);
   };
@@ -100,6 +126,15 @@ const  Confirmationpage= (props) => {
     // Implement your back navigation logic here, e.g.:
     window.history.back(); // This will take the user back to the previous page
   };
+  // Map diet values to corresponding image paths
+  const dietImages = {
+    VEG: "veg.png",
+    NONVEG: "nonveg.png",
+    BOTH:"nonveg.png"
+  };
+
+  // Determine the diet image based on the diet value
+  const dietImage = dietImages[diet];
 
   const [selected, setSelected] = useState(null);
   const [peopleSelected, setpeopleSelected] = useState(null);
@@ -123,7 +158,8 @@ const  Confirmationpage= (props) => {
     { value: 'washroomCleaning', imageSrc: "../bathroom.png" },
     { value: 'clothdrying', imageSrc: "../clothes.png" },
     { value: 'dusting', imageSrc: "../Dusting.png" },
-    { value: 'sweepMoping', imageSrc: "../sweeping.png" }
+    { value: 'sweepMoping', imageSrc: "../sweeping.png" },
+    { value: 'others', imageSrc: "../sweeping.png" }
   ];
 
   const peopleButtonsSelector = [
@@ -138,9 +174,6 @@ const  Confirmationpage= (props) => {
     <div className="details-container">
      <div style={{width:'100%'}}> 
       <Card style={{ width: '100%'}}> 
-      <Typography>
-        Provider Details
-        </Typography>
         <div style={{display:'flex'}}>
         <Avatar
             alt={`${firstName} ${lastName}`}
@@ -164,6 +197,8 @@ const  Confirmationpage= (props) => {
      </div>
        </Card>
        </div>
+       <div style={{display:'flex'}}> 
+       <Card style={{width:"60%" , display:"flex"}}>
        <div style={{ display : "flex" , width :'100%' , marginTop:"20px"}}>
       {buttons.map((button) => (
         <button
@@ -192,6 +227,11 @@ const  Confirmationpage= (props) => {
         </button>
          ))}
        </div>
+       </Card>
+       <Card style={{width:"40%"}}>
+          <SmallCart data={selectedItems} />
+       </Card>
+       </div>
       <DialogComponent 
         open={open} 
         onClose={handleClose} 
@@ -203,6 +243,8 @@ const  Confirmationpage= (props) => {
        { selected === "clothdrying" && <ClothDrying onPriceChange={handlePriceChange} />} 
        { selected === "dusting" && <Dusting onPriceChange={handlePriceChange}/>}
        { selected === "sweepMoping" && <SweepingAndMopping onPriceChange={handlePriceChange} /> }
+       { selected === "others" && <OtherUtilityServices onPriceChange={handlePriceChange} /> }
+       
        
       </DialogComponent>
   </div>  

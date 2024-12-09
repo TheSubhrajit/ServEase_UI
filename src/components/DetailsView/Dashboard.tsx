@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Box, Grid, Card, CardContent, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SendIcon from '@mui/icons-material/Send';
-import axios from "axios";
-import './Dashboard.css';
+// import axios from "axios";
+import axiosInstance from '../../services/axiosInstance';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -16,12 +16,29 @@ const Dashboard: React.FC = () => {
     cookingSpeciality: "",
     diet: "",
   });
+  const serviceProviderId = 1;
+
+  // useEffect(() => {
+  //   const fetchServiceProvider = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(
+  //         "/api/serviceproviders/get/serviceprovider/1" // Relative to the baseURL
+  //       );
+  //       const { firstName, lastName, age, housekeepingRole, cookingSpeciality, diet } = response.data;
+  //       setServiceProvider({ firstName, lastName, age, housekeepingRole, cookingSpeciality, diet });
+  //     } catch (error) {
+  //       console.error("Error fetching service provider details:", error);
+  //     }
+  //   };
+
+  //   fetchServiceProvider();
+  // }, []);
 
   useEffect(() => {
     const fetchServiceProvider = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/serviceproviders/get/serviceprovider/1"
+        const response = await axiosInstance.get(
+          "/api/serviceproviders/get/serviceprovider/1"
         );
         const { firstName, lastName, age, housekeepingRole, cookingSpeciality, diet } = response.data;
         setServiceProvider({ firstName, lastName, age, housekeepingRole, cookingSpeciality, diet });

@@ -57,73 +57,126 @@ export const Login: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // const handleLogin = async (e: React.FormEvent) => {
+  //   e.preventDefault();
 
-    try {
-      // Dummy user credentials check
-      if (email === "user@example.com" && password === "password123") {
-        setSnackbarMessage("User logged in successfully!");
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
-        setTimeout(() => {
-          setRedirectComponent(
-            <DetailsView sendDataToParent={(data: string) => console.log(data)} />
-          );
-        }, 1000);
-        return;
-      }
+  //   try {
+  //     // Dummy user credentials check
+  //     if (email === "user@example.com" && password === "password123") {
+  //       setSnackbarMessage("User logged in successfully!");
+  //       setSnackbarSeverity("success");
+  //       setOpenSnackbar(true);
+  //       setTimeout(() => {
+  //         setRedirectComponent(
+  //           <DetailsView sendDataToParent={(data: string) => console.log(data)} />
+  //         );
+  //       }, 1000);
+  //       return;
+  //     }
   
-      // For other users, make the API call
-      const requestData = {
-        username: email,
-        password: password,
-      };
+  //     // For other users, make the API call
+  //     const requestData = {
+  //       username: email,
+  //       password: password
+  //     };
 
-      const response = await axiosInstance.post('/api/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      });
+  //     const response = await axiosInstance.post('/api/user/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(requestData),
+  //     });
 
-      if (response.status !== 200) {
-        throw new Error('Network response was not ok.');
-      }
+  //     if (response.status !== 200) {
+  //       throw new Error('Network response was not ok.');
+  //     }
       
 
-      const data = await response.data;
+  //     const data = await response.data;
 
-      if (data.message === "Login successful!") {
-        setSnackbarMessage("Login successful!");
+  //     if (data.message === "Login successful!") {
+  //       setSnackbarMessage("Login successful!");
+  //       setSnackbarSeverity("success");
+  //       setOpenSnackbar(true);
+  
+  //       // Redirect based on role
+  //       setTimeout(() => {
+  //         if (data.role === "SERVICE_PROVIDER") {
+  //           setRedirectComponent(<ServiceProviderDashboard />);
+  //         } else {
+  //           setRedirectComponent(
+  //             <DetailsView sendDataToParent={(data: string) => console.log(data)} />
+  //           );
+  //         }
+  //       }, 1000);
+  //     } else {
+  //       setSnackbarMessage("Login failed. Please check your credentials.");
+  //       setSnackbarSeverity("error");
+  //       setOpenSnackbar(true);
+  //     }
+  //   } catch (error) {
+  //     console.error('Login error:', error);
+  //     setSnackbarMessage('An error occurred during login.');
+  //     setSnackbarSeverity('error');
+  //     setOpenSnackbar(true);
+  //   }
+  // };
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    try {
+      
+        //     // Dummy user credentials check
+            if (email === "user@example.com" && password === "password123") {
+             setSnackbarMessage("User logged in successfully!");
+              setSnackbarSeverity("success");
+              setOpenSnackbar(true);
+              setTimeout(() => {
+               setRedirectComponent(
+                   <DetailsView sendDataToParent={(data: string) => console.log(data)} />
+                );
+              }, 1000);
+               return;
+             }
+      // Make the API call
+      const response = await axiosInstance.post('/api/user/login', {
+        username: email,
+        password: password,
+      });
+  
+      // Check if the response is successful
+      if (response.status === 200 && response.data) {
+        const { message, role } = response.data;
+  
+        // Display success message
+        setSnackbarMessage(message || "Login successful!");
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
-
+  
         // Redirect based on role
         setTimeout(() => {
-          if (data.role === "SERVICE_PROVIDER") {
+          if (role === "SERVICE_PROVIDER") {
             setRedirectComponent(<ServiceProviderDashboard />);
           } else {
             setRedirectComponent(
-              <DetailsView sendDataToParent={function (data: string): void {
-                throw new Error('Function not implemented.');
-              }} />
+              <DetailsView sendDataToParent={(data: string) => console.log(data)} />
             );
           }
         }, 1000);
       } else {
-        setSnackbarMessage("Login failed. Please check your credentials.");
-        setSnackbarSeverity("error");
-        setOpenSnackbar(true);
+        // Handle unexpected responses
+        throw new Error(response.data?.message || "Login failed. Please check your credentials.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      setSnackbarMessage('An error occurred during login.');
+      setSnackbarMessage(error.response?.data?.message || 'An error occurred during login.');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
     }
   };
+  
+
 
   if (redirectComponent) {
     return <>{redirectComponent}</>;

@@ -1,4 +1,5 @@
 import React, { useState ,ChangeEvent,SyntheticEvent,useRef} from 'react';
+import moment from "moment";
 import {
   TextField,
   Input,
@@ -30,6 +31,7 @@ import ProfileImageUpload from './ProfileImageUpload';
 import axios from 'axios';
 import ChipInput from "../Common/ChipInput/ChipInput";
 import { keys } from '../../env/env';
+import axiosInstance from '../../services/axiosInstance';
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -63,6 +65,7 @@ interface FormData {
   cookingSpeciality: string;
   age:'';
   diet:string;
+  dob:'';
 }
 // Define the shape of errors to hold string messages
 interface FormErrors {
@@ -159,6 +162,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     cookingSpeciality: '',
     age:'',
     diet:'',
+    dob:'',
     });
 
     // Function to fetch location data and autofill the form
@@ -309,6 +313,19 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+  
+      if (name === "dob") {
+        // Format the date using Moment.js
+        const formattedDate = moment(value).format("YYYY.MM.DD");
+        setFormData((prev) => ({ ...prev, [name]: formattedDate }));
+      } else {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
+    };
+  
   
     // Handle file upload separately
     if (type === 'file') {
@@ -431,46 +448,42 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     setActiveStep((prevStep) => prevStep - 1);
   };
 
+const handleSubmit = async (event) => {
+  event.preventDefault(); // Prevent default form submission
 
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission
-  
-    // Filter out empty values from the form data
-    const filteredPayload = Object.fromEntries(
-      Object.entries(formData).filter(([key, value]) => value !== "" && value !== null && value !== undefined)
-    );
-  
-    // Form validation (optional)
-    if (validateForm()) {
-      try {
-        const response = await axios.post(
-          "http://localhost:8443/api/serviceproviders/serviceprovider/add",
-          filteredPayload,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        // Update Snackbar for success
-        setSnackbarOpen(true);
-        setSnackbarSeverity("success");
-        setSnackbarMessage("Service provider added successfully!");
-        console.log("Success:", response.data);
-      } catch (error) {
-        // Update Snackbar for error
-        setSnackbarOpen(true);
-        setSnackbarSeverity("error");
-        setSnackbarMessage("Failed to add service provider. Please try again.");
-        console.error("Error submitting form:", error);
-      }
-    } else {
-      // Update Snackbar for validation error
+  // Filter out empty values from the form data
+  const filteredPayload = Object.fromEntries(
+    Object.entries(formData).filter(([key, value]) => value !== "" && value !== null && value !== undefined)
+  );
+
+  // Form validation (optional)
+  if (validateForm()) {
+    try {
+      const response = await axiosInstance.post(
+        "/api/serviceproviders/serviceprovider/add",
+        filteredPayload
+      );
+
+      // Update Snackbar for success
       setSnackbarOpen(true);
-      setSnackbarSeverity("warning");
-      setSnackbarMessage("Please fill out all required fields.");
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Service provider added successfully!");
+      console.log("Success:", response.data);
+    } catch (error) {
+      // Update Snackbar for error
+      setSnackbarOpen(true);
+      setSnackbarSeverity("error");
+      setSnackbarMessage("Failed to add service provider. Please try again.");
+      console.error("Error submitting form:", error);
     }
-  };
+  } else {
+    // Update Snackbar for validation error
+    setSnackbarOpen(true);
+    setSnackbarSeverity("warning");
+    setSnackbarMessage("Please fill out all required fields.");
+  }
+};
+
   
   
 
@@ -491,9 +504,9 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           <Grid container spacing={3}>
             
         {/* Profile Picture Upload Section */}
-      {/* <Grid item xs={12}>
+      <Grid item xs={12}>
         <ProfileImageUpload onImageSelect={handleImageSelect} />
-      </Grid> */}
+      </Grid>
 
       <Grid item xs={12}>
         <TextField
@@ -531,20 +544,20 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         />
       </Grid>
    {/* Age / Date of Birth Field */}
-<Grid item xs={12} sm={6}>
-  <TextField
-    label="Date of Birth"
-    name="age" // Make sure this name is consistent with your form state
-    type="date"
-    fullWidth
-    required
-    value={formData.age} // This should be bound to formData.age
-    onChange={handleChange} // Ensure handleChange is updating formData.age
-    InputLabelProps={{
-      shrink: true, // Makes the label float on top
-    }}
-  />
-</Grid>
+   <Grid item xs={12} sm={6}>
+        <TextField
+          label="Date of Birth"
+          name="dob"
+          type="date"
+          fullWidth
+          required
+          value={moment(formData.dob, "YYYY.MM.DD").format("YYYY-MM-DD")} // Convert back for display
+          onChange={handleChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      </Grid>
 
 
       <Grid item xs={12}>

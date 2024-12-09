@@ -16,20 +16,45 @@ import { Description } from "@mui/icons-material";
 const ServiceProvidersDetails = (props) => {
   const {
     firstName,
+    middleName,
     lastName,
-    age,
     gender,
     language,
     diet,
     experience,
     otherServices,
-    currentLocation,
-    distance,
     rating,
     ratingsCount,
     availability,
+    dob,
+    description,
+    cookingSpeciality,
     profilePic
   } = props;
+    // Map diet values to corresponding image paths
+    const dietImages = {
+      VEG: "veg.png",
+      NONVEG: "nonveg.png",
+      BOTH:"nonveg.png"
+    };
+    const calculateAge = (dob) => {
+      if (!dob) return ""; // Handle cases where dob is not provided
+      const birthDate = new Date(dob);
+      const today = new Date();
+    
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDifference = today.getMonth() - birthDate.getMonth();
+    
+      // Adjust if the current month/day is before the birth month/day
+      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+    
+      return age;
+    };
+    
+    // Determine the diet image based on the diet value
+    const dietImage = dietImages[diet];
 
   return (
     <div className="content-box" > {/* Wrapper div */}
@@ -49,25 +74,37 @@ const ServiceProvidersDetails = (props) => {
         </div>
 
         <div className="service-details"> {/* Section for service details */}
-        <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '0.5px', marginTop: '0.5px' }}>
-    Name: 
-    <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
-      {firstName} {lastName}
-    </span>, 
-    <span style={{ fontWeight: 'normal', fontSize: '1.2rem', marginLeft: '4px' }}>
-      (M,20)
+        <Typography
+  variant="subtitle1"
+  style={{ fontWeight: 'bold', marginBottom: '0.5px', marginTop: '0.5px' }}
+>
+  {/* Name:  */}
+  <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+    {firstName}{middleName} {lastName}
+  </span>, 
+  <span style={{ fontWeight: 'bold', fontSize: '1.2rem', marginLeft: '4px' }}>
+    ({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'}, {calculateAge(dob)} ),
+    <span style={{ display: 'inline-block', marginLeft: '5px' }}>
+      <img
+        src={dietImage}
+        alt={diet}
+        style={{
+          width: '20px',
+          height: '20px',
+          verticalAlign: 'middle', // Keeps the image aligned with the text
+        }}
+      />
     </span>
-  </Typography>
+   
+  </span>
+</Typography>
+ 
 
   <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
   Language: 
   <span style={{ fontWeight: 'normal', fontSize: '1rem', display: 'inline-flex', alignItems: 'center' }}>
     {language || 'English'}
-    <img 
-      src="nonveg.png" 
-      alt="Vegetarian Diet Symbol" 
-      style={{ width: '20px', height: '20px', marginLeft: '5px' }} 
-    />
+
   </span>
 </Typography>
 
