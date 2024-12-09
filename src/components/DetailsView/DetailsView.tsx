@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
-
 import axiosInstance from '../../services/axiosInstance';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 import CloseIcon from '@mui/icons-material/Close'; 

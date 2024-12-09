@@ -31,6 +31,7 @@ import ProfileImageUpload from './ProfileImageUpload';
 import axios from 'axios';
 import ChipInput from "../Common/ChipInput/ChipInput";
 import { keys } from '../../env/env';
+import axiosInstance from '../../services/axiosInstance';
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -226,7 +227,6 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
       }
     };
     
-
   const [errors, setErrors] = useState<FormErrors>({});
   
 
@@ -448,46 +448,42 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     setActiveStep((prevStep) => prevStep - 1);
   };
 
+const handleSubmit = async (event) => {
+  event.preventDefault(); // Prevent default form submission
 
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission
-  
-    // Filter out empty values from the form data
-    const filteredPayload = Object.fromEntries(
-      Object.entries(formData).filter(([key, value]) => value !== "" && value !== null && value !== undefined)
-    );
-  
-    // Form validation (optional)
-    if (validateForm()) {
-      try {
-        const response = await axios.post(
-          "http://localhost:8443/api/serviceproviders/serviceprovider/add",
-          filteredPayload,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        // Update Snackbar for success
-        setSnackbarOpen(true);
-        setSnackbarSeverity("success");
-        setSnackbarMessage("Service provider added successfully!");
-        console.log("Success:", response.data);
-      } catch (error) {
-        // Update Snackbar for error
-        setSnackbarOpen(true);
-        setSnackbarSeverity("error");
-        setSnackbarMessage("Failed to add service provider. Please try again.");
-        console.error("Error submitting form:", error);
-      }
-    } else {
-      // Update Snackbar for validation error
+  // Filter out empty values from the form data
+  const filteredPayload = Object.fromEntries(
+    Object.entries(formData).filter(([key, value]) => value !== "" && value !== null && value !== undefined)
+  );
+
+  // Form validation (optional)
+  if (validateForm()) {
+    try {
+      const response = await axiosInstance.post(
+        "/api/serviceproviders/serviceprovider/add",
+        filteredPayload
+      );
+
+      // Update Snackbar for success
       setSnackbarOpen(true);
-      setSnackbarSeverity("warning");
-      setSnackbarMessage("Please fill out all required fields.");
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Service provider added successfully!");
+      console.log("Success:", response.data);
+    } catch (error) {
+      // Update Snackbar for error
+      setSnackbarOpen(true);
+      setSnackbarSeverity("error");
+      setSnackbarMessage("Failed to add service provider. Please try again.");
+      console.error("Error submitting form:", error);
     }
-  };
+  } else {
+    // Update Snackbar for validation error
+    setSnackbarOpen(true);
+    setSnackbarSeverity("warning");
+    setSnackbarMessage("Please fill out all required fields.");
+  }
+};
+
   
   
 

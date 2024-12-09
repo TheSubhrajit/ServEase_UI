@@ -9,8 +9,12 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import axiosInstance from '../../services/axiosInstance';
 
-const EditProvider: React.FC = () => {
+interface EditProviderProps {
+  goBack: () => void;
+}
+const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
   const [formData, setFormData] = useState({
     account: {
       firstName: "",
@@ -43,8 +47,8 @@ const EditProvider: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/api/serviceproviders/get/serviceprovider/${serviceProviderId}`
+        const response = await axiosInstance.get(
+          `/api/serviceproviders/get/serviceprovider/${serviceProviderId}`
         );
         const data = response.data;
 
@@ -118,6 +122,13 @@ const EditProvider: React.FC = () => {
       <Typography variant="h4" gutterBottom className="text-center p-3">
         Personal Details
       </Typography>
+      <div>
+      <Button onClick={goBack} variant="outlined">
+        Back to Dashboard
+      </Button>
+
+      {/* Rest of the form */}
+    
       <div
         style={{
           gap: "10px ",
@@ -306,6 +317,7 @@ const EditProvider: React.FC = () => {
         >
           Save
         </Button>
+        </div>
       </div>
     </>
   );
