@@ -1,4 +1,5 @@
 export type PricingData = {
+    serviceCategory? : string;
     serviceType: string;
     subCategory?: string;
     peopleRange?: string;

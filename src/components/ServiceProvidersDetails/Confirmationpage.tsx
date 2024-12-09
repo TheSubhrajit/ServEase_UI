@@ -30,6 +30,13 @@ import ClothDrying from './ClothDrying/ClothDrying';
 import Dusting from './Dusting/Dusting';
 import { PricingData } from '../../types/PricingData';
 import SweepingAndMopping from './SweepingAndMopping/SweepingAndMopping';
+import OtherUtilityServices from './OtherUtilityServices/OtherUtilityServices';
+import SmallCart from './SmallCart/SmallCart';
+
+interface selectedServices {
+  entry: PricingData;
+  price: number;
+}
 
 const  Confirmationpage= (props) => {
   const {
@@ -51,11 +58,21 @@ const  Confirmationpage= (props) => {
 
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
 
+  const [data , setData] = useState<any>([])
+
+  const [selectedItems, setSelectedItems] = useState<any>([]);
+
   // Callback function to update the price in the parent component
   const handlePriceChange = (data: { price: number; entry: PricingData | null }) => {
-    setCalculatedPrice(data.price); // Update the price
-    console.log("price is parent ");
-    console.log("data in entry" , data.entry)
+  //   setSelectedItems((prevItems) => [
+  //     ...prevItems,
+  //     { entry: data.entry, price: data.price },
+  // ]);
+
+  // console.log(selectedItems)
+  setData(data.entry)
+  setCalculatedPrice(data.price)
+
   };
 
   // Handle radio button selection change
@@ -75,6 +92,12 @@ const  Confirmationpage= (props) => {
   const handleSave = () => {
     // Save logic here
     console.log('Changes saved');
+      setSelectedItems((prevItems) => [
+      ...prevItems,
+      { entry: data, price: calculatedPrice },
+  ]);
+
+  console.log(selectedItems)
     handleClose(); // Close the dialog after saving
   };
 
@@ -135,7 +158,8 @@ const  Confirmationpage= (props) => {
     { value: 'washroomCleaning', imageSrc: "../bathroom.png" },
     { value: 'clothdrying', imageSrc: "../clothes.png" },
     { value: 'dusting', imageSrc: "../Dusting.png" },
-    { value: 'sweepMoping', imageSrc: "../sweeping.png" }
+    { value: 'sweepMoping', imageSrc: "../sweeping.png" },
+    { value: 'others', imageSrc: "../sweeping.png" }
   ];
 
   const peopleButtonsSelector = [
@@ -150,9 +174,6 @@ const  Confirmationpage= (props) => {
     <div className="details-container">
      <div style={{width:'100%'}}> 
       <Card style={{ width: '100%'}}> 
-      <Typography>
-        Provider Details
-        </Typography>
         <div style={{display:'flex'}}>
         <Avatar
             alt={`${firstName} ${lastName}`}
@@ -176,6 +197,8 @@ const  Confirmationpage= (props) => {
      </div>
        </Card>
        </div>
+       <div style={{display:'flex'}}> 
+       <Card style={{width:"60%" , display:"flex"}}>
        <div style={{ display : "flex" , width :'100%' , marginTop:"20px"}}>
       {buttons.map((button) => (
         <button
@@ -204,6 +227,11 @@ const  Confirmationpage= (props) => {
         </button>
          ))}
        </div>
+       </Card>
+       <Card style={{width:"40%"}}>
+          <SmallCart data={selectedItems} />
+       </Card>
+       </div>
       <DialogComponent 
         open={open} 
         onClose={handleClose} 
@@ -215,6 +243,8 @@ const  Confirmationpage= (props) => {
        { selected === "clothdrying" && <ClothDrying onPriceChange={handlePriceChange} />} 
        { selected === "dusting" && <Dusting onPriceChange={handlePriceChange}/>}
        { selected === "sweepMoping" && <SweepingAndMopping onPriceChange={handlePriceChange} /> }
+       { selected === "others" && <OtherUtilityServices onPriceChange={handlePriceChange} /> }
+       
        
       </DialogComponent>
   </div>  
