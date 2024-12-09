@@ -16,7 +16,9 @@ import {
   SelectChangeEvent,
   Paper,
   FormLabel,
+  Snackbar,
   FormControlLabel,
+  Alert,
   Radio,
   RadioGroup,
 } from "@mui/material";
@@ -54,6 +56,7 @@ const  Confirmationpage= (props) => {
   const [formattedDate, setFormattedDate] = useState<string>("");
   const [pax , setPax] = useState('');
   const [open, setOpen] = useState(false);
+ 
   const [selectedValue, setSelectedValue] = useState('People');
 
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
@@ -61,6 +64,9 @@ const  Confirmationpage= (props) => {
   const [data , setData] = useState<any>([])
 
   const [selectedItems, setSelectedItems] = useState<any>([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   // Callback function to update the price in the parent component
   const handlePriceChange = (data: { price: number; entry: PricingData | null }) => {
@@ -89,13 +95,67 @@ const  Confirmationpage= (props) => {
     setOpen(false);
   };
 
-  const handleSave = () => {
-    // Save logic here
-    console.log('Changes saved');
-      setSelectedItems((prevItems) => [
-      ...prevItems,
-      { entry: data, price: calculatedPrice },
-  ]);
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const handleSave = async () => {
+    // Prepare the data you want to send in the API request
+    const requestData = {
+      firstName,
+      lastName,
+      age,
+      gender,
+      languageKnown: language, 
+      experience,
+      profilePic,
+      dietryHabit: diet,
+      housekeepingRole: "COOK",
+      selectedServices: selectedItems, 
+      pax,
+      timeSlotlist: "09:00-12:00, 18:00-20:00",
+      assignedDate: new Date().toISOString(), 
+      createdDate: new Date().toISOString(), 
+      modifiedDate: new Date().toISOString(), 
+      supervisorId: 404, 
+      isPotential: "true",
+      modifiedBy: 505, 
+      startDate: formattedDate, 
+      endDate: "2024-12-31T18:00:00.000Z", 
+      noOfResources: "1", 
+      days: "Monday to Saturday", 
+      amount: calculatedPrice, 
+      comment: "", 
+      commentedBy: "Supervisor", 
+      commentedOn: new Date().toISOString(), 
+      pincode: 110016, 
+      cookingHabit: diet, 
+      serviceProviderId: 303, 
+      locality: "",
+      area: "",
+      apartment_name: "",
+    };
+    
+    try {
+      const response = await axios.post(API_ENDPOINT, requestData);
+      console.log('API Response:', response);
+      if (response.status === 200 || response.status === 201) {
+        setSnackbarMessage('Request successfully submitted!');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        setSelectedItems([]);
+        setCalculatedPrice(0);
+      } else {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error while saving the request:', error);
+      setSnackbarMessage('Error while saving the request. Please try again.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  
 
   console.log(selectedItems)
     handleClose(); // Close the dialog after saving
@@ -247,6 +307,25 @@ const  Confirmationpage= (props) => {
        
        
       </DialogComponent>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+       <Alert
+    onClose={handleSnackbarClose}
+    severity={snackbarSeverity}
+    sx={{
+      width: '100%',
+      fontSize: '16px',
+      display: 'flex',
+      alignItems: 'center',
+    }}
+  >
+    {snackbarMessage || 'An error occurred, please try again.'}
+  </Alert>
+      </Snackbar>
   </div>  
   );
 };
