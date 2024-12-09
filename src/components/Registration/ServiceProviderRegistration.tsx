@@ -408,9 +408,9 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
       if (!formData.diet) {
         tempErrors.diet = 'Please select diet ';
       }
-      if (!formData.experience) {
-        tempErrors.experience = 'Please select experience ';
-      }
+      // if (!formData.experience) {
+      //   tempErrors.experience = 'Please select experience ';
+      // }
     
       // Optional fields (uncomment if needed)
       // if (!formData.description) {
@@ -448,42 +448,46 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     setActiveStep((prevStep) => prevStep - 1);
   };
 
-const handleSubmit = async (event) => {
-  event.preventDefault(); // Prevent default form submission
 
-  // Filter out empty values from the form data
-  const filteredPayload = Object.fromEntries(
-    Object.entries(formData).filter(([key, value]) => value !== "" && value !== null && value !== undefined)
-  );
-
-  // Form validation (optional)
-  if (validateForm()) {
-    try {
-      const response = await axiosInstance.post(
-        "/api/serviceproviders/serviceprovider/add",
-        filteredPayload
-      );
-
-      // Update Snackbar for success
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent default form submission
+  
+    // Filter out empty values from the form data
+    const filteredPayload = Object.fromEntries(
+      Object.entries(formData).filter(([key, value]) => value !== "" && value !== null && value !== undefined)
+    );
+  
+    // Form validation (optional)
+    if (validateForm()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/serviceproviders/serviceprovider/add",
+          filteredPayload,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        // Update Snackbar for success
+        setSnackbarOpen(true);
+        setSnackbarSeverity("success");
+        setSnackbarMessage("Service provider added successfully!");
+        console.log("Success:", response.data);
+      } catch (error) {
+        // Update Snackbar for error
+        setSnackbarOpen(true);
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Failed to add service provider. Please try again.");
+        console.error("Error submitting form:", error);
+      }
+    } else {
+      // Update Snackbar for validation error
       setSnackbarOpen(true);
-      setSnackbarSeverity("success");
-      setSnackbarMessage("Service provider added successfully!");
-      console.log("Success:", response.data);
-    } catch (error) {
-      // Update Snackbar for error
-      setSnackbarOpen(true);
-      setSnackbarSeverity("error");
-      setSnackbarMessage("Failed to add service provider. Please try again.");
-      console.error("Error submitting form:", error);
+      setSnackbarSeverity("warning");
+      setSnackbarMessage("Please fill out all required fields.");
     }
-  } else {
-    // Update Snackbar for validation error
-    setSnackbarOpen(true);
-    setSnackbarSeverity("warning");
-    setSnackbarMessage("Please fill out all required fields.");
-  }
-};
-
+  };
   
   
 
@@ -943,8 +947,8 @@ const handleSubmit = async (event) => {
         required
         value={formData.experience}
         onChange={handleChange}
-        error={!!errors.experience}
-        helperText={errors.experience || "Years in business or relevant experience"}
+        // error={!!errors.experience}
+        // helperText={errors.experience || "Years in business or relevant experience"}
       />
     </Grid>
 
