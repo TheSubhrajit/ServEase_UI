@@ -112,7 +112,7 @@ const NannyPricing = () => {
   return (
     <div>
       <Typography gutterBottom>
-        Head Count:
+        Service Type :
         {typeButtonsSelector.map((button) => (
           <button
             key={button.key}
@@ -133,7 +133,7 @@ const NannyPricing = () => {
       </Typography>
 
       {selectedServiceType !== "Regular - In House (24 hours live in)" &&  <Typography gutterBottom>
-        Head Count:
+        Experience : 
         {subCategoryButtonsSelector.map((button) => (
           <button
             key={button.key}
@@ -155,7 +155,7 @@ const NannyPricing = () => {
       }
 
 <Typography gutterBottom>
-        Head Count:
+        Child age :
         {childAge.map((button) => (
           <button
             key={button.key}
