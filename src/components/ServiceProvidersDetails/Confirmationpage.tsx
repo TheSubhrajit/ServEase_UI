@@ -35,6 +35,7 @@ import SweepingAndMopping from './SweepingAndMopping/SweepingAndMopping';
 import OtherUtilityServices from './OtherUtilityServices/OtherUtilityServices';
 import SmallCart from './SmallCart/SmallCart';
 import NannyPricing from './NannyService/NannyPricing/NannyPricing';
+import CookPricing from './CookService/CookPricing/CookPricing';
 
 interface selectedServices {
   entry: PricingData;
@@ -293,6 +294,10 @@ const  Confirmationpage= (props) => {
        {role === "nanny" && <Card style={{width:"60%" , display:"flex"}}>
         <NannyPricing />
        </Card>} 
+       {role === "cook" && <Card style={{width:"60%" , display:"flex"}}>
+        <CookPricing />
+       </Card>} 
+       
        <Card style={{width:"40%"}}>
           <SmallCart data={selectedItems} />
        </Card>
