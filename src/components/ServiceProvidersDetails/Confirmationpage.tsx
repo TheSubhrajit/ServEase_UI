@@ -36,6 +36,7 @@ import OtherUtilityServices from './OtherUtilityServices/OtherUtilityServices';
 import SmallCart from './SmallCart/SmallCart';
 import NannyPricing from './NannyService/NannyPricing/NannyPricing';
 import CookPricing from './CookService/CookPricing/CookPricing';
+import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 
 interface selectedServices {
   entry: PricingData;
@@ -84,6 +85,18 @@ const  Confirmationpage= (props) => {
 
   };
 
+  const handleProceedToCheckout = () => {
+    // Prepare the data you want to send to the parent
+    const checkoutData = {
+      selectedItems
+      // Add any other data you want to send
+    };
+
+    if (onBack) {
+      onBack(checkoutData); // Send data back to the parent
+    }
+  };
+
   // Handle radio button selection change
   const handleRadioChange = (event) => {
     setSelectedValue(event.target.value);
@@ -103,61 +116,68 @@ const  Confirmationpage= (props) => {
     setSnackbarOpen(false);
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
+      setSelectedItems((prevItems) => [
+      ...prevItems,
+      { entry: data, price: calculatedPrice },
+  ]);
+
+  console.log(selectedItems)
+
     // Prepare the data you want to send in the API request
-    const requestData = {
-      firstName,
-      lastName,
-      age,
-      gender,
-      languageKnown: language, 
-      experience,
-      profilePic,
-      dietryHabit: diet,
-      housekeepingRole: "COOK",
-      selectedServices: selectedItems, 
-      pax,
-      timeSlotlist: "09:00-12:00, 18:00-20:00",
-      assignedDate: new Date().toISOString(), 
-      createdDate: new Date().toISOString(), 
-      modifiedDate: new Date().toISOString(), 
-      supervisorId: 404, 
-      isPotential: "true",
-      modifiedBy: 505, 
-      startDate: formattedDate, 
-      endDate: "2024-12-31T18:00:00.000Z", 
-      noOfResources: "1", 
-      days: "Monday to Saturday", 
-      amount: calculatedPrice, 
-      comment: "", 
-      commentedBy: "Supervisor", 
-      commentedOn: new Date().toISOString(), 
-      pincode: 110016, 
-      cookingHabit: diet, 
-      serviceProviderId: 303, 
-      locality: "",
-      area: "",
-      apartment_name: "",
-    };
+    // const requestData = {
+    //   firstName,
+    //   lastName,
+    //   age,
+    //   gender,
+    //   languageKnown: language, 
+    //   experience,
+    //   profilePic,
+    //   dietryHabit: diet,
+    //   housekeepingRole: "COOK",
+    //   selectedServices: selectedItems, 
+    //   pax,
+    //   timeSlotlist: "09:00-12:00, 18:00-20:00",
+    //   assignedDate: new Date().toISOString(), 
+    //   createdDate: new Date().toISOString(), 
+    //   modifiedDate: new Date().toISOString(), 
+    //   supervisorId: 404, 
+    //   isPotential: "true",
+    //   modifiedBy: 505, 
+    //   startDate: formattedDate, 
+    //   endDate: "2024-12-31T18:00:00.000Z", 
+    //   noOfResources: "1", 
+    //   days: "Monday to Saturday", 
+    //   amount: calculatedPrice, 
+    //   comment: "", 
+    //   commentedBy: "Supervisor", 
+    //   commentedOn: new Date().toISOString(), 
+    //   pincode: 110016, 
+    //   cookingHabit: diet, 
+    //   serviceProviderId: 303, 
+    //   locality: "",
+    //   area: "",
+    //   apartment_name: "",
+    // };
     
-    try {
-      const response = await axios.post(API_ENDPOINT, requestData);
-      console.log('API Response:', response);
-      if (response.status === 200 || response.status === 201) {
-        setSnackbarMessage('Request successfully submitted!');
-        setSnackbarSeverity('success');
-        setSnackbarOpen(true);
-        setSelectedItems([]);
-        setCalculatedPrice(0);
-      } else {
-        throw new Error(`Unexpected response status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error('Error while saving the request:', error);
-      setSnackbarMessage('Error while saving the request. Please try again.');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-    }
+    // try {
+    //   const response = await axios.post(API_ENDPOINT, requestData);
+    //   console.log('API Response:', response);
+    //   if (response.status === 200 || response.status === 201) {
+    //     setSnackbarMessage('Request successfully submitted!');
+    //     setSnackbarSeverity('success');
+    //     setSnackbarOpen(true);
+    //     setSelectedItems([]);
+    //     setCalculatedPrice(0);
+    //   } else {
+    //     throw new Error(`Unexpected response status: ${response.status}`);
+    //   }
+    // } catch (error) {
+    //   console.error('Error while saving the request:', error);
+    //   setSnackbarMessage('Error while saving the request. Please try again.');
+    //   setSnackbarSeverity('error');
+    //   setSnackbarOpen(true);
+    // }
   
 
   console.log(selectedItems)
@@ -217,12 +237,12 @@ const  Confirmationpage= (props) => {
   };
 
   const buttons = [
-    { value: 'utilityCleaning', imageSrc: "../Utensil.png" },
-    { value: 'washroomCleaning', imageSrc: "../bathroom.png" },
-    { value: 'clothdrying', imageSrc: "../clothes.png" },
-    { value: 'dusting', imageSrc: "../Dusting.png" },
-    { value: 'sweepMoping', imageSrc: "../sweeping.png" },
-    { value: 'others', imageSrc: "../sweeping.png" }
+    { value: 'utilityCleaning', imageSrc: "../Utensil.png" , text:"Utility cleaning"},
+    { value: 'washroomCleaning', imageSrc: "../bathroom.png" , text:"Washroom cleaning" },
+    { value: 'clothdrying', imageSrc: "../clothes.png" , text:"Cloth drying" },
+    { value: 'dusting', imageSrc: "../Dusting.png" ,text:"Dusting"  },
+    { value: 'sweepMoping', imageSrc: "../sweeping.png" ,text:"Sweeping and mopping" },
+    { value: 'others', imageSrc: "../sweeping.png" , text:"Other services" }
   ];
 
   const peopleButtonsSelector = [
@@ -232,6 +252,11 @@ const  Confirmationpage= (props) => {
     { key: 4, value: '7-9' }
   ];
 
+
+  function getModelTitle(): any {
+    const ModelText = buttons.find(button => button.value === selected)
+    return ModelText?.text;
+  }
 
   return (
     <div className="details-container">
@@ -289,6 +314,8 @@ const  Confirmationpage= (props) => {
           />
         </button>
          ))}
+
+<Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button>
        </div>
        </Card>}
        {role === "nanny" && <Card style={{width:"100%" , display:"flex"}}>
@@ -302,10 +329,12 @@ const  Confirmationpage= (props) => {
           <SmallCart data={selectedItems} />
        </Card> */}
        </div>
+
+       <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} onClick={handleProceedToCheckout}> Proceed to checkout </Button>
       <DialogComponent 
         open={open} 
         onClose={handleClose} 
-        title="Modal title" 
+        title={getModelTitle()} 
         onSave={handleSave}
       >
        {selected === "utilityCleaning" &&  <UtilityCleaning onPriceChange={handlePriceChange}/>}

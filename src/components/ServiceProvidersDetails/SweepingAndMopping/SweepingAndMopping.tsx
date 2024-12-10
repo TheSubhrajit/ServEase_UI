@@ -1,14 +1,6 @@
 import { Typography } from '@mui/material';
 import React, { useState, useEffect } from 'react';
-
-interface PricingData {
-    serviceType: string;
-    subCategory: string;
-    size: string;
-    frequency: number;
-    pricePerMonth: number;
-    jobDescription: string;
-}
+import { PricingData } from '../../../types/PricingData';
 
 interface SweepingAndMoppingProps {
     onPriceChange: (data: { price: number; entry: PricingData | null }) => void; // Callback function passed as a prop
@@ -22,15 +14,15 @@ const SweepingAndMopping: React.FC<SweepingAndMoppingProps> = ({ onPriceChange }
 
     // Pricing data
     const pricingData: PricingData[] = [
-        { serviceType: 'Sweeping & Mopping', subCategory: 'Regular', size: '2BHK +1 Balcony + 1 Utility', frequency: 1, pricePerMonth: 1000, jobDescription: 'includes daily sweeping and mopping; includes daily sweeping & mopping of balconies/utilities and weekly deep cleaning with water' },
-        { serviceType: 'Sweeping & Mopping', subCategory: 'Regular', size: '2BHK +1 Balcony + 1 Utility', frequency: 2, pricePerMonth: 1300, jobDescription: 'includes daily sweeping and mopping; includes daily sweeping & mopping of balconies/utilities and weekly deep cleaning with water' },
-        { serviceType: 'Sweeping & Mopping', subCategory: 'Regular', size: '2.5 - 3 BHK +1 Balcony + 1 Utility', frequency: 1, pricePerMonth: 1200, jobDescription: 'includes daily sweeping and mopping; includes daily sweeping & mopping of balconies/utilities and weekly deep cleaning with water' },
-        { serviceType: 'Sweeping & Mopping', subCategory: 'Regular', size: '2.5 - 3 BHK +1 Balcony + 1 Utility', frequency: 2, pricePerMonth: 1600, jobDescription: 'includes daily sweeping and mopping; includes daily sweeping & mopping of balconies/utilities and weekly deep cleaning with water' },
+        { serviceCategory:"Sweeping & Mopping" , type:"Maid", serviceType: 'Sweeping & Mopping', subCategory: 'Regular', size: '2BHK +1 Balcony + 1 Utility', frequency: 1, pricePerMonth: 1000, jobDescription: 'includes daily sweeping and mopping; includes daily sweeping & mopping of balconies/utilities and weekly deep cleaning with water' },
+        { serviceCategory:"Sweeping & Mopping" , type:"Maid",serviceType: 'Sweeping & Mopping', subCategory: 'Regular', size: '2BHK +1 Balcony + 1 Utility', frequency: 2, pricePerMonth: 1300, jobDescription: 'includes daily sweeping and mopping; includes daily sweeping & mopping of balconies/utilities and weekly deep cleaning with water' },
+        { serviceCategory:"Sweeping & Mopping" , type:"Maid",serviceType: 'Sweeping & Mopping', subCategory: 'Regular', size: '2.5 - 3 BHK +1 Balcony + 1 Utility', frequency: 1, pricePerMonth: 1200, jobDescription: 'includes daily sweeping and mopping; includes daily sweeping & mopping of balconies/utilities and weekly deep cleaning with water' },
+        { serviceCategory:"Sweeping & Mopping" , type:"Maid",serviceType: 'Sweeping & Mopping', subCategory: 'Regular', size: '2.5 - 3 BHK +1 Balcony + 1 Utility', frequency: 2, pricePerMonth: 1600, jobDescription: 'includes daily sweeping and mopping; includes daily sweeping & mopping of balconies/utilities and weekly deep cleaning with water' },
         
-        { serviceType: 'Sweeping & Mopping', subCategory: 'Premium', size: '2BHK +1 Balcony + 1 Utility', frequency: 1, pricePerMonth: 1300, jobDescription: 'Regular + Well trained, multi lingual, soft spoken, well dressed, educated, help kids in home works (for baby care), and experienced.' },
-        { serviceType: 'Sweeping & Mopping', subCategory: 'Premium', size: '2BHK +1 Balcony + 1 Utility', frequency: 2, pricePerMonth: 1690, jobDescription: 'Regular + Well trained, multi lingual, soft spoken, well dressed, educated, help kids in home works (for baby care), and experienced.' },
-        { serviceType: 'Sweeping & Mopping', subCategory: 'Premium', size: '2.5 - 3 BHK +1 Balcony + 1 Utility', frequency: 1, pricePerMonth: 1560, jobDescription: 'Regular + Well trained, multi lingual, soft spoken, well dressed, educated, help kids in home works (for baby care), and experienced.' },
-        { serviceType: 'Sweeping & Mopping', subCategory: 'Premium', size: '2.5 - 3 BHK +1 Balcony + 1 Utility', frequency: 2, pricePerMonth: 2080, jobDescription: 'Regular + Well trained, multi lingual, soft spoken, well dressed, educated, help kids in home works (for baby care), and experienced.' }
+        { serviceCategory:"Sweeping & Mopping" , type:"Maid",serviceType: 'Sweeping & Mopping', subCategory: 'Premium', size: '2BHK +1 Balcony + 1 Utility', frequency: 1, pricePerMonth: 1300, jobDescription: 'Regular + Well trained, multi lingual, soft spoken, well dressed, educated, help kids in home works (for baby care), and experienced.' },
+        { serviceCategory:"Sweeping & Mopping" , type:"Maid",serviceType: 'Sweeping & Mopping', subCategory: 'Premium', size: '2BHK +1 Balcony + 1 Utility', frequency: 2, pricePerMonth: 1690, jobDescription: 'Regular + Well trained, multi lingual, soft spoken, well dressed, educated, help kids in home works (for baby care), and experienced.' },
+        { serviceCategory:"Sweeping & Mopping" , type:"Maid",serviceType: 'Sweeping & Mopping', subCategory: 'Premium', size: '2.5 - 3 BHK +1 Balcony + 1 Utility', frequency: 1, pricePerMonth: 1560, jobDescription: 'Regular + Well trained, multi lingual, soft spoken, well dressed, educated, help kids in home works (for baby care), and experienced.' },
+        { serviceCategory:"Sweeping & Mopping" , type:"Maid",serviceType: 'Sweeping & Mopping', subCategory: 'Premium', size: '2.5 - 3 BHK +1 Balcony + 1 Utility', frequency: 2, pricePerMonth: 2080, jobDescription: 'Regular + Well trained, multi lingual, soft spoken, well dressed, educated, help kids in home works (for baby care), and experienced.' }
     ];
 
     // Handle button clicks for size and frequency

@@ -13,7 +13,7 @@ const Dusting: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
   const [jobDescription, setJobDescription] = useState<string>("");
 
   const pricingData: PricingData[] = [
-    {
+    {serviceCategory:"Dusting" , type:"Maid",
       serviceType: "Normal Dusting",
       subCategory: "Size",
       size: "2 BHK",
@@ -22,7 +22,7 @@ const Dusting: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
       jobDescription:
         "Includes furniture dusting, gate, decor items, carpet, bed making. Weekly: windows, glasses, cupboards, kitchen cabinet outer cleaning. Monthly: fan and cobweb cleaning.",
     },
-    {
+    {serviceCategory:"Dusting" , type:"Maid",
       serviceType: "Normal Dusting",
       subCategory: "Size",
       size: "2.5 - 3 BHK",
@@ -31,7 +31,7 @@ const Dusting: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
       jobDescription:
         "Includes furniture dusting, gate, decor items, carpet, bed making. Weekly: windows, glasses, cupboards, kitchen cabinet outer cleaning. Monthly: fan and cobweb cleaning.",
     },
-    {
+    {serviceCategory:"Dusting" , type:"Maid",
       serviceType: "Deep Dusting",
       subCategory: "Size",
       size: "2 BHK",
@@ -39,7 +39,7 @@ const Dusting: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
       pricePerMonth: 1000,
       jobDescription: "Normal Dusting + kitchen slab cleaning.",
     },
-    {
+    {serviceCategory:"Dusting" , type:"Maid",
       serviceType: "Deep Dusting",
       subCategory: "Size",
       size: "2.5 - 3 BHK",

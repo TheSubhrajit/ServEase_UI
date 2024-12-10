@@ -19,8 +19,8 @@ const ClothDrying: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
 
     // Pricing data with frequency as string
     const pricingData: PricingData[] = [
-        { serviceType: 'Regular', subCategory: 'people', frequency: '3 day / week', pricePerMonth: 500, jobDescription: 'Househelp will get clothes from drying place and make proper arrangements in shelf' },
-        { serviceType: 'Regular', subCategory: 'people', frequency: 'Daily', pricePerMonth: 1000, jobDescription: 'Househelp will get clothes from drying place and make proper arrangements in shelf' },
+        { serviceCategory:"Cloth Drying" , type:"Maid",serviceType: 'Regular', subCategory: 'people', frequency: '3 day / week', pricePerMonth: 500, jobDescription: 'Househelp will get clothes from drying place and make proper arrangements in shelf' },
+        { serviceCategory:"Cloth Drying" , type:"Maid",serviceType: 'Regular', subCategory: 'people', frequency: 'Daily', pricePerMonth: 1000, jobDescription: 'Househelp will get clothes from drying place and make proper arrangements in shelf' },
     ];
 
     const handleButtonClick = (value: string) => {

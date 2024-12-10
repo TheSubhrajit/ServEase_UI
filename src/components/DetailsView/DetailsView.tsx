@@ -11,15 +11,29 @@ import Confirmationpage from "../ServiceProvidersDetails/Confirmationpage"; // A
 interface DetailsViewProps {
   sendDataToParent: (data: string) => void;
   selected? : string; // Define the prop type
+  checkoutItem?: (data: any) => void;
 }
 
-export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , selected}) => {
+export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , selected , checkoutItem}) => {
   const [ServiceProvidersData, setServiceProvidersData] = useState<any[]>([]);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentView, setCurrentView] = useState("DetailsView");
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
+
+  const [checkoutData, setCheckoutData] = useState(null);
+
+  // Callback to receive data from Confirmationpage
+  const handleCheckoutData = (data) => {
+    setCheckoutData(data); // Save the data sent from the child component
+    console.log('Received checkout data:', data);
+
+    // Send the received data back to the parent via the callback function
+    if (checkoutItem) {
+      checkoutItem(data); // Send data to the parent component
+    }
+  };
 
   useEffect(() => {
     console.log(selected)
@@ -142,7 +156,7 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , sel
                 availability={selectedProvider.availability}
                 profilePic={selectedProvider.profilePic}
                 role = {selected}
-                onBack={handleBackToDetails}
+                onBack={handleCheckoutData}
               />
             )}
           </div>

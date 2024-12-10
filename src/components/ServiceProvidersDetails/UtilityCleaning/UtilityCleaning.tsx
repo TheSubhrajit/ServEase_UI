@@ -27,22 +27,22 @@ const UtilityCleaning: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
 
   // Pricing data
   const pricingData: PricingData[] = [
-    { serviceType: 'Regular', subCategory: 'people', peopleRange: '1-2', frequency: 1, pricePerMonth: 1000 },
-    { serviceType: 'Regular', subCategory: 'people', peopleRange: '1-2', frequency: 2, pricePerMonth: 1500 },
-    { serviceType: 'Regular', subCategory: 'people', peopleRange: '3-4', frequency: 1, pricePerMonth: 1200 },
-    { serviceType: 'Regular', subCategory: 'people', peopleRange: '3-4', frequency: 2, pricePerMonth: 1800 },
-    { serviceType: 'Regular', subCategory: 'people', peopleRange: '5-6', frequency: 1, pricePerMonth: 1400 },
-    { serviceType: 'Regular', subCategory: 'people', peopleRange: '5-6', frequency: 2, pricePerMonth: 2000 },
-    { serviceType: 'Regular', subCategory: 'people', peopleRange: '7-9', frequency: 1, pricePerMonth: 1500 },
-    { serviceType: 'Regular', subCategory: 'people', peopleRange: '7-9', frequency: 2, pricePerMonth: 2100 },
-    { serviceType: 'Premium', subCategory: 'people', peopleRange: '1-2', frequency: 1, pricePerMonth: 1200 },
-    { serviceType: 'Premium', subCategory: 'people', peopleRange: '1-2', frequency: 2, pricePerMonth: 1800 },
-    { serviceType: 'Premium', subCategory: 'people', peopleRange: '3-4', frequency: 1, pricePerMonth: 1440 },
-    { serviceType: 'Premium', subCategory: 'people', peopleRange: '3-4', frequency: 2, pricePerMonth: 2160 },
-    { serviceType: 'Premium', subCategory: 'people', peopleRange: '5-6', frequency: 1, pricePerMonth: 1680 },
-    { serviceType: 'Premium', subCategory: 'people', peopleRange: '5-6', frequency: 2, pricePerMonth: 2400 },
-    { serviceType: 'Premium', subCategory: 'people', peopleRange: '7-9', frequency: 1, pricePerMonth: 1800 },
-    { serviceType: 'Premium', subCategory: 'people', peopleRange: '7-9', frequency: 2, pricePerMonth: 2520 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid", serviceType: 'Regular', subCategory: 'people', peopleRange: '1-2', frequency: 1, pricePerMonth: 1000 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Regular', subCategory: 'people', peopleRange: '1-2', frequency: 2, pricePerMonth: 1500 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Regular', subCategory: 'people', peopleRange: '3-4', frequency: 1, pricePerMonth: 1200 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Regular', subCategory: 'people', peopleRange: '3-4', frequency: 2, pricePerMonth: 1800 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Regular', subCategory: 'people', peopleRange: '5-6', frequency: 1, pricePerMonth: 1400 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Regular', subCategory: 'people', peopleRange: '5-6', frequency: 2, pricePerMonth: 2000 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Regular', subCategory: 'people', peopleRange: '7-9', frequency: 1, pricePerMonth: 1500 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Regular', subCategory: 'people', peopleRange: '7-9', frequency: 2, pricePerMonth: 2100 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Premium', subCategory: 'people', peopleRange: '1-2', frequency: 1, pricePerMonth: 1200 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Premium', subCategory: 'people', peopleRange: '1-2', frequency: 2, pricePerMonth: 1800 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Premium', subCategory: 'people', peopleRange: '3-4', frequency: 1, pricePerMonth: 1440 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Premium', subCategory: 'people', peopleRange: '3-4', frequency: 2, pricePerMonth: 2160 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Premium', subCategory: 'people', peopleRange: '5-6', frequency: 1, pricePerMonth: 1680 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Premium', subCategory: 'people', peopleRange: '5-6', frequency: 2, pricePerMonth: 2400 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Premium', subCategory: 'people', peopleRange: '7-9', frequency: 1, pricePerMonth: 1800 },
+    { serviceCategory:"Utility Cleaning" , type:"Maid",serviceType: 'Premium', subCategory: 'people', peopleRange: '7-9', frequency: 2, pricePerMonth: 2520 },
   ];
 
   // Handle selection of buttons (people or frequency)

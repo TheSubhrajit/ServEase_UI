@@ -33,14 +33,14 @@ const BathroomCleaning: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => 
 
     // Pricing data with job descriptions
     const pricingData: PricingData[] = [
-        { serviceCategory: 'bathroom', serviceType: 'Regular', subCategory: 'number', size: 1, frequency: "1 day / week", pricePerMonth: 400, jobDescription: 'Weekly cleaning of bathroom' },
-        { serviceCategory: 'bathroom', serviceType: 'Regular', subCategory: 'number', size: 1, frequency: "2 day / week", pricePerMonth: 600, jobDescription: '2 days in a week cleaning of bathroom' },
-        { serviceCategory: 'bathroom', serviceType: 'Regular', subCategory: 'number', size: 2, frequency: "1 day / week", pricePerMonth: 600, jobDescription: '2 bathrooms of weekly cleaning' },
-        { serviceCategory: 'bathroom', serviceType: 'Regular', subCategory: 'number', size: 2, frequency: "2 day / week", pricePerMonth: 1000, jobDescription: '2 bathrooms of weekly cleaning' },
-        { serviceCategory: 'bathroom', serviceType: 'Premium', subCategory: 'number', size: 1, frequency: "1 day / week", pricePerMonth: 600, jobDescription: 'Premium cleaning of bathroom weekly' },
-        { serviceCategory: 'bathroom', serviceType: 'Premium', subCategory: 'number', size: 1, frequency: "2 day / week", pricePerMonth: 800, jobDescription: 'Premium cleaning of bathroom 2 days/week' },
-        { serviceCategory: 'bathroom', serviceType: 'Premium', subCategory: 'number', size: 2, frequency: "1 day / week", pricePerMonth: 800, jobDescription: '2 bathrooms premium weekly cleaning' },
-        { serviceCategory: 'bathroom', serviceType: 'Premium', subCategory: 'number', size: 2, frequency: "1 day / week", pricePerMonth: 800, jobDescription: '2 bathrooms premium weekly cleaning' },
+        { serviceCategory: 'bathroom', type:"maid", serviceType: 'Regular', subCategory: 'number', size: 1, frequency: "1 day / week", pricePerMonth: 400, jobDescription: 'Weekly cleaning of bathroom' },
+        { serviceCategory: 'bathroom', type:"maid",serviceType: 'Regular', subCategory: 'number', size: 1, frequency: "2 day / week", pricePerMonth: 600, jobDescription: '2 days in a week cleaning of bathroom' },
+        { serviceCategory: 'bathroom', type:"maid",serviceType: 'Regular', subCategory: 'number', size: 2, frequency: "1 day / week", pricePerMonth: 600, jobDescription: '2 bathrooms of weekly cleaning' },
+        { serviceCategory: 'bathroom', type:"maid",serviceType: 'Regular', subCategory: 'number', size: 2, frequency: "2 day / week", pricePerMonth: 1000, jobDescription: '2 bathrooms of weekly cleaning' },
+        { serviceCategory: 'bathroom', type:"maid",serviceType: 'Premium', subCategory: 'number', size: 1, frequency: "1 day / week", pricePerMonth: 600, jobDescription: 'Premium cleaning of bathroom weekly' },
+        { serviceCategory: 'bathroom', type:"maid",serviceType: 'Premium', subCategory: 'number', size: 1, frequency: "2 day / week", pricePerMonth: 800, jobDescription: 'Premium cleaning of bathroom 2 days/week' },
+        { serviceCategory: 'bathroom', type:"maid",serviceType: 'Premium', subCategory: 'number', size: 2, frequency: "1 day / week", pricePerMonth: 800, jobDescription: '2 bathrooms premium weekly cleaning' },
+        { serviceCategory: 'bathroom', type:"maid",serviceType: 'Premium', subCategory: 'number', size: 2, frequency: "1 day / week", pricePerMonth: 800, jobDescription: '2 bathrooms premium weekly cleaning' },
         { serviceCategory: 'bathroom_deep_cleaning', serviceType: 'Regular', subCategory: 'number', size: 0, frequency: 'Daily', pricePerMonth: 600, jobDescription: 'Weekly cleaning of bathroom + All bathroom walls cleaning' },
     ];
 

@@ -7,4 +7,5 @@ export type PricingData = {
     frequency: number | string;
     pricePerMonth: number;
     jobDescription?:string;
+    type?:string;
   };
