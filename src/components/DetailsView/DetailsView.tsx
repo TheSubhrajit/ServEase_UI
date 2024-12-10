@@ -141,6 +141,7 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , sel
                 ratingsCount={selectedProvider.ratingsCount}
                 availability={selectedProvider.availability}
                 profilePic={selectedProvider.profilePic}
+                role = {selected}
                 onBack={handleBackToDetails}
               />
             )}

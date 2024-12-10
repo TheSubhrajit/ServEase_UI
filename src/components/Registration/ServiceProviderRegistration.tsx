@@ -461,7 +461,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     if (validateForm()) {
       try {
         const response = await axios.post(
-          "http://43.205.212.94:8080/api/serviceproviders/serviceprovider/add",
+          "http://localhost:8080/api/serviceproviders/serviceprovider/add",
           filteredPayload,
           {
             headers: {

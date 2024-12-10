@@ -34,6 +34,7 @@ import { PricingData } from '../../types/PricingData';
 import SweepingAndMopping from './SweepingAndMopping/SweepingAndMopping';
 import OtherUtilityServices from './OtherUtilityServices/OtherUtilityServices';
 import SmallCart from './SmallCart/SmallCart';
+import NannyPricing from './NannyService/NannyPricing/NannyPricing';
 
 interface selectedServices {
   entry: PricingData;
@@ -50,6 +51,7 @@ const  Confirmationpage= (props) => {
     experience,
     profilePic,
     diet,
+    role,
     onBack, // Accept onBack as a prop
   } = props;
 
@@ -258,7 +260,7 @@ const  Confirmationpage= (props) => {
        </Card>
        </div>
        <div style={{display:'flex'}}> 
-       <Card style={{width:"60%" , display:"flex"}}>
+       {role === "maid" && <Card style={{width:"60%" , display:"flex"}}>
        <div style={{ display : "flex" , width :'100%' , marginTop:"20px"}}>
       {buttons.map((button) => (
         <button
@@ -287,7 +289,10 @@ const  Confirmationpage= (props) => {
         </button>
          ))}
        </div>
-       </Card>
+       </Card>}
+       {role === "nanny" && <Card style={{width:"60%" , display:"flex"}}>
+        <NannyPricing />
+       </Card>} 
        <Card style={{width:"40%"}}>
           <SmallCart data={selectedItems} />
        </Card>
