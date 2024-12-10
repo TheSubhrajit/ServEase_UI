@@ -1,5 +1,6 @@
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 
 
 const CookPricing = () =>{
@@ -101,7 +102,7 @@ const CookPricing = () =>{
 
     return (
         
-        <div style={{display:'grid'}}>
+        <div style={{display:'grid' , width:'100%'}}>
         <Typography gutterBottom>
         Service Type :
         {typeButtonsSelector.map((button) => (
@@ -166,6 +167,8 @@ const CookPricing = () =>{
       </Typography>
 
       <Typography gutterBottom>Price: ₹{price}</Typography>
+
+      <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button>
       </div>
     )
 }

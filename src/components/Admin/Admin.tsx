@@ -34,7 +34,7 @@ const Admin: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("http://13.127.98.11:9090/api/customers");
+                const response = await fetch("http://43.205.212.94:8080/api/customer/get-all-customers");
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
                 }

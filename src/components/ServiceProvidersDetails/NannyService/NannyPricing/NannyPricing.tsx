@@ -1,5 +1,7 @@
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from '@mui/material';
+import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+
+import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 
 // Sample data as per your provided table
 const priceData = [
@@ -110,7 +112,7 @@ const NannyPricing = () => {
         ]
 
   return (
-    <div>
+    <div style={{width:'100%' , display:'grid'}}>
       <Typography gutterBottom>
         Service Type :
         {typeButtonsSelector.map((button) => (
@@ -175,6 +177,8 @@ const NannyPricing = () => {
         ))}
       </Typography>
       <Typography gutterBottom>Price: ₹{price}</Typography>
+
+      <Button type="submit" variant="outlined" style={{float :'right',margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button>
     </div>
   );
 };

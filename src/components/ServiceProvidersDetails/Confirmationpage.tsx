@@ -261,7 +261,7 @@ const  Confirmationpage= (props) => {
        </Card>
        </div>
        <div style={{display:'flex'}}> 
-       {role === "maid" && <Card style={{width:"60%" , display:"flex"}}>
+       {role === "maid" && <Card style={{width:"100%%" , display:"flex"}}>
        <div style={{ display : "flex" , width :'100%' , marginTop:"20px"}}>
       {buttons.map((button) => (
         <button
@@ -291,16 +291,16 @@ const  Confirmationpage= (props) => {
          ))}
        </div>
        </Card>}
-       {role === "nanny" && <Card style={{width:"60%" , display:"flex"}}>
+       {role === "nanny" && <Card style={{width:"100%" , display:"flex"}}>
         <NannyPricing />
        </Card>} 
-       {role === "cook" && <Card style={{width:"60%" , display:"flex"}}>
+       {role === "cook" && <Card style={{width:"100%" , display:"flex"}}>
         <CookPricing />
        </Card>} 
        
-       <Card style={{width:"40%"}}>
+       {/* <Card style={{width:"40%"}}>
           <SmallCart data={selectedItems} />
-       </Card>
+       </Card> */}
        </div>
       <DialogComponent 
         open={open} 
