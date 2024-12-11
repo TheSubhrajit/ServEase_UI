@@ -42,7 +42,6 @@ interface selectedServices {
   entry: PricingData;
   price: number;
 }
-
 const  Confirmationpage= (props) => {
   const {
     firstName,
@@ -66,7 +65,7 @@ const  Confirmationpage= (props) => {
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
 
   const [data , setData] = useState<any>([])
-
+  const [BackTo, setBackTo] = useState("DetailsView");
   const [selectedItems, setSelectedItems] = useState<any>([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -111,9 +110,11 @@ const  Confirmationpage= (props) => {
     setOpen(false);
   };
 
-
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
+  };
+  const handleBackClick = () => {
+    setBackTo("DetailView");
   };
 
   const handleSave = () => {
@@ -178,7 +179,6 @@ const  Confirmationpage= (props) => {
     //   setSnackbarSeverity('error');
     //   setSnackbarOpen(true);
     // }
-  
 
   console.log(selectedItems)
     handleClose(); // Close the dialog after saving
@@ -237,7 +237,7 @@ const  Confirmationpage= (props) => {
   };
 
   const buttons = [
-    { value: 'utilityCleaning', imageSrc: "../Utensil.png" , text:"Utility cleaning"},
+    { value: 'utilityCleaning', imageSrc: "../Utensil.png" , text:"Utensil cleaning"},
     { value: 'washroomCleaning', imageSrc: "../bathroom.png" , text:"Washroom cleaning" },
     { value: 'clothdrying', imageSrc: "../clothes.png" , text:"Cloth drying" },
     { value: 'dusting', imageSrc: "../Dusting.png" ,text:"Dusting"  },
@@ -260,6 +260,11 @@ const  Confirmationpage= (props) => {
 
   return (
     <div className="details-container">
+      {/* <Button onClick={onBack} variant="outlined">
+  Back to Details View
+</Button> */}
+
+
      <div style={{width:'100%'}}> 
       <Card style={{ width: '100%'}}> 
         <div style={{display:'flex'}}>

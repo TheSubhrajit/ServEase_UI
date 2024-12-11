@@ -302,13 +302,12 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             },
           }
         );
-  
+
         // Log the response data
         console.log("Server Response:", response.data);
-  
+
         // Show success message in the Snackbar
         showSnackbar("Registration Successful!", "success");
-  
   
         // Call the onBackToLogin handler to redirect to login
         onBackToLogin(true);

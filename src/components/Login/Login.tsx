@@ -27,6 +27,7 @@ export const Login: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [redirectComponent, setRedirectComponent] = useState<React.ReactNode | null>(null);
+
   const handleSignUpClick = () => {
     setIsRegistration(true);
   };
@@ -34,6 +35,7 @@ export const Login: React.FC = () => {
   const handleBackToLogin = () => {
     setIsRegistration(false);
     setIsForgotPassword(false);
+    setServiceRegistration(false);
   };
 
   const handleSignUpClickServiceProvider = () => {
@@ -57,71 +59,6 @@ export const Login: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
-  // const handleLogin = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     // Dummy user credentials check
-  //     if (email === "user@example.com" && password === "password123") {
-  //       setSnackbarMessage("User logged in successfully!");
-  //       setSnackbarSeverity("success");
-  //       setOpenSnackbar(true);
-  //       setTimeout(() => {
-  //         setRedirectComponent(
-  //           <DetailsView sendDataToParent={(data: string) => console.log(data)} />
-  //         );
-  //       }, 1000);
-  //       return;
-  //     }
-  
-  //     // For other users, make the API call
-  //     const requestData = {
-  //       username: email,
-  //       password: password
-  //     };
-
-  //     const response = await axiosInstance.post('/api/user/login', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(requestData),
-  //     });
-
-  //     if (response.status !== 200) {
-  //       throw new Error('Network response was not ok.');
-  //     }
-      
-
-  //     const data = await response.data;
-
-  //     if (data.message === "Login successful!") {
-  //       setSnackbarMessage("Login successful!");
-  //       setSnackbarSeverity("success");
-  //       setOpenSnackbar(true);
-  
-  //       // Redirect based on role
-  //       setTimeout(() => {
-  //         if (data.role === "SERVICE_PROVIDER") {
-  //           setRedirectComponent(<ServiceProviderDashboard />);
-  //         } else {
-  //           setRedirectComponent(
-  //             <DetailsView sendDataToParent={(data: string) => console.log(data)} />
-  //           );
-  //         }
-  //       }, 1000);
-  //     } else {
-  //       setSnackbarMessage("Login failed. Please check your credentials.");
-  //       setSnackbarSeverity("error");
-  //       setOpenSnackbar(true);
-  //     }
-  //   } catch (error) {
-  //     console.error('Login error:', error);
-  //     setSnackbarMessage('An error occurred during login.');
-  //     setSnackbarSeverity('error');
-  //     setOpenSnackbar(true);
-  //   }
-  // };
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
   
@@ -148,7 +85,7 @@ export const Login: React.FC = () => {
       // Check if the response is successful
       if (response.status === 200 && response.data) {
         const { message, role } = response.data;
-  
+
         // Display success message
         setSnackbarMessage(message || "Login successful!");
         setSnackbarSeverity("success");
@@ -177,8 +114,6 @@ export const Login: React.FC = () => {
       setOpenSnackbar(true);
     }
   };
-  
-
 
   if (redirectComponent) {
     return <>{redirectComponent}</>;
@@ -254,8 +189,8 @@ export const Login: React.FC = () => {
                 </form>
                 <div className="flex flex-col items-center justify-center text-sm mt-4">
                   <h3 className="dark:text-gray-300">Don't have an account?</h3>
-                  <button onClick={handleSignUpClick} className="text-blue-400 ml-2 underline">Sign Up As User</button>
-                  <button onClick={handleSignUpClickServiceProvider} className="text-blue-400 ml-2 underline">Sign Up As Service Provider</button>
+                  <button onClick={handleSignUpClick} className="text-blue-400 ml-2 underline">Sign up as User</button>
+                  <button onClick={handleSignUpClickServiceProvider} className="text-blue-400 ml-2 underline">Sign up as Service Provider</button>
                 </div>
               </>
             )}

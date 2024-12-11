@@ -460,8 +460,8 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     // Form validation (optional)
     if (validateForm()) {
       try {
-        const response = await axios.post(
-          "http://43.205.212.94:8080/api/serviceproviders/serviceprovider/add",
+        const response = await axiosInstance.post(
+          "/api/serviceproviders/serviceprovider/add",
           filteredPayload,
           {
             headers: {
@@ -474,6 +474,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         setSnackbarSeverity("success");
         setSnackbarMessage("Service provider added successfully!");
         console.log("Success:", response.data);
+        onBackToLogin(true);
       } catch (error) {
         // Update Snackbar for error
         setSnackbarOpen(true);

@@ -22,7 +22,8 @@ const priceData = [
 const typeButtonsSelector = [
     { key: 1, value: 'Regular' },
     { key: 2, value: 'Premium' },
-    { key : 3 , value : 'Regular - In House (24 hours live in)'}
+    { key : 3 , value : 'Regular - In House (24 hours live in)'},
+    { key: 4, value: 'On demand' }
   ];
 
   const subCategoryButtonsSelector = [

@@ -53,14 +53,15 @@ const CookPricing = () =>{
 
       const typeButtonsSelector = [
         { key: 1, value: 'Regular' },
-        { key: 2, value: 'Premium' }
+        { key: 2, value: 'Premium' },
+        { key: 3, value: 'On Demand' }
       ];
 
       const mealTypeButtonsSelector = [
         { key: 1, value: 'Breakfast' },
         { key: 2, value: 'Lunch/Dinner' },
         { key: 3, value: 'Lunch + Dinner' },
-        { key: 4, value: 'Breakfast + Dinner' },
+        { key: 4, value: 'Breakfast + Lunch/Dinner' },
         { key: 5, value: 'Breakfast + Lunch + Dinner' }
       ];
 

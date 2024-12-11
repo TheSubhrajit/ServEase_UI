@@ -65,13 +65,14 @@ const ServiceProvidersDetails = (props) => {
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
       }}>
-        <div className="avatar-section"> {/* Section for avatar */}
+        {/* <div className="avatar-section">
+           
           <Avatar
             alt={`${firstName} ${lastName}`}
             src={`/${profilePic}`}
             className="service-avatar"
           />
-        </div>
+        </div> */}
 
         <div className="service-details"> {/* Section for service details */}
         <Typography
