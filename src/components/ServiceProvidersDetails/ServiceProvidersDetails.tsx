@@ -29,6 +29,7 @@ const ServiceProvidersDetails = (props) => {
     dob,
     description,
     cookingSpeciality,
+    housekeepingRole,
     profilePic
   } = props;
     // Map diet values to corresponding image paths
@@ -122,6 +123,25 @@ const ServiceProvidersDetails = (props) => {
       {otherServices}
     </span>
   </Typography>
+    {housekeepingRole === "COOK" && (
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
+            Cooking Speciality: 
+            {/* <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
+              {cookingSpeciality}
+            </span> */}
+            <span style={{ display: 'inline-block', marginLeft: '5px' }}>
+      <img
+        src={dietImage}
+        alt={cookingSpeciality}
+        style={{
+          width: '20px',
+          height: '20px',
+          verticalAlign: 'middle', // Keeps the image aligned with the text
+        }}
+      />
+    </span>
+          </Typography>
+          )}
 
   <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
     Description: 
@@ -129,7 +149,8 @@ const ServiceProvidersDetails = (props) => {
      N/A
     </span>
   </Typography>
-
+       
+      
 
             {/* Accordion for Description */}
         {/* <Accordion>

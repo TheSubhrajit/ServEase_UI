@@ -14,6 +14,7 @@ interface DetailsViewProps {
   selected? : string; // Define the prop type
   checkoutItem?: (data: any) => void;
 }
+  
 
 export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , selected , checkoutItem}) => {
   const [ServiceProvidersData, setServiceProvidersData] = useState<any[]>([]);
