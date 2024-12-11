@@ -7,6 +7,7 @@ import axiosInstance from '../../services/axiosInstance';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 import CloseIcon from '@mui/icons-material/Close'; 
 import Confirmationpage from "../ServiceProvidersDetails/Confirmationpage"; // Adjust the path accordingly
+import { useNavigate } from "react-router-dom";
 
 interface DetailsViewProps {
   sendDataToParent: (data: string) => void;
@@ -22,7 +23,6 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , sel
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentView, setCurrentView] = useState("DetailsView");
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
-
   const [checkoutData, setCheckoutData] = useState(null);
 
   // Callback to receive data from Confirmationpage

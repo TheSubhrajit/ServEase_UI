@@ -307,6 +307,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
    setSnackbarSeverity("success");
    setSnackbarMessage("User added successfully!");
    console.log("Success:", response.data);
+   onBackToLogin(true);
  } catch (error) {
    // Update Snackbar for error
    setSnackbarOpen(true);

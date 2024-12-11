@@ -95,6 +95,7 @@ const UtilityCleaning: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
           >
             <FormControlLabel value="Regular" control={<Radio />} label="Regular" />
             <FormControlLabel value="Premium" control={<Radio />} label="Premium" />
+            <FormControlLabel value="On Demand" control={<Radio />} label="On Demand" />
           </RadioGroup>
         </FormControl>
       </Typography>

@@ -18,21 +18,6 @@ const Dashboard: React.FC = () => {
   });
   const serviceProviderId = 1;
 
-  // useEffect(() => {
-  //   const fetchServiceProvider = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(
-  //         "/api/serviceproviders/get/serviceprovider/1" // Relative to the baseURL
-  //       );
-  //       const { firstName, lastName, age, housekeepingRole, cookingSpeciality, diet } = response.data;
-  //       setServiceProvider({ firstName, lastName, age, housekeepingRole, cookingSpeciality, diet });
-  //     } catch (error) {
-  //       console.error("Error fetching service provider details:", error);
-  //     }
-  //   };
-
-  //   fetchServiceProvider();
-  // }, []);
 
   useEffect(() => {
     const fetchServiceProvider = async () => {
