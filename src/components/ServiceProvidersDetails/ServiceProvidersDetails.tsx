@@ -81,9 +81,11 @@ const ServiceProvidersDetails = (props) => {
   {/* Name:  */}
   <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
     {firstName}{middleName} {lastName}
-  </span>, 
+  </span>
   <span style={{ fontWeight: 'bold', fontSize: '1.2rem', marginLeft: '4px' }}>
-    ({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'}, {calculateAge(dob)} ),
+    ({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'}
+     {/* {calculateAge(dob)}  */}
+     )
     <span style={{ display: 'inline-block', marginLeft: '5px' }}>
       <img
         src={dietImage}
@@ -123,7 +125,7 @@ const ServiceProvidersDetails = (props) => {
   <Typography variant="subtitle1" style={{ fontWeight: 'bold', marginBottom: '2px' }}>
     Description: 
     <span style={{ fontWeight: 'normal', fontSize: '1rem' }}>
-      Detailed description of the service provider goes here.
+     N/A
     </span>
   </Typography>
 
