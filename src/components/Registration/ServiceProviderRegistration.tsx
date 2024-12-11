@@ -514,7 +514,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
 
       <Grid item xs={12}>
         <TextField
-          placeholder="First Name"
+          placeholder="First Name *"
           name="firstName"
           fullWidth
           required
@@ -537,7 +537,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
 
       <Grid item xs={12}>
         <TextField
-          placeholder="Last Name"
+          placeholder="Last Name *"
           name="lastName"
           fullWidth
           required
@@ -566,7 +566,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
 
       <Grid item xs={12}>
         <FormControl component="fieldset" error={!!errors.gender}>
-          <FormLabel component="legend">Gender</FormLabel>
+          <FormLabel component="legend">Gender *</FormLabel>
           <RadioGroup
             row
             name="gender"
@@ -583,7 +583,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
 
       <Grid item xs={12}>
         <TextField
-          placeholder="Email"
+          placeholder="Email *"
           name="emailId"
           fullWidth
           required
@@ -596,7 +596,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
 
       <Grid item xs={12}>
               <TextField
-                placeholder="Password"
+                placeholder="Password *"
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 fullWidth
@@ -623,7 +623,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
 
             <Grid item xs={12}>
               <TextField
-                placeholder="Confirm Password"
+                placeholder="Confirm Password *"
                 type={showConfirmPassword ? 'text' : 'password'}
                 name="confirmPassword"
                 fullWidth
@@ -649,7 +649,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
             </Grid>
             <Grid item xs={12}>
               <TextField
-                placeholder="Mobile Number"
+                placeholder="Mobile Number *"
                 name="mobileNo"
                 fullWidth
                 required
@@ -677,7 +677,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           <Grid container spacing={2}>
             <Grid item xs={12} className="pt-4">
               <TextField
-                placeholder="Address"
+                placeholder="Address *"
                 name="address"
                 fullWidth
                 required
@@ -689,7 +689,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                placeholder="BuildingName"
+                placeholder="BuildingName *"
                 name="buildingName"
                 fullWidth
                 required
@@ -701,7 +701,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
             </Grid>
             <Grid item xs={12} sm={6} >
               <TextField
-                placeholder="Locality"
+                placeholder="Locality *"
                 name="locality"
                 fullWidth
                 required
@@ -713,7 +713,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
             </Grid>
             <Grid item xs={12} sm={6} >
               <TextField
-                placeholder="Street"
+                placeholder="Street *"
                 name="street"
                 fullWidth
                 required
@@ -725,7 +725,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
             </Grid>
             <Grid item xs={12}sm={6}>
               <TextField
-                placeholder="Pincode"
+                placeholder="Pincode *"
                 name="pincode"
                 fullWidth
                 required
@@ -737,7 +737,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                placeholder="CurrentLocation"
+                placeholder="CurrentLocation *"
                 name="currentLocation"
                 fullWidth
                 required
@@ -980,7 +980,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
        {/* Document Type Selection */}
        <Grid item xs={12}>
        <TextField
-                placeholder="Aadhaar Number"
+                placeholder="Aadhaar Number *"
                 name="AADHAR"
                 fullWidth
                 required
