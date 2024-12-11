@@ -21,6 +21,7 @@ import {
   Alert,
   Radio,
   RadioGroup,
+  Tooltip,
 } from "@mui/material";
 import { FaArrowLeft, FaCheckCircle, FaStar ,FaRegStar,FaAward, FaRupeeSign, FaRegHeart, FaMapMarkerAlt } from 'react-icons/fa';
 import { AiOutlineCalendar } from 'react-icons/ai';
@@ -237,11 +238,12 @@ const  Confirmationpage= (props) => {
   };
 
   const buttons = [
+    
     { value: 'utilityCleaning', imageSrc: "../Utensil.png" , text:"Utensil cleaning"},
+    { value: 'sweepMoping', imageSrc: "../sweeping.png" ,text:"Sweeping and mopping" },
     { value: 'washroomCleaning', imageSrc: "../bathroom.png" , text:"Washroom cleaning" },
     { value: 'clothdrying', imageSrc: "../clothes.png" , text:"Cloth drying" },
     { value: 'dusting', imageSrc: "../Dusting.png" ,text:"Dusting"  },
-    { value: 'sweepMoping', imageSrc: "../sweeping.png" ,text:"Sweeping and mopping" },
     { value: 'others', imageSrc: "../sweeping.png" , text:"Other services" }
   ];
 
@@ -293,7 +295,9 @@ const  Confirmationpage= (props) => {
        <div style={{display:'flex'}}> 
        {role === "maid" && <Card style={{width:"100%%" , display:"flex"}}>
        <div style={{ display : "flex" , width :'100%' , marginTop:"20px"}}>
+
       {buttons.map((button) => (
+        <Tooltip title={button.text}>
         <button
           key={button.value}
           onClick={() => handleButtonClick(button.value , 'category')}
@@ -307,6 +311,7 @@ const  Confirmationpage= (props) => {
             borderRadius: '8px',
           }}
         >
+          
           <img
             src={button.imageSrc}
             alt={`button-${button.value}`}
@@ -317,7 +322,9 @@ const  Confirmationpage= (props) => {
               opacity: selected === button.value ? 0.8 : 1, // Dim image when not selected
             }}
           />
+          
         </button>
+        </Tooltip>
          ))}
 
 <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button>
