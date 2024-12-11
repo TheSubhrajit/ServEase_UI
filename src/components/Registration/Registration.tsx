@@ -302,31 +302,25 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             },
           }
         );
-  
-        // Log the response data
-        console.log("Server Response:", response.data);
-  
-        // Show success message in the Snackbar
-        showSnackbar("Registration Successful!", "success");
-  
-  
-        // Call the onBackToLogin handler to redirect to login
-        onBackToLogin(true);
-      } catch (error: any) {
-        // Handle error response
-        console.error("Error registering user:", error.response || error.message);
-  
-        // Show error message in the Snackbar
-        showSnackbar(
-          error.response?.data?.message || "Registration failed. Please try again.",
-          "error"
-        );
-      }
-    } else {
-      // Show error message if form validation fails
-      showSnackbar("Please fix the errors and try again.", "error");
-    }
-  };
+   // Update Snackbar for success
+   setSnackbarOpen(true);
+   setSnackbarSeverity("success");
+   setSnackbarMessage("User added successfully!");
+   console.log("Success:", response.data);
+ } catch (error) {
+   // Update Snackbar for error
+   setSnackbarOpen(true);
+   setSnackbarSeverity("error");
+   setSnackbarMessage("Failed to add User. Please try again.");
+   console.error("Error submitting form:", error);
+ }
+} else {
+ // Update Snackbar for validation error
+ setSnackbarOpen(true);
+ setSnackbarSeverity("warning");
+ setSnackbarMessage("Please fill out all required fields.");
+}
+};
   
 
   const handleNext = () => {
@@ -352,7 +346,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  placeholder="First Name"
+                  placeholder="First Name *"
                   name="firstName"
                   fullWidth
                   required
@@ -383,7 +377,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  placeholder="Last Name"
+                  placeholder="Last Name *"
                   name="lastName"
                   fullWidth
                   required
@@ -433,7 +427,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
         <TextField
-          placeholder="Email"
+          placeholder="Email *"
           name="emailId"
           fullWidth
           required
@@ -471,7 +465,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  placeholder="Confirm Password"
+                  placeholder="Confirm Password *"
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   fullWidth
@@ -501,7 +495,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  placeholder="Phone Number"
+                  placeholder="Phone Number *"
                   name="mobileNo"
                   fullWidth
                   required
@@ -524,7 +518,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  placeholder="Address"
+                  placeholder="Address *"
                   name="address"
                   fullWidth
                   required
@@ -540,7 +534,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
               </Grid>
               <Grid item xs={12} sm={6} >
               <TextField
-                placeholder="Locality"
+                placeholder="Locality *"
                 name="locality"
                 fullWidth
                 required
@@ -552,7 +546,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             </Grid>
             <Grid item xs={12} sm={6} >
               <TextField
-                placeholder="Street"
+                placeholder="Street *"
                 name="street"
                 fullWidth
                 required
@@ -564,7 +558,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             </Grid>
             <Grid item xs={12}sm={6}>
               <TextField
-                placeholder="Pincode"
+                placeholder="Pincode *"
                 name="pincode"
                 fullWidth
                 required
@@ -576,7 +570,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                placeholder="BuildingName"
+                placeholder="BuildingName *"
                 name="buildingName"
                 fullWidth
                 required
@@ -588,7 +582,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                placeholder="CurrentLocation"
+                placeholder="CurrentLocation *"
                 name="currentLocation"
                 fullWidth
                 required
