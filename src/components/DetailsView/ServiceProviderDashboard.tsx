@@ -28,7 +28,7 @@ const ServiceProviderDashboard:React.FC = (data) => {
     const fetchServiceProvider = async () => {
       try {
         const response = await axiosInstance.get(
-          "/api/serviceproviders/get/serviceprovider/1"
+          "/api/serviceproviders/get/serviceprovider/2"
         );
         const { firstName, lastName, age, housekeepingRole, cookingSpeciality, diet } = response.data;
         setServiceProvider({ firstName, lastName, age, housekeepingRole, cookingSpeciality, diet });
@@ -39,6 +39,7 @@ const ServiceProviderDashboard:React.FC = (data) => {
 
     fetchServiceProvider();
   }, []);
+  
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEditClick = () => {
@@ -117,5 +118,3 @@ const ServiceProviderDashboard:React.FC = (data) => {
 };
  
 export default ServiceProviderDashboard;
-
-

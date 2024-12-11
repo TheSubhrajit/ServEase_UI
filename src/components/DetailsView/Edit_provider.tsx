@@ -14,6 +14,7 @@ import axiosInstance from '../../services/axiosInstance';
 interface EditProviderProps {
   goBack: () => void;
 }
+
 const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
   const [formData, setFormData] = useState({
     account: {
@@ -42,7 +43,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
   });
 
   // Replace this ID with a dynamic ID if needed
-  const serviceProviderId = 1;
+  const serviceProviderId = 2;
 
   useEffect(() => {
     const fetchData = async () => {
