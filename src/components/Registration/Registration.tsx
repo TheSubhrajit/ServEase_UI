@@ -31,6 +31,7 @@ import {
 import ProfileImageUpload from './ProfileImageUpload';
 import axios from "axios";
 import ChipInput from "../Common/ChipInput/ChipInput";
+import { keys } from "../../env/env";
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -89,24 +90,25 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   const handleBackLogin = (e: any) => {
     onBackToLogin(e);
   };
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<AlertColor>("success");
 
-    const showSnackbar = (message: string, severity: AlertColor = 'success') => {
-      setSnackbarMessage(message);
-      setSnackbarSeverity(severity);
-      setSnackbarOpen(true);
+const [snackbarOpen, setSnackbarOpen] = useState(false);
+const [snackbarMessage, setSnackbarMessage] = useState("");
+const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "warning" | "info">("success");
+
+
+    // const showSnackbar = (message: string, severity: AlertColor = 'success') => {
+    //   setSnackbarMessage(message);
+    //   setSnackbarSeverity(severity);
+    //   setSnackbarOpen(true);
+    // };
+
+    const handleCloseSnackbar = () => {
+      setSnackbarOpen(false);
     };
-  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackbarOpen(false);
-  };
 
   const [activeStep, setActiveStep] = useState(0);
+  const [loadingLocation, setLoadingLocation] = useState(false);
+
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     middleName: "",
@@ -126,7 +128,46 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     hobbies: "",
     language: "",
   });
+ // Fetch Location
+ const fetchLocation = () => {
+  if (navigator.geolocation) {
+    setLoadingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const response = await axios.get(
+            `https://maps.googleapis.com/maps/api/geocode/json`,
+            {
+              params: {
+                latlng: `${latitude},${longitude}`,
+                key: keys.api_key, // Use your API key
+              },
+            }
+          );
 
+          const address = response.data.results[0]?.formatted_address || 'Address not found';
+          console.log('Fetched Location:', address);
+          setFormData((prevData) => ({
+            ...prevData,
+            address,
+            currentLocation: address,
+          }));
+        } catch (error) {
+          console.error('Failed to fetch location:', error);
+        } finally {
+          setLoadingLocation(false);
+        }
+      },
+      (error) => {
+        console.error('Error retrieving geolocation:', error.message);
+        setLoadingLocation(false);
+      }
+    );
+  } else {
+    console.error('Geolocation is not supported by this browser.');
+  }
+};
   const [availableLanguages] = useState<string[]>([
     "Assamese",
     "Bengali",
@@ -287,42 +328,42 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   //   }
   // };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  
-    // Ensure form validation passes
-    if (validateForm()) {
-      try {
-        const response = await axios.post(
-          "http://43.205.212.94:8080/api/customer/add-customer",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              
-            },
-          }
-        );
-   // Update Snackbar for success
-   setSnackbarOpen(true);
-   setSnackbarSeverity("success");
-   setSnackbarMessage("User added successfully!");
-   console.log("Success:", response.data);
-   onBackToLogin(true);
- } catch (error) {
-   // Update Snackbar for error
-   setSnackbarOpen(true);
-   setSnackbarSeverity("error");
-   setSnackbarMessage("Failed to add User. Please try again.");
-   console.error("Error submitting form:", error);
- }
-} else {
- // Update Snackbar for validation error
- setSnackbarOpen(true);
- setSnackbarSeverity("warning");
- setSnackbarMessage("Please fill out all required fields.");
-}
+  e.preventDefault();
+
+  if (validateForm()) {
+    try {
+      const response = await axios.post(
+        "http://43.205.212.94:8080/api/customer/add-customer",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      console.log("Form submission successful:", response.data);
+
+      // Show success Snackbar
+      setSnackbarOpen(true);
+      setSnackbarSeverity("success");
+      setSnackbarMessage("User added successfully!");
+
+      // Redirect or perform other actions
+      onBackToLogin(true);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+
+      // Show error Snackbar
+      setSnackbarOpen(true);
+      setSnackbarSeverity("error");
+      setSnackbarMessage("Failed to add User. Please try again.");
+    }
+  } else {
+    // Validation error snackbar
+    setSnackbarOpen(true);
+    setSnackbarSeverity("warning");
+    setSnackbarMessage("Please fill out all required fields.");
+  }
 };
-  
+
 
   const handleNext = () => {
     if (validateForm()) {
@@ -593,6 +634,12 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 helperText={errors.currentLocation}
               />
             </Grid>
+            <Grid item xs={12}>
+        
+          <Button variant="contained" color="primary"  onClick={fetchLocation}>
+  Fetch Location
+</Button>
+        </Grid>
             
               {/* <Grid item xs={12}>
                 <TextField
@@ -797,18 +844,17 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             </Button>
           )}
         </Box>
-        <Snackbar open={snackbarOpen} 
-      autoHideDuration={6000} 
-      onClose={handleCloseSnackbar}   
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      sx={{ marginTop: '60px',}}
-      >
-       <Alert onClose={handleCloseSnackbar}
-        severity={snackbarSeverity}  
-        sx={{ width: '100%', fontSize: '1.5rem', padding: '16px', border: '1px solid grey',}}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+        <Snackbar
+  open={snackbarOpen}
+  autoHideDuration={6000}
+  onClose={handleCloseSnackbar}
+  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+>
+  <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+    {snackbarMessage}
+  </Alert>
+</Snackbar>
+
         <div className="flex flex-col mt-4 items-center justify-center text-sm">
           <h3 className="dark:text-gray-300">
             Already have an account?{" "}

@@ -591,7 +591,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           onChange={handleChange}
           error={!!errors.firstName}
           helperText={errors.firstName}
-          disabled={isFieldsDisabled}
+          
         />
       </Grid>
 
