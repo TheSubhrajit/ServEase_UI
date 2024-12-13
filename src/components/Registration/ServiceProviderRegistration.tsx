@@ -121,6 +121,9 @@ interface RegistrationProps {
 }
 
 const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
+  const handleBackLogin = (e: any) => {
+    onBackToLogin(e);
+  };
   const [activeStep, setActiveStep] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -1048,9 +1051,9 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     }
   };
 
-  const handleBackLogin = (data: boolean) => {
-    onBackToLogin(data);
-  };
+  // const handleBackLogin = (data: boolean) => {
+  //   onBackToLogin(data);
+  // };
 
   return (
     <>
@@ -1099,18 +1102,28 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         </Alert>
       </Snackbar>
       <div className="flex flex-col mt-4 items-center justify-center text-sm">
-        <Typography variant="h6">
-          Already have an account?
-          <Button
-            className="text-blue-400 ml-2 underline"
-            onClick={() => onBackToLogin(false)}
-          >
-            Sign in
-          </Button>
-        </Typography>
+      <h3 className="dark:text-gray-300">
+            Already have an account?{" "}
+            <button
+              className="text-blue-500 ml-2 underline"
+              onClick={(e) => handleBackLogin("false")}
+            >
+              Sign in
+            </button>
+          </h3>
       </div>
     </>
   );
 };
 
 export default ServiceProviderRegistration;
+
+{/* <Typography variant="h6">
+          Already have an account?
+          <Button
+            className="text-blue-400 ml-2 underline"
+            onClick={(e) => handleBackLogin("false")}
+          >
+            Sign in
+          </Button>
+        </Typography> */}
