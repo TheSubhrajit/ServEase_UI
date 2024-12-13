@@ -122,6 +122,7 @@ interface RegistrationProps {
 
 const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   const [activeStep, setActiveStep] = useState(0);
+  const [dob, setDob] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>('success'); // Use AlertColor for correct typing
@@ -433,19 +434,73 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
+  // const handleNext = () => {
+  //   if (validateForm ()) {
+  //     setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+  //     if (activeStep === steps.length - 1) {
+  //       setSnackbarMessage('Registration Successful!');
+  //       setSnackbarOpen(true);
+  //       // Optionally, reset form data or redirect
+  //     }
+  //   }
+  // };
+
+    // Get formatted Date of Birth (YYYY-MM-DD for backend)
+    const getFormattedDOB = () => {
+      return moment(formData.dob, "YYYY-MM-DD").isValid()
+        ? moment(formData.dob, "YYYY-MM-DD").format("YYYY-MM-DD")
+        : "";
+    };
+  
+   // Validate age (dob) using moment
+   const validateAge = (dob) => {
+    if (!dob) return false;
+
+    const birthDate = moment(dob, "YYYY-MM-DD"); // Backend format
+    const today = moment(); // Current date
+    const age = today.diff(birthDate, 'years'); // Age in years
+
+    console.log("Entered DOB:", dob);
+    console.log("Calculated Age:", age);
+
+    // Return true if user is 18 or older
+    return age >= 18;
+  };
+
+  // Handle Next Button
   const handleNext = () => {
-    if (validateForm ()) {
-      setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
-      if (activeStep === steps.length - 1) {
-        setSnackbarMessage('Registration Successful!');
+    // Validate the entire form first
+    if (!validateForm()) {
+      setSnackbarOpen(true);
+      setSnackbarMessage('Please fill all required fields correctly');
+      setSnackbarSeverity('error');
+      return; // Stop progression if any field is invalid
+    }
+  
+    // Validate age only if on Step 0
+    if (activeStep === 0) {
+      const isValidAge = validateAge(formData.dob);
+  
+      if (!isValidAge) {
         setSnackbarOpen(true);
-        // Optionally, reset form data or redirect
+        setSnackbarMessage('You must be at least 18 years old to proceed');
+        setSnackbarSeverity('error');
+        return; // Stop progression if age is invalid
       }
+    }
+  
+    // Proceed to the next step if all validations pass
+    setActiveStep((prevActiveStep) => Math.min(prevActiveStep + 1, steps.length - 1));
+  
+    // Optionally, show a success message at the last step
+    if (activeStep === steps.length - 1) {
+      setSnackbarMessage('Registration Successful!');
+      setSnackbarOpen(true);
     }
   };
 
   const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
 
@@ -550,20 +605,19 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
       </Grid>
    {/* Age / Date of Birth Field */}
    <Grid item xs={12} sm={6}>
-        <TextField
-          label="Date of Birth"
-          name="dob"
-          type="date"
-          fullWidth
-          required
-          value={moment(formData.dob, "YYYY.MM.DD").format("YYYY-MM-DD")} // Convert back for display
-          onChange={handleChange}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      </Grid>
-
+          <TextField
+            label="Date of Birth"
+            name="dob"
+            type="date"
+            fullWidth
+            required
+            value={getFormattedDOB()} // Display properly formatted value
+            onChange={handleChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </Grid>
 
       <Grid item xs={12}>
         <FormControl component="fieldset" error={!!errors.gender}>
@@ -1047,6 +1101,8 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         return 'Unknown step';
     }
   };
+
+   
 
   const handleBackLogin = (data: boolean) => {
     onBackToLogin(data);

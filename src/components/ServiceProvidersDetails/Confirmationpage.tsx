@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import moment from "moment";
 import axios from "axios";
 import {
   Card,
@@ -53,6 +54,7 @@ const  Confirmationpage= (props) => {
     experience,
     profilePic,
     diet,
+    dob,
     role,
     onBack, // Accept onBack as a prop
   } = props;
@@ -259,7 +261,11 @@ const  Confirmationpage= (props) => {
     const ModelText = buttons.find(button => button.value === selected)
     return ModelText?.text;
   }
-
+  const calculateAge = (dob) => {
+    if (!dob) return ""; // Handle cases where dob is not provided
+    const age = moment().diff(moment(dob), 'years'); // Get the age in years
+    return age;
+  };
   return (
     <div className="details-container">
       {/* <Button onClick={onBack} variant="outlined">
@@ -277,7 +283,8 @@ const  Confirmationpage= (props) => {
           />
           <div style={{display:'grid'}}>
           <Typography variant="h6" style={{display:'flex'}}>
-    {firstName} {lastName},(F, 20{age})  
+    {firstName} {lastName},({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'}, {calculateAge(dob)} )
+    {/* (F, 20{age})   */}
     <img
                 src="nonveg.png"
                 alt="Diet Symbol"

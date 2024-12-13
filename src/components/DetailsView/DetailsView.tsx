@@ -153,6 +153,7 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , sel
                 experience={selectedProvider.experience}
                 otherServices={selectedProvider.otherServices}
                 rating={selectedProvider.rating}
+                dob={selectedProvider.dob}
                 ratingsCount={selectedProvider.ratingsCount}
                 availability={selectedProvider.availability}
                 profilePic={selectedProvider.profilePic}

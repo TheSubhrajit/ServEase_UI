@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import {
   Card,
   Typography,
@@ -38,21 +39,14 @@ const ServiceProvidersDetails = (props) => {
       NONVEG: "nonveg.png",
       BOTH:"nonveg.png"
     };
-    const calculateAge = (dob) => {
-      if (!dob) return ""; // Handle cases where dob is not provided
-      const birthDate = new Date(dob);
-      const today = new Date();
+
+    // Calculate age using moment.js
+  const calculateAge = (dob) => {
+    if (!dob) return ""; // Handle cases where dob is not provided
+    const age = moment().diff(moment(dob), 'years'); // Get the age in years
+    return age;
+  };
     
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDifference = today.getMonth() - birthDate.getMonth();
-    
-      // Adjust if the current month/day is before the birth month/day
-      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-    
-      return age;
-    };
     
     // Determine the diet image based on the diet value
     const dietImage = dietImages[diet];
@@ -85,8 +79,8 @@ const ServiceProvidersDetails = (props) => {
     {firstName}{middleName} {lastName}
   </span>
   <span style={{ fontWeight: 'bold', fontSize: '1.2rem', marginLeft: '4px' }}>
-    ({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'}
-     {/* {calculateAge(dob)}  */}
+    ({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'},
+     {calculateAge(dob)} 
      )
     <span style={{ display: 'inline-block', marginLeft: '5px' }}>
       <img
@@ -120,7 +114,7 @@ const ServiceProvidersDetails = (props) => {
     </span>, 
     Other Services: 
     <span style={{ fontWeight: 'normal', fontSize: '1.2rem', marginLeft: '8px' }}>
-      {otherServices}
+      {otherServices|| 'N/A'}
     </span>
   </Typography>
     {housekeepingRole === "COOK" && (
