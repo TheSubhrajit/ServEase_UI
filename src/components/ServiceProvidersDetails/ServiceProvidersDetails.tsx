@@ -79,7 +79,7 @@ const ServiceProvidersDetails = (props) => {
     {firstName}{middleName} {lastName}
   </span>
   <span style={{ fontWeight: 'bold', fontSize: '1.2rem', marginLeft: '4px' }}>
-    ({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'},
+    ({gender === 'FEMALE' ? 'F ' : gender === 'MALE' ? 'M ' : 'O'} 
      {calculateAge(dob)} 
      )
     <span style={{ display: 'inline-block', marginLeft: '5px' }}>

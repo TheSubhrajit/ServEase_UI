@@ -275,15 +275,15 @@ const  Confirmationpage= (props) => {
 
      <div style={{width:'100%'}}> 
       <Card style={{ width: '100%'}}> 
-        <div style={{display:'flex'}}>
-        <Avatar
+        <div style={{display:'flex',marginLeft: '20px'}}>
+        {/* <Avatar
             alt={`${firstName} ${lastName}`}
             src={`/${profilePic}`}
             sx={{ width: 100, height: 100 }}
-          />
+          /> */}
           <div style={{display:'grid'}}>
-          <Typography variant="h6" style={{display:'flex'}}>
-    {firstName} {lastName},({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'}, {calculateAge(dob)} )
+          <Typography  variant="h6" style={{display:'flex'}}>
+    {firstName} {lastName},({gender === 'FEMALE' ? 'F ' : gender === 'MALE' ? 'M ' : 'O'} {calculateAge(dob)} )
     {/* (F, 20{age})   */}
     <img
                 src="nonveg.png"

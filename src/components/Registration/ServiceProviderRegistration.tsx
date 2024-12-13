@@ -123,6 +123,7 @@ interface RegistrationProps {
 const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [dob, setDob] = useState('');
+  const [isFieldsDisabled, setIsFieldsDisabled] = useState(false); 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>('success'); // Use AlertColor for correct typing
@@ -326,7 +327,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         setFormData((prev) => ({ ...prev, [name]: value }));
       }
     };
-  
+    
   
     // Handle file upload separately
     if (type === 'file') {
@@ -446,34 +447,46 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
   // };
 
     // Get formatted Date of Birth (YYYY-MM-DD for backend)
-    const getFormattedDOB = () => {
-      return moment(formData.dob, "YYYY-MM-DD").isValid()
-        ? moment(formData.dob, "YYYY-MM-DD").format("YYYY-MM-DD")
-        : "";
-    };
-  
    // Validate age (dob) using moment
-   const validateAge = (dob) => {
+  const validateAge = (dob) => {
     if (!dob) return false;
 
-    const birthDate = moment(dob, "YYYY-MM-DD"); // Backend format
-    const today = moment(); // Current date
-    const age = today.diff(birthDate, 'years'); // Age in years
+    const birthDate = moment(dob, "YYYY-MM-DD");
+    const today = moment();
+    const age = today.diff(birthDate, "years");
 
     console.log("Entered DOB:", dob);
     console.log("Calculated Age:", age);
 
-    // Return true if user is 18 or older
     return age >= 18;
   };
+
+  // Handle DOB Change
+  const handleDOBChange = (dob) => {
+    setFormData((prev) => ({ ...prev, dob }));
+
+    // Validate age and set field disabled status
+    const isValidAge = validateAge(dob);
+
+    if (!isValidAge) {
+      setIsFieldsDisabled(true);
+      setSnackbarMessage("You must be at least 18 years old to proceed.");
+      setSnackbarOpen(true);
+      setSnackbarSeverity("error");
+    } else {
+      setIsFieldsDisabled(false);
+      setSnackbarOpen(false);
+    }
+  };
+
 
   // Handle Next Button
   const handleNext = () => {
     // Validate the entire form first
     if (!validateForm()) {
-      setSnackbarOpen(true);
-      setSnackbarMessage('Please fill all required fields correctly');
-      setSnackbarSeverity('error');
+      // setSnackbarOpen(true);
+      // setSnackbarMessage('Please fill all required fields correctly');
+      // setSnackbarSeverity('error');
       return; // Stop progression if any field is invalid
     }
   
@@ -578,6 +591,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           onChange={handleChange}
           error={!!errors.firstName}
           helperText={errors.firstName}
+          disabled={isFieldsDisabled}
         />
       </Grid>
 
@@ -588,6 +602,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           fullWidth
           value={formData.middleName}
           onChange={handleChange}
+          disabled={isFieldsDisabled}
         />
       </Grid>
 
@@ -601,23 +616,24 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           onChange={handleChange}
           error={!!errors.lastName}
           helperText={errors.lastName}
+          disabled={isFieldsDisabled}
         />
       </Grid>
    {/* Age / Date of Birth Field */}
    <Grid item xs={12} sm={6}>
-          <TextField
-            label="Date of Birth"
-            name="dob"
-            type="date"
-            fullWidth
-            required
-            value={getFormattedDOB()} // Display properly formatted value
-            onChange={handleChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </Grid>
+   <TextField
+      label="Date of Birth"
+      name="dob"
+      type="date"
+      fullWidth
+      required
+      value={formData.dob}
+      onChange={(e) => handleDOBChange(e.target.value)}
+      InputLabelProps={{
+        shrink: true,
+      }}
+    />
+  </Grid>
 
       <Grid item xs={12}>
         <FormControl component="fieldset" error={!!errors.gender}>
@@ -627,10 +643,11 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
             name="gender"
             value={formData.gender}
             onChange={handleChange}
+            
           >
-            <FormControlLabel value="MALE" control={<Radio />} label="Male" />
-            <FormControlLabel value="FEMALE" control={<Radio />} label="Female" />
-            <FormControlLabel value="OTHER" control={<Radio />} label="Other" />
+            <FormControlLabel value="MALE" control={<Radio />} label="Male"  disabled={isFieldsDisabled}/>
+            <FormControlLabel value="FEMALE" control={<Radio />} label="Female"  disabled={isFieldsDisabled}/>
+            <FormControlLabel value="OTHER" control={<Radio />} label="Other"  disabled={isFieldsDisabled}/>
           </RadioGroup>
           {errors.gender && <FormHelperText>{errors.gender}</FormHelperText>}
         </FormControl>
@@ -646,6 +663,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           onChange={handleChange}
           error={!!errors.emailId}
           helperText={errors.emailId}
+          disabled={isFieldsDisabled}
         />
       </Grid>
 
@@ -660,6 +678,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 onChange={handleChange}
                 error={!!errors.password}
                 helperText={errors.password}
+                disabled={isFieldsDisabled}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -687,6 +706,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 onChange={handleChange}
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword}
+                disabled={isFieldsDisabled}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -712,6 +732,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 onChange={handleChange}
                 error={!!errors.mobileNo}
                 helperText={errors.mobileNo}
+                disabled={isFieldsDisabled}
               />
             </Grid>
             <Grid item xs={12}>
@@ -720,6 +741,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 name="AlternateNumber"
                 fullWidth
                 value={formData.AlternateNumber}
+                disabled={isFieldsDisabled}
                 onChange={handleChange}
                 // error={!!errors.phoneNumber}
                 // helperText={errors.phoneNumber}
