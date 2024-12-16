@@ -121,6 +121,9 @@ interface RegistrationProps {
 }
 
 const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
+  const handleBackLogin = (e: any) => {
+    onBackToLogin(e);
+  };
   const [activeStep, setActiveStep] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -456,7 +459,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     const filteredPayload = Object.fromEntries(
       Object.entries(formData).filter(([key, value]) => value !== "" && value !== null && value !== undefined)
     );
-  
+
     // Form validation (optional)
     if (validateForm()) {
       try {
@@ -469,12 +472,13 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
             },
           }
         );
+        onBackToLogin(true);
         // Update Snackbar for success
         setSnackbarOpen(true);
         setSnackbarSeverity("success");
         setSnackbarMessage("Service provider added successfully!");
         console.log("Success:", response.data);
-        onBackToLogin(true);
+        
       } catch (error) {
         // Update Snackbar for error
         setSnackbarOpen(true);
@@ -979,8 +983,8 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         return (
           <Grid container spacing={2}>
        {/* Document Type Selection */}
-       <Grid item xs={12}>
-       <TextField
+           <Grid item xs={12}>
+              <TextField
                 placeholder="Aadhaar Number *"
                 name="AADHAR"
                 fullWidth
@@ -990,9 +994,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 error={!!errors.kyc}
                 helperText={errors.kyc}
               />
-        
             </Grid>
-
         {/* Document Image Upload */}
         <Grid item xs={12}>
           <Input
@@ -1048,9 +1050,9 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     }
   };
 
-  const handleBackLogin = (data: boolean) => {
-    onBackToLogin(data);
-  };
+  // const handleBackLogin = (data: boolean) => {
+  //   onBackToLogin(data);
+  // };
 
   return (
     <>
@@ -1099,11 +1101,11 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         </Alert>
       </Snackbar>
       <div className="flex flex-col mt-4 items-center justify-center text-sm">
-        <Typography variant="h6">
+      <Typography variant="h6">
           Already have an account?
           <Button
             className="text-blue-400 ml-2 underline"
-            onClick={() => onBackToLogin(false)}
+            onClick={(e) => handleBackLogin("true")}
           >
             Sign in
           </Button>
@@ -1114,3 +1116,23 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
 };
 
 export default ServiceProviderRegistration;
+
+
+{/* <h3 className="dark:text-gray-300">
+            Already have an account?{" "}
+            <button
+              className="text-blue-500 ml-2 underline"
+              onClick={(e) => handleBackLogin("true")}
+            >
+              Sign in
+            </button>
+          </h3> */}
+{/* <Typography variant="h6">
+          Already have an account?
+          <Button
+            className="text-blue-400 ml-2 underline"
+            onClick={(e) => handleBackLogin("false")}
+          >
+            Sign in
+          </Button>
+        </Typography> */}

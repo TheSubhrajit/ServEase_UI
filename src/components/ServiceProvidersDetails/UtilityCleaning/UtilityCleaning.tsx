@@ -142,7 +142,7 @@ const UtilityCleaning: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
         ))}
       </Typography>
 
-      <Typography gutterBottom>Price: ₹{price}</Typography>
+      <Typography gutterBottom>Price: ₹{price}/month</Typography>
     </>
   );
 };

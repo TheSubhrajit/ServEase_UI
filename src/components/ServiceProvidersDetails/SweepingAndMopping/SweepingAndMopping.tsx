@@ -107,7 +107,7 @@ const SweepingAndMopping: React.FC<SweepingAndMoppingProps> = ({ onPriceChange }
                 </div>
             </Typography>
 
-            <Typography gutterBottom>Price: ₹{price}</Typography>
+            <Typography gutterBottom>Price: ₹{price}/month</Typography>
             <Typography gutterBottom>Job Description: {entry?.jobDescription || 'N/A'}</Typography>
         </>
     );

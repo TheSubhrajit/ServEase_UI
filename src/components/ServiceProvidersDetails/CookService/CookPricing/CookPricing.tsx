@@ -167,7 +167,7 @@ const CookPricing = () =>{
         ))}
       </Typography>
 
-      <Typography gutterBottom>Price: ₹{price}</Typography>
+      <Typography gutterBottom>Price: ₹{price}/month</Typography>
 
       <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button>
       </div>

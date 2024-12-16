@@ -31,6 +31,7 @@ import {
 import ProfileImageUpload from './ProfileImageUpload';
 import axios from "axios";
 import ChipInput from "../Common/ChipInput/ChipInput";
+import axiosInstance from "../../services/axiosInstance";
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -292,8 +293,8 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     // Ensure form validation passes
     if (validateForm()) {
       try {
-        const response = await axios.post(
-          "http://43.205.212.94:8080/api/customer/add-customer",
+        const response = await axiosInstance.post(
+          "/api/customer/add-customer",
           formData,
           {
             headers: {

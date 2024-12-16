@@ -105,8 +105,8 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
         ...formData.additional,
       };
 
-      const response = await axios.put(
-        `http://43.205.212.94:8080/api/serviceproviders/update/serviceprovider/${serviceProviderId}`,
+      const response = await axiosInstance.put(
+        `/api/serviceproviders/update/serviceprovider/${serviceProviderId}`,
         updateData
       );
 
