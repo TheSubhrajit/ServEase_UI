@@ -3,6 +3,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import axiosInstance from '../../services/axiosInstance';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -42,10 +43,10 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
     if (reason === 'clickaway') return;
     setOpenSnackbar(false);
   };
-
+  
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     // Validation: Ensure fields are filled and password is strong
     if (!emailOrUsername || !newPassword) {
       setSnackbarMessage('Please fill out all fields.');
@@ -53,7 +54,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
       setOpenSnackbar(true);
       return;
     }
-
+  
     // Check password strength
     if (passwordStrengthMessage) {
       setSnackbarMessage(passwordStrengthMessage);
@@ -61,24 +62,18 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
       setOpenSnackbar(true);
       return;
     }
-
+  
     try {
       // Prepare data to send in the request body
       const requestData = {
         username: emailOrUsername,
         password: newPassword,
       };
-
-      // Sending the POST request to update password API
-      const response = await fetch('http://43.205.212.94:8080/api/user/update', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      });
-
-      if (response.ok) {
+  
+      // Sending the PUT request using axiosInstance
+      const response = await axiosInstance.put('/api/user/update', requestData);
+  
+      if (response.status === 200) {
         setSnackbarMessage('Password updated successfully!');
         setSnackbarSeverity('success');
         setOpenSnackbar(true);
@@ -96,7 +91,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
       setOpenSnackbar(true);
     }
   };
-
+  
   return (
     <div className="h-full flex flex-col justify-center items-center p-4">
       <div className="w-full max-w-lg">
