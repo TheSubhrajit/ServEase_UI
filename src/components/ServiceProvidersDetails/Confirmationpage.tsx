@@ -39,6 +39,7 @@ import SmallCart from './SmallCart/SmallCart';
 import NannyPricing from './NannyService/NannyPricing/NannyPricing';
 import CookPricing from './CookService/CookPricing/CookPricing';
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
+import axiosInstance from '../../services/axiosInstance';
 
 interface selectedServices {
   entry: PricingData;
@@ -120,15 +121,14 @@ const  Confirmationpage= (props) => {
     setBackTo("DetailView");
   };
 
-  const handleSave = () => {
-      setSelectedItems((prevItems) => [
-      ...prevItems,
-      { entry: data, price: calculatedPrice },
-  ]);
+  // const handleSave = () => {
+  //     setSelectedItems((prevItems) => [
+  //     ...prevItems,
+  //     { entry: data, price: calculatedPrice },
+  // ]);
 
-  console.log(selectedItems)
-
-    // Prepare the data you want to send in the API request
+  // console.log(selectedItems)
+ // Prepare the data you want to send in the API request
     // const requestData = {
     //   firstName,
     //   lastName,
@@ -182,15 +182,65 @@ const  Confirmationpage= (props) => {
     //   setSnackbarSeverity('error');
     //   setSnackbarOpen(true);
     // }
+  // console.log(selectedItems)
+  //   handleClose(); // Close the dialog after saving
+  // };
 
-  console.log(selectedItems)
+  const handleSave = () => {
+    // Check if data and calculatedPrice are valid before adding
+    if (data && calculatedPrice) {
+      setSelectedItems((prevItems) => [
+        ...prevItems,
+        { entry: data, price: calculatedPrice },
+      ]);
+  
+      // Show a success message in the snackbar
+      setSnackbarMessage("Item successfully added to cart!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } else {
+      // Show an error message if something is missing
+      setSnackbarMessage("Failed to add item to cart. Please select a valid service.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  
     handleClose(); // Close the dialog after saving
   };
+  
+  const handleAddToCart = () => {
+    if (selected) {
+      handleSave(); // Save the selected items
+    } else {
+      setSnackbarMessage("Please select a service to add to the cart.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+  
 
   const menuItems = Array.from({ length: 10 }, (_, i) => i + 1);
 
-  const API_ENDPOINT = "http://43.205.212.94:8080/api/customer/add-customer-request";
+  // const API_ENDPOINT = "http://43.205.212.94:8080/api/customer/add-customer-request";
 
+  const handleAddCustomerRequest = async (customerData: any) => {
+    try {
+      // Using axiosInstance to make a POST request
+      const response = await axiosInstance.post('/api/customer/add-customer-request', customerData);
+  
+      if (response.status === 200 || response.status === 201) {
+        console.log('Customer request added successfully:', response.data);
+        // Optionally handle success (e.g., show a success message)
+      } else {
+        console.error('Failed to add customer request. Response:', response);
+        // Optionally handle non-success status codes
+      }
+    } catch (error) {
+      console.error('An error occurred while adding the customer request:', error);
+      // Optionally handle errors (e.g., show an error message)
+    }
+  };
+  
   const formatDate = (inputDate) => {
     if (!inputDate) return "";
     const date = new Date(inputDate);
@@ -219,6 +269,7 @@ const  Confirmationpage= (props) => {
     BOTH:"nonveg.png"
   };
 
+  
   // Determine the diet image based on the diet value
   const dietImage = dietImages[diet];
 
@@ -334,7 +385,16 @@ const  Confirmationpage= (props) => {
         </Tooltip>
          ))}
 
-<Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button>
+{/* <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button> */}
+{/* <Button
+  variant="outlined"
+  style={{ float: "right", margin: "10px" }}
+  endIcon={<AddShoppingCartIcon />}
+  onClick={handleAddToCart}
+>
+  Add to cart
+</Button> */}
+
        </div>
        </Card>}
        {role === "nanny" && <Card style={{width:"100%" , display:"flex"}}>
@@ -348,6 +408,7 @@ const  Confirmationpage= (props) => {
           <SmallCart data={selectedItems} />
        </Card> */}
        </div>
+       
 
        <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} onClick={handleProceedToCheckout}> Proceed to checkout </Button>
       <DialogComponent 

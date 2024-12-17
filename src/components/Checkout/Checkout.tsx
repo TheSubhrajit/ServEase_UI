@@ -49,7 +49,7 @@ const Checkout: React.FC<CheckoutProps> = ({ selectedcheckout }) => {
   };
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px', marginBottom: '20px' }}>
+    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '50px', marginBottom: '20px' , overflow: "scroll" }}>
       {checkout.length === 0 ? (
         <Typography variant="h6">No items selected</Typography>
       ) : (
@@ -82,7 +82,7 @@ const Checkout: React.FC<CheckoutProps> = ({ selectedcheckout }) => {
 
       {/* Checkout Button at the bottom */}
       {checkout.length > 0 && (
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', marginTop: '20px' }}>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', marginTop: '20px', paddingBottom:"15px", paddingRight:"15px" }}>
           <Button variant="contained" color="success" onClick={handleCheckout}>
             Checkout
           </Button>

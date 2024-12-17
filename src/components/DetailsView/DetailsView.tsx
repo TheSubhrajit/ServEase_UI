@@ -49,7 +49,6 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , sel
         else {
           response = await axiosInstance.get('/api/serviceproviders/serviceproviders/all');
         }
-        
         setServiceProvidersData(response?.data);
       } catch (err) {
         console.error("There was a problem with the fetch operation:", err);

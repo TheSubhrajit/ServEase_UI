@@ -160,7 +160,7 @@ const BathroomCleaning: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => 
                 </>
             )}
 
-            <Typography gutterBottom>Price: ₹{price}</Typography>
+            <Typography gutterBottom>Price: ₹{price}/month</Typography>
             <Typography gutterBottom>Job Description: {jobDescription}</Typography>
         </>
     );

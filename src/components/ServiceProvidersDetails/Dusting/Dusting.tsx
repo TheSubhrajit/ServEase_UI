@@ -147,7 +147,7 @@ const Dusting: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
         ))}
       </Typography>
 
-      <Typography gutterBottom>Price: ₹{price}</Typography>
+      <Typography gutterBottom>Price: ₹{price}/month</Typography>
       <Typography gutterBottom>Job Description: {jobDescription}</Typography>
     </>
   );

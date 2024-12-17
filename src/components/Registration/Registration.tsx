@@ -32,6 +32,7 @@ import ProfileImageUpload from './ProfileImageUpload';
 import axios from "axios";
 import ChipInput from "../Common/ChipInput/ChipInput";
 import { keys } from "../../env/env";
+import axiosInstance from "../../services/axiosInstance";
 
 // Define the shape of formData using an interface
 interface FormData {
@@ -328,40 +329,40 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
   //   }
   // };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-
-  if (validateForm()) {
-    try {
-      const response = await axios.post(
-        "http://43.205.212.94:8080/api/customer/add-customer",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      console.log("Form submission successful:", response.data);
-
-      // Show success Snackbar
-      setSnackbarOpen(true);
-      setSnackbarSeverity("success");
-      setSnackbarMessage("User added successfully!");
-
-      // Redirect or perform other actions
-      onBackToLogin(true);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-
-      // Show error Snackbar
-      setSnackbarOpen(true);
-      setSnackbarSeverity("error");
-      setSnackbarMessage("Failed to add User. Please try again.");
-    }
-  } else {
-    // Validation error snackbar
-    setSnackbarOpen(true);
-    setSnackbarSeverity("warning");
-    setSnackbarMessage("Please fill out all required fields.");
-  }
+    e.preventDefault();
+  
+    // Ensure form validation passes
+    if (validateForm()) {
+      try {
+        const response = await axiosInstance.post(
+          "/api/customer/add-customer",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              
+            },
+          }
+        );
+   // Update Snackbar for success
+   setSnackbarOpen(true);
+   setSnackbarSeverity("success");
+   setSnackbarMessage("User added successfully!");
+   console.log("Success:", response.data);
+   onBackToLogin(true);
+ } catch (error) {
+   // Update Snackbar for error
+   setSnackbarOpen(true);
+   setSnackbarSeverity("error");
+   setSnackbarMessage("Failed to add User. Please try again.");
+   console.error("Error submitting form:", error);
+ }
+} else {
+ // Update Snackbar for validation error
+ setSnackbarOpen(true);
+ setSnackbarSeverity("warning");
+ setSnackbarMessage("Please fill out all required fields.");
+}
 };
 
 

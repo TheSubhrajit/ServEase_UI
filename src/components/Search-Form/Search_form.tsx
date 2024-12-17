@@ -175,8 +175,8 @@ export const Search_form: React.FC<SearchFormProps> = ({
   
     try {
       setLoading(true);
-      const response = await axios.get(
-        "http://43.205.212.94:8080/api/serviceproviders/get-by-filters",
+      const response = await axiosInstance.get(
+        "/api/serviceproviders/get-by-filters",
       );
   
       onSearch(response.data); // Pass the response data to the onSearch callback

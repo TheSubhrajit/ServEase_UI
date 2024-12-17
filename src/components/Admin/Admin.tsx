@@ -5,6 +5,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { ColDef } from 'ag-grid-community';
 import CustomContextMenu from './CustomContextMenu'; // Import your custom context menu
 import { Button } from '@mui/material';
+import axiosInstance from '../../services/axiosInstance';
 
 interface RowData {
     customerId: number;
@@ -31,23 +32,38 @@ const Admin: React.FC = () => {
     const [rowData, setRowData] = useState<RowData[]>([]);
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number; data: RowData | null } | null>(null);
 
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await fetch("http://43.205.212.94:8080/api/customer/get-all-customers");
+    //             if (!response.ok) {
+    //                 throw new Error("Network response was not ok");
+    //             }
+    //             const data = await response.json();
+    //             setRowData(data);
+    //         } catch (error) {
+    //             console.error("There was a problem with the fetch operation:", error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []);
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await fetch("http://43.205.212.94:8080/api/customer/get-all-customers");
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                const data = await response.json();
-                setRowData(data);
-            } catch (error) {
-                console.error("There was a problem with the fetch operation:", error);
-            }
+          try {
+            // Using axiosInstance to make a GET request
+            const response = await axiosInstance.get('/api/customer/get-all-customers');
+      
+            // Assuming the response contains the data in the desired format
+            setRowData(response.data);
+          } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+          }
         };
-
+      
         fetchData();
-    }, []);
-
+      }, []);
+      
     const columnDefs: ColDef<RowData>[] = [
         { headerName: "Customer ID", field: "customerId", sortable: true, filter: true },
         { headerName: "First Name", field: "firstName", sortable: true, filter: true },
