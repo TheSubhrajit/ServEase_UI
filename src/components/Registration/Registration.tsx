@@ -31,6 +31,7 @@ import {
 import ProfileImageUpload from './ProfileImageUpload';
 import axios from "axios";
 import ChipInput from "../Common/ChipInput/ChipInput";
+import { keys } from "../../env/env";
 import axiosInstance from "../../services/axiosInstance";
 
 // Define the shape of formData using an interface
@@ -90,24 +91,25 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
   const handleBackLogin = (e: any) => {
     onBackToLogin(e);
   };
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<AlertColor>("success");
 
-    const showSnackbar = (message: string, severity: AlertColor = 'success') => {
-      setSnackbarMessage(message);
-      setSnackbarSeverity(severity);
-      setSnackbarOpen(true);
+const [snackbarOpen, setSnackbarOpen] = useState(false);
+const [snackbarMessage, setSnackbarMessage] = useState("");
+const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "warning" | "info">("success");
+
+
+    // const showSnackbar = (message: string, severity: AlertColor = 'success') => {
+    //   setSnackbarMessage(message);
+    //   setSnackbarSeverity(severity);
+    //   setSnackbarOpen(true);
+    // };
+
+    const handleCloseSnackbar = () => {
+      setSnackbarOpen(false);
     };
-  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackbarOpen(false);
-  };
 
   const [activeStep, setActiveStep] = useState(0);
+  const [loadingLocation, setLoadingLocation] = useState(false);
+
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     middleName: "",
@@ -127,7 +129,46 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
     hobbies: "",
     language: "",
   });
+ // Fetch Location
+ const fetchLocation = () => {
+  if (navigator.geolocation) {
+    setLoadingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const response = await axios.get(
+            `https://maps.googleapis.com/maps/api/geocode/json`,
+            {
+              params: {
+                latlng: `${latitude},${longitude}`,
+                key: keys.api_key, // Use your API key
+              },
+            }
+          );
 
+          const address = response.data.results[0]?.formatted_address || 'Address not found';
+          console.log('Fetched Location:', address);
+          setFormData((prevData) => ({
+            ...prevData,
+            address,
+            currentLocation: address,
+          }));
+        } catch (error) {
+          console.error('Failed to fetch location:', error);
+        } finally {
+          setLoadingLocation(false);
+        }
+      },
+      (error) => {
+        console.error('Error retrieving geolocation:', error.message);
+        setLoadingLocation(false);
+      }
+    );
+  } else {
+    console.error('Geolocation is not supported by this browser.');
+  }
+};
   const [availableLanguages] = useState<string[]>([
     "Assamese",
     "Bengali",
@@ -177,10 +218,113 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
    const handleImageSelect = (file: File | null) => {
     setFormData((prevData) => ({ ...prevData, profileImage: file }));
   };
-
   
+  const handleRealTimeValidation = (e) => {
+    const { name, value } = e.target;
   
-
+    // Password field validation
+    if (name === "password") {
+      if (value.length < 8) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must be at least 8 characters long.",
+        }));
+      } else if (!/[A-Z]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one uppercase letter.",
+        }));
+      } else if (!/[a-z]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one lowercase letter.",
+        }));
+      } else if (!/[0-9]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one digit.",
+        }));
+      } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one special character.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "",
+        }));
+      }
+    }
+  
+    // Confirm Password field validation
+    if (name === "confirmPassword") {
+      if (value !== formData.password) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          confirmPassword: "Passwords do not match",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          confirmPassword: "",
+        }));
+      }
+    }
+  
+    // Email field validation
+    if (name === "emailId") {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          emailId: "Please enter a valid email address.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          emailId: "",
+        }));
+      }
+    }
+  
+    // Mobile number field validation
+    if (name === "mobileNo") {
+      const mobilePattern = /^[0-9]{10}$/;
+      if (!mobilePattern.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          mobileNo: "Please enter a valid 10-digit mobile number.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          mobileNo: "",
+        }));
+      }
+    }
+    // Pincode field validation
+    if (name === "pincode") {
+      const pincodePattern = /^[0-9]{6}$/; // Pincode must be 6 digits
+      if (!pincodePattern.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          pincode: "Pincode must be exactly 6 digits.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          pincode: "",
+        }));
+      }
+    }
+  
+    // Update the formData state
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,13 +352,13 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
       }
       if (!formData.password || !strongPasswordRegex.test(formData.password)) {
         tempErrors.password =
-          "Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character.";
+          "Password is required.";
       }
       if (formData.password !== formData.confirmPassword) {
         tempErrors.confirmPassword = "Passwords do not match.";
       }
       if (!formData.mobileNo || !phoneRegex.test(formData.mobileNo)) {
-        tempErrors.mobileNo = "Phone number must be exactly 10 digits.";
+        tempErrors.mobileNo = "Phone number is required.";
       }
       if (!formData.gender) {
         tempErrors.gender = "Select Your Gender.";
@@ -232,7 +376,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
         tempErrors.street = "State is required.";
       }
       if (!formData.pincode || !pincodeRegex.test(formData.pincode)) {
-        tempErrors.pincode = "Zip/Postal Code must be exactly 6 digits.";
+        tempErrors.pincode = "Pincode is required.";
       }
       if (!formData.currentLocation) {
         tempErrors.currentLocation = "Current Location is required.";
@@ -323,8 +467,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
  setSnackbarMessage("Please fill out all required fields.");
 }
 };
-  
-
   const handleNext = () => {
     if (validateForm()) {
       setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
@@ -369,8 +511,6 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   fullWidth
                   value={formData.middleName}
                   onChange={handleChange}
-                  error={!!errors.lastName}
-                  helperText={errors.lastName}
                   sx={{
                     "& .MuiInputBase-root": { height: "36px" },
                     "& .MuiInputBase-input": { padding: "10px 12px" },
@@ -434,67 +574,69 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
           fullWidth
           required
           value={formData.emailId}
-          onChange={handleChange}
+          onChange={handleRealTimeValidation}
           error={!!errors.emailId}
           helperText={errors.emailId}
         />
       </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  placeholder="Password"
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  fullWidth
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  error={!!errors.password}
-                  helperText={errors.password}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={handleTogglePasswordVisibility}
-                          edge="end"
-                          aria-label="toggle password visibility"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  placeholder="Confirm Password *"
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  fullWidth
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={handleToggleConfirmPasswordVisibility}
-                          edge="end"
-                          aria-label="toggle confirm password visibility"
-                        >
-                          {showConfirmPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
+      <Grid item xs={12}>
+  <TextField
+    placeholder="Password"
+    type={showPassword ? "text" : "password"}
+    name="password"
+    fullWidth
+    required
+    value={formData.password}
+    onChange={handleRealTimeValidation} // Real-time validation here
+    error={!!errors.password}
+    helperText={errors.password}
+    InputProps={{
+      endAdornment: (
+        <InputAdornment position="end">
+          <IconButton
+            onClick={handleTogglePasswordVisibility}
+            edge="end"
+            aria-label="toggle password visibility"
+          >
+            {showPassword ? <VisibilityOff /> : <Visibility />}
+          </IconButton>
+        </InputAdornment>
+      ),
+    }}
+  />
+</Grid>
+
+<Grid item xs={12}>
+  <TextField
+    placeholder="Confirm Password *"
+    type={showConfirmPassword ? "text" : "password"}
+    name="confirmPassword"
+    fullWidth
+    required
+    value={formData.confirmPassword}
+    onChange={handleRealTimeValidation} // Real-time validation here
+    error={!!errors.confirmPassword}
+    helperText={errors.confirmPassword}
+    InputProps={{
+      endAdornment: (
+        <InputAdornment position="end">
+          <IconButton
+            onClick={handleToggleConfirmPasswordVisibility}
+            edge="end"
+            aria-label="toggle confirm password visibility"
+          >
+            {showConfirmPassword ? (
+              <VisibilityOff />
+            ) : (
+              <Visibility />
+            )}
+          </IconButton>
+        </InputAdornment>
+      ),
+    }}
+  />
+</Grid>
+
               <Grid item xs={12}>
                 <TextField
                   placeholder="Phone Number *"
@@ -502,7 +644,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                   fullWidth
                   required
                   value={formData.mobileNo}
-                  onChange={handleChange}
+                  onChange={handleRealTimeValidation}
                   error={!!errors.mobileNo}
                   helperText={errors.mobileNo}
                   sx={{
@@ -565,7 +707,7 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 fullWidth
                 required
                 value={formData.pincode}
-                onChange={handleChange}
+                onChange={handleRealTimeValidation}
                 error={!!errors.pincode}
                 helperText={errors.pincode}
               />
@@ -594,6 +736,12 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
                 helperText={errors.currentLocation}
               />
             </Grid>
+            <Grid item xs={12}>
+        
+          <Button variant="contained" color="primary"  onClick={fetchLocation}>
+  Fetch Location
+</Button>
+        </Grid>
             
               {/* <Grid item xs={12}>
                 <TextField
@@ -798,18 +946,17 @@ const Registration: React.FC<RegistrationProps> = ({ onBackToLogin }) => {
             </Button>
           )}
         </Box>
-        <Snackbar open={snackbarOpen} 
-      autoHideDuration={6000} 
-      onClose={handleCloseSnackbar}   
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      sx={{ marginTop: '60px',}}
-      >
-       <Alert onClose={handleCloseSnackbar}
-        severity={snackbarSeverity}  
-        sx={{ width: '100%', fontSize: '1.5rem', padding: '16px', border: '1px solid grey',}}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+        <Snackbar
+  open={snackbarOpen}
+  autoHideDuration={6000}
+  onClose={handleCloseSnackbar}
+  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+>
+  <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+    {snackbarMessage}
+  </Alert>
+</Snackbar>
+
         <div className="flex flex-col mt-4 items-center justify-center text-sm">
           <h3 className="dark:text-gray-300">
             Already have an account?{" "}
