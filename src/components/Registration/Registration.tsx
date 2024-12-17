@@ -218,10 +218,113 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
    const handleImageSelect = (file: File | null) => {
     setFormData((prevData) => ({ ...prevData, profileImage: file }));
   };
-
   
+  const handleRealTimeValidation = (e) => {
+    const { name, value } = e.target;
   
-
+    // Password field validation
+    if (name === "password") {
+      if (value.length < 8) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must be at least 8 characters long.",
+        }));
+      } else if (!/[A-Z]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one uppercase letter.",
+        }));
+      } else if (!/[a-z]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one lowercase letter.",
+        }));
+      } else if (!/[0-9]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one digit.",
+        }));
+      } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one special character.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "",
+        }));
+      }
+    }
+  
+    // Confirm Password field validation
+    if (name === "confirmPassword") {
+      if (value !== formData.password) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          confirmPassword: "Passwords do not match",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          confirmPassword: "",
+        }));
+      }
+    }
+  
+    // Email field validation
+    if (name === "emailId") {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          emailId: "Please enter a valid email address.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          emailId: "",
+        }));
+      }
+    }
+  
+    // Mobile number field validation
+    if (name === "mobileNo") {
+      const mobilePattern = /^[0-9]{10}$/;
+      if (!mobilePattern.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          mobileNo: "Please enter a valid 10-digit mobile number.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          mobileNo: "",
+        }));
+      }
+    }
+    // Pincode field validation
+    if (name === "pincode") {
+      const pincodePattern = /^[0-9]{6}$/; // Pincode must be 6 digits
+      if (!pincodePattern.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          pincode: "Pincode must be exactly 6 digits.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          pincode: "",
+        }));
+      }
+    }
+  
+    // Update the formData state
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,13 +352,13 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
       }
       if (!formData.password || !strongPasswordRegex.test(formData.password)) {
         tempErrors.password =
-          "Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character.";
+          "Password is required.";
       }
       if (formData.password !== formData.confirmPassword) {
         tempErrors.confirmPassword = "Passwords do not match.";
       }
       if (!formData.mobileNo || !phoneRegex.test(formData.mobileNo)) {
-        tempErrors.mobileNo = "Phone number must be exactly 10 digits.";
+        tempErrors.mobileNo = "Phone number is required.";
       }
       if (!formData.gender) {
         tempErrors.gender = "Select Your Gender.";
@@ -273,7 +376,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
         tempErrors.street = "State is required.";
       }
       if (!formData.pincode || !pincodeRegex.test(formData.pincode)) {
-        tempErrors.pincode = "Zip/Postal Code must be exactly 6 digits.";
+        tempErrors.pincode = "Pincode is required.";
       }
       if (!formData.currentLocation) {
         tempErrors.currentLocation = "Current Location is required.";
@@ -364,8 +467,6 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
  setSnackbarMessage("Please fill out all required fields.");
 }
 };
-
-
   const handleNext = () => {
     if (validateForm()) {
       setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
@@ -410,8 +511,6 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
                   fullWidth
                   value={formData.middleName}
                   onChange={handleChange}
-                  error={!!errors.lastName}
-                  helperText={errors.lastName}
                   sx={{
                     "& .MuiInputBase-root": { height: "36px" },
                     "& .MuiInputBase-input": { padding: "10px 12px" },
@@ -475,67 +574,69 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
           fullWidth
           required
           value={formData.emailId}
-          onChange={handleChange}
+          onChange={handleRealTimeValidation}
           error={!!errors.emailId}
           helperText={errors.emailId}
         />
       </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  placeholder="Password"
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  fullWidth
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  error={!!errors.password}
-                  helperText={errors.password}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={handleTogglePasswordVisibility}
-                          edge="end"
-                          aria-label="toggle password visibility"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  placeholder="Confirm Password *"
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  fullWidth
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={handleToggleConfirmPasswordVisibility}
-                          edge="end"
-                          aria-label="toggle confirm password visibility"
-                        >
-                          {showConfirmPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
+      <Grid item xs={12}>
+  <TextField
+    placeholder="Password"
+    type={showPassword ? "text" : "password"}
+    name="password"
+    fullWidth
+    required
+    value={formData.password}
+    onChange={handleRealTimeValidation} // Real-time validation here
+    error={!!errors.password}
+    helperText={errors.password}
+    InputProps={{
+      endAdornment: (
+        <InputAdornment position="end">
+          <IconButton
+            onClick={handleTogglePasswordVisibility}
+            edge="end"
+            aria-label="toggle password visibility"
+          >
+            {showPassword ? <VisibilityOff /> : <Visibility />}
+          </IconButton>
+        </InputAdornment>
+      ),
+    }}
+  />
+</Grid>
+
+<Grid item xs={12}>
+  <TextField
+    placeholder="Confirm Password *"
+    type={showConfirmPassword ? "text" : "password"}
+    name="confirmPassword"
+    fullWidth
+    required
+    value={formData.confirmPassword}
+    onChange={handleRealTimeValidation} // Real-time validation here
+    error={!!errors.confirmPassword}
+    helperText={errors.confirmPassword}
+    InputProps={{
+      endAdornment: (
+        <InputAdornment position="end">
+          <IconButton
+            onClick={handleToggleConfirmPasswordVisibility}
+            edge="end"
+            aria-label="toggle confirm password visibility"
+          >
+            {showConfirmPassword ? (
+              <VisibilityOff />
+            ) : (
+              <Visibility />
+            )}
+          </IconButton>
+        </InputAdornment>
+      ),
+    }}
+  />
+</Grid>
+
               <Grid item xs={12}>
                 <TextField
                   placeholder="Phone Number *"
@@ -543,7 +644,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
                   fullWidth
                   required
                   value={formData.mobileNo}
-                  onChange={handleChange}
+                  onChange={handleRealTimeValidation}
                   error={!!errors.mobileNo}
                   helperText={errors.mobileNo}
                   sx={{
@@ -606,7 +707,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
                 fullWidth
                 required
                 value={formData.pincode}
-                onChange={handleChange}
+                onChange={handleRealTimeValidation}
                 error={!!errors.pincode}
                 helperText={errors.pincode}
               />

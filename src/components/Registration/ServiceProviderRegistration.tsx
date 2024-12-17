@@ -104,7 +104,7 @@ const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za
 const phoneRegex = /^[0-9]{10}$/;
 const pincodeRegex = /^[0-9]{6}$/;
 const aadhaarRegex = /^[0-9]{12}$/;
-const experienceRegex=/^[0-5]/;
+const experienceRegex = /^([0-9]|[1-4][0-9]|50)$/;
 // const aadhaarRegex = /^[0-9]{12}$/;
 // const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
@@ -348,6 +348,131 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     }
   };
 
+  const handleRealTimeValidation = (e) => {
+    const { name, value } = e.target;
+    const aadhaarPattern = /^[0-9]{12}$/; // AADHAR must be 12 digits
+  
+    // Password field validation
+    if (name === "password") {
+      if (value.length < 8) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must be at least 8 characters long.",
+        }));
+      } else if (!/[A-Z]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one uppercase letter.",
+        }));
+      } else if (!/[a-z]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one lowercase letter.",
+        }));
+      } else if (!/[0-9]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one digit.",
+        }));
+      } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Password must contain at least one special character.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "",
+        }));
+      }
+    }
+  
+    // Confirm Password field validation
+    if (name === "confirmPassword") {
+      if (value !== formData.password) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          confirmPassword: "Passwords do not match",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          confirmPassword: "",
+        }));
+      }
+    }
+  
+    // Email field validation
+    if (name === "emailId") {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          emailId: "Please enter a valid email address.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          emailId: "",
+        }));
+      }
+    }
+  
+    // Mobile number field validation
+    if (name === "mobileNo") {
+      const mobilePattern = /^[0-9]{10}$/;
+      if (!mobilePattern.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          mobileNo: "Please enter a valid 10-digit mobile number.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          mobileNo: "",
+        }));
+      }
+    }
+  
+    // AADHAR number field validation
+  if (name === "AADHAR") {
+    if (!aadhaarPattern.test(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        AADHAR: "AADHAR number must be exactly 12 digits.",
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        AADHAR: "",
+      }));
+    }
+  }
+    // Pincode field validation
+    if (name === "pincode") {
+      const pincodePattern = /^[0-9]{6}$/; // Pincode must be 6 digits
+      if (!pincodePattern.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          pincode: "Pincode must be exactly 6 digits.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          pincode: "",
+        }));
+      }
+    }
+    
+  
+    // Update the formData state
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  
+  
   const validateForm = (): boolean => {
     let tempErrors: FormErrors = {}; // Temporary object to store errors
   
@@ -367,13 +492,13 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
       }
       if (!formData.password || !strongPasswordRegex.test(formData.password)) {
         tempErrors.password =
-          'Password must be at least 8 characters long, include uppercase and lowercase letters, a number, and a special character.';
+          'Password is required.';
       }
       if (formData.password !== formData.confirmPassword) {
         tempErrors.confirmPassword = 'Passwords do not match.';
       }
       if (!formData.mobileNo || !phoneRegex.test(formData.mobileNo)) {
-        tempErrors.mobileNo = 'Phone number must be exactly 10 digits.';
+        tempErrors.mobileNo = 'Phone number is required.';
       }
     }
   
@@ -395,7 +520,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         tempErrors.currentLocation = 'Current Location is required.';
       }
       if (!formData.pincode || !pincodeRegex.test(formData.pincode)) {
-        tempErrors.pincode = 'Pin Code must be exactly 6 digits.';
+        tempErrors.pincode = 'Pin Code  is required';
       }
     }
   
@@ -413,17 +538,31 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
       if (!formData.diet) {
         tempErrors.diet = 'Please select diet ';
       }
+
       if (!formData.experience) {
-        tempErrors.experience = 'Please select experience ';
+        tempErrors.experience = "Please select experience";
+      } else {
+        // Check if the experience value is a number
+        const experienceRegex = /^[0-9]+$/; // Only numeric values
+        if (!experienceRegex.test(formData.experience)) {
+          tempErrors.experience = "Experience only accepts numbers.";
+        } else {
+          // If number is provided, ensure it is between 0 and 50
+          const experienceRangeRegex = /^([0-9]|[1-4][0-9]|50)$/;
+          if (!experienceRangeRegex.test(formData.experience)) {
+            tempErrors.experience = "Experience must be between 0 and 50 years.";
+          }
+        }
       }
+      
     
       // Optional fields (uncomment if needed)
       // if (!formData.description) {
       //   tempErrors.description = 'Description is required.';
       // }
-      if (!formData.experience || isNaN(Number(formData.experience))) {
-        tempErrors.experience = 'Experience must be a valid number.';
-      }
+      // if (isNaN(Number(formData.experience))) {
+      //   tempErrors.experience = 'Experience must be a valid number.';
+      // }
     }
   
     // Step 4: KYC Verification Validation
@@ -664,7 +803,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           fullWidth
           required
           value={formData.emailId}
-          onChange={handleChange}
+          onChange={handleRealTimeValidation}
           error={!!errors.emailId}
           helperText={errors.emailId}
           disabled={isFieldsDisabled}
@@ -679,7 +818,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 fullWidth
                 required
                 value={formData.password}
-                onChange={handleChange}
+                onChange={handleRealTimeValidation}
                 error={!!errors.password}
                 helperText={errors.password}
                 disabled={isFieldsDisabled}
@@ -707,7 +846,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 fullWidth
                 required
                 value={formData.confirmPassword}
-                onChange={handleChange}
+                onChange={handleRealTimeValidation}
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword}
                 disabled={isFieldsDisabled}
@@ -733,7 +872,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 fullWidth
                 required
                 value={formData.mobileNo}
-                onChange={handleChange}
+                onChange={handleRealTimeValidation}
                 error={!!errors.mobileNo}
                 helperText={errors.mobileNo}
                 disabled={isFieldsDisabled}
@@ -811,7 +950,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 fullWidth
                 required
                 value={formData.pincode}
-                onChange={handleChange}
+                onChange={handleRealTimeValidation}
                 error={!!errors.pincode}
                 helperText={errors.pincode}
               />
@@ -845,31 +984,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
 </Button>
 
       </Grid>
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                label="City"
-                name="city"
-                fullWidth
-                required
-                value={formData.city}
-                onChange={handleChange}
-                error={!!errors.city}
-                helperText={errors.city}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="State"
-                name="state"
-                fullWidth
-                required
-                value={formData.state}
-                onChange={handleChange}
-                error={!!errors.state}
-                helperText={errors.state}
-              />
-            </Grid> */}
-          </Grid>
+     </Grid>
         );
       case 2: // Additional Details
       return (
@@ -897,24 +1012,8 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           </TextField>
         </Grid>
         {/* Speciality Radio Buttons (Visible if 'COOK' is selected) */}
-        {/* {isCookSelected && (
-          <Grid item xs={12} sm={6}>
-            <FormControl component="fieldset" error={!!errors.speciality} required>
-              <FormLabel component="legend">Speciality</FormLabel>
-              <RadioGroup
-                name="speciality"
-                value={formData.speciality}
-                onChange={handleSpecialityChange}
-              >
-                <FormControlLabel value="veg" control={<Radio />} label="Veg" />
-                <FormControlLabel value="non-veg" control={<Radio />} label="Non-Veg" />
-                <FormControlLabel value="both" control={<Radio />} label="Both" />
-              </RadioGroup>
-              <FormHelperText>{errors.speciality}</FormHelperText>
-            </FormControl>
-          </Grid> */}
-                   {isCookSelected && (
-  <Grid item xs={12} sm={6}>
+      {isCookSelected && (
+    <Grid item xs={12} sm={6}>
     <FormControl component="fieldset" error={!!errors.cookingSpeciality} required>
       <FormLabel component="legend">Cooking Speciality</FormLabel>
       <RadioGroup
@@ -1028,8 +1127,8 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         required
         value={formData.experience}
         onChange={handleChange}
-        // error={!!errors.experience}
-        // helperText={errors.experience || "Years in business or relevant experience"}
+        error={!!errors.experience}
+        helperText={errors.experience || "Years in business or relevant experience"}
       />
     </Grid>
 
@@ -1065,8 +1164,8 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
                 name="AADHAR"
                 fullWidth
                 required
-                value={formData.AADHAR}
-                onChange={handleChange}
+                value={formData.AADHAR || ""}
+                onChange={handleRealTimeValidation}
                 error={!!errors.kyc}
                 helperText={errors.kyc}
               />
