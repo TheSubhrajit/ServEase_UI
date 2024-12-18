@@ -34,15 +34,16 @@ export const Login: React.FC = () => {
   const handleBackToLogin = () => {
     setIsRegistration(false);
     setIsForgotPassword(false);
+    setServiceRegistration(false);
   };
 
   const handleSignUpClickServiceProvider = () => {
     setServiceRegistration(true);
   };
 
-  const handleProviderBackToLogin = () => {
-    setServiceRegistration(false);
-  };
+  // const handleProviderBackToLogin = () => {
+  //   setServiceRegistration(false);
+  // };
 
   const handleForgotPasswordClick = () => {
     setIsForgotPassword(true);

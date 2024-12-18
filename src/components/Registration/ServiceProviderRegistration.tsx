@@ -1200,7 +1200,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         </Grid>
 
        {/* Other Details (Optional for PAN or DL) */}
-       {(formData.kyc === "PAN" || formData.kyc === "DL") && (
+       {/* {(formData.kyc === "PAN" || formData.kyc === "DL") && (
           <Grid item xs={12}>
             <TextField
               placeholder="Other Details"
@@ -1210,7 +1210,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
               onChange={handleChange}
             />
           </Grid>
-        )}
+        )} */}
       </Grid>
         );
       
@@ -1224,12 +1224,6 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         return 'Unknown step';
     }
   };
-
-   
-
-  // const handleBackLogin = (data: boolean) => {
-  //   onBackToLogin(data);
-  // };
 
   return (
     <>
@@ -1293,23 +1287,3 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
 };
 
 export default ServiceProviderRegistration;
-
-
-{/* <h3 className="dark:text-gray-300">
-            Already have an account?{" "}
-            <button
-              className="text-blue-500 ml-2 underline"
-              onClick={(e) => handleBackLogin("true")}
-            >
-              Sign in
-            </button>
-          </h3> */}
-{/* <Typography variant="h6">
-          Already have an account?
-          <Button
-            className="text-blue-400 ml-2 underline"
-            onClick={(e) => handleBackLogin("false")}
-          >
-            Sign in
-          </Button>
-        </Typography> */}
