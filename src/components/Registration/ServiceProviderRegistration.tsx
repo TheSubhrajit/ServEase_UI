@@ -1,4 +1,4 @@
-import React, { useState ,ChangeEvent,SyntheticEvent,useRef} from 'react';
+import React, { useState } from 'react';
 import moment from "moment";
 import {
   TextField,
@@ -22,11 +22,9 @@ import {
   FormControl, 
   FormLabel,
   FormHelperText,
-  Avatar
 } from '@mui/material';
-import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
-import { Visibility, VisibilityOff,ArrowForward,ArrowBack,CameraAlt as CameraAltIcon   } from '@mui/icons-material';
-import { px } from 'framer-motion';
+import Snackbar from '@mui/material/Snackbar';
+import { Visibility, VisibilityOff,ArrowForward,ArrowBack   } from '@mui/icons-material';
 import ProfileImageUpload from './ProfileImageUpload';
 import axios from 'axios';
 import ChipInput from "../Common/ChipInput/ChipInput";
@@ -104,7 +102,7 @@ const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za
 const phoneRegex = /^[0-9]{10}$/;
 const pincodeRegex = /^[0-9]{6}$/;
 const aadhaarRegex = /^[0-9]{12}$/;
-const experienceRegex = /^([0-9]|[1-4][0-9]|50)$/;
+// const experienceRegex = /^([0-9]|[1-4][0-9]|50)$/;
 // const aadhaarRegex = /^[0-9]{12}$/;
 // const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
@@ -125,14 +123,14 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     onBackToLogin(e);
   };
   const [activeStep, setActiveStep] = useState(0);
-  const [dob, setDob] = useState('');
+  // const [dob, setDob] = useState('');
   const [isFieldsDisabled, setIsFieldsDisabled] = useState(false); 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>('success'); // Use AlertColor for correct typing
-  const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null!);
+  // const [profileImage, setProfileImage] = useState<File | null>(null);
+  // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  // const fileInputRef = useRef<HTMLInputElement>(null!);
   const [isCookSelected, setIsCookSelected] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -236,8 +234,8 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
   
 
   // States for image previews and names
-const [documentImageName, setDocumentImageName] = useState<string>('');
-const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(null);
+// const [documentImageName, setDocumentImageName] = useState<string>('');
+// const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(null);
 
   // States for password visibility
   const [showPassword, setShowPassword] = useState(false);
@@ -248,9 +246,9 @@ const [documentImagePreview, setDocumentImagePreview] = useState<string | null>(
   };
   
   // Click handler to trigger file input click
-  const handleClick = () => {
-    fileInputRef.current?.click();
-  };
+  // const handleClick = () => {
+  //   fileInputRef.current?.click();
+  // };
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -319,17 +317,17 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
-    const handleChange = (e) => {
-      const { name, value } = e.target;
+    // const handleChange = (e) => {
+    //   const { name, value } = e.target;
   
-      if (name === "dob") {
-        // Format the date using Moment.js
-        const formattedDate = moment(value).format("YYYY.MM.DD");
-        setFormData((prev) => ({ ...prev, [name]: formattedDate }));
-      } else {
-        setFormData((prev) => ({ ...prev, [name]: value }));
-      }
-    };
+    //   if (name === "dob") {
+    //     // Format the date using Moment.js
+    //     const formattedDate = moment(value).format("YYYY.MM.DD");
+    //     setFormData((prev) => ({ ...prev, [name]: formattedDate }));
+    //   } else {
+    //     setFormData((prev) => ({ ...prev, [name]: value }));
+    //   }
+    // };
     
   
     // Handle file upload separately
@@ -707,10 +705,10 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
    const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
-  const showSnackbar = (message: string) => {
-    setSnackbarMessage(message);
-    setSnackbarOpen(true);
-  };
+  // const showSnackbar = (message: string) => {
+  //   setSnackbarMessage(message);
+  //   setSnackbarOpen(true);
+  // };
   
 
   const renderStepContent = (step: number) => {

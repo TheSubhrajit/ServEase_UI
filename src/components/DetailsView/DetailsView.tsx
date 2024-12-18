@@ -1,4 +1,5 @@
-import { CircularProgress, Button, Box } from "@mui/material";
+/* eslint-disable react/jsx-pascal-case */
+import { Button, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
@@ -7,7 +8,7 @@ import axiosInstance from '../../services/axiosInstance';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 import CloseIcon from '@mui/icons-material/Close'; 
 import Confirmationpage from "../ServiceProvidersDetails/Confirmationpage"; // Adjust the path accordingly
-import { useNavigate } from "react-router-dom";
+
 
 interface DetailsViewProps {
   sendDataToParent: (data: string) => void;
@@ -23,11 +24,10 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , sel
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentView, setCurrentView] = useState("DetailsView");
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
-  const [checkoutData, setCheckoutData] = useState(null);
 
   // Callback to receive data from Confirmationpage
   const handleCheckoutData = (data) => {
-    setCheckoutData(data); // Save the data sent from the child component
+    // setCheckoutData(data); // Save the data sent from the child component
     console.log('Received checkout data:', data);
 
     // Send the received data back to the parent via the callback function
@@ -57,7 +57,7 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , sel
       }
     };
     fetchData();
-  }, []);
+  }, [selected]);
 
   const handleBackClick = () => {
     sendDataToParent("");
@@ -81,10 +81,10 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , sel
     setCurrentView("Confirmation");
   };
 
-  const handleBackToDetails = () => {
-    setCurrentView("DetailsView");
-    setSelectedProvider(null);
-  };
+  // const handleBackToDetails = () => {
+  //   setCurrentView("DetailsView");
+  //   setSelectedProvider(null);
+  // };
 
   return (
     <>

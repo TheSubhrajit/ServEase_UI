@@ -4,7 +4,6 @@ import Button from "react-bootstrap/Button";
 import { useForm, Controller } from "react-hook-form";
 import LoadingIndicator from "../LoadingIndicator/LoadingIndicator";
 import axiosInstance from "../../services/axiosInstance";
-import axios from "axios";
 import ChipInput from "../Common/ChipInput/ChipInput";
 interface SearchFormProps {
   open: boolean;
@@ -31,7 +30,7 @@ export const Search_form: React.FC<SearchFormProps> = ({
   onClose,
   onSearch,
 }) => {
-  const { handleSubmit, control, register, reset, watch, setValue } =
+  const { handleSubmit, control, register, reset, watch} =
     useForm<FormData>({
       defaultValues: {
         gender: "",
@@ -45,12 +44,10 @@ export const Search_form: React.FC<SearchFormProps> = ({
         rating: [],
       },
     });
-  const [foodSpecialityModalVisible, setFoodSpecialityModalVisible] =
-    useState(false);
-  const [foodSpecialitySearch, setFoodSpecialitySearch] = useState("");
+  
+  // const [foodSpecialitySearch, setFoodSpecialitySearch] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [availableLanguages] = useState<string[]>([
     "Assamese",
     "Bengali",
@@ -135,39 +132,39 @@ export const Search_form: React.FC<SearchFormProps> = ({
     "Dabeli",
   ]);
 
-  const toggleFoodSpecialitySelection = (speciality: string) => {
-    const selectedSpecialities = watch("speciality");
-    if (selectedSpecialities.includes(speciality)) {
-      setValue(
-        "speciality",
-        selectedSpecialities.filter((item) => item !== speciality)
-      );
-    } else {
-      setValue("speciality", [...selectedSpecialities, speciality]);
-    }
-  };
-  const filteredFoodSpecialities = availableFoodSpecialities.filter(
-    (speciality) =>
-      speciality.toLowerCase().includes(foodSpecialitySearch.toLowerCase())
-  );
+  // const toggleFoodSpecialitySelection = (speciality: string) => {
+  //   const selectedSpecialities = watch("speciality");
+  //   if (selectedSpecialities.includes(speciality)) {
+  //     setValue(
+  //       "speciality",
+  //       selectedSpecialities.filter((item) => item !== speciality)
+  //     );
+  //   } else {
+  //     setValue("speciality", [...selectedSpecialities, speciality]);
+  //   }
+  // };
+  // const filteredFoodSpecialities = availableFoodSpecialities.filter(
+  //   (speciality) =>
+  //     speciality.toLowerCase().includes(foodSpecialitySearch.toLowerCase())
+  // );
 
-  const handleFoodSearchChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFoodSpecialitySearch(event.target.value);
-  };
+  // const handleFoodSearchChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setFoodSpecialitySearch(event.target.value);
+  // };
 
-  const toggleLanguageSelection = (language: string) => {
-    const selectedLanguages = watch("language");
-    if (selectedLanguages.includes(language)) {
-      setValue(
-        "language",
-        selectedLanguages.filter((item) => item !== language)
-      );
-    } else {
-      setValue("language", [...selectedLanguages, language]);
-    }
-  };
+  // const toggleLanguageSelection = (language: string) => {
+  //   const selectedLanguages = watch("language");
+  //   if (selectedLanguages.includes(language)) {
+  //     setValue(
+  //       "language",
+  //       selectedLanguages.filter((item) => item !== language)
+  //     );
+  //   } else {
+  //     setValue("language", [...selectedLanguages, language]);
+  //   }
+  // };
 
  
   const onSubmit = async (data: FormData) => {

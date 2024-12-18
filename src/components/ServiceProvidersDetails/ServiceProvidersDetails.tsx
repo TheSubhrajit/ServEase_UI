@@ -3,16 +3,9 @@ import moment from "moment";
 import {
   Card,
   Typography,
-  Avatar,
   Rating,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // Correct import for ExpandMoreIcon
 import './serviceCard.css';
-import { Description } from "@mui/icons-material";
 
 const ServiceProvidersDetails = (props) => {
   const {
@@ -28,10 +21,8 @@ const ServiceProvidersDetails = (props) => {
     ratingsCount,
     availability,
     dob,
-    description,
     cookingSpeciality,
-    housekeepingRole,
-    profilePic
+    housekeepingRole
   } = props;
     // Map diet values to corresponding image paths
     const dietImages = {
@@ -60,14 +51,6 @@ const ServiceProvidersDetails = (props) => {
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
       }}>
-        {/* <div className="avatar-section">
-           
-          <Avatar
-            alt={`${firstName} ${lastName}`}
-            src={`/${profilePic}`}
-            className="service-avatar"
-          />
-        </div> */}
 
         <div className="service-details"> {/* Section for service details */}
         <Typography

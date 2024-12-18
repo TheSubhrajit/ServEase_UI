@@ -37,10 +37,6 @@ const Checkout: React.FC<CheckoutProps> = ({ selectedcheckout }) => {
     setCheckout(updatedCheckout);
   };
 
-  const handleAddItem = (item: Item) => {
-    // Add item to checkout
-    setCheckout([...checkout, item]);
-  };
 
   const handleCheckout = () => {
     // Handle the Checkout action

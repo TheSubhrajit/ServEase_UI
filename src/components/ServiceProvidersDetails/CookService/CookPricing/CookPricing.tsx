@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
