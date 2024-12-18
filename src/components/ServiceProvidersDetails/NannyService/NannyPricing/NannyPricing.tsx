@@ -1,4 +1,5 @@
-import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from '@mui/material';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Button, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
@@ -8,37 +9,37 @@ interface NannyPricingProps {
 }
 
 // Sample data as per your provided table
-const priceData = [
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular', subCategory: 'Experienced (>=3 years)', age: '<=2', pricePerHour: 2000, totalPrice: 16000 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular', subCategory: 'Less Experienced ( <= 3 years)', age: '<=2', pricePerHour: 1600, totalPrice: 12800 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular', subCategory: 'Experienced (>=3 years)', age: '2-6', pricePerHour: 2200, totalPrice: 17600 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular', subCategory: 'Less Experienced ( <= 3 years)', age: '2-6', pricePerHour: 1800, totalPrice: 14400 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium', subCategory: 'Experienced (>=3 years)', age: '<=2', pricePerHour: 2500, totalPrice: 20000 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium', subCategory: 'Less Experienced ( <= 3 years)', age: '<=2', pricePerHour: 2200, totalPrice: 17600 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium', subCategory: 'Experienced (>=3 years)', age: '2-6', pricePerHour: 2800, totalPrice: 22400 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium', subCategory: 'Less Experienced ( <= 3 years)', age: '2-6', pricePerHour: 2500, totalPrice: 20000 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular - In House (24 hours live in)', subCategory: '', age: '<=2', pricePerHour: 1500, totalPrice: 24000 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular - In House (24 hours live in)', subCategory: '', age: '2-6', pricePerHour: 1800, totalPrice: 28800 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium - In House (24 hours live in)', subCategory: '', age: '<=2', pricePerHour: 1800, totalPrice: 28800 },
-  { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium - In House (24 hours live in)', subCategory: '', age: '2-6', pricePerHour: 2000, totalPrice: 32000 },
-];
+// const priceData = [
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular', subCategory: 'Experienced (>=3 years)', age: '<=2', pricePerHour: 2000, totalPrice: 16000 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular', subCategory: 'Less Experienced ( <= 3 years)', age: '<=2', pricePerHour: 1600, totalPrice: 12800 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular', subCategory: 'Experienced (>=3 years)', age: '2-6', pricePerHour: 2200, totalPrice: 17600 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular', subCategory: 'Less Experienced ( <= 3 years)', age: '2-6', pricePerHour: 1800, totalPrice: 14400 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium', subCategory: 'Experienced (>=3 years)', age: '<=2', pricePerHour: 2500, totalPrice: 20000 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium', subCategory: 'Less Experienced ( <= 3 years)', age: '<=2', pricePerHour: 2200, totalPrice: 17600 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium', subCategory: 'Experienced (>=3 years)', age: '2-6', pricePerHour: 2800, totalPrice: 22400 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium', subCategory: 'Less Experienced ( <= 3 years)', age: '2-6', pricePerHour: 2500, totalPrice: 20000 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular - In House (24 hours live in)', subCategory: '', age: '<=2', pricePerHour: 1500, totalPrice: 24000 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular - In House (24 hours live in)', subCategory: '', age: '2-6', pricePerHour: 1800, totalPrice: 28800 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium - In House (24 hours live in)', subCategory: '', age: '<=2', pricePerHour: 1800, totalPrice: 28800 },
+//   { serviceCategory: 'Nanny/Baby care', serviceType: 'Premium - In House (24 hours live in)', subCategory: '', age: '2-6', pricePerHour: 2000, totalPrice: 32000 },
+// ];
 
-const typeButtonsSelector = [
-    { key: 1, value: 'Regular' },
-    { key: 2, value: 'Premium' },
-    { key : 3 , value : 'Regular - In House (24 hours live in)'},
-    { key: 4, value: 'On demand' }
-  ];
+// const typeButtonsSelector = [
+//     { key: 1, value: 'Regular' },
+//     { key: 2, value: 'Premium' },
+//     { key : 3 , value : 'Regular - In House (24 hours live in)'},
+//     { key: 4, value: 'On demand' }
+//   ];
 
-  const subCategoryButtonsSelector = [
-    { key: 1, value: 'Experienced (>=3 years)' },
-    { key: 2, value: 'Less Experienced ( <= 3 years)' },
-  ];
+//   const subCategoryButtonsSelector = [
+//     { key: 1, value: 'Experienced (>=3 years)' },
+//     { key: 2, value: 'Less Experienced ( <= 3 years)' },
+//   ];
 
-  const childAge = [
-    {key : 1 , value : '<=2'},
-    {key : 2 , value : '2-6'}
-  ]
+//   const childAge = [
+//     {key : 1 , value : '<=2'},
+//     {key : 2 , value : '2-6'}
+//   ]
 
 
   const NannyPricing =({ onPriceChange }: NannyPricingProps) => {

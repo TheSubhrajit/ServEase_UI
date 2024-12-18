@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -17,9 +17,7 @@ import {
   FormLabel,
   FormControl,
   Alert,
-  AlertColor,
-  Snackbar,
-  SnackbarCloseReason,
+  Snackbar
 } from "@mui/material";
 import "./Registration.css";
 import {
@@ -108,7 +106,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
     };
 
   const [activeStep, setActiveStep] = useState(0);
-  const [loadingLocation, setLoadingLocation] = useState(false);
+  // const [loadingLocation, setLoadingLocation] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -132,7 +130,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
  // Fetch Location
  const fetchLocation = () => {
   if (navigator.geolocation) {
-    setLoadingLocation(true);
+    // setLoadingLocation(true);
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
@@ -157,12 +155,12 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
         } catch (error) {
           console.error('Failed to fetch location:', error);
         } finally {
-          setLoadingLocation(false);
+          // setLoadingLocation(false);
         }
       },
       (error) => {
         console.error('Error retrieving geolocation:', error.message);
-        setLoadingLocation(false);
+        // setLoadingLocation(false);
       }
     );
   } else {
@@ -199,11 +197,11 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
     setSelectedChips(newChips);
     console.log(selectedChips)
   };
-  const [gender, setGender] = useState("");
+  // const [gender, setGender] = useState("");
 
-  const handleGenderChange = (e) => {
-    setGender(e.target.value);
-  };
+  // const handleGenderChange = (e) => {
+  //   setGender(e.target.value);
+  // };
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
