@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react';
 
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 
+interface NannyPricingProps {
+  onPriceChange: (priceData: { price: number, entry: any }) => void;  // Add the onPriceChange function as a prop
+}
+
 // Sample data as per your provided table
 const priceData = [
   { serviceCategory: 'Nanny/Baby care', serviceType: 'Regular', subCategory: 'Experienced (>=3 years)', age: '<=2', pricePerHour: 2000, totalPrice: 16000 },
@@ -37,11 +41,11 @@ const typeButtonsSelector = [
   ]
 
 
-const NannyPricing = () => {
-  const [selectedServiceType, setSelectedServiceType] = useState('');
-  const [selectedSubCategory, setSelectedSubCategory] = useState('');
-  const [selectedAge, setSelectedAge] = useState('');
-  const [price, setPrice] = useState<number>(0);
+  const NannyPricing =({ onPriceChange }: NannyPricingProps) => {
+    const [selectedServiceType, setSelectedServiceType] = useState('');
+    const [selectedSubCategory, setSelectedSubCategory] = useState('');
+    const [selectedAge, setSelectedAge] = useState('');
+    const [price, setPrice] = useState<number>(0);
 
 
   const calculatePriceAndEntry = () => {
@@ -61,7 +65,7 @@ const NannyPricing = () => {
   useEffect(() => {
     const { price, entry } = calculatePriceAndEntry(); // Get both price and entry
     setPrice(price); // Update price based on current state
-    // onPriceChange({ price, entry }) // Send both price and entry to parent
+    onPriceChange({ price, entry }) // Send both price and entry to parent
   }, [selectedAge, selectedServiceType, selectedSubCategory]); // Recalculate when any of these change
  
 

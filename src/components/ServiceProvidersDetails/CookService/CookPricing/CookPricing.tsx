@@ -2,8 +2,11 @@ import { Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 
+interface CookPricingProps {
+  onPriceChange: (priceData: { price: number, entry: any }) => void;  // Add the onPriceChange function as a prop
+}
 
-const CookPricing = () =>{
+const CookPricing = ({ onPriceChange }: CookPricingProps) => {
 
     const mealData = [
         { serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast', people: '1-2', price: 2000, description: 'Includes preparing of 5-8 chapatis, 1 vegetable. Sunday leave.' },
@@ -98,7 +101,7 @@ const CookPricing = () =>{
     useEffect(() => {
         const { price, entry } = calculatePriceAndEntry(); // Get both price and entry
         setPrice(price); // Update price based on current state
-        // onPriceChange({ price, entry }); // Send both price and entry to parent
+        onPriceChange({ price, entry }); // Send both price and entry to parent
       }, [serviceType, pax, mealType]); // Recalculate when any of these change
 
     return (
