@@ -1,15 +1,29 @@
-import React from "react";
-import { Tooltip } from "@mui/material";
+import React, { useState } from "react";
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Tooltip } from "@mui/material";
 import "./Landingpage.css";
+import DialogComponent from "../Common/DialogComponent/DialogComponent";
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
 }
 
 export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
+
+  const [open, setOpen] = useState(false);
+  const [ selectedType , setSelectedtype] = useState('')
+  
   const handleClick = (data: string) => {
-    sendDataToParent(data);
+    setOpen(true)
+    setSelectedtype(data)
   };
+
+  const handleClose = (data: string) =>{
+    setOpen(false)
+  }
+
+  const handleSave = () =>{
+    sendDataToParent(selectedType);
+  }
 
   return (
     <section className="landing-container">
@@ -39,6 +53,26 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent })
         </Tooltip>
         <p className="label-text">Nanny</p> {/* Label below the circle */}
       </div>
+
+
+      <DialogComponent 
+        open={open} 
+        onClose={handleClose} 
+        title="Select your Booking" 
+        onSave={handleSave}
+      >
+        <FormControl>
+      <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
+      <RadioGroup
+        row
+        aria-labelledby="demo-row-radio-buttons-group-label"
+        name="row-radio-buttons-group"
+      >
+        <FormControlLabel value="Instantly" control={<Radio />} label="Instantly ( Today / Tomorrow )" />
+        <FormControlLabel value="Monthly" control={<Radio />} label="Monthly" />
+      </RadioGroup>
+    </FormControl>
+      </DialogComponent>
      
     </section>
     

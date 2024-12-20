@@ -18,6 +18,15 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const DialogComponent = ({ open, onClose, title, children, onSave }) => {
+
+  const getButtonText = () => {
+    if(title === "Select your Booking"){
+      return "Confirm"
+    } else {
+      return "Add to cart"
+    }
+  }
+
   return (
     <BootstrapDialog onClose={onClose} aria-labelledby="customized-dialog-title" open={open}>
       <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
@@ -38,7 +47,7 @@ const DialogComponent = ({ open, onClose, title, children, onSave }) => {
       <DialogContent dividers>{children}</DialogContent>
       <DialogActions>
         <Button autoFocus onClick={onSave}>
-          Save changes
+          {getButtonText()}
         </Button>
       </DialogActions>
     </BootstrapDialog>
