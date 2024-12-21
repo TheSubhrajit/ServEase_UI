@@ -212,9 +212,15 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
   const handleToggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
+
+  const [image, setImage] = useState<Blob | null>(null);
+
    // File change handler to update the profile picture
-   const handleImageSelect = (file: File | null) => {
-    setFormData((prevData) => ({ ...prevData, profileImage: file }));
+   const handleImageSelect = (file: Blob | null) => {
+    if (file) {
+      setImage(file); // Now you have the image as binary (Blob)
+      // Further actions like uploading the image can be performed here
+    }
   };
   
   const handleRealTimeValidation = (e) => {
@@ -435,13 +441,27 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
     // Ensure form validation passes
     if (validateForm()) {
       try {
+        const formData1 = new FormData();
+        if(image){
+          formData1.append('image', image);
+        }
+       
+        const imageResponse = await axiosInstance.post(
+          'https://imageuploader-7x22gp-microtica.microtica.rocks/upload',
+          formData1, // Correctly pass FormData as the body (second argument)
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data', // Ensure the correct content type for FormData
+            },
+          }
+        );
+        if(imageResponse.status === 200){
         const response = await axiosInstance.post(
           "/api/customer/add-customer",
           formData,
           {
             headers: {
               "Content-Type": "application/json",
-              
             },
           }
         );
@@ -450,14 +470,16 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
    setSnackbarSeverity("success");
    setSnackbarMessage("User added successfully!");
    onBackToLogin(true);
- } catch (error) {
+ } 
+}catch (error) {
    // Update Snackbar for error
    setSnackbarOpen(true);
    setSnackbarSeverity("error");
    setSnackbarMessage("Failed to add User. Please try again.");
    console.error("Error submitting form:", error);
  }
-} else {
+}
+else {
  // Update Snackbar for validation error
  setSnackbarOpen(true);
  setSnackbarSeverity("warning");
