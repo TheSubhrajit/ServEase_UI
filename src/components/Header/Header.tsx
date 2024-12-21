@@ -233,9 +233,28 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               aria-label="account"
               onClick={handleAccountMenuOpen}
               color="inherit"
-              sx={{ width: 60, height: 60 }}
+              sx={{
+                width: 40, // Size of the button
+                height: 40,
+                borderRadius: '50%', // Circular shape
+                padding: 0, // Remove default padding
+                overflow: 'hidden', // Ensure image stays within circle
+                display: 'flex', // Center image within button
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '#f0f0f0', // Optional: add background color
+              }}
             >
-              <AccountCircle sx={{ fontSize: 30, color: "#0d6efd" }} />
+              {!user?.customerDetails?.profilePic && <AccountCircle sx={{ fontSize: 30, color: "#0d6efd" }} />}
+              {user && <img
+        src={user?.customerDetails?.profilePic} // The image URL passed as a prop
+        alt="account"
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover', // Ensures the image covers the entire button
+        }}
+      />}
             </IconButton>
 
             <Menu

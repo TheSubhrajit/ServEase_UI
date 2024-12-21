@@ -51,6 +51,7 @@ interface FormData {
   agreeToTerms: boolean;
   hobbies: string;
   language: string;
+  profilePic : string;
 }
 
 // Define the shape of errors to hold string messages
@@ -126,6 +127,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
     agreeToTerms: false,
     hobbies: "",
     language: "",
+    profilePic : ""
   });
  // Fetch Location
  const fetchLocation = () => {
@@ -447,7 +449,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
         }
        
         const imageResponse = await axiosInstance.post(
-          'https://imageuploader-7x22gp-microtica.microtica.rocks/upload',
+          'http://65.2.153.173:3000/upload',
           formData1, // Correctly pass FormData as the body (second argument)
           {
             headers: {
@@ -456,6 +458,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
           }
         );
         if(imageResponse.status === 200){
+          formData.profilePic = imageResponse.data.imageUrl;
         const response = await axiosInstance.post(
           "/api/customer/add-customer",
           formData,
