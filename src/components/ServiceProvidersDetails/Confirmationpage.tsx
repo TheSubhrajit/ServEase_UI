@@ -279,14 +279,10 @@ const  Confirmationpage= (props) => {
        </div>
        </Card>}
        {role === "nanny" && <Card style={{width:"100%" , display:"flex"}}>
-        <NannyPricing onPriceChange={function (priceData: { price: number; entry: any; }): void {
-            throw new Error('Function not implemented.');
-          } } />
+        <NannyPricing onPriceChange={handlePriceChange} onAddToCart={handleSave} />
        </Card>} 
        {role === "cook" && <Card style={{width:"100%" , display:"flex"}}>
-        <CookPricing onPriceChange={function (priceData: { price: number; entry: any; }): void {
-            throw new Error('Function not implemented.');
-          } } />
+        <CookPricing onPriceChange={handlePriceChange} onAddToCart={handleSave}/>
        </Card>} 
        
        {/* <Card style={{width:"40%"}}>
