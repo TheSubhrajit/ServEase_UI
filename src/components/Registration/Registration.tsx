@@ -469,9 +469,9 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
           }
         );
    // Update Snackbar for success
-   setSnackbarOpen(true);
    setSnackbarSeverity("success");
    setSnackbarMessage("User added successfully!");
+   setSnackbarOpen(true);
    onBackToLogin(true);
  } 
 }catch (error) {

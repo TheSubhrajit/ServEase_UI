@@ -64,6 +64,7 @@ interface FormData {
   age:'';
   diet:string;
   dob:'';
+  profilePic:string;
 }
 // Define the shape of errors to hold string messages
 interface FormErrors {
@@ -166,6 +167,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     age:'',
     diet:'',
     dob:'',
+    profilePic:''
     });
 
     // Function to fetch location data and autofill the form
@@ -241,9 +243,16 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
    // File change handler to update the profile picture
-   const handleImageSelect = (file: File | null) => {
-    setFormData((prevData) => ({ ...prevData, profileImage: file }));
-  };
+   
+     const [image, setImage] = useState<Blob | null>(null);
+   
+      // File change handler to update the profile picture
+      const handleImageSelect = (file: Blob | null) => {
+       if (file) {
+         setImage(file); // Now you have the image as binary (Blob)
+         // Further actions like uploading the image can be performed here
+       }
+     };
   
   // Click handler to trigger file input click
   // const handleClick = () => {
@@ -668,35 +677,72 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     // Form validation (optional)
     if (validateForm()) {
       try {
-        const response = await axiosInstance.post(
-          "/api/serviceproviders/serviceprovider/add",
-          filteredPayload,
+        const formData1 = new FormData();
+    
+        // Append image if exists
+        if (image) {
+          formData1.append('image', image);
+        }
+    
+        // First axios call for image upload
+        const imageResponse = await axiosInstance.post(
+          'http://65.2.153.173:3000/upload',
+          formData1,
           {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'multipart/form-data', // Ensure correct content type
             },
           }
         );
-        onBackToLogin(true);
-        // Update Snackbar for success
-        setSnackbarOpen(true);
-        setSnackbarSeverity("success");
-        setSnackbarMessage("Service provider added successfully!");
-        console.log("Success:", response.data);
-        
+    
+        if (imageResponse.status === 200) {
+          try {
+            filteredPayload.profilePic = imageResponse.data.imageUrl;
+            // Second axios call to add service provider
+            const response = await axiosInstance.post(
+              "/api/serviceproviders/serviceprovider/add",
+              filteredPayload,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            
+            // Success, handle it
+            onBackToLogin(true);
+            setSnackbarOpen(true);
+            setSnackbarSeverity("success");
+            setSnackbarMessage("Service provider added successfully!");
+            console.log("Success:", response.data);
+    
+          } catch (error) {
+            // Error handling for adding service provider
+            setSnackbarOpen(true);
+            setSnackbarSeverity("error");
+            setSnackbarMessage("Failed to add service provider. Please try again.");
+            console.error("Error submitting form:", error);
+          }
+        } else {
+          // If image upload fails, show an error
+          setSnackbarOpen(true);
+          setSnackbarSeverity("error");
+          setSnackbarMessage("Image upload failed. Please try again.");
+        }
       } catch (error) {
-        // Update Snackbar for error
+        // Handle errors in the form submission process
         setSnackbarOpen(true);
-        setSnackbarSeverity("error");
-        setSnackbarMessage("Failed to add service provider. Please try again.");
-        console.error("Error submitting form:", error);
+        setSnackbarSeverity("warning");
+        setSnackbarMessage("Please fill out all required fields.");
+        console.error("Form validation or image upload error:", error);
       }
     } else {
-      // Update Snackbar for validation error
+      // If form validation fails, notify the user
       setSnackbarOpen(true);
       setSnackbarSeverity("warning");
       setSnackbarMessage("Please fill out all required fields.");
     }
+    
   };
   
   
