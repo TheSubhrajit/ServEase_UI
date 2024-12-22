@@ -4,19 +4,16 @@ import "./Landingpage.css";
 import DialogComponent from "../Common/DialogComponent/DialogComponent";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Dayjs } from "dayjs";
-import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
+  bookingType : (data : string) => void;
 }
 
-export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
+export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , bookingType }) => {
 
   const [open, setOpen] = useState(false);
   const [ selectedType , setSelectedtype] = useState('')
-  const [value, setValue] = React.useState<Dayjs | null>(null);
   
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
@@ -39,7 +36,13 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent })
   }
 
   const handleSave = () =>{
-    sendDataToParent(selectedType);
+    if(selectedRadioButtonValue === "Date"){
+      bookingType(selectedType);
+      sendDataToParent(selectedType);
+    } else {
+      sendDataToParent(selectedType);
+    }
+
   }
 
   const getSelectedValue = (e) =>{
