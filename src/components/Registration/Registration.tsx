@@ -17,7 +17,8 @@ import {
   FormLabel,
   FormControl,
   Alert,
-  Snackbar
+  Snackbar,
+  AlertColor
 } from "@mui/material";
 import "./Registration.css";
 import {
@@ -96,11 +97,11 @@ const [snackbarMessage, setSnackbarMessage] = useState("");
 const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "warning" | "info">("success");
 
 
-    // const showSnackbar = (message: string, severity: AlertColor = 'success') => {
-    //   setSnackbarMessage(message);
-    //   setSnackbarSeverity(severity);
-    //   setSnackbarOpen(true);
-    // };
+    const showSnackbar = (message: string, severity: AlertColor = 'success') => {
+      setSnackbarMessage(message);
+      setSnackbarSeverity(severity);
+      setSnackbarOpen(true);
+    };
 
     const handleCloseSnackbar = () => {
       setSnackbarOpen(false);
@@ -439,56 +440,64 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
   // };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     // Ensure form validation passes
     if (validateForm()) {
-      try {
-        const formData1 = new FormData();
-        if(image){
-          formData1.append('image', image);
+        try {
+            // Check if an image is selected
+            if (image) {
+                const formData1 = new FormData();
+                formData1.append('image', image);
+
+                // Call image upload API
+                const imageResponse = await axiosInstance.post(
+                    'http://65.2.153.173:3000/upload',
+                    formData1,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+
+                // If image upload is successful, add URL to formData
+                if (imageResponse.status === 200) {
+                    formData.profilePic = imageResponse.data.imageUrl;
+                }
+            }
+
+            // Call customer add API (regardless of whether an image is uploaded)
+            const response = await axiosInstance.post(
+                "/api/customer/add-customer",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            // Update Snackbar for success
+            setSnackbarSeverity("success");
+            setSnackbarMessage("User added successfully!");
+            setSnackbarOpen(true);
+            //onBackToLogin(true); 
+
+        } catch (error) {
+            // Update Snackbar for error
+            setSnackbarOpen(true);
+            setSnackbarSeverity("error");
+            setSnackbarMessage("Failed to add User. Please try again.");
+            console.error("Error submitting form:", error);
         }
-       
-        const imageResponse = await axiosInstance.post(
-          'http://65.2.153.173:3000/upload',
-          formData1, // Correctly pass FormData as the body (second argument)
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data', // Ensure the correct content type for FormData
-            },
-          }
-        );
-        if(imageResponse.status === 200){
-          formData.profilePic = imageResponse.data.imageUrl;
-        const response = await axiosInstance.post(
-          "/api/customer/add-customer",
-          formData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-   // Update Snackbar for success
-   setSnackbarSeverity("success");
-   setSnackbarMessage("User added successfully!");
-   setSnackbarOpen(true);
-   onBackToLogin(true);
- } 
-}catch (error) {
-   // Update Snackbar for error
-   setSnackbarOpen(true);
-   setSnackbarSeverity("error");
-   setSnackbarMessage("Failed to add User. Please try again.");
-   console.error("Error submitting form:", error);
- }
-}
-else {
- // Update Snackbar for validation error
- setSnackbarOpen(true);
- setSnackbarSeverity("warning");
- setSnackbarMessage("Please fill out all required fields.");
-}
+    } else {
+        // Update Snackbar for validation error
+        setSnackbarOpen(true);
+        setSnackbarSeverity("warning");
+        setSnackbarMessage("Please fill out all required fields.");
+    }
 };
+
   const handleNext = () => {
     if (validateForm()) {
       setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
@@ -959,7 +968,7 @@ else {
           )}
         </Box>
       <Snackbar open={snackbarOpen} 
-           autoHideDuration={6000} 
+           autoHideDuration={3000} 
            onClose={handleCloseSnackbar}   
            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
            sx={{ marginTop: '60px',}}
@@ -976,7 +985,7 @@ else {
             Already have an account?{" "}
             <button
               className="text-blue-500 ml-2 underline"
-              onClick={(e) => handleBackLogin("false")}
+              onClick={(e) => handleBackLogin("true")}
             >
               Sign in
             </button>
