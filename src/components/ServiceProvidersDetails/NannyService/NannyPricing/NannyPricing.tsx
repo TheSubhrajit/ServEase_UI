@@ -5,7 +5,8 @@ import React, { useEffect, useState } from 'react';
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 
 interface NannyPricingProps {
-  onPriceChange: (priceData: { price: number, entry: any }) => void;  // Add the onPriceChange function as a prop
+  onPriceChange: (priceData: { price: number, entry: any }) => void;
+  onAddToCart:( data: string) => void;  // Add the onPriceChange function as a prop
 }
 
 // Sample data as per your provided table
@@ -42,7 +43,7 @@ interface NannyPricingProps {
 //   ]
 
 
-  const NannyPricing =({ onPriceChange }: NannyPricingProps) => {
+  const NannyPricing =({ onPriceChange , onAddToCart }: NannyPricingProps) => {
     const [selectedServiceType, setSelectedServiceType] = useState('');
     const [selectedSubCategory, setSelectedSubCategory] = useState('');
     const [selectedAge, setSelectedAge] = useState('');
@@ -84,6 +85,10 @@ interface NannyPricingProps {
             setSelectedSubCategory('')
         }
         
+    }
+
+    const handleAddToCart = () =>{
+      onAddToCart('NannyAddedtoCart')
     }
 
     const priceData = [
@@ -184,7 +189,7 @@ interface NannyPricingProps {
       </Typography>
       <Typography gutterBottom>Price: ₹{price}/month</Typography>
 
-      <Button type="submit" variant="outlined" style={{float :'right',margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button>
+      <Button type="submit" variant="outlined" style={{float :'right',margin:'10px'}} endIcon={<AddShoppingCartIcon  />} onClick={handleAddToCart}> Add to cart </Button>
     </div>
   );
 };

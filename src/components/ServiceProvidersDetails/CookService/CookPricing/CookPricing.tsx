@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 
 interface CookPricingProps {
-  onPriceChange: (priceData: { price: number, entry: any }) => void;  // Add the onPriceChange function as a prop
+  onPriceChange: (priceData: { price: number, entry: any }) => void; 
+  onAddToCart:(data:string) => void; // Add the onPriceChange function as a prop
 }
 
-const CookPricing = ({ onPriceChange }: CookPricingProps) => {
+const CookPricing = ({ onPriceChange , onAddToCart }: CookPricingProps) => {
 
     const mealData = [
         { serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast', people: '1-2', price: 2000, description: 'Includes preparing of 5-8 chapatis, 1 vegetable. Sunday leave.' },
@@ -83,6 +84,10 @@ const CookPricing = ({ onPriceChange }: CookPricingProps) => {
         }if(arg1 === "pax"){
             setPax(value)
         }
+    }
+
+    const onClickAddToCart = () =>{
+      onAddToCart('cookDataSaved')
     }
 
     const calculatePriceAndEntry = () => {
@@ -173,7 +178,7 @@ const CookPricing = ({ onPriceChange }: CookPricingProps) => {
 
       <Typography gutterBottom>Price: ₹{price}/month</Typography>
 
-      <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button>
+      <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />}  onClick={onClickAddToCart}> Add to cart </Button>
       </div>
     )
 }

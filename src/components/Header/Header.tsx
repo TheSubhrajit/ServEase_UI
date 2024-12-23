@@ -25,6 +25,9 @@ import "./Header.css";
 import { Landingpage } from "../Landing_Page/Landingpage";
 import SearchIcon from "@mui/icons-material/Search";
 import MapComponent from "../MapComponent/MapComponent";
+import { useSelector } from "react-redux";
+import { useDispatch } from 'react-redux'
+import { remove } from "../../features/user/userSlice";
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
@@ -32,14 +35,24 @@ interface ChildComponentProps {
 
 export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
   const handleClick = (e: any) => {
+    dispatch(remove())
     sendDataToParent(e);
   };
+
+  const user = useSelector((state : any) => state.user?.value);
+  const dispatch = useDispatch();
 
   const [location, setLocation] = useState("");
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [accountEl, setAccountEl] = useState<null | HTMLElement>(null);
   const [open, setOpen] = useState(false);
+  const [loggedInUser , setLoggedInUser] = useState();
+
+  useEffect(() => {
+    console.log("updated user in header", user);
+    setLoggedInUser(user);
+  }, [user]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -215,15 +228,39 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               }}
             />
             <IconButton
-              size="large"
-              edge="end"
-              aria-label="account"
-              onClick={handleAccountMenuOpen}
-              color="inherit"
-              sx={{ width: 60, height: 60 }}
-            >
-              <AccountCircle sx={{ fontSize: 30, color: "#0d6efd" }} />
-            </IconButton>
+  size="large"
+  edge="end"
+  aria-label="account"
+  onClick={handleAccountMenuOpen}
+  color="inherit"
+  sx={{
+    width: 40, // Size of the button
+    height: 40,
+    borderRadius: '50%', // Circular shape
+    padding: 0, // Remove default padding
+    overflow: 'hidden', // Ensure image stays within the circle
+    display: 'flex', // Center image within the button
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0', // Optional background color
+  }}
+>
+  {/* Conditionally render profile picture or icon */}
+  {user && (user.customerDetails?.profilePic || user.serviceProviderDetails?.profilePic) ? (
+    <img
+      src={user.customerDetails?.profilePic || user.serviceProviderDetails?.profilePic}
+      alt="account"
+      style={{
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover', // Ensures the image covers the entire button
+      }}
+    />
+  ) : (
+    <AccountCircle sx={{ fontSize: 30, color: "#0d6efd" }} />
+  )}
+</IconButton>
+
 
             <Menu
               id="menu-appbar"
@@ -239,24 +276,52 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               open={Boolean(accountEl)}
               onClose={handleAccountMenuClose}
             >
-              <MenuItem
+              {!user && (
+    <MenuItem
+      onClick={() => {
+        handleClick("login");
+        handleAccountMenuClose();
+      }}
+    >
+      Login / Register
+    </MenuItem>
+  )}
+  {!user && (
+    <MenuItem
+      onClick={() => {
+        handleClick("login");
+        handleAccountMenuClose();
+      }}
+    >
+      Contact Us
+    </MenuItem>
+  )}
+              {/* <MenuItem onClick={handleAccountMenuClose}>Privacy Policy</MenuItem>
+              <MenuItem onClick={handleAccountMenuClose}>Notification</MenuItem> */}
+              {user && ( <MenuItem
                 onClick={() => {
-                  handleClick("login");
+                  handleClick("sign_out");
                   handleAccountMenuClose();
                 }}
               >
-                Login / Register
-              </MenuItem>
-              <MenuItem onClick={handleAccountMenuClose}>Privacy Policy</MenuItem>
-              <MenuItem onClick={handleAccountMenuClose}>Notification</MenuItem>
-              <MenuItem
+                Profile
+              </MenuItem> )}
+              {user && ( <MenuItem
+                onClick={() => {
+                  handleClick("sign_out");
+                  handleAccountMenuClose();
+                }}
+              >
+                Bookings
+              </MenuItem> )}
+              {user && ( <MenuItem
                 onClick={() => {
                   handleClick("sign_out");
                   handleAccountMenuClose();
                 }}
               >
                 Sign Out
-              </MenuItem>
+              </MenuItem> )}
               <MenuItem
                 onClick={() => {
                   handleClick("admin");

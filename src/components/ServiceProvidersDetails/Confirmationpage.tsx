@@ -200,23 +200,12 @@ const  Confirmationpage= (props) => {
   };
   return (
     <div className="details-container">
-      {/* <Button onClick={onBack} variant="outlined">
-  Back to Details View
-</Button> */}
-
-
-     <div style={{width:'100%'}}> 
+     {onBack && <div style={{width:'100%'}}> 
       <Card style={{ width: '100%'}}> 
         <div style={{display:'flex',marginLeft: '20px'}}>
-        {/* <Avatar
-            alt={`${firstName} ${lastName}`}
-            src={`/${profilePic}`}
-            sx={{ width: 100, height: 100 }}
-          /> */}
           <div style={{display:'grid'}}>
           <Typography  variant="h6" style={{display:'flex'}}>
     {firstName} {lastName},({gender === 'FEMALE' ? 'F ' : gender === 'MALE' ? 'M ' : 'O'} {calculateAge(dob)} )
-    {/* (F, 20{age})   */}
     <img
                 src="nonveg.png"
                 alt="Diet Symbol"
@@ -230,7 +219,7 @@ const  Confirmationpage= (props) => {
     </div>
      </div>
        </Card>
-       </div>
+       </div>}
        <div style={{display:'flex'}}> 
        {role === "maid" && <Card style={{width:"100%%" , display:"flex"}}>
        <div style={{ display : "flex" , width :'100%' , marginTop:"20px"}}>
@@ -279,14 +268,10 @@ const  Confirmationpage= (props) => {
        </div>
        </Card>}
        {role === "nanny" && <Card style={{width:"100%" , display:"flex"}}>
-        <NannyPricing onPriceChange={function (priceData: { price: number; entry: any; }): void {
-            throw new Error('Function not implemented.');
-          } } />
+        <NannyPricing onPriceChange={handlePriceChange} onAddToCart={handleSave} />
        </Card>} 
        {role === "cook" && <Card style={{width:"100%" , display:"flex"}}>
-        <CookPricing onPriceChange={function (priceData: { price: number; entry: any; }): void {
-            throw new Error('Function not implemented.');
-          } } />
+        <CookPricing onPriceChange={handlePriceChange} onAddToCart={handleSave}/>
        </Card>} 
        
        {/* <Card style={{width:"40%"}}>

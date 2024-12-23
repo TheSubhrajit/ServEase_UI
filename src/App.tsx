@@ -12,12 +12,13 @@ import Checkout from "./components/Checkout/Checkout";
 
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); // State to manage selections
-  const [handleDropDownValue, setDropDownvalue] = useState<string | undefined>();
+  const [handleDropDownValue, setDropDownValue] = useState<string | undefined>(); // Fixed typo
   const [checkoutData, setCheckoutData] = useState<any>();
+  const [selectedBookingType, setSelectedBookingType] = useState<string | undefined>(); // Fixed typo
 
   // Function to handle child component communication
   const handleDataFromChild = (e: string) => {
-    setSelection(e);  // Update selection based on child component's input
+    setSelection(e); // Update selection based on child component's input
   };
 
   const handleCheckoutItems = (item: any) => {
@@ -27,37 +28,57 @@ function App() {
 
   const getSelectedFromDropDown = (e: string) => {
     setSelection(undefined);
-    setCheckoutData(undefined) // Reset selection on dropdown change
-    setDropDownvalue(e);
+    setCheckoutData(undefined); // Reset selection on dropdown change
+    setDropDownValue(e);
+  };
+
+  const handleSelectedBookingType = (e: string) => {
+    console.log("Selected booking type:", e);
+    setSelectedBookingType(e); // Update selected booking type
+  };
+
+  // Render content based on different conditions
+  const renderContent = () => {
+    if (checkoutData) {
+      // Render Checkout if checkoutData is available
+      return <Checkout selectedcheckout={checkoutData} />;
+    }
+
+    if (handleDropDownValue === "login") {
+      return (
+        <div className="w-full max-w-4xl h-[75%]">
+          <Login />
+        </div>
+      );
+    }
+
+    if (handleDropDownValue === "admin") {
+      return <Admin />;
+    }
+
+    if (selection === "Confirmation" || selectedBookingType) {
+      return <Confirmationpage role={selection}/>;
+    }
+
+    return !selection ? (
+      <Landingpage sendDataToParent={handleDataFromChild} bookingType={handleSelectedBookingType} />
+    ) : (
+      <DetailsView
+        selected={selection}
+        sendDataToParent={handleDataFromChild}
+        checkoutItem={handleCheckoutItems}
+      />
+    );
   };
 
   return (
     <div className="App">
       <div className="header-class">
-        <Header sendDataToParent={(e) => getSelectedFromDropDown(e)} />
+        <Header sendDataToParent={getSelectedFromDropDown} />
       </div>
 
       <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
-        {checkoutData ? (
-          // Render only Checkout if checkoutData is available
-          <Checkout selectedcheckout={checkoutData}/>
-        ) : handleDropDownValue === "login" ? (
-          <div className="w-full max-w-4xl h-[75%]">
-            <Login />
-          </div>
-        ) : handleDropDownValue === "admin" ? (
-          <Admin />
-        ) : selection === "Confirmation" ? (
-          <Confirmationpage />
-        ) : !selection ? (
-          <Landingpage sendDataToParent={handleDataFromChild} />
-        ) : (
-          <DetailsView
-            selected={selection}
-            sendDataToParent={handleDataFromChild}
-            checkoutItem={handleCheckoutItems}
-          />
-        )}
+        {renderContent()}
       </section>
 
       <footer className="footer-container">

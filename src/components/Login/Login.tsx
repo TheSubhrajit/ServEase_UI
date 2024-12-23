@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Registration from "../Registration/Registration";
 import ServiceProviderRegistration from "../Registration/ServiceProviderRegistration";
 import Snackbar from '@mui/material/Snackbar';
@@ -11,6 +11,8 @@ import ForgotPassword from './ForgotPassword';
 import DetailsView from '../DetailsView/DetailsView';
 import ServiceProviderDashboard from '../DetailsView/ServiceProviderDashboard';
 import axiosInstance from '../../services/axiosInstance';
+import { useSelector, useDispatch } from 'react-redux'
+import { add } from "../../features/user/userSlice";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -28,6 +30,8 @@ export const Login: React.FC = () => {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [redirectComponent, setRedirectComponent] = useState<React.ReactNode | null>(null);
+
+  const dispatch = useDispatch()
   const handleSignUpClick = () => {
     setIsRegistration(true);
   };
@@ -84,6 +88,7 @@ export const Login: React.FC = () => {
       // Check if the response is successful
       if (response.status === 200 && response.data) {
         const { message, role } = response.data;
+        dispatch(add(response.data))
   
         // Display success message
         setSnackbarMessage(message || "Login successful!");
@@ -113,6 +118,11 @@ export const Login: React.FC = () => {
       setOpenSnackbar(true);
     }
   };
+
+  // useEffect(() => {
+  //   console.log("Updated user:", user);
+  // }, [user]);
+  
   
 
 

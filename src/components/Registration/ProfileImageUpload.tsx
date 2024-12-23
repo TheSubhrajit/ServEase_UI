@@ -41,18 +41,15 @@ const cropImage = async (imageSrc: string, pixelCrop: any) => {
     pixelCrop.height
   );
 
-  return new Promise<string>((resolve) => {
+  return new Promise<Blob | null>((resolve) => {
     canvas.toBlob((blob) => {
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        resolve(url);
-      }
+      resolve(blob); // Return the Blob directly
     }, 'image/jpeg');
   });
 };
 
 interface ProfileImageUploadProps {
-  onImageSelect: (file: File | null) => void;
+  onImageSelect: (file: File | null) => void; // Parent expects File, not Blob
 }
 
 const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ onImageSelect }) => {
@@ -80,9 +77,20 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ onImageSelect }
   const handleCropConfirm = async () => {
     if (imageSrc && croppedAreaPixels) {
       try {
-        const croppedImageUrl = await cropImage(imageSrc, croppedAreaPixels);
-        setPreviewUrl(croppedImageUrl); // Set the cropped image as profile picture
-        setIsCropDialogOpen(false); // Close crop dialog
+        const croppedImageBlob = await cropImage(imageSrc, croppedAreaPixels);
+        if (croppedImageBlob) {
+          // Convert Blob to File
+          const file = new File([croppedImageBlob], 'cropped-image.jpg', {
+            type: 'image/jpeg',
+          });
+
+          // Pass the File to the parent component
+          onImageSelect(file);
+
+          const croppedImageUrl = URL.createObjectURL(croppedImageBlob);
+          setPreviewUrl(croppedImageUrl); // Set the cropped image as profile picture
+          setIsCropDialogOpen(false); // Close crop dialog
+        }
       } catch (error) {
         console.error('Error cropping image:', error);
       }
@@ -94,10 +102,9 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ onImageSelect }
   };
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" >
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
       <Box
         sx={{
-          
           position: 'relative',
           width: '150px',
           height: '150px',
