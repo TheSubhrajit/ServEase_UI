@@ -481,8 +481,11 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
             setSnackbarSeverity("success");
             setSnackbarMessage("User added successfully!");
             setSnackbarOpen(true);
-            //onBackToLogin(true); 
 
+            // Navigate back to login after a delay
+            setTimeout(() => {
+                onBackToLogin(true); // Adjust the function based on how you navigate
+            }, 3000); // Wait for 3 seconds to display Snackbar
         } catch (error) {
             // Update Snackbar for error
             setSnackbarOpen(true);
@@ -497,6 +500,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
         setSnackbarMessage("Please fill out all required fields.");
     }
 };
+
 
   const handleNext = () => {
     if (validateForm()) {
