@@ -484,7 +484,7 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
 
             // Navigate back to login after a delay
             setTimeout(() => {
-                onBackToLogin(true); // Adjust the function based on how you navigate
+                onBackToLogin(true); 
             }, 3000); // Wait for 3 seconds to display Snackbar
         } catch (error) {
             // Update Snackbar for error
