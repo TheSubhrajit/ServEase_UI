@@ -1,17 +1,11 @@
 import React from "react";
+import moment from "moment";
 import {
   Card,
   Typography,
-  Avatar,
   Rating,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // Correct import for ExpandMoreIcon
 import './serviceCard.css';
-import { Description } from "@mui/icons-material";
 
 const ServiceProvidersDetails = (props) => {
   const {
@@ -27,10 +21,8 @@ const ServiceProvidersDetails = (props) => {
     ratingsCount,
     availability,
     dob,
-    description,
     cookingSpeciality,
-    housekeepingRole,
-    profilePic
+    housekeepingRole
   } = props;
     // Map diet values to corresponding image paths
     const dietImages = {
@@ -38,21 +30,14 @@ const ServiceProvidersDetails = (props) => {
       NONVEG: "nonveg.png",
       BOTH:"nonveg.png"
     };
-    const calculateAge = (dob) => {
-      if (!dob) return ""; // Handle cases where dob is not provided
-      const birthDate = new Date(dob);
-      const today = new Date();
+
+    // Calculate age using moment.js
+  const calculateAge = (dob) => {
+    if (!dob) return ""; // Handle cases where dob is not provided
+    const age = moment().diff(moment(dob), 'years'); // Get the age in years
+    return age;
+  };
     
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDifference = today.getMonth() - birthDate.getMonth();
-    
-      // Adjust if the current month/day is before the birth month/day
-      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-    
-      return age;
-    };
     
     // Determine the diet image based on the diet value
     const dietImage = dietImages[diet];
@@ -66,14 +51,6 @@ const ServiceProvidersDetails = (props) => {
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
       }}>
-        {/* <div className="avatar-section">
-           
-          <Avatar
-            alt={`${firstName} ${lastName}`}
-            src={`/${profilePic}`}
-            className="service-avatar"
-          />
-        </div> */}
 
         <div className="service-details"> {/* Section for service details */}
         <Typography
@@ -85,8 +62,8 @@ const ServiceProvidersDetails = (props) => {
     {firstName}{middleName} {lastName}
   </span>
   <span style={{ fontWeight: 'bold', fontSize: '1.2rem', marginLeft: '4px' }}>
-    ({gender === 'FEMALE' ? 'F' : gender === 'MALE' ? 'M' : 'O'}
-     {/* {calculateAge(dob)}  */}
+    ({gender === 'FEMALE' ? 'F ' : gender === 'MALE' ? 'M ' : 'O'} 
+     {calculateAge(dob)} 
      )
     <span style={{ display: 'inline-block', marginLeft: '5px' }}>
       <img
@@ -120,7 +97,7 @@ const ServiceProvidersDetails = (props) => {
     </span>, 
     Other Services: 
     <span style={{ fontWeight: 'normal', fontSize: '1.2rem', marginLeft: '8px' }}>
-      {otherServices}
+      {otherServices|| 'N/A'}
     </span>
   </Typography>
     {housekeepingRole === "COOK" && (

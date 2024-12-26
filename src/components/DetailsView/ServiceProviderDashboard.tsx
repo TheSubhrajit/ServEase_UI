@@ -1,15 +1,15 @@
+/* eslint-disable react/jsx-pascal-case */
 // import React from 'react';
 import React, { useState, useEffect } from "react";
 import { Box, Grid, Card, CardContent, Typography, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import SendIcon from '@mui/icons-material/Send';
 // import axios from "axios";
 import axiosInstance from '../../services/axiosInstance';
-import Edit_provider from "./Edit_provider";
+import EditProvider from "./EditProvider";
 
-interface ChildComponentProps {
-    sendDataToParent: (data: string) => void;
-  }
+// interface ChildComponentProps {
+//     sendDataToParent: (data: string) => void;
+//   }
   
 const ServiceProviderDashboard:React.FC = (data) => {
   // const navigate = useNavigate();
@@ -48,7 +48,7 @@ const ServiceProviderDashboard:React.FC = (data) => {
   
 
   return isEditing ? (
-    <Edit_provider goBack={() => setIsEditing(false)} />
+    <EditProvider goBack={() => setIsEditing(false)} />
   ) : (
     // Dashboard content...
   

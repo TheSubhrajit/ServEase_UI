@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Autocomplete,
@@ -19,12 +20,15 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Navbar from "react-bootstrap/Navbar";
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store"; // Adjust the path as necessary
 import axios from "axios";
 import { keys } from "../../env/env";
 import "./Header.css";
+import { Landingpage } from "../Landing_Page/Landingpage";
+import SearchIcon from "@mui/icons-material/Search";
 import MapComponent from "../MapComponent/MapComponent";
+import { useSelector } from "react-redux";
+import { useDispatch } from 'react-redux'
+import { remove } from "../../features/user/userSlice";
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
@@ -32,16 +36,24 @@ interface ChildComponentProps {
 
 export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
   const handleClick = (e: any) => {
+    dispatch(remove())
     sendDataToParent(e);
   };
 
+  const user = useSelector((state : any) => state.user?.value);
+  const dispatch = useDispatch();
+
   const [location, setLocation] = useState("");
+  const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [accountEl, setAccountEl] = useState<null | HTMLElement>(null);
   const [open, setOpen] = useState(false);
+  const [loggedInUser , setLoggedInUser] = useState();
 
-  // Redux state
-  const user = useSelector((state: RootState) => state.user);
+  useEffect(() => {
+    console.log("updated user in header", user);
+    setLoggedInUser(user);
+  }, [user]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -73,6 +85,78 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
     }
   }, []);
 
+  const [inputValue, setInputValue] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [dataFromMap, setDataFromMap] = useState("");
+
+  const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+  const PLACES_API_URL =
+    "https://maps.googleapis.com/maps/api/place/autocomplete/json";
+
+  useEffect(() => {
+    if (inputValue.trim() === "") {
+      setSuggestions([]);
+      setError(null);
+      return;
+    }
+
+    const fetchSuggestions = async () => {
+      try {
+        const response = await axios.get(CORS_PROXY + PLACES_API_URL, {
+          params: {
+            input: inputValue,
+            key: keys.api_key,
+            types: "geocode",
+          },
+        });
+
+        if (response.data.status === "OK") {
+          const sub = response.data.predictions.map((res) => res.description);
+          setSuggestions(sub);
+        } else {
+          setError(response.data.error_message || "An error occurred");
+          setSuggestions([]);
+        }
+      } catch (error) {
+        console.log("Failed to fetch suggestions");
+        setSuggestions([]);
+      }
+    };
+
+    fetchSuggestions();
+  }, [inputValue]);
+
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleInputChange = (event: React.SyntheticEvent, newValue: string) => {
+    setInputValue(newValue);
+  };
+
+  const handleChange = (event: any, newValue: any) => {
+    if (newValue) {
+      setLocation(newValue);
+    }
+  };
+
+  const handleLocationMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleLocationMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleAccountMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAccountEl(event.currentTarget);
   };
@@ -97,11 +181,9 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [dataFromMap, setDataFromMap] = useState("");
-
-  const updateLocationFromMap = (data: string): void => {
+  function updateLocationFromMap(data: string): void {
     setDataFromMap(data);
-  };
+  }
 
   return (
     <>
@@ -147,15 +229,39 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               }}
             />
             <IconButton
-              size="large"
-              edge="end"
-              aria-label="account"
-              onClick={handleAccountMenuOpen}
-              color="inherit"
-              sx={{ width: 60, height: 60 }}
-            >
-              <AccountCircle sx={{ fontSize: 30, color: "#0d6efd" }} />
-            </IconButton>
+  size="large"
+  edge="end"
+  aria-label="account"
+  onClick={handleAccountMenuOpen}
+  color="inherit"
+  sx={{
+    width: 40, // Size of the button
+    height: 40,
+    borderRadius: '50%', // Circular shape
+    padding: 0, // Remove default padding
+    overflow: 'hidden', // Ensure image stays within the circle
+    display: 'flex', // Center image within the button
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0', // Optional background color
+  }}
+>
+  {/* Conditionally render profile picture or icon */}
+  {user && (user.customerDetails?.profilePic || user.serviceProviderDetails?.profilePic) ? (
+    <img
+      src={user.customerDetails?.profilePic || user.serviceProviderDetails?.profilePic}
+      alt="account"
+      style={{
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover', // Ensures the image covers the entire button
+      }}
+    />
+  ) : (
+    <AccountCircle sx={{ fontSize: 30, color: "#0d6efd" }} />
+  )}
+</IconButton>
+
 
             <Menu
               id="menu-appbar"
@@ -171,28 +277,60 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               open={Boolean(accountEl)}
               onClose={handleAccountMenuClose}
             >
-              {user.isLoggedIn ? (
-                <>
-                  <MenuItem onClick={handleAccountMenuClose}>
-                    Profile
-                  </MenuItem>
-                  <MenuItem onClick={handleAccountMenuClose}>
-                    Settings
-                  </MenuItem>
-                  <MenuItem onClick={() => handleClick("sign_out")}>
-                    Sign Out
-                  </MenuItem>
-                </>
-              ) : (
-                <MenuItem
-                  onClick={() => {
-                    handleClick("login");
-                    handleAccountMenuClose();
-                  }}
-                >
-                  Login / Register
-                </MenuItem>
-              )}
+              {!user && (
+    <MenuItem
+      onClick={() => {
+        handleClick("login");
+        handleAccountMenuClose();
+      }}
+    >
+      Login / Register
+    </MenuItem>
+  )}
+  {!user && (
+    <MenuItem
+      onClick={() => {
+        handleClick("login");
+        handleAccountMenuClose();
+      }}
+    >
+      Contact Us
+    </MenuItem>
+  )}
+              {/* <MenuItem onClick={handleAccountMenuClose}>Privacy Policy</MenuItem>
+              <MenuItem onClick={handleAccountMenuClose}>Notification</MenuItem> */}
+              {user && ( <MenuItem
+                onClick={() => {
+                  handleClick("sign_out");
+                  handleAccountMenuClose();
+                }}
+              >
+                Profile
+              </MenuItem> )}
+              {user && ( <MenuItem
+                onClick={() => {
+                  handleClick("sign_out");
+                  handleAccountMenuClose();
+                }}
+              >
+                Bookings
+              </MenuItem> )}
+              {user && ( <MenuItem
+                onClick={() => {
+                  handleClick("sign_out");
+                  handleAccountMenuClose();
+                }}
+              >
+                Sign Out
+              </MenuItem> )}
+              <MenuItem
+                onClick={() => {
+                  handleClick("admin");
+                  handleAccountMenuClose();
+                }}
+              >
+                Admin - For Demo purpose Only
+              </MenuItem>
             </Menu>
           </div>
         </div>

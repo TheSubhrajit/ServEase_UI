@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { PricingData } from '../../../types/PricingData';
@@ -80,7 +81,7 @@ const UtilityCleaning: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
     const { price, entry } = calculatePriceAndEntry(); // Get both price and entry
     setPrice(price); // Update price based on current state
     onPriceChange({ price, entry }); // Send both price and entry to parent
-  }, [serviceType, peopleSelected, frequency]); // Recalculate when any of these change
+  }, [serviceType, peopleSelected, frequency, calculatePriceAndEntry, onPriceChange]); // Recalculate when any of these change
 
   return (
     <>

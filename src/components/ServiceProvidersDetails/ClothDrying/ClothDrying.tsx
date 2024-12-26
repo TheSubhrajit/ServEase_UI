@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { PricingData } from "../../../types/PricingData";

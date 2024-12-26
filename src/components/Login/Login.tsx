@@ -1,71 +1,62 @@
-import React, { useState } from "react";
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useEffect, useState } from 'react';
 import Registration from "../Registration/Registration";
 import ServiceProviderRegistration from "../Registration/ServiceProviderRegistration";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
-import { Landingpage } from "../Landing_Page/Landingpage";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import IconButton from "@mui/material/IconButton";
-import ForgotPassword from "./ForgotPassword";
-import DetailsView from "../DetailsView/DetailsView";
-import ServiceProviderDashboard from "../DetailsView/ServiceProviderDashboard";
-import axiosInstance from "../../services/axiosInstance";
-import { useDispatch } from "react-redux";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+// import { Landingpage } from '../Landing_Page/Landingpage';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import IconButton from '@mui/material/IconButton';
+import ForgotPassword from './ForgotPassword';
+import DetailsView from '../DetailsView/DetailsView';
+import ServiceProviderDashboard from '../DetailsView/ServiceProviderDashboard';
+import axiosInstance from '../../services/axiosInstance';
+import { useSelector, useDispatch } from 'react-redux'
+import { add } from "../../features/user/userSlice";
 
-interface LoginProps {
-  onRoleUpdate: (role: string) => void; // Callback to send role to the parent component
-}
-
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref
-) {
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export const Login: React.FC<LoginProps> = ({ onRoleUpdate }) => {
+export const Login: React.FC = () => {
   const [isRegistration, setIsRegistration] = useState(false);
   const [isServiceRegistration, setServiceRegistration] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
-    "success"
-  );
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [redirectComponent, setRedirectComponent] =
-    useState<React.ReactNode | null>(null);
+  const [redirectComponent, setRedirectComponent] = useState<React.ReactNode | null>(null);
+
+  const dispatch = useDispatch()
+  
   const handleSignUpClick = () => {
     setIsRegistration(true);
   };
-  // const [userRole, setUserRole] = useState<string | null>(null);
-  
 
   const handleBackToLogin = () => {
     setIsRegistration(false);
     setIsForgotPassword(false);
+    setServiceRegistration(false);
   };
 
   const handleSignUpClickServiceProvider = () => {
     setServiceRegistration(true);
   };
 
-  const handleProviderBackToLogin = () => {
-    setServiceRegistration(false);
-  };
+  // const handleProviderBackToLogin = () => {
+  //   setServiceRegistration(false);
+  // };
 
   const handleForgotPasswordClick = () => {
     setIsForgotPassword(true);
   };
 
-  const handleSnackbarClose = (
-    _: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") return;
+  const handleSnackbarClose = (_: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') return;
     setOpenSnackbar(false);
   };
 
@@ -74,40 +65,34 @@ export const Login: React.FC<LoginProps> = ({ onRoleUpdate }) => {
   };
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     try {
-      //     // Dummy user credentials check
-      if (email === "user@example.com" && password === "password123") {
-        setSnackbarMessage("User logged in successfully!");
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
-        
-        setTimeout(() => {
-          setRedirectComponent(
-            <DetailsView
-              sendDataToParent={(data: string) => console.log(data)}
-            />
-          );
-        }, 1000);
-        return;
-      }
+      
+        //     // Dummy user credentials check
+            if (email === "user@example.com" && password === "password123") {
+             setSnackbarMessage("User logged in successfully!");
+              setSnackbarSeverity("success");
+              setOpenSnackbar(true);
+              setTimeout(() => {
+               setRedirectComponent(
+                   <DetailsView sendDataToParent={(data: string) => console.log(data)} />
+                );
+              }, 1000);
+               return;
+             }
       // Make the API call
-      const response = await axiosInstance.post("/api/user/login", {
+      const response = await axiosInstance.post('/api/user/login', {
         username: email,
         password: password,
       });
-
+  
       // Check if the response is successful
       if (response.status === 200 && response.data) {
         const { message, role } = response.data;
-        
-        // Update Redux store
-      
-
+        dispatch(add(response.data))
+  
         // Display success message
-        onRoleUpdate("USER");
         setSnackbarMessage(message || "Login successful!");
-       
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
 
@@ -117,31 +102,28 @@ export const Login: React.FC<LoginProps> = ({ onRoleUpdate }) => {
             setRedirectComponent(<ServiceProviderDashboard />);
           } else {
             setRedirectComponent(
-              <DetailsView
-                sendDataToParent={function (data: string): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
+              <DetailsView sendDataToParent={function (data: string): void {
+                throw new Error('Function not implemented.');
+              }} />
             );
           }
         }, 1000);
       } else {
         // Handle unexpected responses
-        throw new Error(
-          response.data?.message ||
-            "Login failed. Please check your credentials."
-        );
+        throw new Error(response.data?.message || "Login failed. Please check your credentials.");
       }
     } catch (error: any) {
-      console.error("Login error:", error);
-      setSnackbarMessage(
-        error.response?.data?.message || "An error occurred during login."
-      );
-      setSnackbarSeverity("error");
+      console.error('Login error:', error);
+      setSnackbarMessage(error.response?.data?.message || 'An error occurred during login.');
+      setSnackbarSeverity('error');
       setOpenSnackbar(true);
     }
   };
 
+  // useEffect(() => {
+  //   console.log("Updated user:", user);
+  // }, [user]);
+  
   if (redirectComponent) {
     return <>{redirectComponent}</>;
   }
@@ -161,17 +143,10 @@ export const Login: React.FC<LoginProps> = ({ onRoleUpdate }) => {
               <ServiceProviderRegistration onBackToLogin={handleBackToLogin} />
             ) : (
               <>
-                <h1 className="font-bold dark:text-gray-400 text-4xl text-center cursor-default my-0">
-                Log in
-                </h1>
+                <h1 className="font-bold dark:text-gray-400 text-4xl text-center cursor-default my-0">Log in</h1>
                 <form className="space-y-4" onSubmit={handleLogin}>
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="mb-2 dark:text-gray-400 text-lg"
-                    >
-                      Email
-                    </label>
+                <div>
+                    <label htmlFor="email" className="mb-2 dark:text-gray-400 text-lg">Email</label>
                     <input
                       id="email"
                       className="border p-3 dark:bg-indigo-500 dark:text-gray-300 dark:border-gray-700 shadow-md placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
@@ -183,16 +158,11 @@ export const Login: React.FC<LoginProps> = ({ onRoleUpdate }) => {
                     />
                   </div>
                   <div className="relative">
-                    <label
-                      htmlFor="password"
-                      className="mb-2 dark:text-gray-400 text-lg"
-                    >
-                      Password
-                    </label>
+                    <label htmlFor="password" className="mb-2 dark:text-gray-400 text-lg">Password</label>
                     <input
                       id="password"
                       className="border p-3 shadow-md dark:bg-indigo-500 dark:text-gray-300 dark:border-gray-700 placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
-                      type={showPassword ? "text" : "password"}
+                      type={showPassword ? 'text' : 'password'} 
                       placeholder="Password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -202,10 +172,10 @@ export const Login: React.FC<LoginProps> = ({ onRoleUpdate }) => {
                       onClick={togglePasswordVisibility}
                       edge="end"
                       style={{
-                        position: "absolute",
-                        top: "50%",
-                        right: "10px",
-                        transform: "translateY(-50%)",
+                        position: 'absolute',
+                        top: '50%',
+                        right: '10px',
+                        transform: 'translateY(-50%)',
                       }}
                     >
                       {showPassword ? <Visibility /> : <VisibilityOff />}
@@ -228,18 +198,8 @@ export const Login: React.FC<LoginProps> = ({ onRoleUpdate }) => {
                 </form>
                 <div className="flex flex-col items-center justify-center text-sm mt-4">
                   <h3 className="dark:text-gray-300">Don't have an account?</h3>
-                  <button
-                    onClick={handleSignUpClick}
-                    className="text-blue-400 ml-2 underline"
-                  >
-                    Sign Up As User
-                  </button>
-                  <button
-                    onClick={handleSignUpClickServiceProvider}
-                    className="text-blue-400 ml-2 underline"
-                  >
-                    Sign Up As Service Provider
-                  </button>
+                  <button onClick={handleSignUpClick} className="text-blue-400 ml-2 underline">Sign Up As User</button>
+                  <button onClick={handleSignUpClickServiceProvider} className="text-blue-400 ml-2 underline">Sign Up As Service Provider</button>
                 </div>
               </>
             )}
@@ -250,7 +210,7 @@ export const Login: React.FC<LoginProps> = ({ onRoleUpdate }) => {
         open={openSnackbar}
         autoHideDuration={4000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
           {snackbarMessage}

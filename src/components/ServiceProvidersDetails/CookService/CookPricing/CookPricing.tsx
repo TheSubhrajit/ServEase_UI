@@ -1,9 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 
+interface CookPricingProps {
+  onPriceChange: (priceData: { price: number, entry: any }) => void; 
+  onAddToCart:(data:string) => void; // Add the onPriceChange function as a prop
+}
 
-const CookPricing = () =>{
+const CookPricing = ({ onPriceChange , onAddToCart }: CookPricingProps) => {
 
     const mealData = [
         { serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast', people: '1-2', price: 2000, description: 'Includes preparing of 5-8 chapatis, 1 vegetable. Sunday leave.' },
@@ -81,6 +86,10 @@ const CookPricing = () =>{
         }
     }
 
+    const onClickAddToCart = () =>{
+      onAddToCart('cookDataSaved')
+    }
+
     const calculatePriceAndEntry = () => {
         if (!serviceType || !pax || !mealType) return { price: 0, entry: null };
     
@@ -98,7 +107,7 @@ const CookPricing = () =>{
     useEffect(() => {
         const { price, entry } = calculatePriceAndEntry(); // Get both price and entry
         setPrice(price); // Update price based on current state
-        // onPriceChange({ price, entry }); // Send both price and entry to parent
+        onPriceChange({ price, entry }); // Send both price and entry to parent
       }, [serviceType, pax, mealType]); // Recalculate when any of these change
 
     return (
@@ -169,7 +178,7 @@ const CookPricing = () =>{
 
       <Typography gutterBottom>Price: ₹{price}/month</Typography>
 
-      <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button>
+      <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />}  onClick={onClickAddToCart}> Add to cart </Button>
       </div>
     )
 }

@@ -1,30 +1,13 @@
 import React, { useState } from 'react';
-import axios from "axios";
+import moment from "moment";
 import {
   Card,
   Typography,
-  Avatar,
   Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  ButtonGroup,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-  Paper,
-  FormLabel,
   Snackbar,
-  FormControlLabel,
   Alert,
-  Radio,
-  RadioGroup,
   Tooltip,
 } from "@mui/material";
-import { FaArrowLeft, FaCheckCircle, FaStar ,FaRegStar,FaAward, FaRupeeSign, FaRegHeart, FaMapMarkerAlt } from 'react-icons/fa';
-import { AiOutlineCalendar } from 'react-icons/ai';
 import './Confirmationpage.css';
 import DialogComponent from '../Common/DialogComponent/DialogComponent'
 import UtilityCleaning from './UtilityCleaning/UtilityCleaning';
@@ -34,40 +17,27 @@ import Dusting from './Dusting/Dusting';
 import { PricingData } from '../../types/PricingData';
 import SweepingAndMopping from './SweepingAndMopping/SweepingAndMopping';
 import OtherUtilityServices from './OtherUtilityServices/OtherUtilityServices';
-import SmallCart from './SmallCart/SmallCart';
 import NannyPricing from './NannyService/NannyPricing/NannyPricing';
 import CookPricing from './CookService/CookPricing/CookPricing';
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
-import axiosInstance from '../../services/axiosInstance';
 
-interface selectedServices {
-  entry: PricingData;
-  price: number;
-}
 const  Confirmationpage= (props) => {
   const {
     firstName,
     lastName,
-    age,
     gender,
-    language,
-    experience,
-    profilePic,
-    diet,
+    dob,
     role,
     onBack, // Accept onBack as a prop
   } = props;
 
-  const [formattedDate, setFormattedDate] = useState<string>("");
-  const [pax , setPax] = useState('');
   const [open, setOpen] = useState(false);
  
-  const [selectedValue, setSelectedValue] = useState('People');
+  // const [selectedValue, setSelectedValue] = useState('People');
 
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
 
   const [data , setData] = useState<any>([])
-  const [BackTo, setBackTo] = useState("DetailsView");
   const [selectedItems, setSelectedItems] = useState<any>([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -98,15 +68,6 @@ const  Confirmationpage= (props) => {
     }
   };
 
-  // Handle radio button selection change
-  const handleRadioChange = (event) => {
-    setSelectedValue(event.target.value);
-     console.log("selected value => ", selectedValue)
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
@@ -115,74 +76,7 @@ const  Confirmationpage= (props) => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-  const handleBackClick = () => {
-    setBackTo("DetailView");
-  };
 
-  // const handleSave = () => {
-  //     setSelectedItems((prevItems) => [
-  //     ...prevItems,
-  //     { entry: data, price: calculatedPrice },
-  // ]);
-
-  // console.log(selectedItems)
- // Prepare the data you want to send in the API request
-    // const requestData = {
-    //   firstName,
-    //   lastName,
-    //   age,
-    //   gender,
-    //   languageKnown: language, 
-    //   experience,
-    //   profilePic,
-    //   dietryHabit: diet,
-    //   housekeepingRole: "COOK",
-    //   selectedServices: selectedItems, 
-    //   pax,
-    //   timeSlotlist: "09:00-12:00, 18:00-20:00",
-    //   assignedDate: new Date().toISOString(), 
-    //   createdDate: new Date().toISOString(), 
-    //   modifiedDate: new Date().toISOString(), 
-    //   supervisorId: 404, 
-    //   isPotential: "true",
-    //   modifiedBy: 505, 
-    //   startDate: formattedDate, 
-    //   endDate: "2024-12-31T18:00:00.000Z", 
-    //   noOfResources: "1", 
-    //   days: "Monday to Saturday", 
-    //   amount: calculatedPrice, 
-    //   comment: "", 
-    //   commentedBy: "Supervisor", 
-    //   commentedOn: new Date().toISOString(), 
-    //   pincode: 110016, 
-    //   cookingHabit: diet, 
-    //   serviceProviderId: 303, 
-    //   locality: "",
-    //   area: "",
-    //   apartment_name: "",
-    // };
-    
-    // try {
-    //   const response = await axios.post(API_ENDPOINT, requestData);
-    //   console.log('API Response:', response);
-    //   if (response.status === 200 || response.status === 201) {
-    //     setSnackbarMessage('Request successfully submitted!');
-    //     setSnackbarSeverity('success');
-    //     setSnackbarOpen(true);
-    //     setSelectedItems([]);
-    //     setCalculatedPrice(0);
-    //   } else {
-    //     throw new Error(`Unexpected response status: ${response.status}`);
-    //   }
-    // } catch (error) {
-    //   console.error('Error while saving the request:', error);
-    //   setSnackbarMessage('Error while saving the request. Please try again.');
-    //   setSnackbarSeverity('error');
-    //   setSnackbarOpen(true);
-    // }
-  // console.log(selectedItems)
-  //   handleClose(); // Close the dialog after saving
-  // };
 
   const handleSave = () => {
     // Check if data and calculatedPrice are valid before adding
@@ -206,73 +100,62 @@ const  Confirmationpage= (props) => {
     handleClose(); // Close the dialog after saving
   };
   
-  const handleAddToCart = () => {
-    if (selected) {
-      handleSave(); // Save the selected items
-    } else {
-      setSnackbarMessage("Please select a service to add to the cart.");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-    }
-  };
   
-
-  const menuItems = Array.from({ length: 10 }, (_, i) => i + 1);
 
   // const API_ENDPOINT = "http://43.205.212.94:8080/api/customer/add-customer-request";
 
-  const handleAddCustomerRequest = async (customerData: any) => {
-    try {
-      // Using axiosInstance to make a POST request
-      const response = await axiosInstance.post('/api/customer/add-customer-request', customerData);
+  // const handleAddCustomerRequest = async (customerData: any) => {
+  //   try {
+  //     // Using axiosInstance to make a POST request
+  //     const response = await axiosInstance.post('/api/customer/add-customer-request', customerData);
   
-      if (response.status === 200 || response.status === 201) {
-        console.log('Customer request added successfully:', response.data);
-        // Optionally handle success (e.g., show a success message)
-      } else {
-        console.error('Failed to add customer request. Response:', response);
-        // Optionally handle non-success status codes
-      }
-    } catch (error) {
-      console.error('An error occurred while adding the customer request:', error);
-      // Optionally handle errors (e.g., show an error message)
-    }
-  };
+  //     if (response.status === 200 || response.status === 201) {
+  //       console.log('Customer request added successfully:', response.data);
+  //       // Optionally handle success (e.g., show a success message)
+  //     } else {
+  //       console.error('Failed to add customer request. Response:', response);
+  //       // Optionally handle non-success status codes
+  //     }
+  //   } catch (error) {
+  //     console.error('An error occurred while adding the customer request:', error);
+  //     // Optionally handle errors (e.g., show an error message)
+  //   }
+  // };
   
-  const formatDate = (inputDate) => {
-    if (!inputDate) return "";
-    const date = new Date(inputDate);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = date.toLocaleString("default", { month: "short" });
-    return `${day} ${month}`;
-  };
+  // const formatDate = (inputDate) => {
+  //   if (!inputDate) return "";
+  //   const date = new Date(inputDate);
+  //   const day = String(date.getDate()).padStart(2, "0");
+  //   const month = date.toLocaleString("default", { month: "short" });
+  //   return `${day} ${month}`;
+  // };
 
-  const handleDateChange = (e) => {
-    const newFormattedDate = formatDate(e.target.value);
-    setFormattedDate(newFormattedDate);
-  };
+  // const handleDateChange = (e) => {
+  //   const newFormattedDate = formatDate(e.target.value);
+  //   setFormattedDate(newFormattedDate);
+  // };
 
-  const handleChange = (event: SelectChangeEvent) =>{
-        setPax(event.target.value as string)
-  }
+  // const handleChange = (event: SelectChangeEvent) =>{
+  //       setPax(event.target.value as string)
+  // }
 
-  const handleBackButtonClick = () => {
-    // Implement your back navigation logic here, e.g.:
-    window.history.back(); // This will take the user back to the previous page
-  };
-  // Map diet values to corresponding image paths
-  const dietImages = {
-    VEG: "veg.png",
-    NONVEG: "nonveg.png",
-    BOTH:"nonveg.png"
-  };
+  // const handleBackButtonClick = () => {
+  //   // Implement your back navigation logic here, e.g.:
+  //   window.history.back(); // This will take the user back to the previous page
+  // };
+  // // Map diet values to corresponding image paths
+  // const dietImages = {
+  //   VEG: "veg.png",
+  //   NONVEG: "nonveg.png",
+  //   BOTH:"nonveg.png"
+  // };
 
   
   // Determine the diet image based on the diet value
-  const dietImage = dietImages[diet];
+  // const dietImage = dietImages[diet];
 
   const [selected, setSelected] = useState(null);
-  const [peopleSelected, setpeopleSelected] = useState(null);
+  // const [peopleSelected, setpeopleSelected] = useState(null);
 
   // Handle button click
   const handleButtonClick = (value , type) => {
@@ -283,7 +166,7 @@ const  Confirmationpage= (props) => {
       setOpen(true);
     }
     else if(type === "people"){
-      setpeopleSelected(value);
+      // setpeopleSelected(value);
     }
     
   };
@@ -298,37 +181,31 @@ const  Confirmationpage= (props) => {
     { value: 'others', imageSrc: "../sweeping.png" , text:"Other services" }
   ];
 
-  const peopleButtonsSelector = [
-    { key: 1 , value : '1-2'  },
-    { key: 2, value: '3-4' },
-    { key: 3, value: '5-6' },
-    { key: 4, value: '7-9' }
-  ];
+  // const peopleButtonsSelector = [
+  //   { key: 1 , value : '1-2'  },
+  //   { key: 2, value: '3-4' },
+  //   { key: 3, value: '5-6' },
+  //   { key: 4, value: '7-9' }
+  // ];
 
 
   function getModelTitle(): any {
     const ModelText = buttons.find(button => button.value === selected)
     return ModelText?.text;
   }
-
+  const calculateAge = (dob) => {
+    if (!dob) return ""; // Handle cases where dob is not provided
+    const age = moment().diff(moment(dob), 'years'); // Get the age in years
+    return age;
+  };
   return (
     <div className="details-container">
-      {/* <Button onClick={onBack} variant="outlined">
-  Back to Details View
-</Button> */}
-
-
-     <div style={{width:'100%'}}> 
+     {onBack && <div style={{width:'100%'}}> 
       <Card style={{ width: '100%'}}> 
-        <div style={{display:'flex'}}>
-        <Avatar
-            alt={`${firstName} ${lastName}`}
-            src={`/${profilePic}`}
-            sx={{ width: 100, height: 100 }}
-          />
+        <div style={{display:'flex',marginLeft: '20px'}}>
           <div style={{display:'grid'}}>
-          <Typography variant="h6" style={{display:'flex'}}>
-    {firstName} {lastName},(F, 20{age})  
+          <Typography  variant="h6" style={{display:'flex'}}>
+    {firstName} {lastName},({gender === 'FEMALE' ? 'F ' : gender === 'MALE' ? 'M ' : 'O'} {calculateAge(dob)} )
     <img
                 src="nonveg.png"
                 alt="Diet Symbol"
@@ -342,7 +219,7 @@ const  Confirmationpage= (props) => {
     </div>
      </div>
        </Card>
-       </div>
+       </div>}
        <div style={{display:'flex'}}> 
        {role === "maid" && <Card style={{width:"100%%" , display:"flex"}}>
        <div style={{ display : "flex" , width :'100%' , marginTop:"20px"}}>
@@ -391,10 +268,10 @@ const  Confirmationpage= (props) => {
        </div>
        </Card>}
        {role === "nanny" && <Card style={{width:"100%" , display:"flex"}}>
-        <NannyPricing />
+        <NannyPricing onPriceChange={handlePriceChange} onAddToCart={handleSave} />
        </Card>} 
        {role === "cook" && <Card style={{width:"100%" , display:"flex"}}>
-        <CookPricing />
+        <CookPricing onPriceChange={handlePriceChange} onAddToCart={handleSave}/>
        </Card>} 
        
        {/* <Card style={{width:"40%"}}>

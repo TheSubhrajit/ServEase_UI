@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { keys } from '../../env/env';
-import { Autocomplete, Button, Icon, TextField } from '@mui/material';
+import { Autocomplete, Button, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const GeolocationComponent = () => {
