@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-pascal-case */
-// import React from 'react';
 import React, { useState, useEffect } from "react";
 import { Box, Grid, Card, CardContent, Typography, Button } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
