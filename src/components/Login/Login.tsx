@@ -32,6 +32,7 @@ export const Login: React.FC = () => {
   const [redirectComponent, setRedirectComponent] = useState<React.ReactNode | null>(null);
 
   const dispatch = useDispatch()
+  
   const handleSignUpClick = () => {
     setIsRegistration(true);
   };
@@ -123,9 +124,6 @@ export const Login: React.FC = () => {
   //   console.log("Updated user:", user);
   // }, [user]);
   
-  
-
-
   if (redirectComponent) {
     return <>{redirectComponent}</>;
   }

@@ -9,7 +9,6 @@ import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 import CloseIcon from '@mui/icons-material/Close'; 
 import Confirmationpage from "../ServiceProvidersDetails/Confirmationpage"; // Adjust the path accordingly
 
-
 interface DetailsViewProps {
   sendDataToParent: (data: string) => void;
   selected? : string; // Define the prop type
@@ -47,7 +46,7 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent , sel
           response = await axiosInstance.get('api/serviceproviders/role?role='+selected.toUpperCase());
         } 
         else {
-          response = await axiosInstance.get('/api/serviceproviders/serviceproviders/all');
+          response = await axiosInstance.get('api/serviceproviders/serviceproviders/all');
         }
         setServiceProvidersData(response?.data);
       } catch (err) {

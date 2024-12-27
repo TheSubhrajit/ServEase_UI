@@ -1,76 +1,312 @@
-import React from 'react';
-import "./UserProfile.css";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  TextField,
+  Button,
   Typography,
-  Box
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useSelector, useDispatch } from "react-redux";
+import { add } from "../../features/user/userSlice";
 
-const UserProfile: React.FC = () => {
+//   interface ChildComponentProps {
+//     sendDataToParent: (data: string) => void; // Callback to close UserProfile
+//   goBack: () => void;
+// }
+
+interface UserProfileProps {
+  goBack: () => void;
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
+  const dispatch = useDispatch();
+
+  // Access user data from Redux store
+  const userData = useSelector((state: any) => state.user.value);
+
+  const [formData, setFormData] = useState({
+    account: {
+      firstName: "",
+      lastName: "",
+      mobileNo: "",
+      emailId: "",
+      age: "",
+    },
+    location: {
+      buildingName: "",
+      locality: "",
+      street: "",
+      pincode: "",
+      nearbyLocation: "",
+      currentLocation: "",
+    },
+    additional: {
+      idNo: "",
+      languageKnown: "",
+      housekeepingRole: "",
+      cookingSpeciality: "",
+      diet: "",
+    },
+  });
+
+  // Populate formData from Redux store
+  useEffect(() => {
+    if (userData) {
+      setFormData({
+        account: {
+          firstName: userData.firstName || "",
+          lastName: userData.lastName || "",
+          mobileNo: userData.mobileNo || "",
+          emailId: userData.emailId || "",
+          age: userData.age || "",
+        },
+        location: {
+          buildingName: userData.buildingName || "",
+          locality: userData.locality || "",
+          street: userData.street || "",
+          pincode: userData.pincode || "",
+          nearbyLocation: userData.nearbyLocation || "",
+          currentLocation: userData.currentLocation || "",
+        },
+        additional: {
+          idNo: userData.idNo || "",
+          languageKnown: userData.languageKnown || "",
+          housekeepingRole: userData.housekeepingRole || "",
+          cookingSpeciality: userData.cookingSpeciality || "",
+          diet: userData.diet || "",
+        },
+      });
+    }
+  }, [userData]);
+
+  const handleChange = (section: string, field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleSave = () => {
+    // Merge all sections into one object and dispatch to Redux
+    const updatedData = {
+      ...formData.account,
+      ...formData.location,
+      ...formData.additional,
+    };
+
+    dispatch(add(updatedData)); // Update Redux store
+    alert("Form data updated successfully!");
+  };
+
   return (
-    <Box sx={{ width: '100%', maxWidth: 600, margin: '0 auto', mt: 4 }} className='accordion'>
-      {/* Basic Information Accordion */}
-      <Accordion >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="basic-info-content"
-          id="basic-info-header"
+    
+    <>
+     
+      <div>
+      {/* <button onClick={sendDataToParent}>Back</button> */}
+        <div
+          style={{
+            gap: "10px",
+            maxWidth: "800px",
+            margin: "auto",
+            padding: "20px",
+            display: "grid",
+            backgroundColor: "beige",
+          }}
         >
-          <Typography>Basic Information</Typography>
-        </AccordionSummary>
-        <AccordionDetails >
-        <div className='topic'>
-        <Typography>First Name: Subhrajit</Typography>
-        <Typography>Last Name: Dutta</Typography>
-        <Typography>Gender : Male</Typography>
-        <Typography>Email I'd: subhrajitd2001@gmail.com</Typography>
-        <Typography>Password : Subhrajit@1234</Typography>
-        <Typography>Phone No.: 6250456969</Typography>
+          {/* Account Accordion */}
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>Account</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <TextField
+                placeholder="First Name"
+                fullWidth
+                margin="normal"
+                value={formData.account.firstName}
+                onChange={(e) =>
+                  handleChange("account", "firstName", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Last Name"
+                fullWidth
+                margin="normal"
+                value={formData.account.lastName}
+                onChange={(e) =>
+                  handleChange("account", "lastName", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Mobile Number"
+                fullWidth
+                margin="normal"
+                value={formData.account.mobileNo}
+                onChange={(e) =>
+                  handleChange("account", "mobileNo", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Email"
+                fullWidth
+                margin="normal"
+                value={formData.account.emailId}
+                onChange={(e) =>
+                  handleChange("account", "emailId", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Age"
+                fullWidth
+                margin="normal"
+                value={formData.account.age}
+                onChange={(e) => handleChange("account", "age", e.target.value)}
+              />
+            </AccordionDetails>
+          </Accordion>
+
+          {/* Location Accordion */}
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>Location Details</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              {/* Location fields */}
+              <TextField
+                placeholder="Building Name"
+                fullWidth
+                margin="normal"
+                value={formData.location.buildingName}
+                onChange={(e) =>
+                  handleChange("location", "buildingName", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Locality"
+                fullWidth
+                margin="normal"
+                value={formData.location.locality}
+                onChange={(e) =>
+                  handleChange("location", "locality", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Street"
+                fullWidth
+                margin="normal"
+                value={formData.location.street}
+                onChange={(e) =>
+                  handleChange("location", "street", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Pin Code"
+                fullWidth
+                margin="normal"
+                value={formData.location.pincode}
+                onChange={(e) =>
+                  handleChange("location", "pincode", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Nearby Location"
+                fullWidth
+                margin="normal"
+                value={formData.location.nearbyLocation}
+                onChange={(e) =>
+                  handleChange("location", "nearbyLocation", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Current Location"
+                fullWidth
+                margin="normal"
+                value={formData.location.currentLocation}
+                onChange={(e) =>
+                  handleChange("location", "currentLocation", e.target.value)
+                }
+              />
+            </AccordionDetails>
+          </Accordion>
+
+          {/* Additional Details Accordion */}
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>Additional Details</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              {/* Additional fields */}
+              <TextField
+                placeholder="Aadhaar Card Number"
+                fullWidth
+                margin="normal"
+                value={formData.additional.idNo}
+                onChange={(e) =>
+                  handleChange("additional", "idNo", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Languages"
+                fullWidth
+                margin="normal"
+                value={formData.additional.languageKnown}
+                onChange={(e) =>
+                  handleChange("additional", "languageKnown", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Housekeeping Role"
+                fullWidth
+                margin="normal"
+                value={formData.additional.housekeepingRole}
+                onChange={(e) =>
+                  handleChange("additional", "housekeepingRole", e.target.value)
+                }
+              />
+              <TextField
+                placeholder="Cooking Speciality"
+                fullWidth
+                margin="normal"
+                value={formData.additional.cookingSpeciality}
+                onChange={(e) =>
+                  handleChange(
+                    "additional",
+                    "cookingSpeciality",
+                    e.target.value
+                  )
+                }
+              />
+              <TextField
+                placeholder="Diet"
+                fullWidth
+                margin="normal"
+                value={formData.additional.diet}
+                onChange={(e) =>
+                  handleChange("additional", "diet", e.target.value)
+                }
+              />
+            </AccordionDetails>
+          </Accordion>
+
+          {/* Save Button */}
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            style={{ width: "30px", marginTop: "30px" }}
+            onClick={handleSave}
+          >
+            Save
+          </Button>
         </div>
-        </AccordionDetails>
-      </Accordion>
-
-      {/* Location/Address Accordion */}
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="location-address-content"
-          id="location-address-header"
-        >
-          <Typography>Location/Address</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        <div className='topic'>
-        
-            <Typography>Address : Haripara, Nagarukhra</Typography>
-            <Typography>City : Nadia</Typography>
-            <Typography>State : West Bengal</Typography>
-            <Typography>Zip/Postal Code : 741257</Typography>
-            
-          </div>
-        </AccordionDetails>
-      </Accordion>
-
-      {/* Additional Details Accordion */}
-      <Accordion >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="additional-details-content"
-          id="additional-details-header"
-        >
-          <Typography >Additional Details</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        <div className='topic'>
-        <Typography>Hobbies : Photography</Typography>
-        <Typography>Language : English, Bengali, Hindi </Typography>
-          </div>
-        </AccordionDetails>
-      </Accordion>
-    </Box>
+      </div>
+    </>
   );
 };
 
