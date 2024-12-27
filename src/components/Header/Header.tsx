@@ -36,8 +36,10 @@ interface ChildComponentProps {
 
 export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
   const handleClick = (e: any) => {
-    dispatch(remove())
-    sendDataToParent(e);
+    if(e === 'sign_out'){
+      dispatch(remove())
+    }
+      sendDataToParent(e);
   };
 
   const user = useSelector((state : any) => state.user?.value);
@@ -301,7 +303,7 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               <MenuItem onClick={handleAccountMenuClose}>Notification</MenuItem> */}
               {user && ( <MenuItem
                 onClick={() => {
-                  handleClick("sign_out");
+                  handleClick("profile");
                   handleAccountMenuClose();
                 }}
               >

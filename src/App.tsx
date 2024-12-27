@@ -57,6 +57,12 @@ function App() {
       return <Admin />;
     }
 
+    if(handleDropDownValue === "profile"){
+      return <UserProfile goBack={function (): void {
+        throw new Error("Function not implemented.");
+      } }/>
+    }
+
     if (selection === "Confirmation" || selectedBookingType) {
       return <Confirmationpage role={selection}/>;
     }

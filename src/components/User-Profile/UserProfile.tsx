@@ -54,28 +54,34 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
   // Populate formData from Redux store
   useEffect(() => {
     if (userData) {
+      console.log("user Data ===> ", userData)
+      let userInfo;
+      if(userData.role === "SERVICE_PROVIDER"){
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        userInfo = userData.serviceProviderDetails
+      }
       setFormData({
         account: {
-          firstName: userData.firstName || "",
-          lastName: userData.lastName || "",
-          mobileNo: userData.mobileNo || "",
-          emailId: userData.emailId || "",
-          age: userData.age || "",
+          firstName: userInfo.firstName || "",
+          lastName: userInfo.lastName || "",
+          mobileNo: userInfo.mobileNo || "",
+          emailId: userInfo.emailId || "",
+          age: userInfo.age || "",
         },
         location: {
-          buildingName: userData.buildingName || "",
-          locality: userData.locality || "",
-          street: userData.street || "",
-          pincode: userData.pincode || "",
-          nearbyLocation: userData.nearbyLocation || "",
-          currentLocation: userData.currentLocation || "",
+          buildingName: userInfo.buildingName || "",
+          locality: userInfo.locality || "",
+          street: userInfo.street || "",
+          pincode: userInfo.pincode || "",
+          nearbyLocation: userInfo.nearbyLocation || "",
+          currentLocation: userInfo.currentLocation || "",
         },
         additional: {
-          idNo: userData.idNo || "",
-          languageKnown: userData.languageKnown || "",
-          housekeepingRole: userData.housekeepingRole || "",
-          cookingSpeciality: userData.cookingSpeciality || "",
-          diet: userData.diet || "",
+          idNo: userInfo.idNo || "",
+          languageKnown: userInfo.languageKnown || "",
+          housekeepingRole: userInfo.housekeepingRole || "",
+          cookingSpeciality: userInfo.cookingSpeciality || "",
+          diet: userInfo.diet || "",
         },
       });
     }
