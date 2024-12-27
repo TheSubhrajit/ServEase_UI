@@ -22,6 +22,7 @@ import {
   FormControl, 
   FormLabel,
   FormHelperText,
+  FormGroup,
 } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import { Visibility, VisibilityOff,ArrowForward,ArrowBack   } from '@mui/icons-material';
@@ -65,7 +66,7 @@ interface FormData {
   diet:string;
   dob:'';
   profilePic:string;
-  timeSlot: '6am-8pm',
+  timeSlot: string,
 }
 // Define the shape of errors to hold string messages
 interface FormErrors {
@@ -133,6 +134,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
   // const [profileImage, setProfileImage] = useState<File | null>(null);
   // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   // const fileInputRef = useRef<HTMLInputElement>(null!);
+  const [radioDisabled, setRadioDisabled] = React.useState(true);
   const [isCookSelected, setIsCookSelected] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -169,7 +171,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     diet:'',
     dob:'',
     profilePic:'',
-    timeSlot: '6am-8pm',
+    timeSlot: '6.00-20.00',
     });
 
     // Function to fetch location data and autofill the form
@@ -1171,33 +1173,51 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         helperText={errors.experience || "Years in business or relevant experience"}
       />
     </Grid>
-    {/* Select Time Slot */}
-<Grid item xs={12}>
+    <Grid item xs={12}>
   <FormControl component="fieldset">
     <FormLabel component="legend">Select Time Slot</FormLabel>
-    <RadioGroup
-      name="timeSlot"
-      value={formData.timeSlot}
-      onChange={handleChange}
-    >
+    <FormGroup>
+      {/* First Checkbox */}
       <FormControlLabel
-        value="6am-8pm"
-        control={<Radio />}
-        label="6 AM to 8 PM"
+        control={
+          <Checkbox
+            checked={formData.timeSlot === "6.00-20.00"}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setFormData({ ...formData, timeSlot: "6.00-20.00" });
+                setRadioDisabled(true); // Disable the radio buttons
+              } else {
+                setFormData({ ...formData, timeSlot: "" });
+                setRadioDisabled(false); // Enable the radio buttons
+              }
+            }}
+          />
+        }
+        label="Choose Full Time Availability (6 AM - 8 PM)"
       />
-      <FormControlLabel
-        value="6am-12pm"
-        control={<Radio />}
-        label="6 AM to 12 PM"
-      />
-      <FormControlLabel
-        value="12pm-8pm"
-        control={<Radio />}
-        label="12 PM to 8 PM"
-      />
-    </RadioGroup>
+
+      {/* Second and Third Radio Buttons */}
+      <RadioGroup
+        name="timeSlot"
+        value={formData.timeSlot}
+        onChange={handleChange}
+        style={{ marginTop: "8px" }}
+      >
+        <FormControlLabel
+          value="6.00-12.00"
+          control={<Radio disabled={radioDisabled} />}
+          label="6 AM to 12 PM"
+        />
+        <FormControlLabel
+          value="12.00-20.00"
+          control={<Radio disabled={radioDisabled} />}
+          label="12 PM to 8 PM"
+        />
+      </RadioGroup>
+    </FormGroup>
   </FormControl>
 </Grid>
+
 
     {/* Checkbox for Terms of Service */}
     <Grid item xs={12}>
