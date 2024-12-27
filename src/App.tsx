@@ -9,13 +9,18 @@ import Admin from "./components/Admin/Admin";
 import Login from "./components/Login/Login";
 import Confirmationpage from "./components/ServiceProvidersDetails/Confirmationpage";
 import Checkout from "./components/Checkout/Checkout";
-import UserProfile from "./components/User-Profile/UserProfile";
+// import Bookings from "./components/User-Profile/Bookings";
+// import UserProfile from "./components/User-Profile/UserProfile";
 
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); // State to manage selections
-  const [handleDropDownValue, setDropDownValue] = useState<string | undefined>(); // Fixed typo
+  const [handleDropDownValue, setDropDownValue] = useState<
+    string | undefined
+  >(); // Fixed typo
   const [checkoutData, setCheckoutData] = useState<any>();
-  const [selectedBookingType, setSelectedBookingType] = useState<string | undefined>(); // Fixed typo
+  const [selectedBookingType, setSelectedBookingType] = useState<
+    string | undefined
+  >(); // Fixed typo
 
   // Function to handle child component communication
   const handleDataFromChild = (e: string) => {
@@ -64,11 +69,14 @@ function App() {
     }
 
     if (selection === "Confirmation" || selectedBookingType) {
-      return <Confirmationpage role={selection}/>;
+      return <Confirmationpage role={selection} />;
     }
 
     return !selection ? (
-      <Landingpage sendDataToParent={handleDataFromChild} bookingType={handleSelectedBookingType} />
+      <Landingpage
+        sendDataToParent={handleDataFromChild}
+        bookingType={handleSelectedBookingType}
+      />
     ) : (
       <DetailsView
         selected={selection}
@@ -90,14 +98,13 @@ function App() {
 
       <footer className="footer-container">
         <Footer />
-      </footer>
+      </footer> */}
       {/* <UserProfile goBack={function (): void {
   throw new Error("Function not implemented.");
-} }/> */}
+} }/>
+      {/* <Bookings /> */}
     </div>
   );
 }
 
 export default App;
-
-
