@@ -6,10 +6,6 @@ import SendIcon from '@mui/icons-material/Send';
 import axiosInstance from '../../services/axiosInstance';
 import EditProvider from "./EditProvider";
 
-// interface ChildComponentProps {
-//     sendDataToParent: (data: string) => void;
-//   }
-  
 const ServiceProviderDashboard:React.FC = (data) => {
   // const navigate = useNavigate();
 
