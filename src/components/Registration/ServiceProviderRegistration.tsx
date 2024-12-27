@@ -65,6 +65,7 @@ interface FormData {
   diet:string;
   dob:'';
   profilePic:string;
+  timeSlot: '6am-8pm',
 }
 // Define the shape of errors to hold string messages
 interface FormErrors {
@@ -167,7 +168,8 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     age:'',
     diet:'',
     dob:'',
-    profilePic:''
+    profilePic:'',
+    timeSlot: '6am-8pm',
     });
 
     // Function to fetch location data and autofill the form
@@ -673,78 +675,72 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     const filteredPayload = Object.fromEntries(
       Object.entries(formData).filter(([key, value]) => value !== "" && value !== null && value !== undefined)
     );
-
+  
     // Form validation (optional)
     if (validateForm()) {
       try {
-        const formData1 = new FormData();
-    
-        // Append image if exists
         if (image) {
+          // If image is provided, upload the image first
+          const formData1 = new FormData();
           formData1.append('image', image);
+  
+          // Axios call for image upload
+          const imageResponse = await axiosInstance.post(
+            'http://65.2.153.173:3000/upload',
+            formData1,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data', // Ensure correct content type
+              },
+            }
+          );
+  
+          if (imageResponse.status === 200) {
+            // Add image URL to the payload
+            filteredPayload.profilePic = imageResponse.data.imageUrl;
+          } else {
+            // If image upload fails, notify the user
+            setSnackbarOpen(true);
+            setSnackbarSeverity("error");
+            setSnackbarMessage("Image upload failed. Proceeding without profile picture.");
+          }
         }
-    
-        // First axios call for image upload
-        const imageResponse = await axiosInstance.post(
-          'http://65.2.153.173:3000/upload',
-          formData1,
+  
+        // Add service provider
+        const response = await axiosInstance.post(
+          "/api/serviceproviders/serviceprovider/add",
+          filteredPayload,
           {
             headers: {
-              'Content-Type': 'multipart/form-data', // Ensure correct content type
+              "Content-Type": "application/json",
             },
           }
         );
-    
-        if (imageResponse.status === 200) {
-          try {
-            filteredPayload.profilePic = imageResponse.data.imageUrl;
-            // Second axios call to add service provider
-            const response = await axiosInstance.post(
-              "/api/serviceproviders/serviceprovider/add",
-              filteredPayload,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-            
-            // Success, handle it
-            onBackToLogin(true);
-            setSnackbarOpen(true);
-            setSnackbarSeverity("success");
-            setSnackbarMessage("Service provider added successfully!");
-            console.log("Success:", response.data);
-    
-          } catch (error) {
-            // Error handling for adding service provider
-            setSnackbarOpen(true);
-            setSnackbarSeverity("error");
-            setSnackbarMessage("Failed to add service provider. Please try again.");
-            console.error("Error submitting form:", error);
-          }
-        } else {
-          // If image upload fails, show an error
-          setSnackbarOpen(true);
-          setSnackbarSeverity("error");
-          setSnackbarMessage("Image upload failed. Please try again.");
-        }
-      } catch (error) {
-        // Handle errors in the form submission process
+  
+        // Success handling
         setSnackbarOpen(true);
-        setSnackbarSeverity("warning");
-        setSnackbarMessage("Please fill out all required fields.");
-        console.error("Form validation or image upload error:", error);
+        setSnackbarSeverity("success");
+        setSnackbarMessage("Service provider added successfully!");
+        console.log("Success:", response.data);
+  
+        // Navigate back to login after a delay
+        setTimeout(() => {
+          onBackToLogin(true); 
+        }, 3000); // Wait for 3 seconds to display Snackbar
+      } catch (error) {
+        // Error handling for adding service provider
+        setSnackbarOpen(true);
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Failed to add service provider. Please try again.");
+        console.error("Error submitting form:", error);
       }
     } else {
-      // If form validation fails, notify the user
+      // Form validation failed
       setSnackbarOpen(true);
       setSnackbarSeverity("warning");
       setSnackbarMessage("Please fill out all required fields.");
     }
-    
   };
-  
   
 
    // Close snackbar function
@@ -1175,6 +1171,33 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         helperText={errors.experience || "Years in business or relevant experience"}
       />
     </Grid>
+    {/* Select Time Slot */}
+<Grid item xs={12}>
+  <FormControl component="fieldset">
+    <FormLabel component="legend">Select Time Slot</FormLabel>
+    <RadioGroup
+      name="timeSlot"
+      value={formData.timeSlot}
+      onChange={handleChange}
+    >
+      <FormControlLabel
+        value="6am-8pm"
+        control={<Radio />}
+        label="6 AM to 8 PM"
+      />
+      <FormControlLabel
+        value="6am-12pm"
+        control={<Radio />}
+        label="6 AM to 12 PM"
+      />
+      <FormControlLabel
+        value="12pm-8pm"
+        control={<Radio />}
+        label="12 PM to 8 PM"
+      />
+    </RadioGroup>
+  </FormControl>
+</Grid>
 
     {/* Checkbox for Terms of Service */}
     <Grid item xs={12}>
