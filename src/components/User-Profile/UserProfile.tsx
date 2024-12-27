@@ -126,7 +126,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
             </AccordionSummary>
             <AccordionDetails>
               <TextField
-                label="First Name"
+                placeholder="First Name"
                 fullWidth
                 margin="normal"
                 value={formData.account.firstName}
@@ -135,7 +135,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Last Name"
+                placeholder="Last Name"
                 fullWidth
                 margin="normal"
                 value={formData.account.lastName}
@@ -144,7 +144,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Mobile Number"
+                placeholder="Mobile Number"
                 fullWidth
                 margin="normal"
                 value={formData.account.mobileNo}
@@ -153,7 +153,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Email"
+                placeholder="Email"
                 fullWidth
                 margin="normal"
                 value={formData.account.emailId}
@@ -162,7 +162,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Age"
+                placeholder="Age"
                 fullWidth
                 margin="normal"
                 value={formData.account.age}
@@ -179,7 +179,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
             <AccordionDetails>
               {/* Location fields */}
               <TextField
-                label="Building Name"
+                placeholder="Building Name"
                 fullWidth
                 margin="normal"
                 value={formData.location.buildingName}
@@ -188,7 +188,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Locality"
+                placeholder="Locality"
                 fullWidth
                 margin="normal"
                 value={formData.location.locality}
@@ -197,7 +197,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Street"
+                placeholder="Street"
                 fullWidth
                 margin="normal"
                 value={formData.location.street}
@@ -206,7 +206,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Pin Code"
+                placeholder="Pin Code"
                 fullWidth
                 margin="normal"
                 value={formData.location.pincode}
@@ -215,7 +215,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Nearby Location"
+                placeholder="Nearby Location"
                 fullWidth
                 margin="normal"
                 value={formData.location.nearbyLocation}
@@ -224,7 +224,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Current Location"
+                placeholder="Current Location"
                 fullWidth
                 margin="normal"
                 value={formData.location.currentLocation}
@@ -243,7 +243,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
             <AccordionDetails>
               {/* Additional fields */}
               <TextField
-                label="Aadhaar Card Number"
+                placeholder="Aadhaar Card Number"
                 fullWidth
                 margin="normal"
                 value={formData.additional.idNo}
@@ -252,7 +252,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Languages"
+                placeholder="Languages"
                 fullWidth
                 margin="normal"
                 value={formData.additional.languageKnown}
@@ -261,7 +261,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Housekeeping Role"
+                placeholder="Housekeeping Role"
                 fullWidth
                 margin="normal"
                 value={formData.additional.housekeepingRole}
@@ -270,7 +270,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Cooking Speciality"
+                placeholder="Cooking Speciality"
                 fullWidth
                 margin="normal"
                 value={formData.additional.cookingSpeciality}
@@ -283,7 +283,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
                 }
               />
               <TextField
-                label="Diet"
+                placeholder="Diet"
                 fullWidth
                 margin="normal"
                 value={formData.additional.diet}

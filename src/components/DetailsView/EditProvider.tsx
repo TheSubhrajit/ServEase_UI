@@ -146,7 +146,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
           </AccordionSummary>
           <AccordionDetails >
             <TextField
-              label="First Name"
+              placeholder="First Name"
               fullWidth
               margin="normal"
               value={formData.account.firstName}
@@ -155,7 +155,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Last Name"
+              placeholder="Last Name"
               fullWidth
               margin="normal"
               value={formData.account.lastName}
@@ -164,7 +164,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Mobile Number"
+              placeholder="Mobile Number"
               fullWidth
               margin="normal"
               value={formData.account.mobileNo}
@@ -173,7 +173,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Email"
+              placeholder="Email"
               fullWidth
               margin="normal"
               value={formData.account.emailId}
@@ -182,7 +182,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Age"
+              placeholder="Age"
               fullWidth
               margin="normal"
               value={formData.account.age}
@@ -199,7 +199,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
           </AccordionSummary>
           <AccordionDetails>
             <TextField
-              label="Building Name"
+              placeholder="Building Name"
               fullWidth
               margin="normal"
               value={formData.location.buildingName}
@@ -208,7 +208,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Locality"
+              placeholder="Locality"
               fullWidth
               margin="normal"
               value={formData.location.locality}
@@ -217,7 +217,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Street"
+              placeholder="Street"
               fullWidth
               margin="normal"
               value={formData.location.street}
@@ -226,7 +226,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Pin Code"
+              placeholder="Pin Code"
               fullWidth
               margin="normal"
               value={formData.location.pincode}
@@ -235,7 +235,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Nearby Location"
+              placeholder="Nearby Location"
               fullWidth
               margin="normal"
               value={formData.location.nearbyLocation}
@@ -244,7 +244,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Current Location"
+              placeholder="Current Location"
               fullWidth
               margin="normal"
               value={formData.location.currentLocation}
@@ -261,7 +261,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
           </AccordionSummary>
           <AccordionDetails>
             <TextField
-              label="Aadhaar Card Number"
+              placeholder="Aadhaar Card Number"
               fullWidth
               margin="normal"
               value={formData.additional.idNo}
@@ -270,7 +270,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Languages"
+              placeholder="Languages"
               fullWidth
               margin="normal"
               value={formData.additional.languageKnown}
@@ -279,7 +279,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Housekeeping Role"
+              placeholder="Housekeeping Role"
               fullWidth
               margin="normal"
               value={formData.additional.housekeepingRole}
@@ -288,7 +288,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Cooking Speciality"
+              placeholder="Cooking Speciality"
               fullWidth
               margin="normal"
               value={formData.additional.cookingSpeciality}
@@ -297,7 +297,7 @@ const EditProvider:  React.FC<EditProviderProps> = ({ goBack })=> {
               }
             />
             <TextField
-              label="Diet"
+              placeholder="Diet"
               fullWidth
               margin="normal"
               value={formData.additional.diet}

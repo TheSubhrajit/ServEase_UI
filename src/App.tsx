@@ -9,6 +9,7 @@ import Admin from "./components/Admin/Admin";
 import Login from "./components/Login/Login";
 import Confirmationpage from "./components/ServiceProvidersDetails/Confirmationpage";
 import Checkout from "./components/Checkout/Checkout";
+import UserProfile from "./components/User-Profile/UserProfile";
 
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); // State to manage selections
@@ -84,8 +85,13 @@ function App() {
       <footer className="footer-container">
         <Footer />
       </footer>
+      {/* <UserProfile goBack={function (): void {
+  throw new Error("Function not implemented.");
+} }/> */}
     </div>
   );
 }
 
 export default App;
+
+
