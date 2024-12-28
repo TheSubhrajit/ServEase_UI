@@ -9,6 +9,7 @@ import Admin from "./components/Admin/Admin";
 import Login from "./components/Login/Login";
 import Confirmationpage from "./components/ServiceProvidersDetails/Confirmationpage";
 import Checkout from "./components/Checkout/Checkout";
+import UserProfile from "./components/User-Profile/UserProfile";
 // import Bookings from "./components/User-Profile/Bookings";
 // import UserProfile from "./components/User-Profile/UserProfile";
 
@@ -98,7 +99,7 @@ function App() {
 
       <footer className="footer-container">
         <Footer />
-      </footer> */}
+      </footer> 
       {/* <UserProfile goBack={function (): void {
   throw new Error("Function not implemented.");
 } }/>
