@@ -137,7 +137,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
   // const fileInputRef = useRef<HTMLInputElement>(null!);
   const [sliderValueMorning, setSliderValueMorning] = useState([6, 12]);
   const [sliderValueEvening, setSliderValueEvening] = useState([12, 20]);
-  const [sliderDisabled, setSliderDisabled] = useState(false);  
+  const [sliderDisabled, setSliderDisabled] = React.useState(true); 
   const [isCookSelected, setIsCookSelected] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -1196,14 +1196,14 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
       <FormControlLabel
         control={
           <Checkbox
-            checked={formData.timeSlot === "6.00-20.00"} // Checkbox state reflects full-day time slot
+            checked={formData.timeSlot === "6.00-20.00"} // Reflect full-day time slot
             onChange={(e) => {
               if (e.target.checked) {
-                // Checkbox selected: disable sliders and set full-day range
+                // Disable sliders and set full-day range
                 setFormData({ ...formData, timeSlot: "6.00-20.00" });
                 setSliderDisabled(true);
               } else {
-                // Checkbox unselected: enable sliders and clear timeSlot
+                // Enable sliders and clear timeSlot
                 setFormData({ ...formData, timeSlot: "" });
                 setSliderDisabled(false);
               }
@@ -1221,7 +1221,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           onChange={(e, newValue) => {
             const selectedRange = newValue as number[];
             setSliderValueMorning(selectedRange);
-            updateFormTimeSlot(selectedRange, sliderValueEvening); // Update the full timeSlot
+            updateFormTimeSlot(selectedRange, sliderValueEvening);
           }}
           valueLabelDisplay="on"
           valueLabelFormat={(value) => formatDisplayTime(value)}
@@ -1247,7 +1247,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
           onChange={(e, newValue) => {
             const selectedRange = newValue as number[];
             setSliderValueEvening(selectedRange);
-            updateFormTimeSlot(sliderValueMorning, selectedRange); // Update the full timeSlot
+            updateFormTimeSlot(sliderValueMorning, selectedRange);
           }}
           valueLabelDisplay="on"
           valueLabelFormat={(value) => formatDisplayTime(value)}
@@ -1267,6 +1267,7 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     </FormGroup>
   </FormControl>
 </Grid>
+
 
     {/* Checkbox for Terms of Service */}
     <Grid item xs={12}>
