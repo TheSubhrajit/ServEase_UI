@@ -10,8 +10,9 @@ import Login from "./components/Login/Login";
 import Confirmationpage from "./components/ServiceProvidersDetails/Confirmationpage";
 import Checkout from "./components/Checkout/Checkout";
 import UserProfile from "./components/User-Profile/UserProfile";
-// import Bookings from "./components/User-Profile/Bookings";
-// import UserProfile from "./components/User-Profile/UserProfile";
+import Booking from "./components/User-Profile/Bookings";
+import { ADMIN, BOOKINGS, CHECKOUT, CONFIRMATION, DETAILS, LOGIN, PROFILE } from "./Constants/pagesConstants";
+import { ServiceProviderContext } from "./context/ServiceProviderContext";
 
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); // State to manage selections
@@ -22,9 +23,12 @@ function App() {
   const [selectedBookingType, setSelectedBookingType] = useState<
     string | undefined
   >(); // Fixed typo
+  const [serviceProviderDetails , setServiceProvidersData ] = useState<string | undefined>();
+  const selectedBookingTypeValue = {selectedBookingType, setSelectedBookingType};
 
   // Function to handle child component communication
   const handleDataFromChild = (e: string) => {
+    console.log("data from child ==> ", e)
     setSelection(e); // Update selection based on child component's input
   };
 
@@ -44,53 +48,55 @@ function App() {
     setSelectedBookingType(e); // Update selected booking type
   };
 
+  const handleSelectedProvider = (e : any) =>{
+    console.log(e)
+    setServiceProvidersData(e);
+  }
+
   // Render content based on different conditions
   const renderContent = () => {
-    if (checkoutData) {
-      // Render Checkout if checkoutData is available
-      return <Checkout selectedcheckout={checkoutData} />;
-    }
-
-    if (handleDropDownValue === "login") {
-      return (
-        <div className="w-full max-w-4xl h-[75%]">
-          <Login />
-        </div>
-      );
-    }
-
-    if (handleDropDownValue === "admin") {
-      return <Admin />;
-    }
-
-    if(handleDropDownValue === "profile"){
-      return <UserProfile goBack={function (): void {
-        throw new Error("Function not implemented.");
-      } }/>
-    }
-
-    if (selection === "Confirmation" || selectedBookingType) {
-      return <Confirmationpage role={selection} />;
-    }
-
-    return !selection ? (
+    if(!selection){
+      return <ServiceProviderContext.Provider  value={selectedBookingTypeValue}>
       <Landingpage
         sendDataToParent={handleDataFromChild}
         bookingType={handleSelectedBookingType}
       />
-    ) : (
-      <DetailsView
-        selected={selection}
-        sendDataToParent={handleDataFromChild}
-        checkoutItem={handleCheckoutItems}
+      </ServiceProviderContext.Provider>
+    } else if(selection){
+      if(selection === DETAILS){
+        return <DetailsView
+          selected={selectedBookingType}
+          sendDataToParent={handleDataFromChild}
+          selectedProvider={handleSelectedProvider}
       />
-    );
+      }else if(selection === CONFIRMATION){
+        console.log("seleced details -> ",serviceProviderDetails )
+        return <Confirmationpage role={selectedBookingType} providerDetails={serviceProviderDetails} sendDataToParent={handleDataFromChild}/>
+      } else if(selection === CHECKOUT){
+        return <Checkout />
+      }else if(selection === LOGIN){
+          return (
+        <div className="w-full max-w-4xl h-[75%]">
+          <Login />
+        </div>
+      );
+      } else if (selection === BOOKINGS) {
+          return <Booking />;
+        }else if(selection === PROFILE){
+      return <UserProfile goBack={function (): void {
+        throw new Error("Function not implemented.");
+      } }/>
+    }
+    } else if (selection === ADMIN) {
+      return <Admin />;
+    }
+    
   };
 
   return (
     <div className="App">
       <div className="header-class">
-        <Header sendDataToParent={getSelectedFromDropDown} />
+        <Header sendDataToParent={handleDataFromChild} />
       </div>
 
       <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
@@ -100,10 +106,6 @@ function App() {
       <footer className="footer-container">
         <Footer />
       </footer> 
-      {/* <UserProfile goBack={function (): void {
-  throw new Error("Function not implemented.");
-} }/>
-      {/* <Bookings /> */}
     </div>
   );
 }

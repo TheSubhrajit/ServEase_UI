@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import moment from "moment";
 import {
   Card,
@@ -20,20 +20,33 @@ import OtherUtilityServices from './OtherUtilityServices/OtherUtilityServices';
 import NannyPricing from './NannyService/NannyPricing/NannyPricing';
 import CookPricing from './CookService/CookPricing/CookPricing';
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
+import { useDispatch } from 'react-redux';
+import { add } from '../../features/cart/cartSlice';
+import { CHECKOUT } from '../../Constants/pagesConstants';
 
-const  Confirmationpage= (props) => {
-  const {
-    firstName,
-    lastName,
-    gender,
-    dob,
-    role,
-    onBack, // Accept onBack as a prop
-  } = props;
+interface ChildComponentProps {
+  providerDetails: any;
+  role : any;
+  sendDataToParent : (data : any) => void;
+}
+
+// interface ConfirmationpageProps {
+//   role: string | undefined;
+//   providerDetails: string | undefined;
+// }
+
+const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , role , sendDataToParent }) => {
+
+  // const { selectedBookingType, setSelectedBookingType } = useContext(ServiceProviderContext);
+  console.log("role ==> ", role)
+  console.log("providerDetails => ", providerDetails)
+  // console.log("Selected Booking Type from Context:", selectedBookingType);
 
   const [open, setOpen] = useState(false);
  
   // const [selectedValue, setSelectedValue] = useState('People');
+
+  const dispatch = useDispatch();
 
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
 
@@ -45,27 +58,13 @@ const  Confirmationpage= (props) => {
 
   // Callback function to update the price in the parent component
   const handlePriceChange = (data: { price: number; entry: PricingData | null }) => {
-  //   setSelectedItems((prevItems) => [
-  //     ...prevItems,
-  //     { entry: data.entry, price: data.price },
-  // ]);
-
-  // console.log(selectedItems)
   setData(data.entry)
   setCalculatedPrice(data.price)
 
   };
 
   const handleProceedToCheckout = () => {
-    // Prepare the data you want to send to the parent
-    const checkoutData = {
-      selectedItems
-      // Add any other data you want to send
-    };
-
-    if (onBack) {
-      onBack(checkoutData); // Send data back to the parent
-    }
+    sendDataToParent(CHECKOUT)
   };
 
 
@@ -77,21 +76,17 @@ const  Confirmationpage= (props) => {
     setSnackbarOpen(false);
   };
 
-
   const handleSave = () => {
-    // Check if data and calculatedPrice are valid before adding
     if (data && calculatedPrice) {
-      setSelectedItems((prevItems) => [
-        ...prevItems,
-        { entry: data, price: calculatedPrice },
-      ]);
-  
-      // Show a success message in the snackbar
+      setSelectedItems((prevItems) => {
+        const updatedItems = [...prevItems, { entry: data, price: calculatedPrice }];
+        dispatch(add(updatedItems));
+        return updatedItems;
+      });
       setSnackbarMessage("Item successfully added to cart!");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
     } else {
-      // Show an error message if something is missing
       setSnackbarMessage("Failed to add item to cart. Please select a valid service.");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
@@ -99,6 +94,7 @@ const  Confirmationpage= (props) => {
   
     handleClose(); // Close the dialog after saving
   };
+  
   
   
 
@@ -198,14 +194,16 @@ const  Confirmationpage= (props) => {
     const age = moment().diff(moment(dob), 'years'); // Get the age in years
     return age;
   };
+  
   return (
     <div className="details-container">
-     {onBack && <div style={{width:'100%'}}> 
+      {role}
+     {role && <div style={{width:'100%'}}> 
       <Card style={{ width: '100%'}}> 
         <div style={{display:'flex',marginLeft: '20px'}}>
           <div style={{display:'grid'}}>
           <Typography  variant="h6" style={{display:'flex'}}>
-    {firstName} {lastName},({gender === 'FEMALE' ? 'F ' : gender === 'MALE' ? 'M ' : 'O'} {calculateAge(dob)} )
+    {providerDetails.firstName} {providerDetails.lastName},({providerDetails.gender === 'FEMALE' ? 'F ' : providerDetails.gender === 'MALE' ? 'M ' : 'O'} {calculateAge(providerDetails.dob)} )
     <img
                 src="nonveg.png"
                 alt="Diet Symbol"
@@ -215,6 +213,7 @@ const  Confirmationpage= (props) => {
     <div>
       Languages : 
       Specialities :
+      role : {role}
     </div>
     </div>
      </div>

@@ -1,5 +1,6 @@
 import { Card, Button, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 // Define the structure of each item in selectedItems
 interface Item {
@@ -15,21 +16,16 @@ interface Item {
   price: number;
 }
 
-interface CheckoutProps {
-  selectedcheckout: { selectedItems: Item[] }; // selectedItems is an array of Item objects
-}
 
-const Checkout: React.FC<CheckoutProps> = ({ selectedcheckout }) => {
+const Checkout = () => {
   const [checkout, setCheckout] = useState<Item[]>([]);
 
+  
+  const cart = useSelector((state : any) => state.cart?.value);
+
   useEffect(() => {
-    // Extract selectedItems from selectedcheckout and set it to checkout state
-    if (selectedcheckout.selectedItems && Array.isArray(selectedcheckout.selectedItems)) {
-      setCheckout(selectedcheckout.selectedItems);
-    } else {
-      setCheckout([]); // Default to empty array if no selectedItems
-    }
-  }, [selectedcheckout]);
+      setCheckout(cart)
+    }, [cart]);
 
   const handleRemoveItem = (index: number) => {
     // Remove item at the specified index

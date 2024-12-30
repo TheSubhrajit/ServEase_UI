@@ -1,9 +1,13 @@
-import React, {  useState } from "react";
+import React, {  useContext, useState } from "react";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Tooltip } from "@mui/material";
 import "./Landingpage.css";
 import DialogComponent from "../Common/DialogComponent/DialogComponent";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { CONFIRMATION, DETAILS } from "../../Constants/pagesConstants";
+import { COOK, MAID, NANNY } from "../../Constants/providerConstants";
+import { ServiceProviderContext } from "../../context/ServiceProviderContext";
+
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
@@ -18,6 +22,8 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
 
+  const { selectedBookingType, setSelectedBookingType } = useContext(ServiceProviderContext);
+
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(e.target.value);
   };
@@ -29,6 +35,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
   const handleClick = (data: string) => {
     setOpen(true)
     setSelectedtype(data)
+    setSelectedBookingType(data)
   };
 
   const handleClose = (data: string) =>{
@@ -38,9 +45,9 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
   const handleSave = () =>{
     if(selectedRadioButtonValue === "Date"){
       bookingType(selectedType);
-      sendDataToParent(selectedType);
+      sendDataToParent(CONFIRMATION);
     } else {
-      sendDataToParent(selectedType);
+      sendDataToParent(DETAILS);
     }
 
   }
@@ -65,7 +72,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
     <section className="landing-container">
        <div className="selector-container">
         <Tooltip title="Cook" arrow>
-          <div className="selectors" onClick={() => handleClick("cook")}>
+          <div className="selectors" onClick={() => handleClick(COOK)}>
             <img src="../cookin_food.png" alt="Cook" />
           </div>
         </Tooltip>
@@ -74,7 +81,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
       
       <div className="selector-container">
         <Tooltip title="Maid" arrow>
-          <div className="selectors" onClick={() => handleClick("maid")}>
+          <div className="selectors" onClick={() => handleClick(MAID)}>
             <img src="../broom.png" alt="Maid" />
           </div>
         </Tooltip>
@@ -83,7 +90,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
       
       <div className="selector-container">
         <Tooltip title="Nanny" arrow>
-          <div className="selectors" onClick={() => handleClick("nanny")}>
+          <div className="selectors" onClick={() => handleClick(NANNY)}>
             <img src="../maid_old.png" alt="Nanny" />
           </div>
         </Tooltip>
