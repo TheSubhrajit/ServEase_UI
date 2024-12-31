@@ -29,6 +29,7 @@ import MapComponent from "../MapComponent/MapComponent";
 import { useSelector } from "react-redux";
 import { useDispatch } from 'react-redux'
 import { remove } from "../../features/user/userSlice";
+import { ADMIN, BOOKINGS, LOGIN, PROFILE } from "../../Constants/pagesConstants";
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
@@ -38,8 +39,10 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
   const handleClick = (e: any) => {
     if(e === 'sign_out'){
       dispatch(remove())
-    }
+      sendDataToParent("");
+    } else {
       sendDataToParent(e);
+    }
   };
 
   const user = useSelector((state : any) => state.user?.value);
@@ -53,7 +56,6 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
   const [loggedInUser , setLoggedInUser] = useState();
 
   useEffect(() => {
-    console.log("updated user in header", user);
     setLoggedInUser(user);
   }, [user]);
 
@@ -196,12 +198,11 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               src="../logo.png"
               className="logo-style"
               alt="logo"
-              onClick={() => handleClick("Landing_Page")}
+              onClick={() => handleClick("")}
               style={{ cursor: "pointer" }}
             />
             <div className="logo-text">
-              <span className="home-text">Home</span>
-              <span className="servease-text">ServEase</span>
+              <span className="servease-text">ServeasO</span>
             </div>
           </div>
 
@@ -282,7 +283,7 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               {!user && (
     <MenuItem
       onClick={() => {
-        handleClick("login");
+        handleClick(LOGIN);
         handleAccountMenuClose();
       }}
     >
@@ -292,7 +293,7 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
   {!user && (
     <MenuItem
       onClick={() => {
-        handleClick("login");
+        handleClick(LOGIN);
         handleAccountMenuClose();
       }}
     >
@@ -303,7 +304,7 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               <MenuItem onClick={handleAccountMenuClose}>Notification</MenuItem> */}
               {user && ( <MenuItem
                 onClick={() => {
-                  handleClick("profile");
+                  handleClick(PROFILE);
                   handleAccountMenuClose();
                 }}
               >
@@ -311,7 +312,7 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               </MenuItem> )}
               {user && ( <MenuItem
                 onClick={() => {
-                  handleClick("sign_out");
+                  handleClick(BOOKINGS);
                   handleAccountMenuClose();
                 }}
               >
@@ -327,7 +328,7 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
               </MenuItem> )}
               <MenuItem
                 onClick={() => {
-                  handleClick("admin");
+                  handleClick(ADMIN);
                   handleAccountMenuClose();
                 }}
               >

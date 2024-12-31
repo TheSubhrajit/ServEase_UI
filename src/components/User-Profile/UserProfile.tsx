@@ -59,6 +59,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ goBack}) => {
       if(userData.role === "SERVICE_PROVIDER"){
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         userInfo = userData.serviceProviderDetails
+      } else if(userData.role === "CUSTOMER"){
+        userInfo = userData.customerDetails
       }
       setFormData({
         account: {
