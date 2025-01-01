@@ -87,8 +87,10 @@ function App() {
         throw new Error("Function not implemented.");
       } }/>
     }
-    } else if (selection === ADMIN) {
+    else if (selection === ADMIN) {
+      console.log("i am in admin")
       return <Admin />;
+    }
     }
     
   };
