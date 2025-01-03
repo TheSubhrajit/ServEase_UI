@@ -1,75 +1,80 @@
-import React, {  useContext, useState } from "react";
+import React, { createContext, useState, useContext, ChangeEvent } from "react";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Tooltip } from "@mui/material";
 import "./Landingpage.css";
 import DialogComponent from "../Common/DialogComponent/DialogComponent";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { CONFIRMATION, DETAILS } from "../../Constants/pagesConstants";
 import { COOK, MAID, NANNY } from "../../Constants/providerConstants";
-import { ServiceProviderContext } from "../../context/ServiceProviderContext";
+
+// Define context interface
+interface BookingContextType {
+  startDate: string | null;
+  endDate: string | null;
+  setStartDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setEndDate: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+// Create context with default value
+const BookingContext = createContext<BookingContextType>({
+  startDate: null,
+  endDate: null,
+  setStartDate: () => {},
+  setEndDate: () => {},
+});
 
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
-  bookingType : (data : string) => void;
+  bookingType: (data: string) => void;
 }
 
-export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , bookingType }) => {
-
+export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent, bookingType }) => {
   const [open, setOpen] = useState(false);
-  const [ selectedType , setSelectedtype] = useState('')
-  
+  const [selectedType, setSelectedtype] = useState("");
+
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
 
-  const { selectedBookingType, setSelectedBookingType } = useContext(ServiceProviderContext);
+  const [selectedRadioButtonValue, getSelectedRadioButtonValue] = React.useState<string>("");
 
-  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStartDate(e.target.value);
-  };
-
-  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEndDate(e.target.value);
-  };const [selectedRadioButtonValue, getSelectedRadioButtonValue] = React.useState<string>('');
-  
   const handleClick = (data: string) => {
-    setOpen(true)
-    setSelectedtype(data)
-    setSelectedBookingType(data)
+    setOpen(true);
+    setSelectedtype(data);
   };
 
-  const handleClose = (data: string) =>{
-    setOpen(false)
-  }
+  const handleClose = (data: string) => {
+    setOpen(false);
+  };
 
-  const handleSave = () =>{
-    if(selectedRadioButtonValue === "Date"){
+  const handleSave = () => {
+    if (selectedRadioButtonValue === "Date") {
       bookingType(selectedType);
       sendDataToParent(CONFIRMATION);
     } else {
       sendDataToParent(DETAILS);
     }
+  };
 
-  }
-
-  const getSelectedValue = (e) =>{
-    getSelectedRadioButtonValue(e.target.value)
-  }
+  const getSelectedValue = (e) => {
+    getSelectedRadioButtonValue(e.target.value);
+  };
 
   const getMaxEndDate = () => {
-    if (!startDate) return ''; // Return empty if no start date
+    if (!startDate) return ""; // Return empty if no start date
     const start = new Date(startDate);
-    if(selectedRadioButtonValue === "Monthly"){
+    if (selectedRadioButtonValue === "Monthly") {
       start.setDate(start.getDate() + 31);
     } else {
       start.setDate(start.getDate() + 15);
     }
-     // 4 days after start date
-    return start.toISOString().split('T')[0]; // Return date in YYYY-MM-DD format
+    return start.toISOString().split("T")[0]; // Return date in YYYY-MM-DD format
   };
 
+
   return (
-    <section className="landing-container">
+    <BookingContext.Provider value={{ startDate, endDate, setStartDate, setEndDate }}>
+      <section className="landing-container">
        <div className="selector-container">
         <Tooltip title="Cook" arrow>
           <div className="selectors" onClick={() => handleClick(COOK)}>
@@ -125,7 +130,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
         id="startDate"
         type="date"
         value={startDate || ''}
-        onChange={handleStartDateChange}
+        onChange={(e) => setStartDate(e.target.value)}
         required
         style={{
           padding: '8px',
@@ -145,7 +150,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
         id="startDate"
         type="date"
         value={startDate || ''}
-        onChange={handleStartDateChange}
+        onChange={(e) => setStartDate(e.target.value)}
         required
         style={{
           padding: '8px',
@@ -160,7 +165,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
         id="endDate"
         type="date"
         value={endDate || ''}
-        onChange={handleEndDateChange}
+        onChange={(e) => setEndDate(e.target.value)}
         required
         min={startDate || ''}
         max={getMaxEndDate()}
@@ -182,7 +187,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
         id="startDate"
         type="date"
         value={startDate || ''}
-        onChange={handleStartDateChange}
+        onChange={(e) => setStartDate(e.target.value)}
         required
         style={{
           padding: '8px',
@@ -197,7 +202,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
         id="endDate"
         type="date"
         value={endDate || ''}
-        onChange={handleEndDateChange}
+        onChange={(e) => setEndDate(e.target.value)}
         required
         min={startDate || ''}
         max={getMaxEndDate()}
@@ -214,6 +219,8 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
       </DialogComponent>
      
     </section>
-    
+    </BookingContext.Provider>
   );
 };
+
+export { BookingContext };
