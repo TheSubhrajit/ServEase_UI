@@ -43,7 +43,7 @@
     "react-places-autocomplete": "^7.3.0",
     "react-redux": "^9.2.0",
     "react-router": "^7.1.1",
-    "react-router-dom": "^6.27.0",
+    "react-router-dom": "^6.28.1",
     "react-scripts": "^5.0.1",
     "servease_ui": "file:",
     "web-vitals": "^2.1.4"
