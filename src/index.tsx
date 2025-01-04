@@ -15,11 +15,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Router>  {/* Wrapping the App with Router to enable routing */}
+      <Router>  
         <Routes>
-          {/* Define the routes */}
-          <Route path="/" element={<App />} />  {/* Default route */}
-          <Route path="/admin" element={<Admin />} />  {/* Another view route */}
+          <Route path="/" element={<App />} /> 
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </Router>
     </Provider>

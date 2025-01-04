@@ -1,12 +1,12 @@
 import { Button, Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import ServiceProvidersDetails from "../ServiceProvidersDetails/ServiceProvidersDetails";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
 import axiosInstance from '../../services/axiosInstance';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
 import CloseIcon from '@mui/icons-material/Close'; 
 import { CONFIRMATION } from "../../Constants/pagesConstants";
+import ProviderDetails from "../ProviderDetails/ProviderDetails";
 
 interface DetailsViewProps {
   sendDataToParent: (data: string) => void;
@@ -71,12 +71,15 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, sele
     setSidebarOpen(false); // Close the sidebar after receiving results
   };
 
-  const handleCardClick = (provider: any) => {
+  const handleSelectedProvider = (provider: any) => {
     if (selectedProvider) {
       selectedProvider(provider); // Ensure selectedProvider is defined before calling it
     }
     sendDataToParent(CONFIRMATION);
   };
+
+
+
 
   return (
     <>
@@ -121,9 +124,9 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, sele
                   <div
                     className="views"
                     key={provider.serviceproviderId}
-                    onClick={() => handleCardClick(provider)}
+                    // onClick={() => handleCardClick(provider)}
                   >
-                    <ServiceProvidersDetails {...provider} />
+                    <ProviderDetails {...provider} selectedProvider={handleSelectedProvider}/>
                   </div>
                 ))}
               </div>

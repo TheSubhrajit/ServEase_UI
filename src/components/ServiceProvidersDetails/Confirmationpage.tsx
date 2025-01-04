@@ -197,7 +197,6 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
   
   return (
     <div className="details-container">
-      {role}
      {providerDetails && <div style={{width:'100%'}}> 
       <Card style={{ width: '100%'}}> 
         <div style={{display:'flex',marginLeft: '20px'}}>
