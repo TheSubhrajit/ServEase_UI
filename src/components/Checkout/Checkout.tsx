@@ -1,6 +1,9 @@
 import { Card, Button, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { BookingDetails } from "../../types/engagementRequest";
+import { Bookingtype } from "../../types/bookingTypeData";
+import axiosInstance from "../../services/axiosInstance";
 
 // Define the structure of each item in selectedItems
 interface Item {
@@ -19,13 +22,31 @@ interface Item {
 
 const Checkout = () => {
   const [checkout, setCheckout] = useState<Item[]>([]);
+  const [bookingTypeFromSelection , setBookingTypeFromSelection] = useState<Bookingtype>();
 
   
   const cart = useSelector((state : any) => state.cart?.value);
+  const bookingType = useSelector((state : any) => state.bookingType?.value)
+
+  const bookingDetails: BookingDetails = {
+    serviceProviderId: null,
+    customerId: 1,
+    startDate: "",
+    endDate: "",
+    engagements: "",
+    timeslot: "",
+    monthlyAmount: 0,
+    paymentMode: "CASH",
+    bookingType: "",
+    responsibilities: [],
+  };
+  
 
   useEffect(() => {
       setCheckout(cart)
-    }, [cart]);
+      setBookingTypeFromSelection(bookingType)
+      console.log("bookingType ",bookingType)
+    }, [cart , bookingType]);
 
   const handleRemoveItem = (index: number) => {
     // Remove item at the specified index
@@ -34,10 +55,38 @@ const Checkout = () => {
   };
 
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
+    console.log(bookingTypeFromSelection)
+    bookingDetails.customerId = 1;
+    bookingDetails.startDate = bookingTypeFromSelection?.startDate;
+    bookingDetails.endDate = bookingTypeFromSelection?.endDate;
+    bookingDetails.engagements = "COOKING";
+    bookingDetails.monthlyAmount = 0;
+    bookingDetails.paymentMode= "CASH";
+    bookingDetails.bookingType = "ON-DEMAND";
+    checkout.forEach(i => {
+      console.log(i)
+
+      bookingDetails.responsibilities?.push(i.entry)
+    })
+    // 
+
+    console.log(bookingDetails)
     // Handle the Checkout action
-    console.log("Proceeding to checkout with items:", checkout);
+    // console.log("Proceeding to checkout with items:", checkout);
     // Implement your checkout logic here
+
+    const response = await axiosInstance.post(
+      "/api/serviceproviders/engagement/add",
+      bookingDetails,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log(response)
   };
 
   return (
