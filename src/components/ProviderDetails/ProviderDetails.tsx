@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import { Button, Paper, Typography } from "@mui/material";
 import moment from "moment";
 import "./ProviderDetails.css"; 
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { Bookingtype } from "../../types/bookingTypeData";
+import { useDispatch, useSelector } from "react-redux";
+import { add } from "../../features/bookingType/bookingTypeSlice";
 
 const ProviderDetails = (props) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -16,10 +20,14 @@ const ProviderDetails = (props) => {
     BOTH: "nonveg.png",
   };
 
+  const dispatch = useDispatch();
+  const bookingType = useSelector((state : any) => state.bookingType?.value)
+
   // Handle selection for morning or evening availability
   const handleSelection = (hour, isEvening) => {
     if (isEvening) {
       setEveningSelection(hour); // Set the selected evening time slot
+      console.log(hour)
     } else {
       setMorningSelection(hour); // Set the selected morning time slot
     }
@@ -38,6 +46,13 @@ const ProviderDetails = (props) => {
   };
 
   const handleBookNow = () => {
+    const booking: Bookingtype = {
+        eveningSelection,
+        morningSelection,
+        ...bookingType
+    }
+    dispatch(add(booking)) 
+
     const providerDetails = {
       ...props, // Spread the provider details from props
       selectedMorningTime: morningSelection,
