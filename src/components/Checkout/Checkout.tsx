@@ -1,4 +1,4 @@
-import { Card, Button, Box, Typography } from "@mui/material";
+import { Card, Button, Box, Typography, Snackbar, Alert } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { BookingDetails } from "../../types/engagementRequest";
@@ -19,18 +19,25 @@ interface Item {
   price: number;
 }
 
+interface ChildComponentProps {
+  providerDetails : any;
+}
 
-const Checkout = () => {
+
+const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   const [checkout, setCheckout] = useState<Item[]>([]);
   const [bookingTypeFromSelection , setBookingTypeFromSelection] = useState<Bookingtype>();
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   
   const cart = useSelector((state : any) => state.cart?.value);
   const bookingType = useSelector((state : any) => state.bookingType?.value)
 
   const bookingDetails: BookingDetails = {
-    serviceProviderId: null,
-    customerId: 1,
+    serviceProviderId: 0,
+    customerId: 0,
     startDate: "",
     endDate: "",
     engagements: "",
@@ -54,23 +61,33 @@ const Checkout = () => {
     setCheckout(updatedCheckout);
   };
 
+  const handleClose = () =>{
+    setOpenSnackbar(false)
+  }
+
 
   const handleCheckout = async () => {
-    console.log(bookingTypeFromSelection)
-    bookingDetails.customerId = 1;
+    console.log("Provider ----------" , providerDetails)
+    console.log(checkout)
+    console.log("-------------------------")
+    console.log(bookingType)
+    bookingDetails.serviceProviderId = providerDetails.serviceproviderId;
+    bookingDetails.customerId = 3;
     bookingDetails.startDate = bookingTypeFromSelection?.startDate;
     bookingDetails.endDate = bookingTypeFromSelection?.endDate;
-    bookingDetails.engagements = "COOKING";
-    bookingDetails.monthlyAmount = 0;
+    bookingDetails.engagements = checkout[0].entry.type;
     bookingDetails.paymentMode= "CASH";
-    bookingDetails.bookingType = "ON-DEMAND";
+    bookingDetails.bookingType = bookingType.bookingPreference;
+    bookingDetails.serviceeType = checkout[0].entry.type;
+    bookingDetails.timeslot = bookingDetails.timeslot = `${bookingType.morningSelection}:00, ${bookingType.eveningSelection}:00`; 
+    let calculatedAmount = 0;
     checkout.forEach(i => {
-      console.log(i)
-
       bookingDetails.responsibilities?.push(i.entry)
+      calculatedAmount = calculatedAmount + i.price;
     })
+    bookingDetails.monthlyAmount = calculatedAmount;
     // 
-
+    console.log('-------- Booking Details ----------')
     console.log(bookingDetails)
     // Handle the Checkout action
     // console.log("Proceeding to checkout with items:", checkout);
@@ -86,11 +103,17 @@ const Checkout = () => {
       }
     );
 
-    console.log(response)
+    if(response.status === 201){
+        setSnackbarMessage(response.data || "Login successful!");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+    }
+
+    // console.log(response)
   };
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '50px', marginBottom: '20px' , overflow: "scroll" }}>
+    <><Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '50px', marginBottom: '20px', overflow: "scroll" }}>
       {checkout.length === 0 ? (
         <Typography variant="h6">No items selected</Typography>
       ) : (
@@ -109,7 +132,7 @@ const Checkout = () => {
               <div><strong>Price per Month:</strong> Rs.{item.entry.pricePerMonth}</div>
               <div><strong>Total Price:</strong> Rs.{item.price}</div>
               <hr />
-              
+
               {/* Buttons Section */}
               <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 'auto' }}>
                 <Button variant="outlined" color="secondary" onClick={() => handleRemoveItem(index)}>
@@ -123,13 +146,23 @@ const Checkout = () => {
 
       {/* Checkout Button at the bottom */}
       {checkout.length > 0 && (
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', marginTop: '20px', paddingBottom:"15px", paddingRight:"15px" }}>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', marginTop: '20px', paddingBottom: "15px", paddingRight: "15px" }}>
           <Button variant="contained" color="success" onClick={handleCheckout}>
             Checkout
           </Button>
         </Box>
       )}
     </Box>
+    <Snackbar open={openSnackbar} autoHideDuration={6000}>
+  <Alert
+    onClose={handleClose}
+    severity="success"
+    variant="filled"
+    sx={{ width: '100%' }}
+  >
+    {snackbarMessage}
+  </Alert>
+</Snackbar></>
   );
 };
 

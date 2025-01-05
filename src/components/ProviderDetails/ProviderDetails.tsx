@@ -12,7 +12,9 @@ import { add } from "../../features/bookingType/bookingTypeSlice";
 const ProviderDetails = (props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [morningSelection, setMorningSelection] = useState(null); // Track the selected morning time slot
-  const [eveningSelection, setEveningSelection] = useState(null); // Track the selected evening time slot
+  const [eveningSelection, setEveningSelection] = useState(null);
+  const [eveningSelectionTime, setEveningSelectionTime] = useState(null); // Track the selected evening time slot
+  const [morningSelectionTime, setMorningSelectionTime] = useState(null);
 
   const dietImages = {
     VEG: "veg.png",
@@ -24,12 +26,13 @@ const ProviderDetails = (props) => {
   const bookingType = useSelector((state : any) => state.bookingType?.value)
 
   // Handle selection for morning or evening availability
-  const handleSelection = (hour, isEvening) => {
+  const handleSelection = (hour, isEvening , time) => {
     if (isEvening) {
-      setEveningSelection(hour); // Set the selected evening time slot
-      console.log(hour)
+      setEveningSelection(hour);
+      setEveningSelectionTime(time) // Set the selected evening time slot
     } else {
-      setMorningSelection(hour); // Set the selected morning time slot
+      setMorningSelection(hour);
+      setMorningSelectionTime(time) // Set the selected morning time slot
     }
   };
 
@@ -47,8 +50,8 @@ const ProviderDetails = (props) => {
 
   const handleBookNow = () => {
     const booking: Bookingtype = {
-        eveningSelection,
-        morningSelection,
+        eveningSelection : eveningSelectionTime,
+        morningSelection : morningSelectionTime,
         ...bookingType
     }
     dispatch(add(booking)) 
@@ -170,7 +173,7 @@ const ProviderDetails = (props) => {
                       <button
                         key={index}
                         className={`availability-button ${morningSelection === index ? "selected" : ""}`}
-                        onClick={() => handleSelection(index, false)}
+                        onClick={() => handleSelection(index, false , hour)}
                       >
                         {`${hour}:00`}
                       </button>
@@ -189,7 +192,7 @@ const ProviderDetails = (props) => {
                       <button
                         key={index}
                         className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
-                        onClick={() => handleSelection(index, true)}
+                        onClick={() => handleSelection(index, true , hour)}
                       >
                         {`${hour}:00`}
                       </button>
