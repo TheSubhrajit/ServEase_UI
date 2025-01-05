@@ -477,10 +477,27 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
                 }
             );
 
+            if(response.status === 201){
+              const data = 
+                {"email":formData.emailId,"name":formData.firstName}
+              
+              const imageResponse = await axiosInstance.post(
+                'http://3.110.168.35:3000/send-email',
+                data,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            }
+
             // Update Snackbar for success
             setSnackbarSeverity("success");
             setSnackbarMessage("User added successfully!");
             setSnackbarOpen(true);
+
+
 
             // Navigate back to login after a delay
             setTimeout(() => {
