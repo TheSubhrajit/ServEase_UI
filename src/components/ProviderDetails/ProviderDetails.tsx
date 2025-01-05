@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from "react";
-import { Button, Paper, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Button, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import "./ProviderDetails.css"; 
 import AddIcon from '@mui/icons-material/Add';
@@ -8,6 +8,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { Bookingtype } from "../../types/bookingTypeData";
 import { useDispatch, useSelector } from "react-redux";
 import { add } from "../../features/bookingType/bookingTypeSlice";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const ProviderDetails = (props) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -15,6 +16,7 @@ const ProviderDetails = (props) => {
   const [eveningSelection, setEveningSelection] = useState(null);
   const [eveningSelectionTime, setEveningSelectionTime] = useState(null); // Track the selected evening time slot
   const [morningSelectionTime, setMorningSelectionTime] = useState(null);
+  const [loggedInUser , setLoggedInUser ] = useState();
 
   const dietImages = {
     VEG: "veg.png",
@@ -67,7 +69,15 @@ const ProviderDetails = (props) => {
   const dietImage = dietImages[props.diet];
 
   // Enable the Book Now button if any time is selected
-  const isBookNowEnabled = morningSelection !== null || eveningSelection !== null;
+  const isBookNowEnabled = (morningSelection !== null || eveningSelection !== null) && loggedInUser;
+
+  const user = useSelector((state : any) => state.user?.value);
+
+  useEffect(() => {
+      setLoggedInUser(user);
+    }, [user]);
+
+
 
   return (
     <Paper elevation={3}>
@@ -200,12 +210,26 @@ const ProviderDetails = (props) => {
                   </div>
                 </div>
               </div>
+              <div style={{float:'right' , display:'flex'}}>
+              <Tooltip 
+  style={{ display: isBookNowEnabled ? 'none' : 'block' }} 
+  title="You need to login and select your timings to continue booking"
+>
+  <IconButton>
+    <InfoOutlinedIcon />
+  </IconButton>
+</Tooltip>
+                <Button onClick={handleBookNow}  disabled={!isBookNowEnabled} variant="outlined">Book Now</Button>
+                </div>      
+              
             </div>
           )}
         </div>
 
         {/* Book Now button */}
-        {isBookNowEnabled && (
+        {/* { isBookNowEnabled && } */}
+        
+        {/* {isBookNowEnabled && (
           <Button
             variant="contained"
             color="primary"
@@ -222,7 +246,8 @@ const ProviderDetails = (props) => {
           >
             Book Now
           </Button>
-        )}
+        )} */}
+        {/* <Button disabled={!isBookNowEnabled} variant="outlined">Book Now</Button> */}
       </div>
     </Paper>
   );
