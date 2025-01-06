@@ -114,26 +114,4 @@ function App() {
 
 export default App;
 
-// import React, { useState } from "react";
-// import DateComponent from "./components/date/Date";
-// import PickDateComponent from "./components/date/PickDate";
-
-// const App: React.FC = () => {
-//   const [selectedDate, setSelectedDate] = useState<string>("");
-
-//   const handleDateSelected = (date: string) => {
-//     setSelectedDate(date);
-//   };
-
-//   return (
-//     <div>
-//       <h1>Test App</h1>
-//       <DateComponent onDateSelected={handleDateSelected} />
-//       {/* Pass selectedDate to PickDateComponent */}
-//       <PickDateComponent selectedDate={selectedDate} />
-//     </div>
-//   );
-// };
-
-// export default App;
 
