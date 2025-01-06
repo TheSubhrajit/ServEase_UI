@@ -36,6 +36,17 @@ const Admin: React.FC = () => {
   // Handle radio button changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setViewSelected(e.target.value);
+    if(e.target.value === 'requests'){
+      const fetchData = async () => {
+        try {
+          const response = await axiosInstance.get('/api/serviceproviders/engagements/all?page=0&size=100');
+          setRowData(response.data);
+        } catch (error) {
+          console.error('There was a problem with the fetch operation:', error);
+        }
+      };
+      fetchData();
+    }
   };
 
   // Fetch customer data
@@ -67,6 +78,20 @@ const Admin: React.FC = () => {
     { headerName: "Location", field: "currentLocation" },
     // Add more columns as needed
   ]);
+
+  const columnDefsBooking : ColDef<any>[] = [
+    { headerName: "Id", field: "id", sortable: true },
+    { headerName: "Provider Id", field: "serviceProviderId", sortable: true },
+    { headerName: "CustomerId", field: "customerId" },
+    { headerName: "Start Date", field: "startDate" },
+    { headerName: "End Date", field: "endDate" },
+    { headerName: "Times", field: "timeslot" },
+    { headerName: "Amount", field: "monthlyAmount" },
+    { headerName: "Type", field: "bookingType" },
+    { headerName: "Service", field: "serviceType" },
+    { headerName: "isActive", field: "active" },
+    // Add more columns as needed
+  ];
 
   // Column definitions for both customer and provider
   const columnDefs: ColDef<RowData>[] = [
@@ -115,6 +140,31 @@ const Admin: React.FC = () => {
 
       try {
         const response = await fetch(`http://43.205.212.94:8080/api/serviceproviders/serviceproviders/all?start=${startRow}&size=${size}`);
+        const data = await response.json();
+
+        console.log('API Response:', data);
+
+
+        // Simulate delay for API response
+        setTimeout(() => {
+          const lastRow = data.totalElements <= endRow ? startRow + data.content.length : -1;
+          params.successCallback(data, lastRow);
+        }, 1000);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        params.failCallback();  // Trigger failure callback
+      }
+    },
+  };
+
+  const datasourceProvider = {
+    getRows: async (params) => {
+      const startRow = params.startRow;
+      const endRow = params.endRow;
+      const size = endRow - startRow;
+
+      try {
+        const response = await fetch(`http://43.205.212.94:8080/api/serviceproviders/engagements/all?page=0&size=100`);
         const data = await response.json();
 
         console.log('API Response:', data);
@@ -194,6 +244,16 @@ const Admin: React.FC = () => {
               cacheBlockSize={10}
               maxBlocksInCache={5}
               datasource={datasource}
+            />
+          </div>
+        </div>
+      )}
+      {viewSelected === 'requests' && (
+        <div style={{ height: '70%', width: '100%' }}>
+          <div className="ag-theme-alpine" style={{ height: '100%'}}>
+            <AgGridReact<RowData>
+              columnDefs={columnDefsBooking}
+              rowData={rowData}
             />
           </div>
         </div>

@@ -1,0 +1,93 @@
+/* ProviderDetails.css */
+
+/* Container Styles */
+.container-provider {
+  padding: 20px;
+  position: relative; /* This allows absolute positioning within this container */
+}
+
+/* Position the + and - toggle at the top-right */
+.expand-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px; /* Positioned to the top-right corner */
+  padding: 8px;
+  font-size: 24px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #1976d2;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.expand-toggle:hover {
+  color: #1565c0;
+}
+
+/* Content Styles */
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.availability-section {
+  margin-top: 20px;
+}
+
+.availability-header {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.time-slot-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.availability-button {
+  padding: 8px 12px;
+  margin: 5px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  width: 80px;
+  text-align: center;
+}
+
+.availability-button:hover {
+  background-color: #1565c0;
+}
+
+.availability-button.selected {
+  background-color: lightgreen; /* Selected button */
+}
+
+.availability-button:not(.selected) {
+  background-color: lightcoral; /* Deselect buttons */
+}
+
+
+.container-provider {
+  position: relative; /* Make sure this div is the reference for absolute positioning */
+}
+
+.expand-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.book-now-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}

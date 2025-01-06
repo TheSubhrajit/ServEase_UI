@@ -197,8 +197,7 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
   
   return (
     <div className="details-container">
-      {role}
-     {role && <div style={{width:'100%'}}> 
+     {providerDetails && <div style={{width:'100%'}}> 
       <Card style={{ width: '100%'}}> 
         <div style={{display:'flex',marginLeft: '20px'}}>
           <div style={{display:'grid'}}>
@@ -295,22 +294,15 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
        
        
       </DialogComponent>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-       <Alert
-    onClose={handleSnackbarClose}
-    severity={snackbarSeverity}
-    sx={{
-      width: '100%',
-      fontSize: '16px',
-      display: 'flex',
-      alignItems: 'center',
-    }}
-  >
+      <Snackbar open={snackbarOpen} 
+             autoHideDuration={3000} 
+             onClose={handleSnackbarClose}
+             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+             sx={{ marginTop: '60px',}}
+             >
+              <Alert onClose={handleSnackbarClose}
+               severity={snackbarSeverity}  
+               sx={{ width: '100%', fontSize: '1.5rem', padding: '16px', border: '1px solid grey',}}>
     {snackbarMessage || 'An error occurred, please try again.'}
   </Alert>
       </Snackbar>

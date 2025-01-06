@@ -206,13 +206,15 @@ export const Login: React.FC = () => {
           </div>
         </div>
       </div>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={4000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+      <Snackbar open={openSnackbar}
+                     autoHideDuration={3000} 
+                     onClose={handleSnackbarClose}   
+                     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                     sx={{ marginTop: '60px',}}
+                     >
+                      <Alert onClose={handleSnackbarClose}
+                       severity={snackbarSeverity}  
+                       sx={{ width: '100%', fontSize: '1.5rem', padding: '16px', border: '1px solid grey',}}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

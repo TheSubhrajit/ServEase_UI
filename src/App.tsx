@@ -73,7 +73,7 @@ function App() {
         console.log("seleced details -> ",serviceProviderDetails )
         return <Confirmationpage role={selectedBookingType} providerDetails={serviceProviderDetails} sendDataToParent={handleDataFromChild}/>
       } else if(selection === CHECKOUT){
-        return <Checkout />
+        return <Checkout providerDetails={serviceProviderDetails}/>
       }else if(selection === LOGIN){
           return (
         <div className="w-full max-w-4xl h-[75%]">

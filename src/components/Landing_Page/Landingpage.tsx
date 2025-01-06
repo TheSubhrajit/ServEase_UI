@@ -7,6 +7,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { CONFIRMATION, DETAILS } from "../../Constants/pagesConstants";
 import { COOK, MAID, NANNY } from "../../Constants/providerConstants";
 import { ServiceProviderContext } from "../../context/ServiceProviderContext";
+import { useDispatch } from "react-redux";
+import { add } from "../../features/bookingType/bookingTypeSlice";
+import { Bookingtype } from "../../types/bookingTypeData";
 
 
 interface ChildComponentProps {
@@ -24,13 +27,20 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
 
   const { selectedBookingType, setSelectedBookingType } = useContext(ServiceProviderContext);
 
+  const dispatch = useDispatch();
+
+
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(e.target.value);
+    // booking.startDate = e.target.value;
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(e.target.value);
-  };const [selectedRadioButtonValue, getSelectedRadioButtonValue] = React.useState<string>('');
+    // booking.endDate = e.target.value;
+  };
+  
+  const [selectedRadioButtonValue, getSelectedRadioButtonValue] = React.useState<string>('');
   
   const handleClick = (data: string) => {
     setOpen(true)
@@ -43,17 +53,26 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
   }
 
   const handleSave = () =>{
+    const booking: Bookingtype = {
+      startDate,  // Use the state directly
+      endDate,    // Use the state directly
+      bookingPreference: selectedRadioButtonValue
+    };
+
     if(selectedRadioButtonValue === "Date"){
       bookingType(selectedType);
       sendDataToParent(CONFIRMATION);
     } else {
       sendDataToParent(DETAILS);
     }
+    console.log("------- BOOKING------------" , booking)
+    dispatch(add(booking))
 
   }
 
   const getSelectedValue = (e) =>{
     getSelectedRadioButtonValue(e.target.value)
+    // booking.bookingPreference = e.target.value; 
   }
 
   const getMaxEndDate = () => {
