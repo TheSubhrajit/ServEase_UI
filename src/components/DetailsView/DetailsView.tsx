@@ -1,18 +1,20 @@
+
 import { Button, Box } from "@mui/material";
 import { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
 import axiosInstance from '../../services/axiosInstance';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
-import CloseIcon from '@mui/icons-material/Close'; 
+import CloseIcon from '@mui/icons-material/Close';
 import { CONFIRMATION } from "../../Constants/pagesConstants";
 import ProviderDetails from "../ProviderDetails/ProviderDetails";
 
 interface DetailsViewProps {
   sendDataToParent: (data: string) => void;
-  selected?: string; // Define the prop type
+  selected?: string; 
   checkoutItem?: (data: any) => void;
-  selectedProvider?: (data: any) => void; // Optional callback
+  selectedProvider?: (data: any) => void;
 }
 
 export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, selected, checkoutItem, selectedProvider }) => {
@@ -20,39 +22,56 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, sele
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedProviderType , setSelectedProviderType] = useState("");
+  const [selectedProviderType, setSelectedProviderType] = useState("");
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   const handleCheckoutData = (data) => {
-    console.log('Received checkout data:', data);
-
     if (checkoutItem) {
-      checkoutItem(data); // Send data to the parent component
+      checkoutItem(data);
     }
   };
 
   useEffect(() => {
-    console.log("Selected ...",selected);
-    setSelectedProviderType(selected || ''); // Set a default empty string if `selected` is undefined
-  
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        let response;
-        if (selected) {
-          response = await axiosInstance.get('api/serviceproviders/role?role=' + selected.toUpperCase());
-        } else {
-          response = await axiosInstance.get('api/serviceproviders/serviceproviders/all');
-        }
-        setServiceProvidersData(response?.data);
-      } catch (err) {
-        console.error("There was a problem with the fetch operation:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    setSelectedProviderType(selected || "");
+    fetchInitialData();
   }, [selected]);
-  
+
+  const fetchInitialData = async () => {
+    try {
+      setLoading(true);
+      let response;
+      if (selected) {
+        response = await axiosInstance.get(`api/serviceproviders/role?role=${selected.toUpperCase()}&page=0`);
+      } else {
+        response = await axiosInstance.get("api/serviceproviders/serviceproviders/all?page=0");
+      }
+      setServiceProvidersData(response?.data || []);
+      setHasMore(response?.data?.length > 0);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchMoreData = async () => {
+    try {
+      const nextPage = page + 1;
+      let response;
+      if (selected) {
+        response = await axiosInstance.get(`api/serviceproviders/role?role=${selected.toUpperCase()}&page=${nextPage}`);
+      } else {
+        response = await axiosInstance.get(`api/serviceproviders/serviceproviders/all?page=${nextPage}`);
+      }
+      const newData = response?.data || [];
+      setServiceProvidersData((prevData) => [...prevData, ...newData]);
+      setHasMore(newData.length > 0);
+      setPage(nextPage);
+    } catch (err) {
+      console.error("Error fetching more data:", err);
+    }
+  };
 
   const handleBackClick = () => {
     sendDataToParent("");
@@ -68,28 +87,25 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, sele
 
   const handleSearchResults = (data: any[]) => {
     setSearchResults(data);
-    setSidebarOpen(false); // Close the sidebar after receiving results
+    setSidebarOpen(false);
+    setHasMore(false);
   };
 
   const handleSelectedProvider = (provider: any) => {
     if (selectedProvider) {
-      selectedProvider(provider); // Ensure selectedProvider is defined before calling it
+      selectedProvider(provider);
     }
     sendDataToParent(CONFIRMATION);
   };
 
-
-
-
   return (
     <>
       {loading ? (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: "flex" }}>
           <LoadingIndicator />
         </Box>
       ) : (
         <div className="details-view-container">
-          {/* Sidebar */}
           <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
             <Button
               style={{ float: "right" }}
@@ -107,7 +123,6 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, sele
             />
           </div>
 
-          {/* Main Content */}
           <div className="main-content">
             <>
               <header className="headers">
@@ -120,15 +135,25 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, sele
               </header>
 
               <div className="providers-view">
-                {(searchResults.length > 0 ? searchResults : ServiceProvidersData).map((provider) => (
-                  <div
-                    className="views"
-                    key={provider.serviceproviderId}
-                    // onClick={() => handleCardClick(provider)}
-                  >
-                    <ProviderDetails {...provider} selectedProvider={handleSelectedProvider}/>
-                  </div>
-                ))}
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={fetchMoreData}
+                  hasMore={hasMore}
+                  loader={
+                    <div className="loader" key="loader">
+                      Loading ...
+                    </div>
+                  }
+                >
+                  {(searchResults.length > 0 ? searchResults : ServiceProvidersData).map((provider) => (
+                    <div
+                      className="views"
+                      key={provider.serviceproviderId}
+                    >
+                      <ProviderDetails {...provider} selectedProvider={handleSelectedProvider} />
+                    </div>
+                  ))}
+                </InfiniteScroll>
               </div>
             </>
           </div>
