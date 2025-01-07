@@ -9,16 +9,21 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import ForgotPassword from './ForgotPassword';
 import DetailsView from '../DetailsView/DetailsView';
-import ServiceProviderDashboard from '../DetailsView/ServiceProviderDashboard';
 import axiosInstance from '../../services/axiosInstance';
 import { useSelector, useDispatch } from 'react-redux'
 import { add } from "../../features/user/userSlice";
+import { PROFILE } from '../../Constants/pagesConstants';
+
+interface ChildComponentProps {
+  sendDataToParent?: (data: string ) => void;
+  bookingPage? : (data: string | undefined) => void;
+}
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export const Login: React.FC = () => {
+export const Login: React.FC<ChildComponentProps> = ({ sendDataToParent , bookingPage }) => {
   const [isRegistration, setIsRegistration] = useState(false);
   const [isServiceRegistration, setServiceRegistration] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -96,16 +101,21 @@ export const Login: React.FC = () => {
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
 
-        // Redirect based on role
+        
         setTimeout(() => {
           if (role === "SERVICE_PROVIDER") {
-            setRedirectComponent(<ServiceProviderDashboard />);
+            if(sendDataToParent){
+              sendDataToParent(PROFILE)
+            } else
+            if(bookingPage){
+              bookingPage(role)
+            }
           } else {
-            setRedirectComponent(
-              <DetailsView sendDataToParent={function (data: string): void {
-                throw new Error('Function not implemented.');
-              }} />
-            );
+            if(sendDataToParent){
+            sendDataToParent("")
+          } else if(bookingPage){
+            bookingPage(role)
+          }
           }
         }, 1000);
       } else {
