@@ -988,19 +988,23 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
             </Button>
           )}
         </Box>
-      <Snackbar open={snackbarOpen} 
-           autoHideDuration={3000} 
-           onClose={handleCloseSnackbar}   
-           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-           sx={{ marginTop: '60px',}}
-           >
-            <Alert onClose={handleCloseSnackbar}
-             severity={snackbarSeverity}  
-             sx={{ width: '100%', fontSize: '1.5rem', padding: '16px', border: '1px solid grey',}}>
-               {snackbarMessage}
-             </Alert>
-           </Snackbar>
-
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}  // Set position to top-right
+        sx={{ marginTop: '60px' }}  // Adjust margin-top if needed
+      >
+      
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
         <div className="flex flex-col mt-4 items-center justify-center text-sm">
           <h3 className="dark:text-gray-300">
             Already have an account?{" "}

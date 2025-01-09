@@ -153,16 +153,24 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
         </Box>
       )}
     </Box>
-    <Snackbar open={openSnackbar} autoHideDuration={6000}>
-  <Alert
-    onClose={handleClose}
-    severity="success"
-    variant="filled"
-    sx={{ width: '100%' }}
-  >
-    {snackbarMessage}
-  </Alert>
-</Snackbar></>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }} 
+          sx={{ marginTop: '60px' }} 
+        >
+        
+          <Alert
+            onClose={handleClose}
+            severity={snackbarSeverity}
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+</>
   );
 };
 
