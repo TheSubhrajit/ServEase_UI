@@ -193,8 +193,8 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
       />
       </div>
     </LocalizationProvider>}
-    { selectedRadioButtonValue === "Monthly" && <LocalizationProvider dateAdapter={AdapterDayjs}>
-        {/* <DatePicker value={value} onChange={(newValue) => setValue(newValue)} /> */}
+    { selectedRadioButtonValue === "Monthly" && 
+      <>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>    
         <label htmlFor="startDate">Start Date</label>
       <input
@@ -211,25 +211,8 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
           fontSize: '16px',
         }}
       />
-      <label htmlFor="endDate">End Date</label>
-      <input
-        id="endDate"
-        type="date"
-        value={endDate || ''}
-        onChange={handleEndDateChange}
-        required
-        min={startDate || ''}
-        max={getMaxEndDate()}
-        style={{
-          padding: '8px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          outline: 'none',
-          fontSize: '16px',
-        }}
-      />
       </div>
-    </LocalizationProvider>}
+      </>}
       </DialogComponent>
      
     </section>

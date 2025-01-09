@@ -77,7 +77,7 @@ function App() {
       }else if(selection === LOGIN){
           return (
         <div className="w-full max-w-4xl h-[75%]">
-          <Login />
+          <Login sendDataToParent={handleDataFromChild}/>
         </div>
       );
       } else if (selection === BOOKINGS) {
