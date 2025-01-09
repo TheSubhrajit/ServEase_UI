@@ -1,26 +1,26 @@
-import React, {  useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Tooltip } from "@mui/material";
 import "./Landingpage.css";
 import DialogComponent from "../Common/DialogComponent/DialogComponent";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'; // New import
 import { CONFIRMATION, DETAILS } from "../../Constants/pagesConstants";
 import { COOK, MAID, NANNY } from "../../Constants/providerConstants";
 import { ServiceProviderContext } from "../../context/ServiceProviderContext";
 import { useDispatch } from "react-redux";
 import { add } from "../../features/bookingType/bookingTypeSlice";
 import { Bookingtype } from "../../types/bookingTypeData";
-
+import dayjs from 'dayjs';
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
-  bookingType : (data : string) => void;
+  bookingType: (data: string) => void;
 }
 
-export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , bookingType }) => {
-
+export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent, bookingType }) => {
   const [open, setOpen] = useState(false);
-  const [ selectedType , setSelectedtype] = useState('')
+  const [selectedType, setSelectedtype] = useState('');
   
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
@@ -29,51 +29,48 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
 
   const dispatch = useDispatch();
 
-
-  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStartDate(e.target.value);
-    // booking.startDate = e.target.value;
+  const handleStartDateChange = (newDate: any) => {
+    setStartDate(newDate ? newDate.format('YYYY-MM-DD') : null); // Update state with selected date
   };
 
-  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEndDate(e.target.value);
-    // booking.endDate = e.target.value;
+  const handleEndDateChange = (newDate: any) => {
+    setEndDate(newDate ? newDate.format('YYYY-MM-DD') : null);
   };
-  
+
   const [selectedRadioButtonValue, getSelectedRadioButtonValue] = React.useState<string>('');
-  
+
   const handleClick = (data: string) => {
-    setOpen(true)
-    setSelectedtype(data)
-    setSelectedBookingType(data)
+    setOpen(true);
+    setSelectedtype(data);
+    setSelectedBookingType(data);
   };
 
-  const handleClose = (data: string) =>{
-    setOpen(false)
-  }
+  const handleClose = (data: string) => {
+    setOpen(false);
+  };
 
-  const handleSave = () =>{
+  const handleSave = () => {
     const booking: Bookingtype = {
       startDate,  // Use the state directly
       endDate,    // Use the state directly
-      bookingPreference: selectedRadioButtonValue
+      bookingPreference: selectedRadioButtonValue,
     };
 
-    if(selectedRadioButtonValue === "Date"){
+    if (selectedRadioButtonValue === "Date") {
       bookingType(selectedType);
       sendDataToParent(CONFIRMATION);
     } else {
       sendDataToParent(DETAILS);
     }
-    console.log("------- BOOKING------------" , booking)
-    dispatch(add(booking))
+    console.log("------- BOOKING------------", booking);
+    dispatch(add(booking));
+  };
 
-  }
-
-  const getSelectedValue = (e) =>{
-    getSelectedRadioButtonValue(e.target.value)
-    // booking.bookingPreference = e.target.value; 
-  }
+  const getSelectedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    getSelectedRadioButtonValue(e.target.value);
+    setStartDate(null);
+    setEndDate(null); // Reset start and end dates when switching options
+  };
 
   const getMaxEndDate = () => {
     if (!startDate) return ''; // Return empty if no start date
@@ -87,135 +84,135 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
     return start.toISOString().split('T')[0]; // Return date in YYYY-MM-DD format
   };
 
+  const isConfirmDisabled = () => {
+    if (selectedRadioButtonValue === "Date" || selectedRadioButtonValue === "Monthly") {
+      return !startDate;
+    } else if (selectedRadioButtonValue === "Short term") {
+      return !(startDate && endDate);
+    }
+    return true; // Default to disabled
+  };
+
   return (
     <section className="landing-container">
-       <div className="selector-container">
+      <div className="selector-container">
         <Tooltip title="Cook" arrow>
           <div className="selectors" onClick={() => handleClick(COOK)}>
             <img src="../cookin_food.png" alt="Cook" />
           </div>
         </Tooltip>
-        <p className="label-text">Cook</p> {/* Label below the circle */}
+        <p className="label-text">Cook</p>
       </div>
-      
+
       <div className="selector-container">
         <Tooltip title="Maid" arrow>
           <div className="selectors" onClick={() => handleClick(MAID)}>
             <img src="../broom.png" alt="Maid" />
           </div>
         </Tooltip>
-        <p className="label-text">Maid</p> {/* Label below the circle */}
+        <p className="label-text">Maid</p>
       </div>
-      
+
       <div className="selector-container">
         <Tooltip title="Nanny" arrow>
           <div className="selectors" onClick={() => handleClick(NANNY)}>
             <img src="../maid_old.png" alt="Nanny" />
           </div>
         </Tooltip>
-        <p className="label-text">Nanny</p> {/* Label below the circle */}
+        <p className="label-text">Nanny</p>
       </div>
 
-
-      <DialogComponent 
-        open={open} 
-        onClose={handleClose} 
-        title="Select your Booking" 
+      <DialogComponent
+        open={open}
+        onClose={handleClose}
+        title="Select your Booking"
         onSave={handleSave}
+        disableConfirm={isConfirmDisabled()}
       >
         <FormControl>
-      <FormLabel id="demo-row-radio-buttons-group-label">Book by</FormLabel>
-      <RadioGroup
-        row
-        aria-labelledby="demo-row-radio-buttons-group-label"
-        name="row-radio-buttons-group"
-        onChange={getSelectedValue}
-      >
-        <FormControlLabel value="Date" control={<Radio />} label="Date" />
-        <FormControlLabel value="Short term" control={<Radio />} label="Short term" />
-        <FormControlLabel value="Monthly" control={<Radio />} label="Monthly" />
-        </RadioGroup>
-    </FormControl>
-    { selectedRadioButtonValue === "Date" && <LocalizationProvider dateAdapter={AdapterDayjs}>
-        {/* <DatePicker value={value} onChange={(newValue) => setValue(newValue)} /> */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>    
-        <label htmlFor="startDate">Date</label>
-      <input
-        id="startDate"
-        type="date"
-        value={startDate || ''}
-        onChange={handleStartDateChange}
-        required
-        style={{
-          padding: '8px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          outline: 'none',
-          fontSize: '16px',
-        }}
-      />
+          <FormLabel id="demo-row-radio-buttons-group-label">Book by</FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="demo-row-radio-buttons-group-label"
+            name="row-radio-buttons-group"
+            onChange={getSelectedValue}
+          >
+            <FormControlLabel value="Date" control={<Radio />} label="Date" />
+            <FormControlLabel value="Short term" control={<Radio />} label="Short term" />
+            <FormControlLabel value="Monthly" control={<Radio />} label="Monthly" />
+          </RadioGroup>
+        </FormControl>
+        {selectedRadioButtonValue === "Date" && (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <label htmlFor="startDate">Date</label>
+              <DateCalendar
+                value={startDate ? dayjs(startDate) : null}
+                onChange={handleStartDateChange}
+                disablePast
+              />
+            </div>
+          </LocalizationProvider>
+        )}
+    {selectedRadioButtonValue === "Short term" && (
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'row',
+      gap: '20px',
+      flexWrap: 'wrap', // Allow the layout to wrap on smaller screens
+    }}>
+      
+      {/* Start Date Block */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '5px',
+        width: '48%', // Take up nearly half the width on large screens
+      }}>
+        <label htmlFor="startDate" style={{ fontWeight: 'bold', fontSize: '16px' }}>Start Date</label>
+        <DateCalendar
+          value={startDate ? dayjs(startDate) : null}
+          onChange={handleStartDateChange}
+          disablePast
+          sx={{ width: '100%' }} // Take up full width of the parent container
+        />
       </div>
-    </LocalizationProvider>}
-    { selectedRadioButtonValue === "Short term" && <LocalizationProvider dateAdapter={AdapterDayjs}>
-    {/* <DateRangePicker localeText={{ start: 'Check-in', end: 'Check-out' }} /> */}
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-    <label htmlFor="startDate">Start Date</label>
-      <input
-        id="startDate"
-        type="date"
-        value={startDate || ''}
-        onChange={handleStartDateChange}
-        required
-        style={{
-          padding: '8px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          outline: 'none',
-          fontSize: '16px',
-        }}
-      />
-      <label htmlFor="endDate">End Date</label>
-      <input
-        id="endDate"
-        type="date"
-        value={endDate || ''}
-        onChange={handleEndDateChange}
-        required
-        min={startDate || ''}
-        max={getMaxEndDate()}
-        style={{
-          padding: '8px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          outline: 'none',
-          fontSize: '16px',
-        }}
-      />
+      
+      {/* End Date Block */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '5px',
+        width: '48%', // Take up nearly half the width on large screens
+      }}>
+        <label htmlFor="endDate" style={{ fontWeight: 'bold', fontSize: '16px' }}>End Date</label>
+        <DateCalendar
+          value={endDate ? dayjs(endDate) : null}
+          onChange={handleEndDateChange}
+          minDate={dayjs(startDate)}
+          maxDate={dayjs(getMaxEndDate())}
+          sx={{ width: '100%' }} // Make the calendar input take full width
+        />
       </div>
-    </LocalizationProvider>}
-    { selectedRadioButtonValue === "Monthly" && 
-      <>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>    
-        <label htmlFor="startDate">Start Date</label>
-      <input
-        id="startDate"
-        type="date"
-        value={startDate || ''}
-        onChange={handleStartDateChange}
-        required
-        style={{
-          padding: '8px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          outline: 'none',
-          fontSize: '16px',
-        }}
-      />
-      </div>
-      </>}
+
+    </div>
+  </LocalizationProvider>
+)}
+
+        {selectedRadioButtonValue === "Monthly" && (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <label htmlFor="startDate">Start Date</label>
+              <DateCalendar
+                value={startDate ? dayjs(startDate) : null}
+                onChange={handleStartDateChange}
+                disablePast
+              />
+            </div>
+          </LocalizationProvider>
+        )}
       </DialogComponent>
-     
     </section>
-    
   );
 };

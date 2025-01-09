@@ -48,7 +48,7 @@ html, body {
   flex-grow: 1;
   margin-top: 80px; /* Adjust this based on header height */
   margin-bottom: 80px; /* Adjust this based on footer height */
-  overflow-y: auto; /* Make content scrollable */
+  overflow-y: auto;/* Make content scrollable */
 }
 
 /* Adjust the content section for small screens */
