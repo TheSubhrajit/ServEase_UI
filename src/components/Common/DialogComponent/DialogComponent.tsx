@@ -17,15 +17,21 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const DialogComponent = ({ open, onClose, title, children, onSave }) => {
-
+const DialogComponent = ({ 
+  open, 
+  onClose, 
+  title, 
+  children, 
+  onSave, 
+  disableConfirm = false // Default value ensures backward compatibility
+}) => {
   const getButtonText = () => {
-    if(title === "Select your Booking"){
-      return "Confirm"
+    if (title === "Select your Booking") {
+      return "Confirm";
     } else {
-      return "Add to cart"
+      return "Add to Cart";
     }
-  }
+  };
 
   return (
     <BootstrapDialog onClose={onClose} aria-labelledby="customized-dialog-title" open={open}>
@@ -46,7 +52,7 @@ const DialogComponent = ({ open, onClose, title, children, onSave }) => {
       </IconButton>
       <DialogContent dividers>{children}</DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={onSave}>
+        <Button autoFocus onClick={onSave} disabled={disableConfirm}>
           {getButtonText()}
         </Button>
       </DialogActions>

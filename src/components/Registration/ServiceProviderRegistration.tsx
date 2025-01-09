@@ -1396,15 +1396,20 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         </Box>
       </form>
       </Box>
-      <Snackbar open={snackbarOpen} 
-      autoHideDuration={6000} 
-      onClose={handleCloseSnackbar}   
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      sx={{ marginTop: '60px',}}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}  // Set position to top-right
+        sx={{ marginTop: '60px' }}  // Adjust margin-top if needed
       >
-       <Alert onClose={handleCloseSnackbar}
-        severity={snackbarSeverity}  
-        sx={{ width: '100%', fontSize: '1.5rem', padding: '16px', border: '1px solid grey',}}>
+      
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

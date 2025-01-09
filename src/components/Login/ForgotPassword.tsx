@@ -157,16 +157,23 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBackToLogin }) => {
           </div>
         </div>
       </div>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={4000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+   <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }} 
+          sx={{ marginTop: '60px' }} 
+        >
+        
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarSeverity}
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
     </div>
   );
 };

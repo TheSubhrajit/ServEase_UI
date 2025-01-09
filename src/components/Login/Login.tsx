@@ -240,11 +240,18 @@ export const Login: React.FC<ChildComponentProps> = ({
       </div>
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={4000}
+        autoHideDuration={6000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} 
+        sx={{ marginTop: '60px' }}  
       >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+      
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
