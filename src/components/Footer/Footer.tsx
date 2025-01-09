@@ -6,7 +6,7 @@ import './Footer.css';
 const Footer = () => {
   return (
     <footer className="footer">
-      <h3 className="footer-logo"><b>ServEase</b></h3>
+      <h3 className="footer-logo"><b>ServEaso</b></h3>
       <div className="social-media">
   <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer">
     <FaXTwitter size={30} className="twitter" />

@@ -92,7 +92,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
        <div className="selector-container">
         <Tooltip title="Cook" arrow>
           <div className="selectors" onClick={() => handleClick(COOK)}>
-            <img src="../cookin_food.png" alt="Cook" />
+            <img src="../new2.png" alt="Cook" />
           </div>
         </Tooltip>
         <p className="label-text">Cook</p> {/* Label below the circle */}
@@ -101,7 +101,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
       <div className="selector-container">
         <Tooltip title="Maid" arrow>
           <div className="selectors" onClick={() => handleClick(MAID)}>
-            <img src="../broom.png" alt="Maid" />
+            <img src="../new1.png" alt="Maid" />
           </div>
         </Tooltip>
         <p className="label-text">Maid</p> {/* Label below the circle */}
@@ -110,7 +110,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent , 
       <div className="selector-container">
         <Tooltip title="Nanny" arrow>
           <div className="selectors" onClick={() => handleClick(NANNY)}>
-            <img src="../maid_old.png" alt="Nanny" />
+            <img src="../new3.png" alt="Nanny" />
           </div>
         </Tooltip>
         <p className="label-text">Nanny</p> {/* Label below the circle */}

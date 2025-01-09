@@ -195,14 +195,14 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
         <div className="header-alignment">
           <div className="logo-container">
             <img
-              src="../logo.png"
+              src="../pic2.png"
               className="logo-style"
               alt="logo"
               onClick={() => handleClick("")}
               style={{ cursor: "pointer" }}
             />
             <div className="logo-text">
-              <span className="servease-text">ServeasO</span>
+              <span className="servease-text">ServEaso</span>
             </div>
           </div>
 
