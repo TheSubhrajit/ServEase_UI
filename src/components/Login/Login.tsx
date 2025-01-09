@@ -104,6 +104,23 @@ export const Login: React.FC<ChildComponentProps> = ({
             }
           }
         }, 1000);
+        // setTimeout(() => {
+        //   if (role === "SERVICE_PROVIDER") {
+        //     setRedirectComponent(<ServiceProviderDashboard />);
+        //   } else {
+        //     setRedirectComponent(
+        //       <DetailsView 
+        //         sendDataToParent={(data: string) => {
+        //           console.log(`Role is: ${data}`);
+        //           // You can perform other actions with the role here
+        //         }} 
+        //       />
+        //     );
+        //   }
+        // }, 1000);
+
+       
+        
       } else {
         // Handle unexpected responses
         throw new Error(
