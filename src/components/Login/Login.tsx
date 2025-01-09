@@ -96,32 +96,32 @@ export const Login: React.FC = () => {
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
 
-        // Redirect based on role
-        // setTimeout(() => {
-        //   if (role === "SERVICE_PROVIDER") {
-        //     setRedirectComponent(<ServiceProviderDashboard />);
-        //   } else {
-        //     setRedirectComponent(
-        //       <DetailsView sendDataToParent={function (data: string): void {
-        //         throw new Error('Function not implemented.');
-        //       }} />
-        //     );
-        //   }
-        // }, 1000);
+        //Redirect based on role
         setTimeout(() => {
           if (role === "SERVICE_PROVIDER") {
             setRedirectComponent(<ServiceProviderDashboard />);
           } else {
             setRedirectComponent(
-              <DetailsView 
-                sendDataToParent={(data: string) => {
-                  console.log(`Role is: ${data}`);
-                  // You can perform other actions with the role here
-                }} 
-              />
+              <DetailsView sendDataToParent={function (data: string): void {
+                throw new Error('Function not implemented.');
+              }} />
             );
           }
         }, 1000);
+        // setTimeout(() => {
+        //   if (role === "SERVICE_PROVIDER") {
+        //     setRedirectComponent(<ServiceProviderDashboard />);
+        //   } else {
+        //     setRedirectComponent(
+        //       <DetailsView 
+        //         sendDataToParent={(data: string) => {
+        //           console.log(`Role is: ${data}`);
+        //           // You can perform other actions with the role here
+        //         }} 
+        //       />
+        //     );
+        //   }
+        // }, 1000);
 
        
         

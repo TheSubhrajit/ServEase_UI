@@ -13,24 +13,24 @@ import {
 interface Booking {
   id: number;
   name: string;
-  age: number;
+  role:string;
   timeSlot: string;
   date: string;
 }
 
 const currentBookings: Booking[] = [
-  { id: 1, name: 'John Doe', age: 30, timeSlot: '10:00 AM - 11:00 AM', date: '2024-12-28' },
-  { id: 2, name: 'Jane Smith', age: 25, timeSlot: '12:00 PM - 1:00 PM', date: '2024-12-30' },
+  { id: 1, name: 'John Doe', role:"Maid",  timeSlot: '10:00 AM - 11:00 AM', date: '2024-12-28' },
+  { id: 2, name: 'Jane Smith', role:"Nanny", timeSlot: '12:00 PM - 1:00 PM', date: '2024-12-30' },
 ];
 
 const pastBookings: Booking[] = [
-  { id: 1, name: 'Alice Brown', age: 40, timeSlot: '2:00 PM - 3:00 PM', date: '2024-10-15' },
-  { id: 2, name: 'Bob Johnson', age: 35, timeSlot: '4:00 PM - 5:00 PM', date: '2024-11-01' },
+  { id: 1, name: 'Alice Brown',role:"Cook", timeSlot: '2:00 PM - 3:00 PM', date: '2024-10-15' },
+  { id: 2, name: 'Bob Johnson',role:"Maid", timeSlot: '4:00 PM - 5:00 PM', date: '2024-11-01' },
 ];
 
 const futureBookings: Booking[] = [
-  { id: 1, name: 'Charlie Green', age: 28, timeSlot: '9:00 AM - 10:00 AM', date: '2025-01-05' },
-  { id: 2, name: 'Diana Prince', age: 32, timeSlot: '3:00 PM - 4:00 PM', date: '2025-01-10' },
+  { id: 1, name: 'Charlie Green',role:"Nanny", timeSlot: '9:00 AM - 10:00 AM', date: '2025-01-05' },
+  { id: 2, name: 'Diana Prince', role:"Cook", timeSlot: '3:00 PM - 4:00 PM', date: '2025-01-10' },
 ];
 
 const Booking: React.FC = () => {
@@ -49,7 +49,7 @@ const Booking: React.FC = () => {
               {booking.name}
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              Age: {booking.age}
+              Role :{booking.role}
             </Typography>
             <Typography variant="body2" color="textSecondary">
               Time Slot: {booking.timeSlot}
