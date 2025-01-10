@@ -6,12 +6,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgb(204, 209, 213);
+  /* background-color: rgb(204, 209, 213); */
+  background-color:rgb(184, 219, 252);
   height: 100%; /* Full height */
   border-top: 1px  grey;
   /* padding: 20px 0; */
   overflow: hidden; /* Hide overflow */
-  
 }
 
 /* Footer Logo */
@@ -20,7 +20,8 @@
   /* font-weight: bold; */
   /* font-weight: 100px; */
   text-align: center;
-  color: #0683f9; 
+  /* color: #0683f9;  */
+  color: #075aa8;  
   padding-top: 9px;
   font: icon;
   font-family: Georgia, 'Times New Roman', Times, serif;
