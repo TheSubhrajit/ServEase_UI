@@ -135,6 +135,7 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent, b
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
             name="row-radio-buttons-group"
+            value={selectedRadioButtonValue}
             onChange={getSelectedValue}
           >
             <FormControlLabel value="Date" control={<Radio />} label="Date" />
@@ -156,49 +157,37 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent, b
         )}
     {selectedRadioButtonValue === "Short term" && (
   <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      gap: '20px',
-      flexWrap: 'wrap', // Allow the layout to wrap on smaller screens
-    }}>
-      
+    <div className="date-container">
       {/* Start Date Block */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '5px',
-        width: '48%', // Take up nearly half the width on large screens
-      }}>
-        <label htmlFor="startDate" style={{ fontWeight: 'bold', fontSize: '16px' }}>Start Date</label>
+      <div className="date-block">
+        <label htmlFor="startDate" className="date-label">
+          Start Date
+        </label>
         <DateCalendar
           value={startDate ? dayjs(startDate) : null}
           onChange={handleStartDateChange}
           disablePast
-          sx={{ width: '100%' }} // Take up full width of the parent container
+          sx={{ width: '100%' }}
         />
       </div>
-      
+
       {/* End Date Block */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '5px',
-        width: '48%', // Take up nearly half the width on large screens
-      }}>
-        <label htmlFor="endDate" style={{ fontWeight: 'bold', fontSize: '16px' }}>End Date</label>
+      <div className="date-block">
+        <label htmlFor="endDate" className="date-label">
+          End Date
+        </label>
         <DateCalendar
           value={endDate ? dayjs(endDate) : null}
           onChange={handleEndDateChange}
           minDate={dayjs(startDate)}
           maxDate={dayjs(getMaxEndDate())}
-          sx={{ width: '100%' }} // Make the calendar input take full width
+          sx={{ width: '100%' }}
         />
       </div>
-
     </div>
   </LocalizationProvider>
 )}
+
 
         {selectedRadioButtonValue === "Monthly" && (
           <LocalizationProvider dateAdapter={AdapterDayjs}>

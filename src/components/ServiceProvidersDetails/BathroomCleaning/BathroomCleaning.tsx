@@ -3,11 +3,11 @@ import { Typography } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { PricingData } from '../../../types/PricingData';
 
-interface UtilityCleaningProps {
+interface BathroomCleaningProps {
     onPriceChange: (data: { price: number, entry: PricingData | null }) => void; // Callback function passed as a prop
 }
 
-const BathroomCleaning: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
+const BathroomCleaning: React.FC<BathroomCleaningProps> = ({ onPriceChange }) => {
     const [washRoomCount, setWashRoomCount] = useState<number>(0);
     const [frequency, setFrequency] = useState<number | string | null>(null);
     const [price, setPrice] = useState<number>(0);
@@ -88,28 +88,46 @@ const BathroomCleaning: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => 
     };
 
     // Whenever washRoomCount, frequency, or washRoomType changes, update the price and pass data to the parent
+    // useEffect(() => {
+    //     if (washRoomCount && frequency && washRoomType) {
+    //         const calculatedPrice = calculatePrice();
+    //         setPrice(calculatedPrice);
+
+    //         // Find the matched entry based on the current state values
+    //         const entry = pricingData.find(
+    //             (item) =>
+    //                 item.size === washRoomCount &&
+    //                 item.frequency === frequency &&
+    //                 item.serviceCategory === washRoomType
+    //         );
+
+    //         // Ensure that we're passing the right data to the parent
+    //         if (entry) {
+    //             onPriceChange({ price: calculatedPrice, entry });
+    //         } else {
+    //             onPriceChange({ price: 0, entry: null });
+    //         }
+    //     }
+    // }, [washRoomCount, frequency, washRoomType, onPriceChange]);
     useEffect(() => {
-        if (washRoomCount && frequency && washRoomType) {
+        if (washRoomType && washRoomCount > 0 && frequency) {
             const calculatedPrice = calculatePrice();
             setPrice(calculatedPrice);
-
-            // Find the matched entry based on the current state values
             const entry = pricingData.find(
                 (item) =>
-                    item.size === washRoomCount &&
-                    item.frequency === frequency &&
-                    item.serviceCategory === washRoomType
+                    (washRoomType === 'Normal cleaning'
+                        ? item.size === washRoomCount &&
+                          item.serviceCategory === 'bathroom'
+                        : item.serviceCategory === 'bathroom_deep_cleaning') &&
+                    item.frequency === frequency
             );
-
-            // Ensure that we're passing the right data to the parent
-            if (entry) {
-                onPriceChange({ price: calculatedPrice, entry });
-            } else {
-                onPriceChange({ price: 0, entry: null });
-            }
+            onPriceChange({ price: calculatedPrice, entry: entry || null });
+        } else {
+            onPriceChange({ price: 0, entry: null });
         }
-    }, [washRoomCount, frequency, washRoomType, onPriceChange]);
-
+    }, [washRoomCount, frequency, washRoomType, pricingData]);
+    
+    
     // Helper to render buttons with selected styles
     const renderButton = (buttons: any[], selectedValue: any, category: string) => {
         return buttons.map((button) => (
