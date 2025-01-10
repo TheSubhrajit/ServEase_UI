@@ -7,6 +7,7 @@ interface UtilityCleaningProps {
     onPriceChange: (data: { price: number, entry: PricingData | null }) => void; // Callback function passed as a prop
 }
 
+
 const ClothDrying: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
     const [frequency, setFrequency] = useState<string | null>(null); // Store as string to match pricingData
     const [price, setPrice] = useState<number>(0);

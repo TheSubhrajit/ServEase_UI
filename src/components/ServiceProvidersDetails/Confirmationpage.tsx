@@ -94,61 +94,6 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
   
     handleClose(); // Close the dialog after saving
   };
-  
-  
-  
-
-  // const API_ENDPOINT = "http://43.205.212.94:8080/api/customer/add-customer-request";
-
-  // const handleAddCustomerRequest = async (customerData: any) => {
-  //   try {
-  //     // Using axiosInstance to make a POST request
-  //     const response = await axiosInstance.post('/api/customer/add-customer-request', customerData);
-  
-  //     if (response.status === 200 || response.status === 201) {
-  //       console.log('Customer request added successfully:', response.data);
-  //       // Optionally handle success (e.g., show a success message)
-  //     } else {
-  //       console.error('Failed to add customer request. Response:', response);
-  //       // Optionally handle non-success status codes
-  //     }
-  //   } catch (error) {
-  //     console.error('An error occurred while adding the customer request:', error);
-  //     // Optionally handle errors (e.g., show an error message)
-  //   }
-  // };
-  
-  // const formatDate = (inputDate) => {
-  //   if (!inputDate) return "";
-  //   const date = new Date(inputDate);
-  //   const day = String(date.getDate()).padStart(2, "0");
-  //   const month = date.toLocaleString("default", { month: "short" });
-  //   return `${day} ${month}`;
-  // };
-
-  // const handleDateChange = (e) => {
-  //   const newFormattedDate = formatDate(e.target.value);
-  //   setFormattedDate(newFormattedDate);
-  // };
-
-  // const handleChange = (event: SelectChangeEvent) =>{
-  //       setPax(event.target.value as string)
-  // }
-
-  // const handleBackButtonClick = () => {
-  //   // Implement your back navigation logic here, e.g.:
-  //   window.history.back(); // This will take the user back to the previous page
-  // };
-  // // Map diet values to corresponding image paths
-  // const dietImages = {
-  //   VEG: "veg.png",
-  //   NONVEG: "nonveg.png",
-  //   BOTH:"nonveg.png"
-  // };
-
-  
-  // Determine the diet image based on the diet value
-  // const dietImage = dietImages[diet];
 
   const [selected, setSelected] = useState(null);
   // const [peopleSelected, setpeopleSelected] = useState(null);
@@ -278,12 +223,25 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
        </div>
        
 
-       <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} onClick={handleProceedToCheckout}> Proceed to checkout </Button>
+       {/* <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} onClick={handleProceedToCheckout}> Proceed to checkout </Button> */}
+       <Button
+  type="submit"
+  variant="outlined"
+  style={{ float: 'right', margin: '10px' }}
+  endIcon={<AddShoppingCartIcon />}
+  onClick={handleProceedToCheckout}
+  disabled={selectedItems.length === 0} // Disable the button if no items are selected
+>
+  Proceed to checkout
+</Button>
+
+
       <DialogComponent 
         open={open} 
         onClose={handleClose} 
         title={getModelTitle()} 
         onSave={handleSave}
+        
       >
        {selected === "utilityCleaning" &&  <UtilityCleaning onPriceChange={handlePriceChange}/>}
        { selected === "washroomCleaning" && <BathroomCleaning onPriceChange={handlePriceChange} />} 
