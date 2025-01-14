@@ -1,6 +1,6 @@
 import { Card, Button, Box, Typography, Snackbar, Alert } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BookingDetails } from "../../types/engagementRequest";
 import { Bookingtype } from "../../types/bookingTypeData";
 import axiosInstance from "../../services/axiosInstance";
@@ -23,7 +23,6 @@ interface ChildComponentProps {
   providerDetails : any;
 }
 
-
 const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   const [checkout, setCheckout] = useState<Item[]>([]);
   const [bookingTypeFromSelection , setBookingTypeFromSelection] = useState<Bookingtype>();
@@ -34,6 +33,11 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   
   const cart = useSelector((state : any) => state.cart?.value);
   const bookingType = useSelector((state : any) => state.bookingType?.value)
+  const user = useSelector((state : any) => state.user?.value);
+  const dispatch = useDispatch();
+  console.log("User details from Redux:", user);
+  const customerId = user?.customerDetails?.customerId || null;
+  console.log("Extracted Customer ID:", customerId);
 
   const bookingDetails: BookingDetails = {
     serviceProviderId: 0,
@@ -72,7 +76,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
     console.log("-------------------------")
     console.log(bookingType)
     bookingDetails.serviceProviderId = providerDetails.serviceproviderId;
-    bookingDetails.customerId = 3;
+    bookingDetails.customerId = customerId; // Assigning dynamically fetched customerId
     bookingDetails.startDate = bookingTypeFromSelection?.startDate;
     bookingDetails.endDate = bookingTypeFromSelection?.endDate;
     bookingDetails.engagements = checkout[0].entry.type;
