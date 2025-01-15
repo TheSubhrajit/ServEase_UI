@@ -1,49 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import { TextField, Chip, Autocomplete } from '@mui/material';
+import React, { useState } from "react";
+import { Autocomplete, TextField, Chip, Grid } from "@mui/material";
 
 interface ChipInputProps {
-  options: string[]; // The list of options (chips)
-  onChange: (selectedChips: string[]) => void; // Callback to send the selected chips data back to the parent
-  placeholder?: string; // Optional placeholder text for the input
-  label?: string; // Optional label for the chips
+  options: string[]; // List of dropdown options
+  onChange: (selectedValues: string[]) => void; // Function to handle changes
+  label?: string; // Optional label
+  placeholder?: string; // Optional placeholder
 }
 
-const ChipInput: React.FC<ChipInputProps> = ({ options, onChange, placeholder = 'Select Favorites', label = 'Chip' }) => {
-  const [selectedChips, setSelectedChips] = useState<string[]>([]);
+const ChipInput: React.FC<ChipInputProps> = ({
+  options,
+  onChange,
+  label = "Pick Your Chips",
+  placeholder = "Type or select...",
+}) => {
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
-  // Update the parent whenever the selected chips change
-  useEffect(() => {
-    onChange(selectedChips);
-  }, [selectedChips, onChange]);
+  const handleSelectionChange = (event: any, newValue: string[]) => {
+    setSelectedLanguages(newValue);
+    onChange(newValue); // Pass selected values to the parent component
+  };
 
   return (
-    <div>
-      <Autocomplete
-        multiple
-        id="tags-filled"
-        options={options}
-        value={selectedChips}
-        onChange={(event, newValue) => setSelectedChips(newValue)}
-        freeSolo
-        renderTags={(value: readonly string[], getTagProps) =>
-          value.map((option: string, index: number) => {
-            const { key, ...tagProps } = getTagProps({ index });
-            return (
-              <Chip variant="outlined" label={option} key={key} {...tagProps} />
-            );
-          })
-        }
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="filled"
-            label={label}
-            placeholder={placeholder} // Use the placeholder prop here
-          />
-        )}
-      />
-    </div>
+    <Grid container spacing={2} style={{ padding: "16px" }}>
+      <Grid item xs={12}>
+        <Autocomplete
+          multiple
+          id="chip-input-autocomplete"
+          options={options} // Receive options dynamically
+          value={selectedLanguages}
+          onChange={handleSelectionChange}
+          freeSolo
+          renderTags={(value: readonly string[], getTagProps) =>
+            value.map((option: string, index: number) => (
+              <Chip
+              variant="outlined"
+              label={option}
+              {...getTagProps({ index })} // This includes a unique `key`
+              style={{
+                margin: "5px",
+                fontSize: "14px",
+              }}
+              />
+            ))
+          }
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              label={label}
+              placeholder={placeholder}
+              InputProps={{
+                ...params.InputProps,
+                style: {
+                  height: "auto",
+                  minHeight: "60px",
+                  padding: "10px",
+                },
+              }}
+              style={{
+                width: "100%",
+              }}
+            />
+          )}
+          style={{
+            width: "100%",
+            minHeight: "60px",
+            padding: "8px",
+          }}
+        />
+      </Grid>
+    </Grid>
   );
 };
 
 export default ChipInput;
+ 

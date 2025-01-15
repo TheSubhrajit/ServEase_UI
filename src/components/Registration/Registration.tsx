@@ -863,7 +863,13 @@ const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "
               />
             </Grid>
             <Grid item xs={12}>
-            <ChipInput options={availableLanguages} onChange={handleChipChange} label="languages" placeholder="Pick/Type Your Languages" />
+            <ChipInput
+  options={availableLanguages}
+  onChange={handleChipChange}
+  label="languages"
+  placeholder="Pick/Type Your Languages"
+/>
+
               {/* <TextField
                 placeholder="Language"
                 name="language"
