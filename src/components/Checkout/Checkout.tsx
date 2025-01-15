@@ -224,26 +224,27 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
         >
           Grand Total: Rs. {grandTotal}
         </div>
-        <Button
-        startIcon={<ShoppingCartCheckoutIcon />}
-        variant="contained"
-        style={{
-        fontWeight: "600",
-        // fontSize: "1.1rem",
-        color: "#fff",
-        background: "linear-gradient(to right, #1a73e8, #1565c0)",
-        border: "1px solidrgb(63, 70, 146)",
-        padding: "10px 24px", 
-        borderRadius: "8px",
-        textAlign: "center",
-        marginBottom: "20px",
-        flexBasis: "auto", 
-        marginLeft: "80px",
-        }}
-       onClick={handleCheckout}
-        >
-          Checkout
-        </Button>
+  <Tooltip title="Proceed to checkout">
+  <Button
+    startIcon={<ShoppingCartCheckoutIcon />}
+    variant="contained"
+    style={{
+      fontWeight: "600",
+      color: "#fff",
+      background: "linear-gradient(to right, #1a73e8, #1565c0)",
+      border: "1px solid rgb(63, 70, 146)",
+      padding: "10px 24px",
+      borderRadius: "8px",
+      textAlign: "center",
+      marginBottom: "20px",
+      flexBasis: "auto",
+      marginLeft: "80px",
+    }}
+    onClick={handleCheckout}
+  >
+    Checkout
+  </Button>
+</Tooltip>
       </div>
     )}
     <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleClose}>
