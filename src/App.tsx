@@ -104,6 +104,7 @@ function App() {
       <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
         {renderContent()}
       </section>
+      {/* <Checkout /> */}
 
       <footer className="footer-container">
         <Footer />
