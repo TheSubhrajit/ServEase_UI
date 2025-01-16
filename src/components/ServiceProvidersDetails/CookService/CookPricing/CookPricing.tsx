@@ -178,7 +178,18 @@ const CookPricing = ({ onPriceChange , onAddToCart }: CookPricingProps) => {
 
       <Typography gutterBottom>Price: ₹{price}/month</Typography>
 
-      <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />}  onClick={onClickAddToCart}> Add to cart </Button>
+      {/* <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />}  onClick={onClickAddToCart}> Add to cart </Button> */}
+      <Button 
+  type="submit" 
+  variant="outlined" 
+  style={{ float: 'right', margin: '10px' }} 
+  endIcon={<AddShoppingCartIcon />} 
+  onClick={onClickAddToCart} 
+  disabled={!serviceType || !mealType || !pax} // Disable button if any value is not selected
+>
+  Add to cart
+</Button>
+
       </div>
     )
 }
