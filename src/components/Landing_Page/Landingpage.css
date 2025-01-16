@@ -82,11 +82,55 @@ body{
     transform: translate(-50%, -50%);
     z-index: -1;
   }
+  .date-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+    margin: 20px auto;
+    width: 100%;
+    max-width: 600px; /* Limit width on larger screens */
+  }
   
+  /* Date block for individual pickers */
+  .date-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 48%; /* Take up roughly half width */
+  }
+  
+  /* Label styles for date inputs */
+  .date-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #293138; /* Match the intended color scheme */
+  }
   /* Media queries for responsiveness */
   
   /* For smaller tablets or large phones */
   @media (max-width: 768px) {
+    .date-container {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 90%; /* Reduce width for smaller devices */
+    }
+  
+    .date-block {
+      flex: unset; /* Adjust for stacking layout */
+      width: 90%; /* Center and shrink width */
+    }
+  
+    .date-picker {
+      transform: scale(0.9); /* Scale the calendar for better visibility */
+      transform-origin: top center; /* Ensure it stays aligned */
+    }
+  
+    .date-label {
+      font-size: 14px; /* Slightly reduce label size */
+    }
+  
     .selectors {
       width: 40vw;  /* 40% of the viewport width */
       height: 40vw; /* Ensure square aspect ratio */
@@ -95,6 +139,14 @@ body{
   
   /* For phones */
   @media (max-width: 480px) {
+    .date-container {
+      gap: 8px;
+      padding: 10px;
+    }
+  
+    .date-picker {
+      transform: scale(0.8); /* Reduce size for extra-small screens */
+    }
     .selectors {
       width: 30vw;  /* 50% of the viewport width */
       height: 30vw; /* Ensure square aspect ratio */

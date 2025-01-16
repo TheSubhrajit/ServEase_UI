@@ -252,23 +252,26 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
        
        
       </DialogComponent>
-         <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }} 
-          sx={{ marginTop: '60px' }} 
-        >
-        
-          <Alert
-            onClose={handleClose}
-            severity={snackbarSeverity}
-            variant="filled"
-            sx={{ width: '100%' }}
-          >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        sx={{ marginTop: '60px' }}
+      >
+       <Alert
+    onClose={handleSnackbarClose}
+    severity={snackbarSeverity}
+    variant="filled"
+    sx={{
+      width: '100%',
+      
+    }}
+  >
+    {snackbarMessage || 'An error occurred, please try again.'}
+  </Alert>
+  </Snackbar>
+  
   </div>  
   );
 };
