@@ -6,6 +6,8 @@ import { ColDef } from 'ag-grid-community';
 import CustomContextMenu from './CustomContextMenu'; // Import your custom context menu
 import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 import axiosInstance from '../../services/axiosInstance';
+import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 interface RowData {
   customerId: number;
@@ -32,7 +34,8 @@ const Admin: React.FC = () => {
   const [rowData, setRowData] = useState<RowData[]>([]);  // For static customer data
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; data: RowData | null } | null>(null);
   const [viewSelected, setViewSelected] = useState<string>('customer');  // Default view is 'customer'
-
+  const [pricingRowData  , setPricingData] =useState<any[]>([]);
+  const [data, setData] = useState([]);
   // Handle radio button changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setViewSelected(e.target.value);
@@ -46,6 +49,12 @@ const Admin: React.FC = () => {
         }
       };
       fetchData();
+    } else if(e.target.value === 'pricing'){
+      axios.get('http://3.110.168.35:3000/records')
+  .then(function (response) {
+    // handle success
+    setPricingData(response.data)
+  })
     }
   };
 
@@ -79,6 +88,42 @@ const Admin: React.FC = () => {
     // Add more columns as needed
   ]);
 
+  const columnDefsPricing: ColDef<any>[] = [
+    {
+      headerName: "Service Category",
+      field: "serviceCategory",
+       rowGroup: true,  // Enable grouping by this column
+      hide: true,      // Hide this column as it's just for grouping
+    },
+    {
+      headerName: "Type",
+      field: "type",
+    },
+    {
+      headerName: "Service Type",
+      field: "serviceType",
+    },
+    {
+      headerName: "Sub Category",
+      field: "subCategory",
+    },
+    {
+      headerName: "People Range",
+      field: "peopleRange",
+    },
+    {
+      headerName: "Frequency",
+      field: "frequency",
+    },
+    {
+      headerName: "Price Per Month",
+      field: "pricePerMonth",
+      sortable: true,
+      filter: true,
+    },
+  ];
+
+  
   const columnDefsBooking : ColDef<any>[] = [
     { headerName: "Id", field: "id", sortable: true },
     { headerName: "Provider Id", field: "serviceProviderId", sortable: true },
@@ -130,6 +175,30 @@ const Admin: React.FC = () => {
       filter: false,
     }
   ];
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Read the file using the FileReader API
+    const reader = new FileReader();
+    
+    reader.onload = (evt) => {
+      // Parse the Excel data using xlsx.utils
+      const binaryStr = evt?.target?.result;
+      const wb = XLSX.read(binaryStr, { type: 'binary' });
+
+      // Assuming we want the first sheet
+      const ws = wb.Sheets[wb.SheetNames[0]];
+
+      // Convert the sheet to JSON (array of objects)
+      const jsonData : any = XLSX.utils.sheet_to_json(ws);
+      setData(jsonData);  // Set the JSON data to state
+    };
+
+    // Read the file as binary string
+    reader.readAsBinaryString(file);
+  };
 
   // Datasource for infinite scrolling in 'provider' view
   const datasource = {
@@ -213,6 +282,10 @@ const Admin: React.FC = () => {
           <FormControlLabel value="customer" control={<Radio />} label="Customer" />
           <FormControlLabel value="provider" control={<Radio />} label="Provider" />
           <FormControlLabel value="requests" control={<Radio />} label="Requests" />
+          <FormControlLabel value="pricing" control={<Radio />} label="Pricing" />
+          <FormControlLabel value="excel" control={<Radio />} label=" upload  excel" />
+          
+
         </RadioGroup>
       </FormControl>
 
@@ -256,6 +329,62 @@ const Admin: React.FC = () => {
               rowData={rowData}
             />
           </div>
+        </div>
+      )}
+      {viewSelected === 'pricing' && (
+        <div style={{ height: '70%', width: '100%' }}>
+          <div className="ag-theme-alpine" style={{ height: '100%'}}>
+          <AgGridReact
+        columnDefs={columnDefsPricing}
+        rowData={pricingRowData}
+        groupDefaultExpanded={-1}  // Expand all groups by default
+        autoGroupColumnDef={{
+          headerName: "Group",
+          field: "serviceCategory",
+          cellRendererParams: {
+            suppressCount: true,  // Don't show the count of items in each group
+          },
+        }}
+      />
+          </div>
+        </div>
+      )}
+      {viewSelected === 'excel' && (
+        <div style={{ height: '70%', width: '100%' }}>
+          <div>
+      <h1>Excel File Reader</h1>
+      
+      <input
+        type="file"
+        accept=".xlsx,.xls"
+        onChange={handleFileUpload}
+      />
+      
+      {data.length > 0 && (
+        <div>
+          <h2>Excel Data:</h2>
+          <table border={1}>
+            <thead>
+              <tr>
+                {/* Assuming first row contains column headers */}
+                {Object.keys(data[0]).map((key) => (
+                  <th key={key}>{key}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((row, index) => (
+                <tr key={index}>
+                  {Object.values(row).map((value : any, idx) => (
+                    <td key={idx}>{value}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
         </div>
       )}
     </div>
