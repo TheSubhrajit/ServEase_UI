@@ -1,8 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Typography } from "@mui/material";
+import { Button, Card, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
-
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import PaymentIcon from "@mui/icons-material/Payment";
+import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
+import PersonIcon from "@mui/icons-material/Person";
 interface CookPricingProps {
   onPriceChange: (priceData: { price: number, entry: any }) => void; 
   onAddToCart:(data:string) => void; // Add the onPriceChange function as a prop
@@ -112,85 +115,143 @@ const CookPricing = ({ onPriceChange , onAddToCart }: CookPricingProps) => {
 
     return (
         
-        <div style={{display:'grid' , width:'100%'}}>
+      <div style={{ display: 'grid', width: '100%' }}>
+      <Card sx={{ padding: 3, boxShadow: 3, marginBottom: 3, backgroundColor: '#fff' }}>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          display="flex"
+          alignItems="center"
+          sx={{ gap: 1, marginBottom: 2 }}
+        >
+          <RestaurantMenuIcon color="primary" />
+          Service Type
+        </Typography>
         <Typography gutterBottom>
-        Service Type :
-        {typeButtonsSelector.map((button) => (
-          <button
-            key={button.key}
-            onClick={() => handleButtonClick(button.value, 'serviceType')}
-            style={{
-              border: serviceType === button.value ? '3px solid blue' : '1px solid gray',
-              backgroundColor: serviceType === button.value ? '#e0f7fa' : 'transparent',
-              padding: '10px',
-              margin: '5px',
-              cursor: 'pointer',
-              outline: 'none',
-              borderRadius: '8px',
-            }}
-          >
-            {button.value}
-          </button>
-        ))}
-      </Typography>
-
-      <Typography gutterBottom>
-        Meal Type :
-        {mealTypeButtonsSelector.map((button) => (
-          <button
-            key={button.key}
-            onClick={() => handleButtonClick(button.value, 'mealType')}
-            style={{
-              border: mealType === button.value ? '3px solid blue' : '1px solid gray',
-              backgroundColor: mealType === button.value ? '#e0f7fa' : 'transparent',
-              padding: '10px',
-              margin: '5px',
-              cursor: 'pointer',
-              outline: 'none',
-              borderRadius: '8px',
-            }}
-          >
-            {button.value}
-          </button>
-        ))}
-      </Typography>
-
-      <Typography gutterBottom>
-        No. of person :
-        {peopleButtonsSelector.map((button) => (
-          <button
-            key={button.key}
-            onClick={() => handleButtonClick(button.value, 'pax')}
-            style={{
-              border: pax === button.value ? '3px solid blue' : '1px solid gray',
-              backgroundColor: pax === button.value ? '#e0f7fa' : 'transparent',
-              padding: '10px',
-              margin: '5px',
-              cursor: 'pointer',
-              outline: 'none',
-              borderRadius: '8px',
-            }}
-          >
-            {button.value}
-          </button>
-        ))}
-      </Typography>
-
-      <Typography gutterBottom>Price: ₹{price}/month</Typography>
-
-      {/* <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />}  onClick={onClickAddToCart}> Add to cart </Button> */}
-      <Button 
-  type="submit" 
-  variant="outlined" 
-  style={{ float: 'right', margin: '10px' }} 
-  endIcon={<AddShoppingCartIcon />} 
-  onClick={onClickAddToCart} 
-  disabled={!serviceType || !mealType || !pax} // Disable button if any value is not selected
->
-  Add to cart
-</Button>
-
-      </div>
+          {typeButtonsSelector.map((button) => (
+            <button
+              key={button.key}
+              onClick={() => handleButtonClick(button.value, 'serviceType')}
+              style={{
+                border: serviceType === button.value ? '3px solid #1E90FF' : '1px solid #ddd',
+                backgroundColor: serviceType === button.value ? '#e0f7fa' : '#f1f1f1',
+                padding: '10px 20px',
+                margin: '0 5px',
+                cursor: 'pointer',
+                outline: 'none',
+                borderRadius: '5px',
+                fontWeight: 'bold',
+                color: serviceType === button.value ? '#fff' : '#444',
+                textTransform: 'none',
+                width: 'fit-content',
+                boxShadow: serviceType === button.value ? '0 2px 5px rgba(0, 0, 0, 0.3)' : '0 2px 5px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseOver={(e) => {
+                if (serviceType !== button.value) {
+                  e.currentTarget.style.backgroundColor = '#ddd';
+                }
+              }}
+              onMouseOut={(e) => {
+                if (serviceType !== button.value) {
+                  e.currentTarget.style.backgroundColor = '#f1f1f1';
+                }
+              }}
+            >
+              {button.value}
+            </button>
+          ))}
+        </Typography>
+    
+        <Typography
+          variant="h6"
+          sx={{ marginBottom: 2, fontWeight: 'bold' }}
+        >
+          <PersonIcon color="primary" />
+          Meal Type
+        </Typography>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          {mealTypeButtonsSelector.map((button) => (
+            <button
+              key={button.key}
+              onClick={() => handleButtonClick(button.value, 'mealType')}
+              style={{
+                border: mealType === button.value ? '2px solid #1e88e5' : '1px solid #ddd',
+                backgroundColor: mealType === button.value ? '#e3f2fd' : '#fff',
+                color: mealType === button.value ? '#1e88e5' : '#444',
+                padding: '8px 16px',
+                margin: '5px',
+                cursor: 'pointer',
+                outline: 'none',
+                borderRadius: '25px',
+                fontWeight: 'bold',
+                boxShadow: mealType === button.value ? '0 2px 5px rgba(0, 0, 0, 0.2)' : 'none',
+                transition: 'all 0.3s ease',
+                textTransform: 'capitalize',
+                fontSize: '1rem',
+                width: 'fit-content',
+              }}
+              onMouseOver={(e) => {
+                if (mealType !== button.value) {
+                  e.currentTarget.style.backgroundColor = '#f1f1f1';
+                }
+              }}
+              onMouseOut={(e) => {
+                if (mealType !== button.value) {
+                  e.currentTarget.style.backgroundColor = '#fff';
+                }
+              }}
+            >
+              {button.value}
+            </button>
+          ))}
+        </div>
+    
+        <Typography
+          variant="h6"
+          sx={{ marginTop: 3, marginBottom: 2, fontWeight: 'bold' }}
+        >
+          <PersonIcon color="primary" />
+          No. of Persons
+        </Typography>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          {peopleButtonsSelector.map((button) => (
+            <button
+              key={button.key}
+              onClick={() => handleButtonClick(button.value, 'people')}
+              style={{
+                // border: people === button.value ? '2px solid #1e88e5' : '1px solid #ddd',
+                // backgroundColor: people === button.value ? '#e3f2fd' : '#fff',
+                // color: people === button.value ? '#1e88e5' : '#444',
+                padding: '8px 16px',
+                margin: '5px',
+                cursor: 'pointer',
+                outline: 'none',
+                borderRadius: '25px',
+                fontWeight: 'bold',
+                // boxShadow: people === button.value ? '0 2px 5px rgba(0, 0, 0, 0.2)' : 'none',
+                transition: 'all 0.3s ease',
+                textTransform: 'capitalize',
+                fontSize: '1rem',
+                width: 'fit-content',
+              }}
+              // onMouseOver={(e) => {
+              //   if (people !== button.value) {
+              //     e.currentTarget.style.backgroundColor = '#f1f1f1';
+              //   }
+              // }}
+              // onMouseOut={(e) => {
+              //   if (people !== button.value) {
+              //     e.currentTarget.style.backgroundColor = '#fff';
+              //   }
+              // }}
+            >
+              {button.value}
+            </button>
+          ))}
+        </div>
+      </Card>
+    </div>
     )
 }
 
