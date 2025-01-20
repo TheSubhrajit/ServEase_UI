@@ -121,30 +121,39 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   const grandTotal = checkout.reduce((sum, service) => sum + service.price, 0);
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: "50px", marginBottom: "20px" }}>
-    {/* Header Section */}
-    <div style={{
-  width: "100%",
-  padding: "20px",
+{/* Header Section */}
+<div style={{
   textAlign: "center",
   marginBottom: "30px",
 }}>
-  <Typography variant="h4" sx={{
-    fontWeight: "bold",
-    fontFamily: "'Roboto', sans-serif",
-    color: "#333", // Dark text color for a minimalist look
-    textTransform: "uppercase",
-    letterSpacing: "1px"
-  }}>
+  <Typography
+    variant="h4"
+    sx={{
+      fontWeight: "bold",
+      fontFamily: "'Poppins', sans-serif",
+      color: "#1565C0", // Rich, professional blue
+      textTransform: "capitalize", // Balanced capitalization
+      letterSpacing: "0.75px", // Slight spacing for refinement
+      fontSize: "1.5rem",
+    }}
+  >
     Your Selected Services
   </Typography>
-  <Typography variant="h6" sx={{
-    fontWeight: "light",
-    color: "#555", // Slightly lighter color for the subheading
-    marginTop: "8px"
-  }}>
-    Review the details of your selected services before proceeding to checkout.
+  <Typography
+    variant="subtitle1"
+    sx={{
+      fontWeight: "400",
+      fontFamily: "'Roboto', sans-serif",
+      color: "#424242", // Neutral gray for better readability
+      marginTop: "10px",
+      fontSize: "1rem", // Refined sizing for text
+      lineHeight: "1rem", // Balanced spacing between lines
+    }}
+  >
+    Review and confirm the details of your selected services before proceeding to checkout.
   </Typography>
 </div>
+
 
     {/* Main Checkout Items */}
     {checkout.length === 0 ? (
@@ -207,43 +216,48 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
     {/* Footer (Grand Total and Checkout Button) */}
     {checkout.length > 0 && (
       <div style={{ width: "100%",height:"100%", display: "flex", justifyContent: "center", marginTop: "20px", paddingBottom: "15px", padding: "20px 0" }}>
-        <div
-          style={{
-            fontWeight: "600",
-            fontSize: "1.1rem",
-            color: "#2e7d32",
-            backgroundColor: "#e8f5e9",
-            border: "1px solid #2e7d32",
-            padding: "8px 16px",
-            borderRadius: "6px",
-            textAlign: "center",
-            marginBottom: "20px",
-            marginRight: "80px",
-            flexBasis: "auto", 
-          }}
-        >
-          Grand Total: Rs. {grandTotal}
-        </div>
+      <div
+  style={{
+    fontWeight: "600",
+    fontSize: "1.1rem",
+    color: "#2e7d32",
+    backgroundColor: "#e8f5e9",
+    border: "1px solid #2e7d32",
+    padding: "12px 20px", // Same padding as the button
+    borderRadius: "8px", // Same border-radius as the button
+    textAlign: "center",
+    margin: "20px auto", // Centers the div and adds spacing
+    maxWidth: "200px", // Constrain the width
+    minWidth: "150px", // Maintain a minimum width
+    width: "100%", // Allow responsive width
+  }}
+>
+  Grand Total: Rs. {grandTotal}
+</div>
+
   <Tooltip title="Proceed to checkout">
   <Button
-    startIcon={<ShoppingCartCheckoutIcon />}
-    variant="contained"
-    style={{
-      fontWeight: "600",
-      color: "#fff",
-      background: "linear-gradient(to right, #1a73e8, #1565c0)",
-      border: "1px solid rgb(63, 70, 146)",
-      padding: "10px 24px",
-      borderRadius: "8px",
-      textAlign: "center",
-      marginBottom: "20px",
-      flexBasis: "auto",
-      marginLeft: "80px",
-    }}
-    onClick={handleCheckout}
-  >
-    Checkout
-  </Button>
+  startIcon={<ShoppingCartCheckoutIcon />}
+  variant="contained"
+  style={{
+    fontWeight: "600",
+    color: "#fff",
+    background: "linear-gradient(to right, #1a73e8, #1565c0)",
+    border: "1px solid rgb(63, 70, 146)",
+    padding: "12px 20px", // Adjust for a proportional button size
+    borderRadius: "8px",
+    textAlign: "center",
+    margin: "20px auto", // Center the button on smaller screens
+    flexBasis: "auto",
+    maxWidth: "200px", // Constrain button width
+    minWidth: "150px", // Minimum button width
+    width: "100%", // Ensure full width for smaller containers
+  }}
+  onClick={handleCheckout}
+>
+  Checkout
+</Button>
+
 </Tooltip>
       </div>
     )}

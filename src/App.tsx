@@ -13,6 +13,8 @@ import UserProfile from "./components/User-Profile/UserProfile";
 import Booking from "./components/User-Profile/Bookings";
 import { ADMIN, BOOKINGS, CHECKOUT, CONFIRMATION, DETAILS, LOGIN, PROFILE } from "./Constants/pagesConstants";
 import { ServiceProviderContext } from "./context/ServiceProviderContext";
+import AddToCart from "./components/add/AddToCart";
+import New from "./components/add/New";
 
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); // State to manage selections
@@ -101,9 +103,11 @@ function App() {
         <Header sendDataToParent={handleDataFromChild} />
       </div>
 
-      <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
+      <AddToCart/>
+      {/* <New/> */}
+      {/* <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
         {renderContent()}
-      </section>
+      </section> */}
       {/* <Checkout /> */}
 
       <footer className="footer-container">
