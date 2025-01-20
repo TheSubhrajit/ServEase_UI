@@ -189,7 +189,22 @@ interface NannyPricingProps {
       </Typography>
       <Typography gutterBottom>Price: ₹{price}/month</Typography>
 
-      <Button type="submit" variant="outlined" style={{float :'right',margin:'10px'}} endIcon={<AddShoppingCartIcon  />} onClick={handleAddToCart}> Add to cart </Button>
+      {/* <Button type="submit" variant="outlined" style={{float :'right',margin:'10px'}} endIcon={<AddShoppingCartIcon  />} onClick={handleAddToCart}> Add to cart </Button> */}
+      <Button
+  type="submit"
+  variant="outlined"
+  style={{ float: 'right', margin: '10px' }}
+  endIcon={<AddShoppingCartIcon />}
+  onClick={handleAddToCart}
+  disabled={
+    !selectedServiceType || 
+    (selectedServiceType !== "Regular - In House (24 hours live in)" && !selectedSubCategory) || 
+    !selectedAge
+  }
+>
+  Add to cart
+</Button>
+
     </div>
   );
 };
