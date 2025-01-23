@@ -15,6 +15,7 @@ import { ADMIN, BOOKINGS, CHECKOUT, CONFIRMATION, DETAILS, LOGIN, PROFILE } from
 import { ServiceProviderContext } from "./context/ServiceProviderContext";
 import AddToCart from "./components/add/AddToCart";
 import New from "./components/add/New";
+import AgentRegistrationForm from "./components/Registration/AgentRegistrationForm";
 
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); // State to manage selections
@@ -109,7 +110,7 @@ function App() {
         {renderContent()}
       </section>
       {/* <Checkout /> */}
-
+      {/* <AgentRegistrationForm /> */}
       <footer className="footer-container">
         <Footer />
       </footer> 
