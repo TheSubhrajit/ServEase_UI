@@ -16,6 +16,7 @@ import { ServiceProviderContext } from "./context/ServiceProviderContext";
 import AddToCart from "./components/add/AddToCart";
 import New from "./components/add/New";
 import AgentRegistrationForm from "./components/Registration/AgentRegistrationForm";
+import SearchFormtwo from "./components/Search-Form/SearchFormtwo";
 
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); // State to manage selections
@@ -103,14 +104,15 @@ function App() {
       <div className="header-class">
         <Header sendDataToParent={handleDataFromChild} />
       </div>
-{/* 
-      <AddToCart/> */}
+      {/* <SearchFormtwo/> */}
+     {/* <Checkout /> */}
+      {/* <AgentRegistrationForm /> */}
+      {/* <AddToCart/>  */}
       {/* <New/> */}
       <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
         {renderContent()}
       </section>
-      {/* <Checkout /> */}
-      {/* <AgentRegistrationForm /> */}
+ 
       <footer className="footer-container">
         <Footer />
       </footer> 

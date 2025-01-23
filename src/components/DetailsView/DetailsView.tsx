@@ -91,7 +91,7 @@ export const DetailsView: React.FC<DetailsViewProps> = ({
         <div className="details-view-container">
           {/* Material-UI Drawer */}
           <Drawer
-  anchor="left"
+  anchor="right"
   open={drawerOpen}
   onClose={() => toggleDrawer(false)}
 >
