@@ -1,10 +1,9 @@
-import { Button, Box } from "@mui/material";
+import { Button, Box, Drawer } from "@mui/material";
 import { useEffect, useState } from "react";
 import Search_form from "../Search-Form/Search_form";
 import "./DetailsView.css";
-import axiosInstance from '../../services/axiosInstance';
-import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
-import CloseIcon from '@mui/icons-material/Close'; 
+import axiosInstance from "../../services/axiosInstance";
+import LoadingIndicator from "../LoadingIndicator/LoadingIndicator";
 import { CONFIRMATION } from "../../Constants/pagesConstants";
 import ProviderDetails from "../ProviderDetails/ProviderDetails";
 
@@ -15,15 +14,20 @@ interface DetailsViewProps {
   selectedProvider?: (data: any) => void; // Optional callback
 }
 
-export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, selected, checkoutItem, selectedProvider }) => {
+export const DetailsView: React.FC<DetailsViewProps> = ({
+  sendDataToParent,
+  selected,
+  checkoutItem,
+  selectedProvider,
+}) => {
   const [ServiceProvidersData, setServiceProvidersData] = useState<any[]>([]);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedProviderType , setSelectedProviderType] = useState("");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedProviderType, setSelectedProviderType] = useState("");
 
-  const handleCheckoutData = (data) => {
-    console.log('Received checkout data:', data);
+  const handleCheckoutData = (data: any) => {
+    console.log("Received checkout data:", data);
 
     if (checkoutItem) {
       checkoutItem(data); // Send data to the parent component
@@ -31,17 +35,21 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, sele
   };
 
   useEffect(() => {
-    console.log("Selected ...",selected);
-    setSelectedProviderType(selected || ''); // Set a default empty string if `selected` is undefined
-  
+    console.log("Selected ...", selected);
+    setSelectedProviderType(selected || ""); // Set a default empty string if `selected` is undefined
+
     const fetchData = async () => {
       try {
         setLoading(true);
         let response;
         if (selected) {
-          response = await axiosInstance.get('api/serviceproviders/role?role=' + selected.toUpperCase());
+          response = await axiosInstance.get(
+            "api/serviceproviders/role?role=" + selected.toUpperCase()
+          );
         } else {
-          response = await axiosInstance.get('api/serviceproviders/serviceproviders/all');
+          response = await axiosInstance.get(
+            "api/serviceproviders/serviceproviders/all"
+          );
         }
         setServiceProvidersData(response?.data);
       } catch (err) {
@@ -52,23 +60,18 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, sele
     };
     fetchData();
   }, [selected]);
-  
 
   const handleBackClick = () => {
     sendDataToParent("");
   };
 
-  const handleSearchClick = () => {
-    setSidebarOpen(true);
-  };
-
-  const handleCloseSidebar = () => {
-    setSidebarOpen(false);
+  const toggleDrawer = (open: boolean) => {
+    setDrawerOpen(open);
   };
 
   const handleSearchResults = (data: any[]) => {
     setSearchResults(data);
-    setSidebarOpen(false); // Close the sidebar after receiving results
+    toggleDrawer(false); // Close the drawer after receiving results
   };
 
   const handleSelectedProvider = (provider: any) => {
@@ -78,34 +81,47 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, sele
     sendDataToParent(CONFIRMATION);
   };
 
-
-
-
   return (
     <>
       {loading ? (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: "flex" }}>
           <LoadingIndicator />
         </Box>
       ) : (
         <div className="details-view-container">
-          {/* Sidebar */}
-          <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
-            <Button
-              style={{ float: "right" }}
-              variant="outlined"
-              onClick={handleCloseSidebar}
-              startIcon={<CloseIcon />}
-            >
-              Close
-            </Button>
-            <Search_form
-              open={sidebarOpen}
-              selectedValue={""}
-              onClose={handleCloseSidebar}
-              onSearch={handleSearchResults}
-            />
-          </div>
+          {/* Material-UI Drawer */}
+          <Drawer
+  anchor="left"
+  open={drawerOpen}
+  onClose={() => toggleDrawer(false)}
+>
+  <Box sx={{ width: 300, padding: 2, position: "relative" }}>
+    {/* Close button styled to appear at the top-right corner */}
+    <Button
+      variant="outlined"
+      onClick={() => toggleDrawer(false)}
+      sx={{
+        position: "absolute",
+        top: 10,
+        right: 10,
+        // backgroundColor: "#ffffff",
+        // color: "#000000",
+        // border: "1px solid #000",
+        // "&:hover": {
+        //   backgroundColor: "#f0f0f0",
+        // },
+      }}
+    >
+      Close
+    </Button>
+              <Search_form
+                open={drawerOpen}
+                selectedValue={""}
+                onClose={() => toggleDrawer(false)}
+                onSearch={handleSearchResults}
+              />
+            </Box>
+          </Drawer>
 
           {/* Main Content */}
           <div className="main-content">
@@ -114,19 +130,27 @@ export const DetailsView: React.FC<DetailsViewProps> = ({ sendDataToParent, sele
                 <Button onClick={handleBackClick} variant="outlined">
                   Back
                 </Button>
-                <Button variant="outlined" onClick={handleSearchClick}>
+                <Button
+                  variant="outlined"
+                  onClick={() => toggleDrawer(true)}
+                >
                   Search
                 </Button>
               </header>
 
               <div className="providers-view">
-                {(searchResults.length > 0 ? searchResults : ServiceProvidersData).map((provider) => (
+                {(searchResults.length > 0
+                  ? searchResults
+                  : ServiceProvidersData
+                ).map((provider) => (
                   <div
                     className="views"
                     key={provider.serviceproviderId}
-                    // onClick={() => handleCardClick(provider)}
                   >
-                    <ProviderDetails {...provider} selectedProvider={handleSelectedProvider}/>
+                    <ProviderDetails
+                      {...provider}
+                      selectedProvider={handleSelectedProvider}
+                    />
                   </div>
                 ))}
               </div>

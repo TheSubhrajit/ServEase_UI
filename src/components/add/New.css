@@ -1,0 +1,15 @@
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Makes the page full height */
+    padding: 16px;
+    
+  }
+  
+  .card-container {
+    width: 100%;
+    max-width: 1200px; /* Maximum width of the card */
+    margin: auto;
+  }
+  

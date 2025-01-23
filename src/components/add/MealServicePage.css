@@ -1,0 +1,110 @@
+
+
+  .page-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f2f3f7;
+    padding: 8px 16px;
+  }
+  
+  .card-container {
+    width: 100%;
+    max-width: 800px;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+  }
+  
+  
+  
+  /* Extra adjustments for mobile view */
+  @media (max-width: 767px) {
+    .page-container {
+      padding: 40px 10px 40px 10px; /* Extra space added to bottom */
+      align-items: flex-start; /* Ensure proper scroll alignment */
+    }
+
+  .card-container {
+    margin-bottom: 30px; /* Add spacing below the card */
+  }
+  }
+  
+  /* Adjustments for medium screens */
+  @media (min-width: 768px) {
+    .page-container {
+      padding: 10px 24px; /* Maintain specified padding for medium screens */
+    }
+  
+    .card-container {
+      max-width: 90%;
+    }
+  }
+  
+  /* Adjustments for larger screens */
+  @media (min-width: 1024px) {
+    .page-container {
+      padding: 12px 32px; /* Maintain specified padding for larger screens */
+    }
+  
+    .card-container {
+      max-width: 70%;
+    }
+  }
+  
+  /* Form and tab container styles */
+  /* .tabs-container {
+    background-color: #f1f1f1;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+  }
+  
+  .tab-button {
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    text-transform: none;
+    font-weight: bold;
+    color: #444;
+    cursor: pointer;
+  }
+  
+  .tab-button:hover {
+    background-color: #ddd;
+  }
+  
+  .tab-button.active {
+    color: #fff;
+    background-color: #1e90ff;
+  }
+  
+  /* Button styling */
+/* .meal-button {
+  text-transform: capitalize;
+  border-radius: 25px; 
+  color: #1e88e5;
+  border: 1px solid #1e88e5; 
+  padding: 8px 16px;
+  transition: background-color 0.3s, box-shadow 0.3s; 
+}
+
+.meal-button:hover {
+  background-color: #e3f2fd; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  border-color: #1e88e5;
+}
+
+   */
+  .input-field {
+    width: 200px;
+    background-color: #fff;
+    transition: border-color 0.3s;
+  }
+  
+  .input-field:hover,
+  .input-field:focus {
+    border-color: #1e88e5;
+  }
+   
