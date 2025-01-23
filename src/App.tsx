@@ -16,7 +16,7 @@ import { ServiceProviderContext } from "./context/ServiceProviderContext";
 import AddToCart from "./components/add/AddToCart";
 import New from "./components/add/New";
 import AgentRegistrationForm from "./components/Registration/AgentRegistrationForm";
-import SearchFormtwo from "./components/Search-Form/SearchFormtwo";
+
 
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); // State to manage selections
@@ -104,7 +104,7 @@ function App() {
       <div className="header-class">
         <Header sendDataToParent={handleDataFromChild} />
       </div>
-      {/* <SearchFormtwo/> */}
+     
      {/* <Checkout /> */}
       {/* <AgentRegistrationForm /> */}
       {/* <AddToCart/>  */}
