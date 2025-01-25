@@ -61,6 +61,7 @@ const Admin: React.FC = () => {
   const [data, setData] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [selectedData, setSelectedData] = useState({
     '_id':'',
     'Categories': '',
@@ -73,6 +74,7 @@ const Admin: React.FC = () => {
     'Type': ''
   });
   const [open, setOpen] = React.useState(false);
+  const [openError, setOpenError] = React.useState(false);
   const [responseData ,  setResponseData] = useState<string>()
   // Handle radio button changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -211,6 +213,7 @@ const Admin: React.FC = () => {
 
   const handleSave = () => {
     const sanatizedData = removeInvalidFields(selectedData);
+    if(isModalOpen){
    
     axios.put('http://3.110.168.35:3000/records/' + selectedData._id, sanatizedData)
       .then(function (response) {
@@ -223,11 +226,30 @@ const Admin: React.FC = () => {
   })
       })
       .catch(function (error) {
-        setOpen(true)
+        setOpenError(true)
         setResponseData("Failed to update , Please contact Ronit")
       });
     
-    setIsModalOpen(false); // Close modal after save
+    setIsModalOpen(false);
+    }
+    else if(isModalOpenAdd){
+
+      axios.post('http://3.110.168.35:3000/records/' , sanatizedData)
+      .then(function (response) {
+        setOpen(true)
+        setResponseData(response.data.message)
+        axios.get('http://3.110.168.35:3000/records')
+  .then(function (response) {
+    // handle success
+    setPricingData(response.data)
+  })
+      })
+      .catch(function (error) {
+        setOpenError(true)
+        setResponseData("Failed to update , Please contact Ronit")
+      });
+      setIsModalOpenAdd(false)
+    }
   };
 
   const setPricingRowData = (data ) => {
@@ -389,7 +411,7 @@ const removeInvalidFields = (data) => {
   })
       })
       .catch(function (error) {
-        setOpen(true)
+        setOpenError(true)
         setResponseData("Failed to update , Please contact Ronit")
       });
   }
@@ -410,6 +432,7 @@ const removeInvalidFields = (data) => {
 
   const handleClose = () =>{
   setOpen(false)
+  setOpenError(false)
   }
 
   const updatevalue = (e) => {
@@ -422,6 +445,11 @@ const removeInvalidFields = (data) => {
 
     console.log(selectedData)
   };
+
+
+  const handleAddData = () =>{
+    setIsModalOpenAdd(true)
+  }
 
   return (
     <div style={{ display: 'block', height: '100%', marginTop: '30px' , width: '100%' }}>
@@ -486,16 +514,17 @@ const removeInvalidFields = (data) => {
       )}
       {viewSelected === 'pricing' && (
         <div style={{ height: '70%', width: '100%' }}>
+        <Button variant="outlined" onClick={handleAddData}>Add pricing item</Button>
           <div className="ag-theme-alpine" style={{ height: '100%'}}>
           <AgGridReact
         columnDefs={columnDefsPricing}
         rowData={pricingRowData}
       />
        <Dialog
-        open={isModalOpen}
+        open={isModalOpen || isModalOpenAdd}
         onClose={handleClose}
       >
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>{isModalOpen && "Edit Pricing Data"}{isModalOpenAdd && "Add Pricing Data"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Update your selection here 
@@ -574,6 +603,16 @@ const removeInvalidFields = (data) => {
         <Alert
           onClose={handleClose}
           severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {responseData}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="error"
           variant="filled"
           sx={{ width: '100%' }}
         >
