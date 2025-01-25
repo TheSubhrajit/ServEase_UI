@@ -5,6 +5,11 @@
   margin-bottom: 20px;
   width: 100%;
 } */
+
+.details-container{
+  height:80%;
+  width: 100%;
+}
 .page-container {
   display: grid;
   align-items: center;

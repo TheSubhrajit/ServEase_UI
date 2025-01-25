@@ -3,19 +3,32 @@ import { createSlice } from '@reduxjs/toolkit'
 export const pricingSlice = createSlice({
   name: 'pricing',
   initialState: {
-    value: null,
+    value: [],  // Start with an empty array
+    groupedServices: {}
   },
   reducers: {
-    add: (state , action) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes.
-      // Also, no return statement is required from these functions.
-      state.value = action.payload
+    add: (state :any, action:any) => {
+      // Add new service to the `value` array
+      state.value.push(action.payload);
+
+      // Group services by their `Service` type
+      // Group the services by their "Service" field into a single object per service type
+      state.groupedServices = action.payload.reduce((acc, service) => {
+        const serviceType = service.Service;
+
+        // If the serviceType doesn't exist in acc, initialize it as an array
+        if (!acc[serviceType]) {
+          acc[serviceType] = [];
+        }
+
+        // Push the current service into the appropriate service type array
+        acc[serviceType].push(service);
+        return acc;
+      }, {});
     },
     remove: (state) => {
-      state.value = null
+      state.value = [];  // Clear the value array
+      state.groupedServices = {};  // Clear the grouped services
     }
   },
 })
