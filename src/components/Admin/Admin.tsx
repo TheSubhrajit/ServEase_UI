@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
@@ -8,6 +8,12 @@ import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } f
 import axiosInstance from '../../services/axiosInstance';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 interface RowData {
   customerId: number;
@@ -30,12 +36,36 @@ interface RowData {
   kyc: string;
 }
 
+interface RowData {
+  'Categories': string;
+  "Job Description": string;
+  "Numbers/Size": string;
+  "Price /Month (INR)": string;
+  "Remarks/Conditions": string;
+  'Service': string;
+  "Sub-Categories": string;
+  'Type': string;
+  '_id' : string;
+  }
+
 const Admin: React.FC = () => {
   const [rowData, setRowData] = useState<RowData[]>([]);  // For static customer data
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; data: RowData | null } | null>(null);
   const [viewSelected, setViewSelected] = useState<string>('customer');  // Default view is 'customer'
   const [pricingRowData  , setPricingData] =useState<any[]>([]);
   const [data, setData] = useState([]);
+  const [selectedRowData, setSelectedRowData] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedData, setSelectedData] = useState({
+    'Categories': '',
+    "Job Description": '',
+    "Numbers/Size": '',
+    "Price /Month (INR)": '',
+    "Remarks/Conditions": '',
+    'Service': '',
+    "Sub-Categories": '',
+    'Type': ''
+  });
   // Handle radio button changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setViewSelected(e.target.value);
@@ -87,41 +117,97 @@ const Admin: React.FC = () => {
     { headerName: "Location", field: "currentLocation" },
     // Add more columns as needed
   ]);
-
-  const columnDefsPricing: ColDef<any>[] = [
+ 
+  const columnDefsPricing = [
     {
-      headerName: "Service Category",
-      field: "serviceCategory",
-       rowGroup: true,  // Enable grouping by this column
-      hide: true,      // Hide this column as it's just for grouping
+      headerName: "Service",
+      field: "Service",
     },
     {
       headerName: "Type",
-      field: "type",
+      field: "Type",
     },
     {
-      headerName: "Service Type",
-      field: "serviceType",
+      headerName: "Categories",
+      field: "Categories",
     },
     {
       headerName: "Sub Category",
-      field: "subCategory",
+      field: "Sub-Categories",
     },
     {
-      headerName: "People Range",
-      field: "peopleRange",
+      headerName: "Numbers/Size",
+      field: "Numbers/Size",
     },
     {
-      headerName: "Frequency",
-      field: "frequency",
+      headerName: "Price /Month (INR)",
+      field: "Price /Month (INR)",
     },
     {
-      headerName: "Price Per Month",
-      field: "pricePerMonth",
+      headerName: "Job Description",
+      field: "Job Description",
       sortable: true,
       filter: true,
     },
+    {
+      headerName: "Remarks/Conditions",
+      field: "Remarks/Conditions",
+      sortable: true,
+      filter: true,
+    },
+    {
+      headerName: 'Edit',
+      cellRenderer: (params) => (
+        <Button variant="outlined" onClick={() => editRow(params.data)}>Edit</Button>
+      ),
+      
+    },
   ];
+
+  // const menuStyle = ;
+
+  const handleMenuToggle = (params) => {
+    // Toggle menu visibility for this specific row
+    const updatedData = [...pricingRowData];
+    const nodeIndex = updatedData.findIndex(row => row.Service === params.data.Service);
+    if (nodeIndex >= 0) {
+      updatedData[nodeIndex] = {
+        ...updatedData[nodeIndex],
+        menuVisible: !updatedData[nodeIndex].menuVisible,
+      };
+    }
+    setPricingRowData(updatedData);
+  };
+
+  const handleEdit = (params) => {
+    setSelectedRowData(params.data); // Store selected row data in state
+    setIsModalOpen(true); // Open modal
+  };
+
+  const handleDelete = (params) => {
+    const rowId = params.data['Service']; // Assuming 'Service' is unique
+    const updatedData = pricingRowData.filter((row) => row['Service'] !== rowId);
+    setPricingRowData(updatedData); // Update the rowData by removing the deleted row
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false); // Close modal
+  };
+
+  const handleSave = () => {
+    if (selectedRowData) {
+      const updatedData = pricingRowData.map((row) =>
+        row['Service'] === selectedRowData['Service'] ? selectedRowData : row
+      );
+      setPricingRowData(updatedData); // Update the rowData with the edited row
+    }
+    setIsModalOpen(false); // Close modal after save
+  };
+
+  const setPricingRowData = (data ) => {
+    console.log(data)
+
+  }
 
   
   const columnDefsBooking : ColDef<any>[] = [
@@ -253,6 +339,9 @@ const Admin: React.FC = () => {
 
   const editRow = (rowData: RowData) => {
     console.log("Editing row:", rowData);
+    setSelectedRowData(rowData); // Store selected row data in state
+    setSelectedData(rowData)
+    setIsModalOpen(true); // Open modal
     // Add your editing logic here (e.g., open a modal)
   };
 
@@ -268,6 +357,21 @@ const Admin: React.FC = () => {
 
   const closeContextMenu = () => {
     setContextMenu(null);
+  };
+
+  function handleClose(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void {
+    throw new Error('Function not implemented.');
+  }
+
+  const updatevalue = (e) => {
+    const { name, value } = e.target;
+
+    setSelectedData((prevData) => ({
+      ...prevData,
+      [name]: value,  // Dynamically update the value of the field based on the name
+    }));
+
+    console.log(selectedData)
   };
 
   return (
@@ -337,15 +441,86 @@ const Admin: React.FC = () => {
           <AgGridReact
         columnDefs={columnDefsPricing}
         rowData={pricingRowData}
-        groupDefaultExpanded={-1}  // Expand all groups by default
-        autoGroupColumnDef={{
-          headerName: "Group",
-          field: "serviceCategory",
-          cellRendererParams: {
-            suppressCount: true,  // Don't show the count of items in each group
-          },
-        }}
       />
+       <Dialog
+        open={isModalOpen}
+        onClose={handleClose}
+      >
+        <DialogTitle>Subscribe</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Update your selection here 
+          </DialogContentText>
+          <TextField
+        id="outlined-basic"
+        label="Category"
+        variant="outlined"
+        value={selectedData.Categories}
+        onChange={updatevalue}
+        name="Categories"  // Use the name attribute to specify which key to update
+      />
+      <TextField
+        id="outlined-basic"
+        label="Job Description"
+        variant="outlined"
+        value={selectedData["Job Description"]}
+        onChange={updatevalue}
+        name="Job Description"  // Use the name attribute to specify which key to update
+      />
+      <TextField
+        id="outlined-basic"
+        label="Numbers/Size"
+        variant="outlined"
+        value={selectedData["Numbers/Size"]}
+        onChange={updatevalue}
+        name="Numbers/Size"  // Use the name attribute to specify which key to update
+      />
+      <TextField
+        id="outlined-basic"
+        label="Price /Month (INR)"
+        variant="outlined"
+        value={selectedData["Price /Month (INR)"]}
+        onChange={updatevalue}
+        name="Price /Month (INR)"  // Use the name attribute to specify which key to update
+      />
+      <TextField
+        id="outlined-basic"
+        label="Remarks/Conditions"
+        variant="outlined"
+        value={selectedData["Remarks/Conditions"]}
+        onChange={updatevalue}
+        name="Remarks/Conditions"  // Use the name attribute to specify which key to update
+      />
+      <TextField
+        id="outlined-basic"
+        label="Service"
+        variant="outlined"
+        value={selectedData.Service}
+        onChange={updatevalue}
+        name="Service"  // Use the name attribute to specify which key to update
+      />
+      <TextField
+        id="outlined-basic"
+        label="Sub-Categories"
+        variant="outlined"
+        value={selectedData["Sub-Categories"]}
+        onChange={updatevalue}
+        name="Sub-Categories"  // Use the name attribute to specify which key to update
+      />
+      <TextField
+        id="outlined-basic"
+        label="Type"
+        variant="outlined"
+        value={selectedData.Type}
+        onChange={updatevalue}
+        name="Type"  // Use the name attribute to specify which key to update
+      />
+        </DialogContent>
+        <DialogActions>
+          <Button>Cancel</Button>
+          <Button type="submit">Save</Button>
+        </DialogActions>
+      </Dialog>
           </div>
         </div>
       )}
