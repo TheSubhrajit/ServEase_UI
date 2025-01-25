@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Header } from "./components/Header/Header";
@@ -16,6 +16,9 @@ import { ServiceProviderContext } from "./context/ServiceProviderContext";
 import AddToCart from "./components/add/AddToCart";
 import New from "./components/add/New";
 import AgentRegistrationForm from "./components/Registration/AgentRegistrationForm";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { add } from "./features/pricing/pricingSlice";
 
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); // State to manage selections
@@ -28,6 +31,8 @@ function App() {
   >(); // Fixed typo
   const [serviceProviderDetails , setServiceProvidersData ] = useState<string | undefined>();
   const selectedBookingTypeValue = {selectedBookingType, setSelectedBookingType};
+
+  const dispatch = useDispatch();
 
   // Function to handle child component communication
   const handleDataFromChild = (e: string) => {
@@ -54,6 +59,18 @@ function App() {
   const handleSelectedProvider = (e : any) =>{
     console.log(e)
     setServiceProvidersData(e);
+  }
+
+  useEffect(() =>{
+    getPricingData();
+  })
+
+  
+  const getPricingData = () =>{
+    axios.get('http://3.110.168.35:3000/records').then(function (response) {
+      dispatch(add(response.data))
+    }).catch(getPricingData)
+
   }
 
   // Render content based on different conditions
