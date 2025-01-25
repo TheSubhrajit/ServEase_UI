@@ -85,7 +85,7 @@ const UtilityCleaning: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
 
   return (
     <>
-      <Typography gutterBottom>
+      {/* <Typography gutterBottom>
         <FormControl>
           <FormLabel id="demo-row-radio-buttons-group-label">Service Type</FormLabel>
           <RadioGroup
@@ -99,7 +99,7 @@ const UtilityCleaning: React.FC<UtilityCleaningProps> = ({ onPriceChange }) => {
             <FormControlLabel value="On Demand" control={<Radio />} label="On Demand" />
           </RadioGroup>
         </FormControl>
-      </Typography>
+      </Typography> */}
 
       <Typography gutterBottom>
         Head Count:

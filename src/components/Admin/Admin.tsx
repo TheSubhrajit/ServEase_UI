@@ -14,6 +14,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+// import * as XLSX from 'xlsx';
 
 interface RowData {
   customerId: number;
@@ -272,14 +273,15 @@ const Admin: React.FC = () => {
     reader.onload = (evt) => {
       // Parse the Excel data using xlsx.utils
       const binaryStr = evt?.target?.result;
-      const wb = XLSX.read(binaryStr, { type: 'binary' });
+      // const wb = XLSX.read(binaryStr, { type: 'binary' });
 
       // Assuming we want the first sheet
-      const ws = wb.Sheets[wb.SheetNames[0]];
+      // const ws = wb.Sheets[wb.SheetNames[0]];
 
       // Convert the sheet to JSON (array of objects)
-      const jsonData : any = XLSX.utils.sheet_to_json(ws);
-      setData(jsonData);  // Set the JSON data to state
+      // const jsonData : any = XLSX.utils.sheet_to_json(ws);
+      // setData(jsonData);
+        // Set the JSON data to state
     };
 
     // Read the file as binary string
