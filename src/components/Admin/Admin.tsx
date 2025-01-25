@@ -14,6 +14,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { response } from 'express';
+
 // import * as XLSX from 'xlsx';
 
 interface RowData {
@@ -58,6 +62,7 @@ const Admin: React.FC = () => {
   const [selectedRowData, setSelectedRowData] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState({
+    '_id':'',
     'Categories': '',
     "Job Description": '',
     "Numbers/Size": '',
@@ -67,6 +72,8 @@ const Admin: React.FC = () => {
     "Sub-Categories": '',
     'Type': ''
   });
+  const [open, setOpen] = React.useState(false);
+  const [responseData ,  setResponseData] = useState<string>()
   // Handle radio button changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setViewSelected(e.target.value);
@@ -163,6 +170,13 @@ const Admin: React.FC = () => {
       ),
       
     },
+    {
+      headerName: 'Delete',
+      cellRenderer: (params) => (
+        <Button variant="outlined" onClick={() => deleteRow(params.data)}>Delete</Button>
+      ),
+      
+    },
   ];
 
   // const menuStyle = ;
@@ -196,12 +210,23 @@ const Admin: React.FC = () => {
   };
 
   const handleSave = () => {
-    if (selectedRowData) {
-      const updatedData = pricingRowData.map((row) =>
-        row['Service'] === selectedRowData['Service'] ? selectedRowData : row
-      );
-      setPricingRowData(updatedData); // Update the rowData with the edited row
-    }
+    const sanatizedData = removeInvalidFields(selectedData);
+   
+    axios.put('http://3.110.168.35:3000/records/' + selectedData._id, sanatizedData)
+      .then(function (response) {
+        setOpen(true)
+        setResponseData(response.data.message)
+        axios.get('http://3.110.168.35:3000/records')
+  .then(function (response) {
+    // handle success
+    setPricingData(response.data)
+  })
+      })
+      .catch(function (error) {
+        setOpen(true)
+        setResponseData("Failed to update , Please contact Ronit")
+      });
+    
     setIsModalOpen(false); // Close modal after save
   };
 
@@ -210,6 +235,11 @@ const Admin: React.FC = () => {
 
   }
 
+
+const removeInvalidFields = (data) => {
+    const { _id, "S.No.": SNo, ...rest } = data;
+    return rest; // Return the object without _id and s_id
+  };
   
   const columnDefsBooking : ColDef<any>[] = [
     { headerName: "Id", field: "id", sortable: true },
@@ -340,12 +370,29 @@ const Admin: React.FC = () => {
   };
 
   const editRow = (rowData: RowData) => {
-    console.log("Editing row:", rowData);
     setSelectedRowData(rowData); // Store selected row data in state
     setSelectedData(rowData)
     setIsModalOpen(true); // Open modal
     // Add your editing logic here (e.g., open a modal)
   };
+
+  const deleteRow = (rowData : RowData ) => {
+    console.log("Deleting data ", rowData)
+      axios.delete('http://3.110.168.35:3000/records/' + rowData._id)
+      .then(function (response) {
+        setOpen(true)
+        setResponseData(response.data.message)
+        axios.get('http://3.110.168.35:3000/records')
+  .then(function (response) {
+    // handle success
+    setPricingData(response.data)
+  })
+      })
+      .catch(function (error) {
+        setOpen(true)
+        setResponseData("Failed to update , Please contact Ronit")
+      });
+  }
 
   const approveRow = (rowData: RowData) => {
     console.log("Approving row:", rowData);
@@ -361,8 +408,8 @@ const Admin: React.FC = () => {
     setContextMenu(null);
   };
 
-  function handleClose(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void {
-    throw new Error('Function not implemented.');
+  const handleClose = () =>{
+  setOpen(false)
   }
 
   const updatevalue = (e) => {
@@ -519,10 +566,20 @@ const Admin: React.FC = () => {
       />
         </DialogContent>
         <DialogActions>
-          <Button>Cancel</Button>
-          <Button type="submit">Save</Button>
+          <Button >Cancel</Button>
+          <Button type="submit" onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {responseData}
+        </Alert>
+      </Snackbar>
           </div>
         </div>
       )}
@@ -569,3 +626,4 @@ const Admin: React.FC = () => {
 };
 
 export default Admin;
+
