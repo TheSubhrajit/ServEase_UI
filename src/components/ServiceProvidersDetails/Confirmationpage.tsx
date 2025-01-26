@@ -73,15 +73,13 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
    const [clickedIndex, setClickedIndex] = useState<number | null>(null);
    const pricing = useSelector((state : any) => state.pricing?.groupedServices)
   // Callback function to update the price in the parent component
-  const handlePriceChange = (data: { price: number; entry: PricingData | null }) => {
-  setData(data.entry)
-  setCalculatedPrice(data.price)
+  const handlePriceChange = (data) => {
+  // setData(data.entry)
+  // setCalculatedPrice(data.price)
+
+  console.log("Updated Data ===> ",data)
 
   };
-
-  useEffect(() =>{
-    console.log(pricing)
-  },[pricing])
 
   const handleProceedToCheckout = () => {
     sendDataToParent(CHECKOUT)
@@ -96,7 +94,8 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
     setSnackbarOpen(false);
   };
 
-  const handleSave = () => {
+  const handleSave = (data) => {
+    console.log("On Add to cart ===> ", data)
     if (data && calculatedPrice) {
       setSelectedItems((prevItems) => {
         const updatedItems = [...prevItems, { entry: data, price: calculatedPrice }];
@@ -207,7 +206,7 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
         <NannyPricing onPriceChange={handlePriceChange} onAddToCart={handleSave} />
        </Card>} 
        {role === "cook" && <Card style={{width:"100%" , display:"flex"}}>
-        <CookPricing onPriceChange={handlePriceChange} onAddToCart={handleSave}/>
+        <CookPricing sendToParent={sendDataToParent} onPriceChange={handlePriceChange} onAddToCart={handleSave} pricing={pricing['Cook']}/>
        </Card>} 
        
        {/* <Card style={{width:"40%"}}>
