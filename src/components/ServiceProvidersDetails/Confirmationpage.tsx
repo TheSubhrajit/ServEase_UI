@@ -28,7 +28,7 @@ import OtherUtilityServices from './OtherUtilityServices/OtherUtilityServices';
 import NannyPricing from './NannyService/NannyPricing/NannyPricing';
 import CookPricing from './CookService/CookPricing/CookPricing';
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { add } from '../../features/cart/cartSlice';
 import { CHECKOUT } from '../../Constants/pagesConstants';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -51,46 +51,6 @@ interface ChildComponentProps {
 
 const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , role , sendDataToParent }) => {
 
-  const mealData = [
-    { serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast', people: '1-2', price: 2000, description: 'Includes preparing of 5-8 chapatis, 1 vegetable. Sunday leave.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Lunch/Dinner', people: '1-2', price: 3000, description: 'Includes preparing of 5-8 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{serviceCategory: 'Cook', type:"cook", serviceType: 'Regular', mealType: 'Lunch + Dinner', people: '1-2', price: 5000, description: 'Includes preparing of 5-8 chapatis, 1 dry vegetable, 1 gravy, Rice (2x).' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast + Lunch', people: '1-2', price: 4000, description: 'Breakfast + lunch' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast + Dinner', people: '1-2', price: 4000, description: 'Breakfast + dinner' },
-{serviceCategory: 'Cook', type:"cook", serviceType: 'Regular', mealType: 'Breakfast + Lunch + Dinner', people: '1-2', price: 6000, description: 'Breakfast + lunch + dinner' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast', people: '3-5', price: 2000, description: 'Includes preparing of 8-12 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Lunch/Dinner', people: '3-5', price: 3500, description: 'Includes preparing of 8-12 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Lunch + Dinner', people: '3-5', price: 5500, description: 'Includes preparing of 8-12 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast + Lunch', people: '3-5', price: 4500, description: 'Includes preparing of 12-20 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast + Dinner', people: '3-5', price: 4500, description: 'Includes preparing of 12-20 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast + Lunch + Dinner', people: '3-5', price: 6500, description: 'Includes preparing of 12-20 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast', people: '6-9', price: 2500, description: 'Includes preparing of 12-20 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Lunch/Dinner', people: '6-9', price: 4000, description: 'Includes preparing of 12-20 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Lunch + Dinner', people: '6-9', price: 6000, description: 'Includes preparing of 12-20 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast + Lunch', people: '6-9', price: 5000, description: 'Includes preparing of 12-20 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast + Dinner', people: '6-9', price: 5000, description: 'Includes preparing of 12-20 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Regular', mealType: 'Breakfast + Lunch + Dinner', people: '6-9', price: 7000, description: 'Includes preparing of 12-20 chapatis, 1 dry vegetable, 1 gravy, Rice.' },
-
-// Premium services (1-2 years)
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Breakfast', people: '1-2', price: 2400, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Lunch/Dinner', people: '1-2', price: 3600, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Lunch + Dinner', people: '1-2', price: 6000, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Breakfast + Lunch', people: '1-2', price: 4800, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Breakfast + Dinner', people: '1-2', price: 4800, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Breakfast + Lunch + Dinner', people: '1-2', price: 7200, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Breakfast', people: '3-5', price: 2400, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Lunch/Dinner', people: '3-5', price: 4200, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Lunch + Dinner', people: '3-5', price: 6600, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Breakfast + Lunch', people: '3-5', price: 5400, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{serviceCategory: 'Cook', type:"cook", serviceType: 'Premium', mealType: 'Breakfast + Dinner', people: '3-5', price: 5400, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Breakfast + Lunch + Dinner', people: '3-5', price: 7800, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Breakfast', people: '6-9', price: 3000, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Lunch/Dinner', people: '6-9', price: 4800, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Lunch + Dinner', people: '6-9', price: 7200, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{serviceCategory: 'Cook', type:"cook", serviceType: 'Premium', mealType: 'Breakfast + Lunch', people: '6-9', price: 6000, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Breakfast + Dinner', people: '6-9', price: 6000, description: 'Regular + Well trained + experienced + company owned staffs.' },
-{ serviceCategory: 'Cook', type:"cook",serviceType: 'Premium', mealType: 'Breakfast + Lunch + Dinner', people: '6-9', price: 8400, description: 'Regular + Well trained + experienced + company owned staffs.' },
-  ];
   
   // const { selectedBookingType, setSelectedBookingType } = useContext(ServiceProviderContext);
   console.log("role ==> ", role)
@@ -111,10 +71,13 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
    const [clickedIndex, setClickedIndex] = useState<number | null>(null);
+   const pricing = useSelector((state : any) => state.pricing?.groupedServices)
   // Callback function to update the price in the parent component
-  const handlePriceChange = (data: { price: number; entry: PricingData | null }) => {
-  setData(data.entry)
-  setCalculatedPrice(data.price)
+  const handlePriceChange = (data) => {
+  // setData(data.entry)
+  // setCalculatedPrice(data.price)
+
+  console.log("Updated Data ===> ",data)
 
   };
 
@@ -131,7 +94,8 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
     setSnackbarOpen(false);
   };
 
-  const handleSave = () => {
+  const handleSave = (data) => {
+    console.log("On Add to cart ===> ", data)
     if (data && calculatedPrice) {
       setSelectedItems((prevItems) => {
         const updatedItems = [...prevItems, { entry: data, price: calculatedPrice }];
@@ -237,76 +201,21 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
        </div>}
        <div style={{display:'flex'}}> 
        {role === "maid" && <Card style={{width:"100%%" , display:"flex"}}>
-       <div style={{ display : "flex" , width :'100%' , marginTop:"20px"}}>
-
-       {/* {buttons.map((button) => (
-        <Tooltip title={button.text}>
-        <button
-          key={button.value}
-          onClick={() => handleButtonClick(button.value , 'category')}
-          style={{
-            border: selected === button.value ? '3px solid blue' : '1px solid gray', // Highlight selected button
-            backgroundColor: selected === button.value ? '#e0f7fa' : 'transparent', // Change background color of selected button
-            padding: '10px',
-            margin: '5px',
-            cursor: 'pointer',
-            outline: 'none',
-            borderRadius: '8px',
-          }}
-        >
-          
-          <img
-            src={button.imageSrc}
-            alt={`button-${button.value}`}
-            style={{
-              width: '100px',
-              height: '100px',
-              objectFit: 'cover',
-              opacity: selected === button.value ? 0.8 : 1, // Dim image when not selected
-            }}
-          />
-          
-        </button>
-        </Tooltip> 
-         ))} */}
-
-{/* <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} > Add to cart </Button> */}
-{/* <Button
-  variant="outlined"
-  style={{ float: "right", margin: "10px" }}
-  endIcon={<AddShoppingCartIcon />}
-  onClick={handleAddToCart}
->
-  Add to cart
-</Button> */}
-
-     </div>
  </Card>}
        {role === "nanny" && <Card style={{width:"100%" , display:"flex"}}>
         <NannyPricing onPriceChange={handlePriceChange} onAddToCart={handleSave} />
        </Card>} 
        {role === "cook" && <Card style={{width:"100%" , display:"flex"}}>
-        <CookPricing onPriceChange={handlePriceChange} onAddToCart={handleSave}/>
+        <CookPricing sendToParent={sendDataToParent} onPriceChange={handlePriceChange} onAddToCart={handleSave} pricing={pricing['Cook']}/>
        </Card>} 
        
        {/* <Card style={{width:"40%"}}>
           <SmallCart data={selectedItems} />
        </Card> */}
        </div>
-            
-              <Button
-  type="submit"
-  variant="outlined"
-  style={{ float: 'right', margin: '10px' }}
-  endIcon={<AddShoppingCartIcon />}
-  onClick={handleProceedToCheckout}
-  disabled={selectedItems.length === 0} // Disable the button if no items are selected
->
-  Proceed to checkout
-</Button>
           
     {role === "maid" && (
-  <Box className="container" sx={{ padding: 2, backgroundColor: "#f3f3f3", marginTop: 3 }}>
+  <Box className="container">
     <Card
             className="container-card"
             sx={{
@@ -392,7 +301,8 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
   <div
     style={{
       borderBottom: "2px solid #ddd", // Horizontal line below the tabs
-      marginTop: "-2px",             // Align with the tabs
+      marginTop: "-2px",
+      width:"100%"             // Align with the tabs
     }}
   />
   

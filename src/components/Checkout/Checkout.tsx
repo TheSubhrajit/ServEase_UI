@@ -57,7 +57,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   }, [cart , bookingType]);
 
   const handleRemoveItem = (index: number) => {
-    const updatedCheckout = checkout.filter((_, i) => i !== index);
+    const updatedCheckout = checkout['selecteditem']?.filter((_, i) => i !== index);
     setCheckout(updatedCheckout);
   };
 
@@ -100,7 +100,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
     }
   };
 
-  const grandTotal = checkout.reduce((sum, service) => sum + service.price, 0);
+  const grandTotal = checkout['selecteditem']?.reduce((sum, service) => sum + service['Price /Month (INR)'], 0);
 
   return (
     <Box sx={{
@@ -133,80 +133,80 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
 
       {/* Scrollable Content Section */}
       <Box sx={{
-        flexGrow: 1,
-        padding: "20px",
-        overflowY: "auto",
-        marginTop: "8%",  // Push the content below the header
-        marginBottom: "8%", // Space for footer
-        height: "84%",  // This section should take the remaining 84% of the height
-        display: 'flex',
-        flexDirection: "column",
-      }}>
-        {checkout.length === 0 ? (
-          <Typography variant="h6">No items selected</Typography>
-        ) : (
-          checkout.map((item, index) => (
-            <Box key={index} sx={{
-              width: "100%",
-              justifyContent: "center",
-              margin: "10px 0",
-            }}>
-              <Card sx={{
-                height: '100%',
-                width: "80%",
-                padding: "20px",
-                display: "flex",
-                flexDirection: "column",
-                borderRadius: "16px",
-                boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
-                transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                "&:hover": {
-                  transform: "scale(1.05)",
-                  boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.15)",
-                },
-              }}>
-                <Typography variant="h6" sx={{
-                  fontWeight: "600",
-                  fontSize: "1.2rem",
-                  color: "#333",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                  {item.entry.serviceCategory} 
-                  <Tooltip title="Remove this service">
-                    <IconButton sx={{ color: "#d32f2f" }} onClick={() => handleRemoveItem(index)}>
-                      <DeleteOutlineIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Typography>
-                <hr />
-                <Typography variant="body1"><strong>Type:</strong> {item.entry.type}</Typography>
-                <Typography variant="body1"><strong>Service Type:</strong> {item.entry.serviceType}</Typography>
-                <Typography variant="body1"><strong>Sub Category:</strong> {item.entry.subCategory}</Typography>
-                <Typography variant="body1"><strong>People Range:</strong> {item.entry.peopleRange}</Typography>
-                <Typography variant="body1"><strong>Frequency:</strong> {item.entry.frequency} times a week</Typography>
-                <Typography variant="body1"><strong>Price per Month:</strong> Rs.{item.entry.pricePerMonth}</Typography>
-                <Typography variant="body1" sx={{
-                  color: "#2e7d32",
-                  backgroundColor: "#e8f5e9",
-                  border: "1px solid #2e7d32",
-                  padding: "6px",
-                  borderRadius: "6px",
-                  textAlign: "center",
-                  fontWeight: "600",
-                  marginTop: "12px",
-                }}>
-                  Total Price: Rs. {item.price}
-                </Typography>
-              </Card>
-            </Box>
-          ))
-        )}
-      </Box>
+flexGrow: 1,
+padding: "20px",
+overflowY: "auto",
+marginTop: "8%", // Push the content below the header
+marginBottom: "8%", // Space for footer
+height: "84%", // This section should take the remaining 84% of the height
+display: 'flex',
+flexDirection: "column",
+}}>
+{checkout['selecteditem']?.length === 0 ? (
+<Typography variant="h6">No items selected</Typography>
+) : (
+  checkout['selecteditem']?.map((item, index) => (
+<Box key={index} sx={{
+width: "100%",
+justifyContent: "center",
+margin: "10px 0",
+}}>
+<Card sx={{
+height: '100%',
+width: "80%",
+padding: "20px",
+display: "flex",
+flexDirection: "column",
+borderRadius: "16px",
+boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
+transition: "transform 0.3s ease, box-shadow 0.3s ease",
+"&:hover": {
+transform: "scale(1.05)",
+boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.15)",
+},
+}}>
+<Typography variant="h6" sx={{
+fontWeight: "600",
+fontSize: "1.2rem",
+color: "#333",
+display: "flex",
+justifyContent: "space-between",
+alignItems: "center",
+}}>
+{item.Service}
+<Tooltip title="Remove this service">
+<IconButton sx={{ color: "#d32f2f" }} onClick={() => handleRemoveItem(index)}>
+<DeleteOutlineIcon />
+</IconButton>
+</Tooltip>
+</Typography>
+<hr />
+<Typography variant="body1"><strong>Type:</strong> {item.Type}</Typography>
+<Typography variant="body1"><strong>{item["Sub-Categories"]}</strong> {item['Numbers/Size']}</Typography>
+<Typography variant="body1"><strong>Fooding:</strong> {item.Categories}</Typography>
+{/* <Typography variant="body1"><strong>People Range:</strong> {item.entry.peopleRange}</Typography>
+<Typography variant="body1"><strong>Frequency:</strong> {item.entry.frequency} times a week</Typography>
+<Typography variant="body1"><strong>Price per Month:</strong> Rs.{item.entry.pricePerMonth}</Typography> */}
+<Typography variant="body1" sx={{
+color: "#2e7d32",
+backgroundColor: "#e8f5e9",
+border: "1px solid #2e7d32",
+padding: "6px",
+borderRadius: "6px",
+textAlign: "center",
+fontWeight: "600",
+marginTop: "12px",
+}}>
+Total Price: Rs. {item['Price /Month (INR)']}
+</Typography>
+</Card>
+</Box>
+))
+)}
+</Box>
 
       {/* Fixed Footer */}
-      {checkout.length > 0 && (
+      {checkout['selecteditem']?.length > 0 && (
         <Box sx={{
           position: "fixed",
           bottom: 0,
