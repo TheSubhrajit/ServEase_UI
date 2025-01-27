@@ -20,6 +20,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { add } from "./features/pricing/pricingSlice";
 
+
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); // State to manage selections
   const [handleDropDownValue, setDropDownValue] = useState<
@@ -121,14 +122,15 @@ function App() {
       <div className="header-class">
         <Header sendDataToParent={handleDataFromChild} />
       </div>
-{/* 
-      <AddToCart/> */}
+     
+     {/* <Checkout /> */}
+      {/* <AgentRegistrationForm /> */}
+      {/* <AddToCart/>  */}
       {/* <New/> */}
       <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
         {renderContent()}
       </section>
-      {/* <Checkout /> */}
-      {/* <AgentRegistrationForm /> */}
+ 
       <footer className="footer-container">
         <Footer />
       </footer> 
