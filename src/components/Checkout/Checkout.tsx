@@ -6,6 +6,7 @@ import { Bookingtype } from "../../types/bookingTypeData";
 import axiosInstance from "../../services/axiosInstance";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import axios from "axios";
 
 // Define the structure of each item in selectedItems
 interface Item {
@@ -66,37 +67,87 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   };
 
   const handleCheckout = async () => {
-    bookingDetails.serviceProviderId = providerDetails.serviceproviderId;
-    bookingDetails.customerId = customerId;
-    bookingDetails.startDate = bookingTypeFromSelection?.startDate;
-    bookingDetails.endDate = bookingTypeFromSelection?.endDate;
-    bookingDetails.engagements = checkout[0].entry.type;
-    bookingDetails.paymentMode = "CASH";
-    bookingDetails.bookingType = bookingType.bookingPreference;
-    bookingDetails.serviceeType = checkout[0].entry.type;
-    bookingDetails.timeslot = `${bookingType.morningSelection}:00, ${bookingType.eveningSelection}:00`; 
+    // bookingDetails.serviceProviderId = providerDetails.serviceproviderId;
+    // bookingDetails.customerId = customerId;
+    // bookingDetails.startDate = bookingTypeFromSelection?.startDate;
+    // bookingDetails.endDate = bookingTypeFromSelection?.endDate;
+    // bookingDetails.engagements = checkout[0].entry.type;
+    // bookingDetails.paymentMode = "CASH";
+    // bookingDetails.bookingType = bookingType.bookingPreference;
+    // bookingDetails.serviceeType = checkout[0].entry.type;
+    // bookingDetails.timeslot = `${bookingType.morningSelection}:00, ${bookingType.eveningSelection}:00`; 
 
-    let calculatedAmount = 0;
-    checkout.forEach(i => {
-      bookingDetails.responsibilities?.push(i.entry);
-      calculatedAmount = calculatedAmount + i.price;
-    });
-    bookingDetails.monthlyAmount = calculatedAmount;
+    // let calculatedAmount = 0;
+    // checkout.forEach(i => {
+    //   bookingDetails.responsibilities?.push(i.entry);
+    //   calculatedAmount = calculatedAmount + i.price;
+    // });
+    // bookingDetails.monthlyAmount = calculatedAmount;
 
-    const response = await axiosInstance.post(
-      "/api/serviceproviders/engagement/add",
-      bookingDetails,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+    // const response = await axiosInstance.post(
+    //   "/api/serviceproviders/engagement/add",
+    //   bookingDetails,
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // );
+
+    // if(response.status === 201){
+    //     setSnackbarMessage(response.data || "Booking successful!");
+    //     setSnackbarSeverity("success");
+    //     setOpenSnackbar(true);
+    // }
+
+    try {
+      const response = await axios.post(
+        "http://3.110.168.35:3000/create-order",
+        { amount:  grandTotal }, // Amount in paise
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        const { id: orderId, currency, amount } = response.data;
+  
+        // Razorpay options
+        const options = {
+          key: "rzp_test_lTdgjtSRlEwreA", // Replace with your Razorpay key
+          amount: amount,
+          currency: currency,
+          name: "Serveaso",
+          description: "Booking Payment",
+          order_id: orderId,
+          handler: function (razorpayResponse: any) {
+            alert(`Payment successful! Payment ID: ${razorpayResponse.razorpay_payment_id}`);
+            setSnackbarMessage("Payment successful! Booking confirmed.");
+            setSnackbarSeverity("success");
+            setOpenSnackbar(true);
+  
+            // You can call a backend API to confirm the booking here
+          },
+          prefill: {
+            name: user?.name || "John Doe",
+            email: user?.email || "johndoe@example.com",
+            contact: user?.phone || "9999999999",
+          },
+          theme: {
+            color: "#3399cc",
+          },
+        };
+  
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
       }
-    );
-
-    if(response.status === 201){
-        setSnackbarMessage(response.data || "Booking successful!");
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
+    } catch (error) {
+      console.error("Error while creating Razorpay order:", error);
+      setSnackbarMessage("Failed to initiate payment. Please try again.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
     }
   };
 
