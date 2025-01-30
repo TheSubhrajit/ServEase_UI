@@ -217,14 +217,22 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
                 }}
               > 
            
-            {selectedCategory && selectedCategory[1][0]['Sub-Categories'] === 'People' && 
-                <><strong>Person</strong><TextField
-                                                    type="number"
-                                                    value={numberOfPersons}
-                                                    onChange={(e) => handleNumberOfPersons(e.target.value)}
-                                                    placeholder="Enter number of persons"
-                                                    variant="outlined"
-                                                    className="input-field" /></>}     
+           {selectedCategory && 
+    (selectedCategory[1][0]['Sub-Categories'] === 'People' || 
+     selectedCategory[1][0]['Sub-Categories'] === "House") && (
+    <>
+        <strong>{selectedCategory[1][0]['Sub-Categories']}</strong>
+        <TextField
+            type="number"
+            value={numberOfPersons}
+            onChange={(e) => handleNumberOfPersons(e.target.value)}
+            placeholder={`Enter number of ${selectedCategory[1][0]['Sub-Categories']}`}
+            variant="outlined"
+            className="input-field"
+        />
+    </>
+)}
+   
             
     
                  
