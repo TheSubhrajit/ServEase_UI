@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux"; // Import useSelector
 import { add } from "./features/pricing/pricingSlice";
 import ServiceProviderDashboard from "./components/DetailsView/ServiceProviderDashboard";
 
-import { RootState } from './store/userStore'; // Import RootState to correctly type the store
+import { RootState } from './store/userStore'; 
 
 function App() {
   const [selection, setSelection] = useState<string | undefined>(); 
