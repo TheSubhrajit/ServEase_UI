@@ -1,9 +1,10 @@
-import { Alert, Box, Button, Card, Grid, Snackbar, Tab, Tabs, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, Checkbox, FormControlLabel, FormGroup, Grid, List, ListItem, Snackbar, Tab, Tabs, TextField, Tooltip, Typography } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CategoryIcon from '@mui/icons-material/Category';
 import PaymentIcon from "@mui/icons-material/Payment";
 import { useEffect, useState } from "react";
-import { getPriceByvalue } from "../../../customServices/PricingService";
+import { getPriceByNumber, getPriceByvalue } from "../../../customServices/PricingService";
+import { motion } from "framer-motion";
 
 interface CookPricingProps {
     onPriceChange: (priceData: { price: number, selecteditem: any }) => void; 
@@ -21,6 +22,7 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
     const [selectedCategory , setSelectedcategory ] = useState<any>();
     const [numberOfPersons ,  setNumberOfPersons] = useState<string>();
     const [ Price , setPrice ] = useState<number | undefined>(0);
+    const [isExpanded, setIsExpanded] = useState(false);
     const groupedServices = pricing.reduce((acc, item) => {
         const groupKey = item.Type === "Regular Add-on" ? "Regular Add-on" : item.Categories;
         if (!acc[groupKey]) {
@@ -48,18 +50,32 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
         console.log("Value => ", value ) 
             console.log("arg1" , arg1  )
             setSelectedcategory(value)
+            console.log(selectedCategory)
         
     }
 
     function handleNumberOfPersons(value: string): void {
         setNumberOfPersons(value);
-        setPrice(getPriceByvalue(selectedCategory[1][0], value))
+        if(selectedCategory[1][0]['Sub-Categories'] !== 'Number'){
+            setPrice(getPriceByvalue(selectedCategory[1][0], value))
+        } else {
+            setPrice(getPriceByNumber(selectedCategory[1][0], value))
+        }
+        
     }
 
 
     useEffect(() =>{
         console.log("number of person " , numberOfPersons)
     },[numberOfPersons])
+
+    function handleCheck(data): void {
+        console.log(data)
+    }
+
+    function getLabel(button: [string, any]) {
+        return button[1]['Categories']
+    }
 
     return (
         <>
@@ -217,9 +233,10 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
                 }}
               > 
            
-           {selectedCategory && 
+           {selectedCategory && selectedCategory[0] !== "Regular Add-on" &&
     (selectedCategory[1][0]['Sub-Categories'] === 'People' || 
-     selectedCategory[1][0]['Sub-Categories'] === "House") && (
+     selectedCategory[1][0]['Sub-Categories'] === "House" || 
+     selectedCategory[1][0]['Sub-Categories'] === "Number") && (
     <>
         <strong>{selectedCategory[1][0]['Sub-Categories']}</strong>
         <TextField
@@ -232,6 +249,28 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
         />
     </>
 )}
+
+{selectedCategory && selectedCategory[0] === "Regular Add-on" && (
+    Object.entries(selectedCategory[1]).map((button, index) => (
+         <div style={{display:'flex'}}>          
+        <FormGroup>
+        <FormControlLabel control={<Checkbox  />} label={getLabel(button)} onChange={() => handleCheck(button)}/>
+      </FormGroup>
+
+      <TextField
+            type="number"
+            value={numberOfPersons}
+            onChange={(e) => handleNumberOfPersons(e.target.value)}
+            placeholder={`Enter number of ${getLabel(button)}`}
+            variant="outlined"
+            className="input-field"
+        />
+      </div>
+      
+    ))
+
+)
+}
    
             
     

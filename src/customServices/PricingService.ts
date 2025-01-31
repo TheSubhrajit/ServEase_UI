@@ -50,3 +50,28 @@ export const getPriceByvalue = ( data , pax ) =>{
     }
 
 }
+
+export const getPriceByNumber = (data , pax) =>{
+    const paxToNumber = Number(pax);
+    const rate = Number(data["Price /Month (INR)"])
+    let increasedPrice = 0;
+    if(pax){
+ 
+    if (paxToNumber <= 1) 
+        {
+        return rate;
+      } else {
+        const basePrice = rate;
+        const extraPeople = paxToNumber - 1;
+        increasedPrice = Number(basePrice) + ( basePrice * 0.5 * extraPeople);
+        console.log("base price => ", basePrice)
+        console.log("extraPeople => ", extraPeople)
+        console.log("increased price => ", increasedPrice)
+        return increasedPrice;
+      } 
+    } 
+    else {
+        return increasedPrice;
+    }
+
+}
