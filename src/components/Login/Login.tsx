@@ -84,9 +84,15 @@ export const Login: React.FC<ChildComponentProps> = ({
         password: password,
       });
 
+       // Log the full response data to the console
+    console.log("Response Data:", response.data);
+   
       // Check if the response is successful
       if (response.status === 200 && response.data) {
-        const { message, role } = response.data;
+        const { message, role,customerDetails } = response.data;
+        const firstName = customerDetails?.firstName || "Unknown";
+       
+        console.log("First Name:", firstName);
         dispatch(add(response.data));
 
         // Display success message
