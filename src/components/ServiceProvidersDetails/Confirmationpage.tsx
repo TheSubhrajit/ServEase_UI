@@ -157,7 +157,7 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
        </div>}
        <div style={{display:'flex'}}> 
        {role === "nanny" && <Card style={{width:"100%" , display:"flex"}}>
-        <NannyPricing onPriceChange={handlePriceChange} onAddToCart={handleSave} pricing={pricing['Nanny']}/>
+        <NannyPricing sendToParent={sendDataToParent} onPriceChange={handlePriceChange} onAddToCart={handleSave} pricing={pricing['Nanny']}/>
        </Card>} 
        {role === "cook" && <Card style={{width:"100%" , display:"flex"}}>
         <CookPricing sendToParent={sendDataToParent} onPriceChange={handlePriceChange} onAddToCart={handleSave} pricing={pricing['Cook']}/>
