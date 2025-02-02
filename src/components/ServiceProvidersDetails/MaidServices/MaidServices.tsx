@@ -1,10 +1,9 @@
-import { Alert, Box, Button, Card, Checkbox, FormControlLabel, FormGroup, Grid, List, ListItem, Snackbar, Tab, Tabs, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, Checkbox, FormControlLabel, FormGroup, Grid,  Snackbar, Tab, Tabs, TextField, Tooltip, Typography } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CategoryIcon from '@mui/icons-material/Category';
 import PaymentIcon from "@mui/icons-material/Payment";
 import { useEffect, useState } from "react";
 import { getPriceByNumber, getPriceByvalue } from "../../../customServices/PricingService";
-import { motion } from "framer-motion";
 
 interface CookPricingProps {
     onPriceChange: (priceData: { price: number, selecteditem: any }) => void; 

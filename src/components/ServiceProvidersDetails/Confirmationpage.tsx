@@ -73,6 +73,7 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
    const [clickedIndex, setClickedIndex] = useState<number | null>(null);
    const pricing = useSelector((state : any) => state.pricing?.groupedServices)
+   console.log("Pricng 123 ====> ", pricing)
   // Callback function to update the price in the parent component
   const handlePriceChange = (data) => {
   // setData(data.entry)
@@ -118,40 +119,6 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
   const [selected, setSelected] = useState(null);
   // const [peopleSelected, setpeopleSelected] = useState(null);
 
-  // Handle button click
-  const handleButtonClick = (value , type) => {
-    console.log("value ", value)
-    console.log("type ", type)
-    if(type === "category"){
-      setSelected(value);
-      setOpen(true);
-    }
-    else if(type === "people"){
-      // setpeopleSelected(value);
-    }
-    
-  };
-
-  const buttons = [
-    { value: 'utilityCleaning', imageSrc: "/Dishes.png", text: "Utensil cleaning" },
-    { value: 'sweepMoping', imageSrc: "/new.png", text: "Sweeping and mopping" },
-    { value: 'washroomCleaning', imageSrc: "/wash.png", text: "Washroom cleaning" },
-    { value: 'clothdrying', imageSrc: "/laundrynew.png", text: "Cloth drying" },
-    { value: 'dusting', imageSrc: "/newdust.png", text: "Dusting" },
-  ];
-
-  // const peopleButtonsSelector = [
-  //   { key: 1 , value : '1-2'  },
-  //   { key: 2, value: '3-4' },
-  //   { key: 3, value: '5-6' },
-  //   { key: 4, value: '7-9' }
-  // ];
-
-
-  function getModelTitle(): any {
-    const ModelText = buttons.find(button => button.value === selected)
-    return ModelText?.text;
-  }
   const calculateAge = (dob) => {
     if (!dob) return ""; // Handle cases where dob is not provided
     const age = moment().diff(moment(dob), 'years'); // Get the age in years
@@ -163,19 +130,7 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
       lunch: false,
       dinner: false,
     });
-    const [serviceType, setServiceType] = useState("Regular");
   
-    const handleServiceType = (event: React.SyntheticEvent, newValue: string) => {
-      setServiceType(newValue);
-    };
-  
-    const handleMealChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, checked } = event.target;
-      setSelectedMeals((prev) => ({
-        ...prev,
-        [name]: checked,
-      }));
-    };
     
   return (
     <div className="details-container">
@@ -201,10 +156,8 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
        </Card>
        </div>}
        <div style={{display:'flex'}}> 
-       {/* {role === "maid" && <Card style={{width:"100%%" , display:"flex"}}>
- </Card>} */}
        {role === "nanny" && <Card style={{width:"100%" , display:"flex"}}>
-        <NannyPricing onPriceChange={handlePriceChange} onAddToCart={handleSave} />
+        <NannyPricing onPriceChange={handlePriceChange} onAddToCart={handleSave} pricing={pricing['Nanny']}/>
        </Card>} 
        {role === "cook" && <Card style={{width:"100%" , display:"flex"}}>
         <CookPricing sendToParent={sendDataToParent} onPriceChange={handlePriceChange} onAddToCart={handleSave} pricing={pricing['Cook']}/>
@@ -212,28 +165,7 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
        {role === "maid" && <Card style={{width:"100%" , display:"flex"}}>
         <MaidServices sendToParent={sendDataToParent} onPriceChange={handlePriceChange} onAddToCart={handleSave} pricing={pricing['Maid']}/>
        </Card>} 
-       
-       {/* <Card style={{width:"40%"}}>
-          <SmallCart data={selectedItems} />
-       </Card> */}
        </div>
-          
-       {/* sendToParent={sendDataToParent} onPriceChange={handlePriceChange} onAddToCart={handleSave} pricing={pricing['Cook']} */}
-
-       {/* <Button type="submit" variant="outlined" style={{float :'right', margin:'10px'}} endIcon={<AddShoppingCartIcon  />} onClick={handleProceedToCheckout}> Proceed to checkout </Button> */}
-       {/* <Button
-  type="submit"
-  variant="outlined"
-  style={{ float: 'right', margin: '10px' }}
-  endIcon={<AddShoppingCartIcon />}
-  onClick={handleProceedToCheckout}
-  disabled={selectedItems.length === 0} // Disable the button if no items are selected
->
-  Proceed to checkout
-</Button> */}
-
-
-
   </div>  
   );
 };
