@@ -27,7 +27,7 @@ interface ChildComponentProps {
 }
 
 const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
-  const [checkout, setCheckout] = useState<Item[]>([]);
+  const [checkout, setCheckout] = useState<any>([]);
   const [bookingTypeFromSelection , setBookingTypeFromSelection] = useState<Bookingtype>();
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
@@ -67,38 +67,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   };
 
   const handleCheckout = async () => {
-    // bookingDetails.serviceProviderId = providerDetails.serviceproviderId;
-    // bookingDetails.customerId = customerId;
-    // bookingDetails.startDate = bookingTypeFromSelection?.startDate;
-    // bookingDetails.endDate = bookingTypeFromSelection?.endDate;
-    // bookingDetails.engagements = checkout[0].entry.type;
-    // bookingDetails.paymentMode = "CASH";
-    // bookingDetails.bookingType = bookingType.bookingPreference;
-    // bookingDetails.serviceeType = checkout[0].entry.type;
-    // bookingDetails.timeslot = `${bookingType.morningSelection}:00, ${bookingType.eveningSelection}:00`; 
-
-    // let calculatedAmount = 0;
-    // checkout.forEach(i => {
-    //   bookingDetails.responsibilities?.push(i.entry);
-    //   calculatedAmount = calculatedAmount + i.price;
-    // });
-    // bookingDetails.monthlyAmount = calculatedAmount;
-
-    // const response = await axiosInstance.post(
-    //   "/api/serviceproviders/engagement/add",
-    //   bookingDetails,
-    //   {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   }
-    // );
-
-    // if(response.status === 201){
-    //     setSnackbarMessage(response.data || "Booking successful!");
-    //     setSnackbarSeverity("success");
-    //     setOpenSnackbar(true);
-    // }
+    
 
     try {
       const response = await axios.post(
@@ -122,11 +91,40 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
           name: "Serveaso",
           description: "Booking Payment",
           order_id: orderId,
-          handler: function (razorpayResponse: any) {
+          handler: async function (razorpayResponse: any) {
             alert(`Payment successful! Payment ID: ${razorpayResponse.razorpay_payment_id}`);
-            setSnackbarMessage("Payment successful! Booking confirmed.");
-            setSnackbarSeverity("success");
-            setOpenSnackbar(true);
+            // setSnackbarMessage("Payment successful! Booking confirmed.");
+            // setSnackbarSeverity("success");
+            // setOpenSnackbar(true);
+            console.log("checkout => ",checkout)
+            bookingDetails.serviceProviderId = providerDetails.serviceproviderId;
+    bookingDetails.customerId = customerId;
+    bookingDetails.startDate = bookingTypeFromSelection?.startDate;
+    bookingDetails.endDate = bookingTypeFromSelection?.endDate;
+    bookingDetails.engagements = checkout.selecteditem[0].Service;
+    bookingDetails.paymentMode = "CASH";
+    bookingDetails.bookingType = bookingType.bookingPreference;
+    bookingDetails.serviceeType = checkout.selecteditem[0].Service;
+    bookingDetails.timeslot = `${bookingType.morningSelection}:00, ${bookingType.eveningSelection}:00`; 
+
+    
+    bookingDetails.monthlyAmount = checkout.price;
+
+    const response = await axiosInstance.post(
+      "/api/serviceproviders/engagement/add",
+      bookingDetails,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if(response.status === 201){
+        setSnackbarMessage(response.data || "Booking successful!");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+    }
   
             // You can call a backend API to confirm the booking here
           },
