@@ -89,11 +89,10 @@ const ProviderDetails = (props) => {
       }
     }, [user]);
 
+
     const handleBookingPage = (e : string | undefined) =>{
       setOpen(false)
     }
-
-
 
   return (
     <><Paper elevation={3}>

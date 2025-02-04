@@ -8,7 +8,6 @@ import EditProvider from "./EditProvider";
 
 const ServiceProviderDashboard:React.FC = (data) => {
   // const navigate = useNavigate();
-
   const [serviceProvider, setServiceProvider] = useState({
     firstName: "",
     lastName: "",
