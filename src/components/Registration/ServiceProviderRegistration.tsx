@@ -68,6 +68,8 @@ interface FormData {
   dob:'';
   profilePic:string;
   timeSlot: string,
+  referralCode:'',
+  
 }
 // Define the shape of errors to hold string messages
 interface FormErrors {
@@ -175,6 +177,7 @@ const ServiceProviderRegistration: React.FC<RegistrationProps> = ({ onBackToLogi
     dob:'',
     profilePic:'',
     timeSlot: '6.00-20.00',
+    referralCode:'',
     });
 
     // Function to fetch location data and autofill the form
@@ -1186,6 +1189,15 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
         onChange={handleChange}
         error={!!errors.experience}
         helperText={errors.experience || "Years in business or relevant experience"}
+      />
+    </Grid>
+             <Grid item xs={12}>
+      <TextField
+        placeholder="Referral Code (Optional)"
+        name="referralCode"
+        fullWidth
+        value={formData.referralCode || ""}
+        onChange={handleChange}
       />
     </Grid>
     <Grid item xs={12}>

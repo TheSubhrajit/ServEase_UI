@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Registration from "../Registration/Registration";
+import AgentRegistrationForm from "../Registration/AgentRegistrationForm";
 import ServiceProviderRegistration from "../Registration/ServiceProviderRegistration";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
@@ -30,6 +31,7 @@ export const Login: React.FC<ChildComponentProps> = ({
   const [isRegistration, setIsRegistration] = useState(false);
   const [isServiceRegistration, setServiceRegistration] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isAgentRegistration, setAgentRegistration] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -54,7 +56,10 @@ export const Login: React.FC<ChildComponentProps> = ({
   const handleSignUpClickServiceProvider = () => {
     setServiceRegistration(true);
   };
-
+  const handleSignUpClickAgent = () => {
+    setAgentRegistration(true);
+  };
+  
   const handleForgotPasswordClick = () => {
     setIsForgotPassword(true);
   };
@@ -79,9 +84,15 @@ export const Login: React.FC<ChildComponentProps> = ({
         password: password,
       });
 
+       // Log the full response data to the console
+    console.log("Response Data:", response.data);
+   
       // Check if the response is successful
       if (response.status === 200 && response.data) {
-        const { message, role } = response.data;
+        const { message, role,customerDetails } = response.data;
+        const firstName = customerDetails?.firstName || "Unknown";
+       
+        console.log("First Name:", firstName);
         dispatch(add(response.data));
 
         // Display success message
@@ -147,11 +158,13 @@ export const Login: React.FC<ChildComponentProps> = ({
       <div className="w-full max-w-lg">
         <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-[26px] m-0">
           <div className="border-transparent rounded-[20px] dark:bg-gray-900 bg-white shadow-lg xl:p-10 2xl:p-10 lg:p-8 md:p-6 sm:p-4 p-2 m-0">
-            {isRegistration ? (
-              <Registration onBackToLogin={handleBackToLogin} />
-            ) : isServiceRegistration ? (
-              <ServiceProviderRegistration onBackToLogin={handleBackToLogin} />
-            ) : (
+            {  isRegistration ? (
+    <Registration onBackToLogin={handleBackToLogin} />
+  ) : isServiceRegistration ? (
+    <ServiceProviderRegistration onBackToLogin={handleBackToLogin} />
+  ) : isAgentRegistration ? (
+    <AgentRegistrationForm onBackToLogin={handleBackToLogin} />
+  ) : (
               <>
                 <h1 className="font-bold dark:text-gray-400 text-4xl text-center cursor-default my-0">
                   Log in
@@ -232,6 +245,13 @@ export const Login: React.FC<ChildComponentProps> = ({
                   >
                     Sign Up As Service Provider
                   </button>
+                  <button
+                  onClick={handleSignUpClickAgent}
+                  className="text-blue-400 ml-2 underline"
+                  >
+                  Sign Up As Agent
+                  </button>
+
                 </div>
               </>
             )}
