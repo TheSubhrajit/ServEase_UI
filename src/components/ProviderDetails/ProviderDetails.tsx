@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import "./ProviderDetails.css"; 
@@ -36,8 +36,8 @@ const [isExpanded, setIsExpanded] = useState(false);
 // Handle selection for morning or evening availability
 const handleSelection = (hour: number, isEvening: boolean, time: number) => {
   // Format the start and end times in HH:mm format (without seconds)
-  const startTime = moment({ hour: time }).format("HH:mm"); // "06:00"
-  const endTime = moment({ hour: time + 1 }).format("HH:mm"); // "07:00"
+  const startTime = moment({ hour: time, minute: 0 }).format("HH:mm");
+  const endTime = moment({ hour: time + 1, minute: 0 }).format("HH:mm");
 
   const formattedTime = `${startTime}-${endTime}`;
   console.log(`Start Time: ${startTime}, End Time: ${endTime}`); // Should show "06:00-07:00"
@@ -58,11 +58,41 @@ const handleSelection = (hour: number, isEvening: boolean, time: number) => {
   console.log("Payload being sent:", payload); // Check if this logs the correct format without seconds
 };
 
+const [missingSlots, setMissingSlots] = useState<string[]>([]);
+const hasCheckedRef = useRef(false); // Track if the function has been called
 
+// Call this function to check missing time slots
+const checkMissingTimeSlots = () => {
+  console.log("Service Provider Data: ", props.availableTimeSlots);
 
+  const expectedTimeSlots = [
+    "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
+    "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"
+  ];
+
+  // Get missing time slots
+  const missing = expectedTimeSlots.filter(slot => !props.availableTimeSlots.includes(slot));
+
+  // Set the missing slots to state
+  setMissingSlots(missing);
+
+  // Log the missing time slots
+  if (missing.length > 0) {
+    console.log("Missing time slots:", missing);
+  } else {
+    console.log("All expected time slots are available.");
+  }
+};
+
+// Run this function only once on initial render
+if (!hasCheckedRef.current) {
+  checkMissingTimeSlots(); // Call checkMissingTimeSlots on initial render
+  hasCheckedRef.current = true; // Set the ref to true to prevent re-runs
+}
   // Toggle expanded content
 const toggleExpand = async () => {
   setIsExpanded(!isExpanded);
+  
   // const serviceProviderId = 2;
   if (!isExpanded) {
     try {
@@ -312,7 +342,36 @@ const toggleExpand = async () => {
     </div>
   </div>
 </div>
-
+<div>
+      {/* Display Missing Time Slots */}
+      {missingSlots.length > 0 ? (
+        <div className="missing-time-slots-section">
+          <h3>Missing Time Slots:</h3>
+          <div className="missing-time-buttons">
+            {missingSlots.map((slot, index) => (
+              <button
+                key={index}
+                className="missing-time-slot-button"
+                style={{
+                  backgroundColor: '#f44336', // Red color for missing slots
+                  color: 'white',
+                  padding: '10px 20px',
+                  margin: '5px',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'not-allowed',
+                }}
+                disabled
+              >
+                {slot}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p>All expected time slots are available.</p>
+      )}
+    </div>
 
 
 {/* <div className="missing-time-slots">
