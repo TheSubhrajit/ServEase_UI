@@ -33,23 +33,32 @@ const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch();
   const bookingType = useSelector((state : any) => state.bookingType?.value)
 
-  // Handle selection for morning or evening availability
-  const handleSelection = (hour: number, isEvening: boolean, time: number) => {
-    // Format the time without seconds, only hour and minute (e.g., "07:00")
-    const startTime = moment({ hour: time }).format("HH:mm");
-    const endTime = moment({ hour: time + 1 }).format("HH:mm");
-  
-    const formattedTime = `${startTime}-${endTime}`;
-    console.log(`Start Time: ${startTime}, End Time: ${endTime}`);
-    if (isEvening) {
-      setEveningSelection(hour);
-      setEveningSelectionTime(formattedTime); // e.g., "07:00-08:00"
-    } else {
-      setMorningSelection(hour);
-      setMorningSelectionTime(formattedTime); // e.g., "07:00-08:00"
-    }
+// Handle selection for morning or evening availability
+const handleSelection = (hour: number, isEvening: boolean, time: number) => {
+  // Format the start and end times in HH:mm format (without seconds)
+  const startTime = moment({ hour: time }).format("HH:mm"); // "06:00"
+  const endTime = moment({ hour: time + 1 }).format("HH:mm"); // "07:00"
+
+  const formattedTime = `${startTime}-${endTime}`;
+  console.log(`Start Time: ${startTime}, End Time: ${endTime}`); // Should show "06:00-07:00"
+
+  // For morning or evening availability selection
+  if (isEvening) {
+    setEveningSelection(hour);
+    setEveningSelectionTime(formattedTime); // Store "06:00-07:00"
+  } else {
+    setMorningSelection(hour);
+    setMorningSelectionTime(formattedTime); // Store "06:00-07:00"
+  }
+
+  // Ensure you are sending the formatted data to the payload correctly.
+  const payload = {
+    timeslot: `${startTime}-${endTime}`, // Make sure the payload uses the correctly formatted time
   };
-  
+  console.log("Payload being sent:", payload); // Check if this logs the correct format without seconds
+};
+
+
 
   // Toggle expanded content
 const toggleExpand = async () => {
@@ -239,11 +248,12 @@ const toggleExpand = async () => {
     {/* Morning Availability Buttons */}
     <div className="time-slot-container">
       {[6, 7, 8, 9, 10, 11].map((hour, index) => {
-        const timeRange = `${hour}:00-${hour + 1}:00`; // Format time as "6:00-7:00"
-        
-        // Ensure missing time slots and button time are in the same format (both "6:00")
+        const startTime = moment({ hour: hour }).format("HH:mm");
+        const endTime = moment({ hour: hour + 1 }).format("HH:mm");
+        const timeRange = `${startTime}-${endTime}`;
+
         const isDisabled = missingTimeSlots.some(
-          (missingSlot) => missingSlot === `${hour.toString().padStart(2, '0')}:00`
+          (missingSlot) => missingSlot === startTime
         );
 
         return (
@@ -253,12 +263,12 @@ const toggleExpand = async () => {
               onClick={() => handleSelection(index, false, hour)}
               disabled={isDisabled}
               style={{
-                backgroundColor: isDisabled ? '#bdbdbd' : '', // Disabled color
-                cursor: isDisabled ? 'not-allowed' : 'pointer', // Disable pointer when disabled
-                opacity: isDisabled ? 0.6 : 1, // Lower opacity when disabled
+                backgroundColor: isDisabled ? '#bdbdbd' : '',
+                cursor: isDisabled ? 'not-allowed' : 'pointer',
+                opacity: isDisabled ? 0.6 : 1,
               }}
             >
-              {timeRange} {/* Display time slot in range format */}
+              {timeRange}
             </button>
           </div>
         );
@@ -274,9 +284,12 @@ const toggleExpand = async () => {
     {/* Evening Availability Buttons */}
     <div className="time-slot-container">
       {[12, 13, 14, 15, 16, 17, 18, 19].map((hour, index) => {
-        // Ensure missing time slots and button time are in the same format (both "12:00")
+        const startTime = moment({ hour: hour }).format("HH:mm");
+        const endTime = moment({ hour: hour + 1 }).format("HH:mm");
+        const timeRange = `${startTime}-${endTime}`;
+
         const isDisabled = missingTimeSlots.some(
-          (missingSlot) => missingSlot === `${hour.toString().padStart(2, '0')}:00`
+          (missingSlot) => missingSlot === startTime
         );
 
         return (
@@ -286,12 +299,12 @@ const toggleExpand = async () => {
               onClick={() => handleSelection(index, true, hour)}
               disabled={isDisabled}
               style={{
-                backgroundColor: isDisabled ? '#bdbdbd' : '', // Disabled color
-                cursor: isDisabled ? 'not-allowed' : 'pointer', // Disable pointer when disabled
-                opacity: isDisabled ? 0.6 : 1, // Lower opacity when disabled
+                backgroundColor: isDisabled ? '#bdbdbd' : '',
+                cursor: isDisabled ? 'not-allowed' : 'pointer',
+                opacity: isDisabled ? 0.6 : 1,
               }}
             >
-              {`${hour}:00-${hour + 1}:00`} {/* Display time slot in range format */}
+              {timeRange}
             </button>
           </div>
         );
@@ -299,6 +312,8 @@ const toggleExpand = async () => {
     </div>
   </div>
 </div>
+
+
 
 {/* <div className="missing-time-slots">
   <Typography variant="subtitle1" className="section-title">
