@@ -277,33 +277,41 @@ const toggleExpand = async () => {
 
     {/* Morning Availability Buttons */}
     <div className="time-slot-container">
-      {[6, 7, 8, 9, 10, 11].map((hour, index) => {
-        const startTime = moment({ hour: hour }).format("HH:mm");
-        const endTime = moment({ hour: hour + 1 }).format("HH:mm");
-        const timeRange = `${startTime}-${endTime}`;
+  {missingSlots
+    .filter((missingSlot) =>
+      [6, 7, 8, 9, 10, 11].some(
+        (hour) => moment({ hour }).format("HH:mm") === missingSlot
+      )
+    )
+    .map((missingSlot, index) => {
+      const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour from missing slot
+      const startTime = moment({ hour }).format("HH:mm");
+      const endTime = moment({ hour: hour + 1 }).format("HH:mm");
+      const timeRange = `${startTime}-${endTime}`;
 
-        const isDisabled = missingTimeSlots.some(
-          (missingSlot) => missingSlot === startTime
-        );
+      // Check if the slot is in the missingTimeSlots array
+      const isDisabled = missingTimeSlots.some(
+        (missingSlot) => missingSlot === startTime
+      );
 
-        return (
-          <div key={index}>
-            <button
-              className={`availability-button ${morningSelection === index ? "selected" : ""}`}
-              onClick={() => handleSelection(index, false, hour)}
-              disabled={isDisabled}
-              style={{
-                backgroundColor: isDisabled ? '#bdbdbd' : '',
-                cursor: isDisabled ? 'not-allowed' : 'pointer',
-                opacity: isDisabled ? 0.6 : 1,
-              }}
-            >
-              {timeRange}
-            </button>
-          </div>
-        );
-      })}
-    </div>
+      return (
+        <div key={index}>
+          <button
+             className={`availability-button ${morningSelection === index ? "selected" : ""}`}
+             onClick={() => handleSelection(index, false, hour)}
+            disabled={isDisabled} // Disable if it's in missingTimeSlots
+            style={{
+              backgroundColor: isDisabled ? '#bdbdbd' : '',
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
+              opacity: isDisabled ? 0.6 : 1,
+            }}
+          >
+            {timeRange}
+          </button>
+        </div>
+      );
+    })}
+</div>
   </div>
 
   <div className="availability-header">
@@ -311,67 +319,78 @@ const toggleExpand = async () => {
       Evening Availability (12 PM - 8 PM)
     </Typography>
 
-    {/* Evening Availability Buttons */}
     <div className="time-slot-container">
-      {[12, 13, 14, 15, 16, 17, 18, 19].map((hour, index) => {
-        const startTime = moment({ hour: hour }).format("HH:mm");
-        const endTime = moment({ hour: hour + 1 }).format("HH:mm");
-        const timeRange = `${startTime}-${endTime}`;
+  {missingSlots
+    .filter((missingSlot) =>
+      [12, 13, 14, 15, 16, 17, 18, 19].some(
+        (hour) => moment({ hour }).format("HH:mm") === missingSlot
+      )
+    )
+    .map((missingSlot, index) => {
+      const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour
+      const startTime = moment({ hour }).format("HH:mm");
+      const endTime = moment({ hour: hour + 1 }).format("HH:mm");
+      const timeRange = `${startTime}-${endTime}`;
 
-        const isDisabled = missingTimeSlots.some(
-          (missingSlot) => missingSlot === startTime
-        );
+      const isDisabled = missingTimeSlots.some(
+        (missingSlot) => missingSlot === startTime
+      );
 
-        return (
-          <div key={index}>
-            <button
-              className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
-              onClick={() => handleSelection(index, true, hour)}
-              disabled={isDisabled}
-              style={{
-                backgroundColor: isDisabled ? '#bdbdbd' : '',
-                cursor: isDisabled ? 'not-allowed' : 'pointer',
-                opacity: isDisabled ? 0.6 : 1,
-              }}
-            >
-              {timeRange}
-            </button>
-          </div>
-        );
-      })}
-    </div>
+      return (
+        <div key={index}>
+          <button
+             className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
+             onClick={() => handleSelection(index, true, hour)}
+             disabled={isDisabled} // Disable if it's in missingTimeSlots
+            style={{
+              backgroundColor: isDisabled ? '#bdbdbd' : '',
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
+              opacity: isDisabled ? 0.6 : 1,
+            }}
+          >
+            {timeRange}
+          </button>
+        </div>
+      );
+    })}
+</div>
   </div>
 </div>
 <div>
-      {/* Display Missing Time Slots */}
-      {missingSlots.length > 0 ? (
-        <div className="missing-time-slots-section">
-          <h3>Missing Time Slots:</h3>
-          <div className="missing-time-buttons">
-            {missingSlots.map((slot, index) => (
-              <button
-                key={index}
-                className="missing-time-slot-button"
-                style={{
-                  backgroundColor: '#f44336', // Red color for missing slots
-                  color: 'white',
-                  padding: '10px 20px',
-                  margin: '5px',
-                  border: 'none',
-                  borderRadius: '5px',
-                  cursor: 'not-allowed',
-                }}
-                disabled
-              >
-                {slot}
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <p>All expected time slots are available.</p>
-      )}
+  
+  {/* Display Missing Time Slots */}
+  {missingSlots.length > 0 ? (
+    <div className="missing-time-slots-section">
+      <h3>Missing Time Slots:</h3>
+      <div className="missing-time-buttons">
+        {missingSlots.map((slot, index) => (
+          <button
+            key={index}
+            className="missing-time-slot-button"
+            style={{
+              backgroundColor: '#f44336', // Red color for missing slots
+              color: 'white',
+              padding: '10px 20px',
+              margin: '5px',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer', // Make it clickable
+            }}
+            onClick={() => {
+              // Handle the click event here
+              console.log(`Clicked on slot: ${slot}`);
+            }}
+          >
+            {slot}
+          </button>
+        ))}
+      </div>
     </div>
+  ) : (
+    <p>All expected time slots are available.</p>
+  )}
+</div>
+
 
 
 {/* <div className="missing-time-slots">

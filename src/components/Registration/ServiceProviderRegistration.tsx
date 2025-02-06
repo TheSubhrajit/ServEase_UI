@@ -759,10 +759,15 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
   //   setSnackbarMessage(message);
   //   setSnackbarOpen(true);
   // };
-  const updateFormTimeSlot = (morningRange: number[], eveningRange: number[]) => {
-    const formattedTimeSlot = `${morningRange[0]}-${morningRange[1]}, ${eveningRange[0]}-${eveningRange[1]}`;
-    setFormData({ ...formData, timeSlot: formattedTimeSlot });
+  const formatTime = (value: number) => {
+    return `${String(value).padStart(2, "0")}:00`;
   };
+
+  const updateFormTimeSlot = (morningRange: number[], eveningRange: number[]) => {
+    const fullTimeSlot = `${formatTime(morningRange[0])}-${formatTime(morningRange[1])}, ${formatTime(eveningRange[0])}-${formatTime(eveningRange[1])}`;
+    setFormData({ ...formData, timeSlot: fullTimeSlot });
+  };
+  
   
     // Format slider labels for display
     const formatDisplayTime = (value: number) => {
@@ -1279,7 +1284,6 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     </FormGroup>
   </FormControl>
 </Grid>
-
 
     {/* Checkbox for Terms of Service */}
     <Grid item xs={12}>
