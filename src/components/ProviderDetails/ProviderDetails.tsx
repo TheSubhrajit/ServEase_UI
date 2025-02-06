@@ -54,10 +54,12 @@ const [isExpanded, setIsExpanded] = useState(false);
   // Toggle expanded content
 const toggleExpand = async () => {
   setIsExpanded(!isExpanded);
-  const serviceProviderId = 2;
+  // const serviceProviderId = 2;
   if (!isExpanded) {
     try {
-      const response = await axiosInstance.get(`/api/serviceproviders/get/engagement/by/serviceProvider/${serviceProviderId}`);
+      console.log('Service Provider Details:', props);
+      console.log('Service serviceproviderId:', props.serviceproviderId);
+      const response = await axiosInstance.get(`/api/serviceproviders/get/engagement/by/serviceProvider/${props.serviceproviderId}`);
       const timeSlots = response.data.flatMap((engagement) => engagement.availableTimeSlots); // Assuming the response contains the available time slots
       setAvailableTimeSlots(timeSlots);
 
@@ -126,6 +128,7 @@ const toggleExpand = async () => {
   const user = useSelector((state : any) => state.user?.value);
 
   useEffect(() => {
+   
       if(user?.role=== 'CUSTOMER'){
         setLoggedInUser(user);
       }
@@ -297,7 +300,7 @@ const toggleExpand = async () => {
   </div>
 </div>
 
-<div className="missing-time-slots">
+{/* <div className="missing-time-slots">
   <Typography variant="subtitle1" className="section-title">
     Missing Time Slots (Unavailable)
   </Typography>
@@ -326,7 +329,7 @@ const toggleExpand = async () => {
       </div>
     ))}
   </div>
-</div>
+</div> */}
 
               <div style={{ float: 'right', display: 'flex' }}>
                 {!loggedInUser && <Button onClick={handleLogin} variant="outlined">Login</Button>}
