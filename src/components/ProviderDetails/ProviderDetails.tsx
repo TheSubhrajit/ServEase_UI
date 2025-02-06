@@ -10,15 +10,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { add } from "../../features/bookingType/bookingTypeSlice";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Login from "../Login/Login";
+import axiosInstance from "../../services/axiosInstance";
 
 const ProviderDetails = (props) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [morningSelection, setMorningSelection] = useState(null); // Track the selected morning time slot
-  const [eveningSelection, setEveningSelection] = useState(null);
-  const [eveningSelectionTime, setEveningSelectionTime] = useState(null); // Track the selected evening time slot
-  const [morningSelectionTime, setMorningSelectionTime] = useState(null);
+const [isExpanded, setIsExpanded] = useState(false);
+  const [eveningSelection, setEveningSelection] = useState<number | null>(null);
+  const [morningSelection, setMorningSelection] = useState<number | null>(null);
+  const [eveningSelectionTime, setEveningSelectionTime] = useState<string | null>(null);
+  const [morningSelectionTime, setMorningSelectionTime] = useState<string | null>(null);
   const [loggedInUser , setLoggedInUser ] = useState();
   const [open, setOpen] = useState(false);
+  const [engagementData, setEngagementData] = useState(null);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  const [missingTimeSlots, setMissingTimeSlots] = useState<string[]>([]);
 
   const dietImages = {
     VEG: "veg.png",
@@ -30,20 +34,58 @@ const ProviderDetails = (props) => {
   const bookingType = useSelector((state : any) => state.bookingType?.value)
 
   // Handle selection for morning or evening availability
-  const handleSelection = (hour, isEvening , time) => {
+  const handleSelection = (hour: number, isEvening: boolean, time: number) => {
+    // Format the time without seconds, only hour and minute (e.g., "07:00")
+    const startTime = moment({ hour: time }).format("HH:mm");
+    const endTime = moment({ hour: time + 1 }).format("HH:mm");
+  
+    const formattedTime = `${startTime}-${endTime}`;
+    console.log(`Start Time: ${startTime}, End Time: ${endTime}`);
     if (isEvening) {
       setEveningSelection(hour);
-      setEveningSelectionTime(time) // Set the selected evening time slot
+      setEveningSelectionTime(formattedTime); // e.g., "07:00-08:00"
     } else {
       setMorningSelection(hour);
-      setMorningSelectionTime(time) // Set the selected morning time slot
+      setMorningSelectionTime(formattedTime); // e.g., "07:00-08:00"
     }
   };
+  
 
   // Toggle expanded content
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+const toggleExpand = async () => {
+  setIsExpanded(!isExpanded);
+  const serviceProviderId = 2;
+  if (!isExpanded) {
+    try {
+      const response = await axiosInstance.get(`/api/serviceproviders/get/engagement/by/serviceProvider/${serviceProviderId}`);
+      const timeSlots = response.data.flatMap((engagement) => engagement.availableTimeSlots); // Assuming the response contains the available time slots
+      setAvailableTimeSlots(timeSlots);
+
+      // List of all expected time slots (formatted as "HH:mm")
+      const expectedTimeSlots = [
+        "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
+        "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"
+      ];
+
+      // Find missing time slots
+      const missingTimeSlots = expectedTimeSlots.filter(slot => !timeSlots.includes(slot));
+
+      // Log the missing time slots
+      if (missingTimeSlots.length > 0) {
+        console.log("Missing time slots:", missingTimeSlots);
+      } else {
+        console.log("All expected time slots are available.");
+      }
+
+      // Store missing time slots in state (if you want to use them to disable buttons)
+      setMissingTimeSlots(missingTimeSlots);
+
+    } catch (error) {
+      console.error("Error fetching engagement data:", error);
+    }
+  }
+};
+
 
   // Calculate age from date of birth
   const calculateAge = (dob) => {
@@ -185,46 +227,107 @@ const ProviderDetails = (props) => {
                 </span>
               </Typography>
 
-              {/* Morning and Evening Availability */}
               <div className="availability-section">
-                <div className="availability-header">
-                  <Typography variant="subtitle1" className="section-title">
-                    Morning Availability (6 AM - 12 PM)
-                  </Typography>
+  <div className="availability-header">
+    <Typography variant="subtitle1" className="section-title">
+      Morning Availability (6 AM - 12 PM)
+    </Typography>
 
-                  {/* Morning Availability Buttons */}
-                  <div className="time-slot-container">
-                    {[6, 7, 8, 9, 10, 11].map((hour, index) => (
-                      <button
-                        key={index}
-                        className={`availability-button ${morningSelection === index ? "selected" : ""}`}
-                        onClick={() => handleSelection(index, false, hour)}
-                      >
-                        {`${hour}:00`}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+    {/* Morning Availability Buttons */}
+    <div className="time-slot-container">
+      {[6, 7, 8, 9, 10, 11].map((hour, index) => {
+        const timeRange = `${hour}:00-${hour + 1}:00`; // Format time as "6:00-7:00"
+        
+        // Ensure missing time slots and button time are in the same format (both "6:00")
+        const isDisabled = missingTimeSlots.some(
+          (missingSlot) => missingSlot === `${hour.toString().padStart(2, '0')}:00`
+        );
 
-                <div className="availability-header">
-                  <Typography variant="subtitle1" className="section-title">
-                    Evening Availability (12 PM - 8 PM)
-                  </Typography>
+        return (
+          <div key={index}>
+            <button
+              className={`availability-button ${morningSelection === index ? "selected" : ""}`}
+              onClick={() => handleSelection(index, false, hour)}
+              disabled={isDisabled}
+              style={{
+                backgroundColor: isDisabled ? '#bdbdbd' : '', // Disabled color
+                cursor: isDisabled ? 'not-allowed' : 'pointer', // Disable pointer when disabled
+                opacity: isDisabled ? 0.6 : 1, // Lower opacity when disabled
+              }}
+            >
+              {timeRange} {/* Display time slot in range format */}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  </div>
 
-                  {/* Evening Availability Buttons */}
-                  <div className="time-slot-container">
-                    {[12, 1, 2, 3, 4, 5, 6, 7].map((hour, index) => (
-                      <button
-                        key={index}
-                        className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
-                        onClick={() => handleSelection(index, true, hour)}
-                      >
-                        {`${hour}:00`}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+  <div className="availability-header">
+    <Typography variant="subtitle1" className="section-title">
+      Evening Availability (12 PM - 8 PM)
+    </Typography>
+
+    {/* Evening Availability Buttons */}
+    <div className="time-slot-container">
+      {[12, 13, 14, 15, 16, 17, 18, 19].map((hour, index) => {
+        // Ensure missing time slots and button time are in the same format (both "12:00")
+        const isDisabled = missingTimeSlots.some(
+          (missingSlot) => missingSlot === `${hour.toString().padStart(2, '0')}:00`
+        );
+
+        return (
+          <div key={index}>
+            <button
+              className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
+              onClick={() => handleSelection(index, true, hour)}
+              disabled={isDisabled}
+              style={{
+                backgroundColor: isDisabled ? '#bdbdbd' : '', // Disabled color
+                cursor: isDisabled ? 'not-allowed' : 'pointer', // Disable pointer when disabled
+                opacity: isDisabled ? 0.6 : 1, // Lower opacity when disabled
+              }}
+            >
+              {`${hour}:00-${hour + 1}:00`} {/* Display time slot in range format */}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</div>
+
+<div className="missing-time-slots">
+  <Typography variant="subtitle1" className="section-title">
+    Missing Time Slots (Unavailable)
+  </Typography>
+
+  <div className="time-slot-container">
+    {missingTimeSlots.map((missingSlot, index) => (
+      <div key={index}>
+        <button
+          className="missing-time-button"
+          disabled // Disable these buttons by default
+          style={{
+            backgroundColor: '#bdbdbd',
+            color: '#888',
+            padding: '12px 24px',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'not-allowed',
+            fontSize: '16px',
+            display: 'inline-block',
+            textAlign: 'center',
+            margin: '10px 0',
+          }}
+        >
+          {missingSlot}
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
+
               <div style={{ float: 'right', display: 'flex' }}>
                 {!loggedInUser && <Button onClick={handleLogin} variant="outlined">Login</Button>}
                 <Tooltip
