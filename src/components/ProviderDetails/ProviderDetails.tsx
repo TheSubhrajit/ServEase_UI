@@ -86,47 +86,115 @@ const checkMissingTimeSlots = () => {
 
 // Run this function only once on initial render
 if (!hasCheckedRef.current) {
-  checkMissingTimeSlots(); // Call checkMissingTimeSlots on initial render
-  hasCheckedRef.current = true; // Set the ref to true to prevent re-runs
+  checkMissingTimeSlots(); 
+  hasCheckedRef.current = true;
 }
+//for texting 
+// const data = [ 
+//   {
+//       "id": 252,
+//       "availableTimeSlots": [
+//           "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", 
+//           "07:00", "08:00", "09:00", "10:00", "11:00", "13:00", 
+//           "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", 
+//           "20:00", "21:00", "22:00", "23:00"
+//       ]
+//   },
+//   {
+//       "id": 253,
+//       "availableTimeSlots": [
+//           "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", 
+//           "07:00", "08:00", "09:00", "10:00", "11:00", "13:00", 
+//           "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", 
+//           "20:00", "21:00", "22:00", "23:00"
+//       ]
+//   },
+//   {
+//       "id": 302,
+//       "availableTimeSlots": [
+//           "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", 
+//           "06:00", "07:00", "09:00", "10:00", "11:00", "12:00", 
+//           "13:00", "15:00", "16:00", "17:00", "18:00", "19:00", 
+//           "20:00", "21:00", "22:00", "23:00"
+//       ]
+//   }
+// ];
+
+// // Step 1: Generate the full list of time slots (00:00 - 23:00)
+// const fullTimeSlots = Array.from({ length: 24 }, (_, i) => 
+//   `${i.toString().padStart(2, "0")}:00`
+// );
+
+// // Step 2: Find missing time slots for each entry
+// const missingTimeSlotsPerEntry = data.map(entry => {
+//   const missingSlots = fullTimeSlots.filter(slot => !entry.availableTimeSlots.includes(slot));
+//   return { id: entry.id, missingTimeSlots: missingSlots };
+// });
+
+// console.log("Missing Time Slots per ID:", missingTimeSlotsPerEntry);
+
+
   // Toggle expanded content
-const toggleExpand = async () => {
-  setIsExpanded(!isExpanded);
+  const [uniqueMissingSlots, setUniqueMissingSlots] = useState<string[]>([]);
+
+  const toggleExpand = async () => {
+      setIsExpanded(!isExpanded);
   
-  // const serviceProviderId = 2;
-  if (!isExpanded) {
-    try {
-      console.log('Service Provider Details:', props);
-      console.log('Service serviceproviderId:', props.serviceproviderId);
-      const response = await axiosInstance.get(`/api/serviceproviders/get/engagement/by/serviceProvider/${props.serviceproviderId}`);
-      const timeSlots = response.data.flatMap((engagement) => engagement.availableTimeSlots); // Assuming the response contains the available time slots
-      setAvailableTimeSlots(timeSlots);
-
-      // List of all expected time slots (formatted as "HH:mm")
-      const expectedTimeSlots = [
-        "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
-        "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"
-      ];
-
-      // Find missing time slots
-      const missingTimeSlots = expectedTimeSlots.filter(slot => !timeSlots.includes(slot));
-
-      // Log the missing time slots
-      if (missingTimeSlots.length > 0) {
-        console.log("Missing time slots:", missingTimeSlots);
-      } else {
-        console.log("All expected time slots are available.");
+      if (!isExpanded) {
+          try {
+              console.log("Service Provider Details:", props);
+              console.log("Service serviceproviderId:", props.serviceproviderId);
+  
+              const response = await axiosInstance.get(
+                  `/api/serviceproviders/get/engagement/by/serviceProvider/${props.serviceproviderId}`
+              );
+  
+              const engagementData = response.data.map((engagement: { id?: number; availableTimeSlots?: string[] }) => ({
+                  id: engagement.id ?? Math.random(),
+                  availableTimeSlots: engagement.availableTimeSlots || [],
+              }));
+  
+              console.log("Raw Engagement Data:", engagementData);
+  
+              const fullTimeSlots: string[] = Array.from({ length: 24 }, (_, i) =>
+                  `${i.toString().padStart(2, "0")}:00`
+              );
+  
+              console.log("Full Time Slots:", fullTimeSlots);
+  
+              const processedSlots = engagementData.map(entry => {
+                  const uniqueAvailableTimeSlots = Array.from(new Set(entry.availableTimeSlots)).sort();
+                  const missingTimeSlots = fullTimeSlots.filter(slot => !uniqueAvailableTimeSlots.includes(slot));
+  
+                  return {
+                      id: entry.id,
+                      uniqueAvailableTimeSlots,
+                      missingTimeSlots,
+                  };
+              });
+  
+              console.log("Processed Slots with Missing Time Slots:", processedSlots);
+              console.log("All Missing Time Slots:", processedSlots.map(slot => slot.missingTimeSlots));
+  
+              // ✅ Ensure TypeScript correctly identifies it as string[]
+              const uniqueMissingSlots: string[] = Array.from(
+                  new Set(processedSlots.flatMap(slot => slot.missingTimeSlots))
+              ).sort() as string[];
+  
+              console.log("Unique Missing Time Slots:", uniqueMissingSlots);
+  
+              // ✅ Store unique missing slots in state
+              setUniqueMissingSlots(uniqueMissingSlots);
+  
+              setAvailableTimeSlots(processedSlots.map(entry => entry.uniqueAvailableTimeSlots));
+              setMissingTimeSlots(processedSlots.map(entry => ({ id: entry.id, missingSlots: entry.missingTimeSlots })));
+  
+          } catch (error) {
+              console.error("Error fetching engagement data:", error);
+          }
       }
-
-      // Store missing time slots in state (if you want to use them to disable buttons)
-      setMissingTimeSlots(missingTimeSlots);
-
-    } catch (error) {
-      console.error("Error fetching engagement data:", error);
-    }
-  }
-};
-
+  };
+  
 
   // Calculate age from date of birth
   const calculateAge = (dob) => {
@@ -284,22 +352,20 @@ const toggleExpand = async () => {
       )
     )
     .map((missingSlot, index) => {
-      const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour from missing slot
+      const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour
       const startTime = moment({ hour }).format("HH:mm");
       const endTime = moment({ hour: hour + 1 }).format("HH:mm");
       const timeRange = `${startTime}-${endTime}`;
 
-      // Check if the slot is in the missingTimeSlots array
-      const isDisabled = missingTimeSlots.some(
-        (missingSlot) => missingSlot === startTime
-      );
+      // ✅ Use uniqueMissingSlots for disabling
+      const isDisabled = uniqueMissingSlots.includes(startTime);
 
       return (
         <div key={index}>
           <button
-             className={`availability-button ${morningSelection === index ? "selected" : ""}`}
-             onClick={() => handleSelection(index, false, hour)}
-            disabled={isDisabled} // Disable if it's in missingTimeSlots
+            className={`availability-button ${morningSelection === index ? "selected" : ""}`}
+            onClick={() => handleSelection(index, false, hour)}
+            disabled={isDisabled} // Disable if it's in uniqueMissingSlots
             style={{
               backgroundColor: isDisabled ? '#bdbdbd' : '',
               cursor: isDisabled ? 'not-allowed' : 'pointer',
@@ -312,6 +378,7 @@ const toggleExpand = async () => {
       );
     })}
 </div>
+
   </div>
 
   <div className="availability-header">
@@ -320,7 +387,7 @@ const toggleExpand = async () => {
     </Typography>
 
     <div className="time-slot-container">
-  {missingSlots
+    {missingSlots
     .filter((missingSlot) =>
       [12, 13, 14, 15, 16, 17, 18, 19].some(
         (hour) => moment({ hour }).format("HH:mm") === missingSlot
@@ -332,16 +399,15 @@ const toggleExpand = async () => {
       const endTime = moment({ hour: hour + 1 }).format("HH:mm");
       const timeRange = `${startTime}-${endTime}`;
 
-      const isDisabled = missingTimeSlots.some(
-        (missingSlot) => missingSlot === startTime
-      );
+      // Check if this time slot should be disabled based on unique missing slots
+      const isDisabled = uniqueMissingSlots.includes(startTime);
 
       return (
         <div key={index}>
           <button
-             className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
-             onClick={() => handleSelection(index, true, hour)}
-             disabled={isDisabled} // Disable if it's in missingTimeSlots
+            className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
+            onClick={() => handleSelection(index, true, hour)}
+            disabled={isDisabled} // Disable if it's in uniqueMissingSlots
             style={{
               backgroundColor: isDisabled ? '#bdbdbd' : '',
               cursor: isDisabled ? 'not-allowed' : 'pointer',
@@ -354,6 +420,7 @@ const toggleExpand = async () => {
       );
     })}
 </div>
+
   </div>
 </div>
 <div>

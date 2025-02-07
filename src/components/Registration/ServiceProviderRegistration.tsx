@@ -759,13 +759,15 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
   //   setSnackbarMessage(message);
   //   setSnackbarOpen(true);
   // };
-  const formatTime = (value: number) => {
-    return `${String(value).padStart(2, "0")}:00`;
-  };
-
   const updateFormTimeSlot = (morningRange: number[], eveningRange: number[]) => {
-    const fullTimeSlot = `${formatTime(morningRange[0])}-${formatTime(morningRange[1])}, ${formatTime(eveningRange[0])}-${formatTime(eveningRange[1])}`;
-    setFormData({ ...formData, timeSlot: fullTimeSlot });
+    const startMorning = formatDisplayTime(morningRange[0]);
+    const endMorning = formatDisplayTime(morningRange[1]);
+    const startEvening = formatDisplayTime(eveningRange[0]);
+    const endEvening = formatDisplayTime(eveningRange[1]);
+  
+    const formattedTimeSlot = `${startMorning}-${endMorning}, ${startEvening}-${endEvening}`;
+  
+    setFormData((prev) => ({ ...prev, timeSlot: formattedTimeSlot }));
   };
   
   
@@ -1213,11 +1215,11 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
       <FormControlLabel
         control={
           <Checkbox
-            checked={formData.timeSlot === "6.00-20.00"} // Reflect full-day time slot
+            checked={formData.timeSlot === "06:00-20:00"} // Updated to HH:MM format
             onChange={(e) => {
               if (e.target.checked) {
                 // Disable sliders and set full-day range
-                setFormData({ ...formData, timeSlot: "6.00-20.00" });
+                setFormData({ ...formData, timeSlot: "06:00-20:00" });
                 setSliderDisabled(true);
               } else {
                 // Enable sliders and clear timeSlot
@@ -1284,6 +1286,8 @@ const handleCookingSpecialityChange = (event: React.ChangeEvent<HTMLInputElement
     </FormGroup>
   </FormControl>
 </Grid>
+
+
 
     {/* Checkbox for Terms of Service */}
     <Grid item xs={12}>
