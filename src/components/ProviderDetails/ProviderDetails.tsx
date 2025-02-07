@@ -60,10 +60,12 @@ const handleSelection = (hour: number, isEvening: boolean, time: number) => {
 
 const [missingSlots, setMissingSlots] = useState<string[]>([]);
 const hasCheckedRef = useRef(false); // Track if the function has been called
-
+// console.log("Service Provider Data: ", props.serviceproviderId);
+// console.log("Service time: ", props.availableTimeSlots);
+console.log("Service data: ", props);
 // Call this function to check missing time slots
 const checkMissingTimeSlots = () => {
-  console.log("Service Provider Data: ", props.availableTimeSlots);
+  // console.log("Service Provider Data: ", props.availableTimeSlots);
 
   const expectedTimeSlots = [
     "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
