@@ -106,7 +106,7 @@ const AgentRegistrationForm = ({ onBackToLogin }) => {
   
     try {
       const response = await axiosInstance.post(
-        "http://localhost:8080/vendors/add", 
+        "http://43.205.212.94:8080/vendors/add", 
         requestData, 
         {
           headers: {

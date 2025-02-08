@@ -105,7 +105,9 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
     bookingDetails.paymentMode = "CASH";
     bookingDetails.bookingType = bookingType.bookingPreference;
     bookingDetails.serviceeType = checkout.selecteditem[0].Service;
-    bookingDetails.timeslot = `${bookingType.morningSelection}:00, ${bookingType.eveningSelection}:00`; 
+    bookingDetails.timeslot = [bookingType.morningSelection, bookingType.eveningSelection]
+    .filter(Boolean) // Removes falsy values (null, undefined, empty string)
+    .join(', '); 
 
     
     bookingDetails.monthlyAmount = checkout.price;

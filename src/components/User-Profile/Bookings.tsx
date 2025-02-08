@@ -47,7 +47,7 @@ const Booking: React.FC = () => {
   useEffect(() => {
     if (customerId !== null) {
       axiosInstance
-        .get(`http://localhost:8080/api/serviceproviders/get-sp-booking-history`)
+        .get(`http://43.205.212.94:8080/api/serviceproviders/get-sp-booking-history`)
         .then((response) => {
           const { past = [], current = [], future = [] } = response.data || {};
 
