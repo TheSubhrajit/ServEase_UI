@@ -211,6 +211,8 @@ if (!hasCheckedRef.current) {
         morningSelection : morningSelectionTime,
         ...bookingType
     }
+
+    console.log('booking .... ', booking)
     dispatch(add(booking)) 
 
     const providerDetails = {
