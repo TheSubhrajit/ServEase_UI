@@ -428,7 +428,7 @@ if (!hasCheckedRef.current) {
 <div>
   
   {/* Display Missing Time Slots */}
-  {missingSlots.length > 0 ? (
+  {/* {missingSlots.length > 0 ? (
     <div className="missing-time-slots-section">
       <h3>Missing Time Slots:</h3>
       <div className="missing-time-buttons">
@@ -457,7 +457,7 @@ if (!hasCheckedRef.current) {
     </div>
   ) : (
     <p>All expected time slots are available.</p>
-  )}
+  )} */}
 </div>
 
 
