@@ -106,7 +106,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
     bookingDetails.bookingType = bookingType.bookingPreference;
     bookingDetails.serviceeType = checkout.selecteditem[0].Service;
     bookingDetails.timeslot = [bookingType.morningSelection, bookingType.eveningSelection]
-    .filter(Boolean) // Removes falsy values (null, undefined, empty string)
+    .filter(Boolean)
     .join(', '); 
 
     
