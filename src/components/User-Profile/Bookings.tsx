@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Tab,
@@ -9,32 +8,72 @@ import {
   Card,
   CardContent,
 } from '@mui/material';
+import axiosInstance from '../../services/axiosInstance';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/userStore';
+
+type UserState = {
+  value?: {
+    role?: string;
+    customerDetails?: {
+      customerId: number;
+      firstName: string;
+      lastName: string;
+    };
+  } | null;
+};
 
 interface Booking {
   id: number;
   name: string;
-  role:string;
+  role: string;
   timeSlot: string;
   date: string;
 }
 
-const currentBookings: Booking[] = [
-  { id: 1, name: 'John Doe', role:"Maid",  timeSlot: '10:00 AM - 11:00 AM', date: '2024-12-28' },
-  { id: 2, name: 'Jane Smith', role:"Nanny", timeSlot: '12:00 PM - 1:00 PM', date: '2024-12-30' },
-];
-
-const pastBookings: Booking[] = [
-  { id: 1, name: 'Alice Brown',role:"Cook", timeSlot: '2:00 PM - 3:00 PM', date: '2024-10-15' },
-  { id: 2, name: 'Bob Johnson',role:"Maid", timeSlot: '4:00 PM - 5:00 PM', date: '2024-11-01' },
-];
-
-const futureBookings: Booking[] = [
-  { id: 1, name: 'Charlie Green',role:"Nanny", timeSlot: '9:00 AM - 10:00 AM', date: '2025-01-05' },
-  { id: 2, name: 'Diana Prince', role:"Cook", timeSlot: '3:00 PM - 4:00 PM', date: '2025-01-10' },
-];
-
 const Booking: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [currentBookings, setCurrentBookings] = useState<Booking[]>([]);
+  const [pastBookings, setPastBookings] = useState<Booking[]>([]);
+  const [futureBookings, setFutureBookings] = useState<Booking[]>([]);
+
+  // Get user data from Redux store
+  const user = useSelector((state: RootState) => state.user as UserState);
+  const customerId = user?.value?.customerDetails?.customerId ?? null;
+
+  console.log('Booking user details:', user);
+  console.log('Customer ID:', customerId);
+
+  useEffect(() => {
+    if (customerId !== null) {
+      axiosInstance
+        .get(`http://43.205.212.94:8080/api/serviceproviders/get-sp-booking-history`)
+        .then((response) => {
+          const { past = [], current = [], future = [] } = response.data || {};
+
+          // Ensure data is an array before filtering
+          const mapBookingData = (data: any[]) =>
+            Array.isArray(data)
+              ? data
+                  .filter((item) => item.customerId === customerId) // Filter for this customer
+                  .map((item) => ({
+                    id: item.requestId,
+                    name: item.customerId.toString(),
+                    role: item.housekeepingRole,
+                    timeSlot: item.timeSlotlist,
+                    date: new Date(item.startDate).toLocaleDateString(),
+                  }))
+              : [];
+
+          setPastBookings(mapBookingData(past));
+          setCurrentBookings(mapBookingData(current));
+          setFutureBookings(mapBookingData(future));
+        })
+        .catch((error) => {
+          console.error('Error fetching booking details:', error);
+        });
+    }
+  }, [customerId]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
@@ -42,24 +81,30 @@ const Booking: React.FC = () => {
 
   const renderBookings = (bookings: Booking[]) => (
     <Box display="flex" flexDirection="column" gap={2} width="100%">
-      {bookings.map((booking) => (
-        <Card key={booking.id} elevation={3} sx={{ width: '100%' }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              {booking.name}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Role :{booking.role}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Time Slot: {booking.timeSlot}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Date: {booking.date}
-            </Typography>
-          </CardContent>
-        </Card>
-      ))}
+      {bookings.length > 0 ? (
+        bookings.map((booking) => (
+          <Card key={booking.id} elevation={3} sx={{ width: '100%' }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                {booking.name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Role: {booking.role}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Time Slot: {booking.timeSlot}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Date: {booking.date}
+              </Typography>
+            </CardContent>
+          </Card>
+        ))
+      ) : (
+        <Typography textAlign="center" color="textSecondary">
+          No bookings found.
+        </Typography>
+      )}
     </Box>
   );
 

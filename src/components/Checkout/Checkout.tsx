@@ -26,9 +26,9 @@ interface ChildComponentProps {
   providerDetails: any;
 }
 
-const Checkout: React.FC<ChildComponentProps> = ({ providerDetails }) => {
+const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   const [checkout, setCheckout] = useState<any>([]);
-  const [bookingTypeFromSelection, setBookingTypeFromSelection] = useState<Bookingtype>();
+  const [bookingTypeFromSelection , setBookingTypeFromSelection] = useState<Bookingtype>();
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -67,22 +67,22 @@ const Checkout: React.FC<ChildComponentProps> = ({ providerDetails }) => {
   };
 
   const handleCheckout = async () => {
-
+    
 
     try {
       const response = await axios.post(
         "http://3.110.168.35:3000/create-order",
-        { amount: grandTotal }, // Amount in paise
+        { amount:  grandTotal }, // Amount in paise
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-
+  
       if (response.status === 200) {
         const { id: orderId, currency, amount } = response.data;
-
+  
         // Razorpay options
         const options = {
           key: "rzp_test_lTdgjtSRlEwreA", // Replace with your Razorpay key
@@ -96,21 +96,21 @@ const Checkout: React.FC<ChildComponentProps> = ({ providerDetails }) => {
             // setSnackbarMessage("Payment successful! Booking confirmed.");
             // setSnackbarSeverity("success");
             // setOpenSnackbar(true);
-            console.log("checkout => ", checkout)
+            console.log("checkout => ",checkout)
             bookingDetails.serviceProviderId = providerDetails.serviceproviderId;
-            bookingDetails.customerId = customerId;
-            bookingDetails.startDate = bookingTypeFromSelection?.startDate;
-            bookingDetails.endDate = bookingTypeFromSelection?.endDate;
-            bookingDetails.engagements = checkout.selecteditem[0].Service;
-            bookingDetails.paymentMode = "CASH";
-            bookingDetails.bookingType = bookingType.bookingPreference;
-            bookingDetails.serviceeType = checkout.selecteditem[0].Service;
-            bookingDetails.timeslot = [bookingType.morningSelection, bookingType.eveningSelection]
-              .filter(Boolean)
-              .join(', ');
+    bookingDetails.customerId = customerId;
+    bookingDetails.startDate = bookingTypeFromSelection?.startDate;
+    bookingDetails.endDate = bookingTypeFromSelection?.endDate;
+    bookingDetails.engagements = checkout.selecteditem[0].Service;
+    bookingDetails.paymentMode = "CASH";
+    bookingDetails.bookingType = bookingType.bookingPreference;
+    bookingDetails.serviceeType = checkout.selecteditem[0].Service;
+    bookingDetails.timeslot = [bookingType.morningSelection, bookingType.eveningSelection]
+    .filter(Boolean)
+    .join(', '); 
 
-
-            bookingDetails.monthlyAmount = checkout.price;
+    
+    bookingDetails.monthlyAmount = checkout.price;
 
             const response = await axiosInstance.post(
               "/api/serviceproviders/engagement/add",
@@ -122,12 +122,12 @@ const Checkout: React.FC<ChildComponentProps> = ({ providerDetails }) => {
               }
             );
 
-            if (response.status === 201) {
-              setSnackbarMessage(response.data || "Booking successful!");
-              setSnackbarSeverity("success");
-              setOpenSnackbar(true);
-            }
-
+    if(response.status === 201){
+        setSnackbarMessage(response.data || "Booking successful!");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+    }
+  
             // You can call a backend API to confirm the booking here
           },
           prefill: {
@@ -139,7 +139,7 @@ const Checkout: React.FC<ChildComponentProps> = ({ providerDetails }) => {
             color: "#3399cc",
           },
         };
-
+  
         const razorpay = new window.Razorpay(options);
         razorpay.open();
       }
