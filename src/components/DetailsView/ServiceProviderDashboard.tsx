@@ -92,8 +92,9 @@ const ServiceProviderDashboard: React.FC = () => {
   // const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
   //   setActiveSwitch(prevState => (prevState === id ? null : id)); // Toggle active switch
   // };
-  const serviceProviderId = 402;
-
+  const serviceProviderId = 2;
+  const [currentAndFutureBookings, setCurrentAndFutureBookings] = useState([]);
+  const [pastBookings, setPastBookings] = useState([]);
   useEffect(() => {
     const fetchBookingHistory = async () => {
       try {
@@ -101,58 +102,119 @@ const ServiceProviderDashboard: React.FC = () => {
         console.log("API Response:", response.data);
   
         if (response.data && response.data.current && response.data.future && response.data.past) {
-          // Filter current, future, and past bookings based on serviceProviderId
           console.log("Current Bookings:", response.data.current);
-        console.log("Future Bookings:", response.data.future);
-        console.log("Past Bookings:", response.data.past);
-
+          console.log("Future Bookings:", response.data.future);
+          console.log("Past Bookings:", response.data.past);
+  
+          // Extracting bookings and setting engagementId
           const filteredBookings = [
             ...response.data.current.filter(booking => booking.serviceProviderId === serviceProviderId),
             ...response.data.future.filter(booking => booking.serviceProviderId === serviceProviderId),
             ...response.data.past.filter(booking => booking.serviceProviderId === serviceProviderId)
-          ];
+          ].map(booking => ({
+            ...booking,
+            engagementId: booking.id, // Set engagementId from API response id
+          }));
   
-          setBookings(filteredBookings);  // Combine all bookings
+          setBookings(filteredBookings);
         } else {
           console.error("Error: Invalid API response structure");
-          setBookings([]);  // Set an empty array to handle incorrect response structure
+          setBookings([]);
         }
       } catch (error) {
         console.error("Error fetching booking history:", error);
-        setBookings([]);  // Handle errors gracefully
+        setBookings([]);
       }
     };
   
     fetchBookingHistory();
-  }, []);  // The empty dependency array ensures this effect runs once on component mount
+  }, []);
+   // The empty dependency array ensures this effect runs once on component mount
    
-
-  const handleSwitchChange = (event, index) => {
+   const handleSwitchChange = async (event, index) => {
+    let updatedStatus = "";
+  
+    // Update task status in the local state
+    setBookings(prevBookings =>
+      prevBookings.map((booking, i) => {
+        if (i === index) {
+          updatedStatus =
+            booking.taskStatus === "NOT_STARTED" ? "STARTED" :
+            booking.taskStatus === "STARTED" ? "COMPLETED" : "STARTED";
+  
+          console.log(`Booking ID ${booking.id}: Task Status changed to ${updatedStatus}`);
+          return { ...booking, taskStatus: updatedStatus };
+        }
+        return booking;
+      })
+    );
+  
     setActiveSwitch(index);
+  
+    // Get the booking data from the current index
+    const booking = bookings[index];
+  
+    if (!booking) {
+      console.error("Error: Booking not found!");
+      return;
+    }
+  
+    const {
+      id,
+      serviceProviderId,
+      customerId,
+      startDate,
+      endDate,
+      engagements,
+      timeslot,
+      bookingDate,
+      customerName,
+      serviceProviderName,
+      taskStatus
+    } = booking;
+  
+    // Prepare the payload with all required fields for the PUT request
+    const updatePayload = {
+      id,
+      serviceProviderId,
+      customerId,
+      startDate,
+      endDate,
+      engagements,
+      timeslot,
+      bookingDate,
+      customerName,
+      serviceProviderName,
+      taskStatus: updatedStatus // Update the status here
+    };
+  
+    try {
+      console.log(`Updating engagement with ID ${id} and status ${updatedStatus}`);
+      const response = await axiosInstance.put(
+        `/api/serviceproviders/update/engagement/${id}`, 
+        updatePayload // Send the full payload with all the required fields
+      );
+  
+      console.log("Update Response:", response.data);
+    } catch (error: any) {
+      console.error("Error updating task status:", error);
+      
+      // Safely access error response and log more details
+      if (error.response) {
+        console.error("Full error response:", error.response.data);
+      } else if (error.message) {
+        console.error("Error message:", error.message);
+      } else {
+        console.error("Unknown error occurred");
+      }
+    }
   };
-
+  
+  
+  
   const loadMoreBookings = () => {
     setShowMoreBookings(!showMoreBookings);
   };
-
-  const booking = [
-    { customerName: "John Doe", address: "Laxmi Apartment, Kolkata", timeSlot: "9:00 AM - 11:00 AM", status: "Pending", phone: "9876543210" },
-    { customerName: "Jane Smith", address: "Maidan Road, Kolkata", timeSlot: "12:00 PM - 2:00 PM", status: "Confirmed", phone: "9876543211" },
-    { customerName: "Raj Das", address: "Sec v, Kolkata", timeSlot: "10:00 AM - 11:00 AM", status: "Pending", phone: "9876543251" }
-  ];
-
-  // const loadMoreBookings = () => {
-  //   const additionalBookings = [
-  //     { customerName: "Amit Kumar", address: "Park Street, Kolkata", timeSlot: "1:00 PM - 3:00 PM", status: "Pending", phone: "9876543299" },
-  //     { customerName: "Priya Gupta", address: "Salt Lake, Kolkata", timeSlot: "4:00 PM - 6:00 PM", status: "Confirmed", phone: "9876543312" }
-  //   ];
-  //   if (showMoreBookings) {
-  //     setBookings(bookings.slice(0, 3));
-  //   } else {
-  //     setBookings([...bookings, ...additionalBookings]);
-  //   }
-  //   setShowMoreBookings(!showMoreBookings);
-  // };
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -248,7 +310,8 @@ const ServiceProviderDashboard: React.FC = () => {
 
                       <Typography variant="subtitle1" color="#555">Address</Typography>
                       <Typography variant="body2" color="#555">{booking.address}</Typography>
-
+                      <Typography variant="subtitle1" color="#555">taskStatus</Typography>
+                      <Typography variant="body2" color="#555">{booking.taskStatus}</Typography>
 
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
                           <IconButton color="primary" href={`tel:${booking.phone}`} sx={{ fontSize: 26 }}>
@@ -267,11 +330,15 @@ const ServiceProviderDashboard: React.FC = () => {
                             </Button>
                           </Box>
                           <Box>
-                            <Switch
-                              checked={activeSwitch === index}
-                              onChange={(e) => handleSwitchChange(e, index)}
-                            />
-                          </Box>
+                          <Switch
+  checked={bookings[index].taskStatus === "STARTED"}
+  onChange={(e) => handleSwitchChange(e, index)}
+/>
+
+
+</Box>
+
+
                         </Box>
                       </CardContent>
                     </DashboardCard>
@@ -326,13 +393,23 @@ const ServiceProviderDashboard: React.FC = () => {
 
               {/* Status Indicator */}
               <Chip 
-  label={history.status || 'Completed'} // Default to 'Completed' if status is not available
+  label={history.taskStatus}  // Show exact taskStatus from backend
   sx={{
-    backgroundColor: (history.status === 'Completed' || !history.status) ? '#4caf50' : '#d32f2f', // Set green for 'Completed' or no status
+    backgroundColor: 
+      history.taskStatus === 'COMPLETED' ? '#4caf50' :      // Green
+      history.taskStatus === 'NOT_STARTED' ? '#9e9e9e' :    // Grey
+      history.taskStatus === 'STARTED' ? '#ffa726' :        // Orange
+      history.taskStatus === 'IN_PROGRESS' ? '#1976d2' :    // Blue
+      history.taskStatus === 'CANCELLED' ? '#d32f2f' :      // Red
+      '#9e9e9e', // Default to grey if status is unknown
     color: 'white',
+    fontWeight: 'bold',
+    padding: '5px 10px',
+    borderRadius: '5px',
     marginTop: '10px'
   }} 
 />
+
 
             </Card>
           </Grid>

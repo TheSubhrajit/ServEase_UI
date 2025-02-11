@@ -60,8 +60,6 @@ const handleSelection = (hour: number, isEvening: boolean, time: number) => {
 
 const [missingSlots, setMissingSlots] = useState<string[]>([]);
 const hasCheckedRef = useRef(false); // Track if the function has been called
-// console.log("Service Provider Data: ", props.serviceproviderId);
-// console.log("Service time: ", props.availableTimeSlots);
 console.log("Service data: ", props);
 // Call this function to check missing time slots
 const checkMissingTimeSlots = () => {
@@ -91,50 +89,6 @@ if (!hasCheckedRef.current) {
   checkMissingTimeSlots(); 
   hasCheckedRef.current = true;
 }
-//for texting 
-// const data = [ 
-//   {
-//       "id": 252,
-//       "availableTimeSlots": [
-//           "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", 
-//           "07:00", "08:00", "09:00", "10:00", "11:00", "13:00", 
-//           "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", 
-//           "20:00", "21:00", "22:00", "23:00"
-//       ]
-//   },
-//   {
-//       "id": 253,
-//       "availableTimeSlots": [
-//           "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", 
-//           "07:00", "08:00", "09:00", "10:00", "11:00", "13:00", 
-//           "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", 
-//           "20:00", "21:00", "22:00", "23:00"
-//       ]
-//   },
-//   {
-//       "id": 302,
-//       "availableTimeSlots": [
-//           "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", 
-//           "06:00", "07:00", "09:00", "10:00", "11:00", "12:00", 
-//           "13:00", "15:00", "16:00", "17:00", "18:00", "19:00", 
-//           "20:00", "21:00", "22:00", "23:00"
-//       ]
-//   }
-// ];
-
-// // Step 1: Generate the full list of time slots (00:00 - 23:00)
-// const fullTimeSlots = Array.from({ length: 24 }, (_, i) => 
-//   `${i.toString().padStart(2, "0")}:00`
-// );
-
-// // Step 2: Find missing time slots for each entry
-// const missingTimeSlotsPerEntry = data.map(entry => {
-//   const missingSlots = fullTimeSlots.filter(slot => !entry.availableTimeSlots.includes(slot));
-//   return { id: entry.id, missingTimeSlots: missingSlots };
-// });
-
-// console.log("Missing Time Slots per ID:", missingTimeSlotsPerEntry);
-
 
   // Toggle expanded content
   const [uniqueMissingSlots, setUniqueMissingSlots] = useState<string[]>([]);
@@ -178,14 +132,14 @@ if (!hasCheckedRef.current) {
               console.log("Processed Slots with Missing Time Slots:", processedSlots);
               console.log("All Missing Time Slots:", processedSlots.map(slot => slot.missingTimeSlots));
   
-              // ✅ Ensure TypeScript correctly identifies it as string[]
+              //  Ensure TypeScript correctly identifies it as string[]
               const uniqueMissingSlots: string[] = Array.from(
                   new Set(processedSlots.flatMap(slot => slot.missingTimeSlots))
               ).sort() as string[];
   
               console.log("Unique Missing Time Slots:", uniqueMissingSlots);
   
-              // ✅ Store unique missing slots in state
+              // Store unique missing slots in state
               setUniqueMissingSlots(uniqueMissingSlots);
   
               setAvailableTimeSlots(processedSlots.map(entry => entry.uniqueAvailableTimeSlots));
@@ -210,6 +164,7 @@ if (!hasCheckedRef.current) {
         eveningSelection : eveningSelectionTime,
         morningSelection : morningSelectionTime,
         ...bookingType
+        
     }
 
     console.log('booking .... ', booking)

@@ -4,4 +4,5 @@ export type Bookingtype = {
     bookingPreference? : string;
     morningSelection ? : any;
     eveningSelection ? : any;
+    
 }

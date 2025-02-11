@@ -38,17 +38,32 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   const user = useSelector((state : any) => state.user?.value);
   const dispatch = useDispatch();
   const customerId = user?.customerDetails?.customerId || null;
+  // console.log('customer details:',user)
+  const currentLocation = user?.customerDetails?.currentLocation;
+  console.log("current location :",currentLocation)
+  const firstName = user?.customerDetails?.firstName;
+  const lastName = user?.customerDetails?.lastName;
+  const customerName = `${firstName} ${lastName}`;
+ 
 
+  const providerFullName = `${providerDetails.firstName} ${providerDetails.lastName}`;
+ 
+  
+  // Declare customerName in bookingDetails
   const bookingDetails: BookingDetails = {
     serviceProviderId: 0,
+    serviceProviderName: "",
     customerId: 0,
+    customerName: "", 
     startDate: "",
     endDate: "",
     engagements: "",
+    address: "",
     timeslot: "",
     monthlyAmount: 0,
     paymentMode: "CASH",
     bookingType: "",
+    taskStatus: "NOT_STARTED", 
     responsibilities: [],
   };
 
@@ -67,22 +82,20 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   };
 
   const handleCheckout = async () => {
-    
-
     try {
       const response = await axios.post(
         "http://3.110.168.35:3000/create-order",
-        { amount:  grandTotal }, // Amount in paise
+        { amount: grandTotal }, // Amount in paise
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-  
+
       if (response.status === 200) {
         const { id: orderId, currency, amount } = response.data;
-  
+
         // Razorpay options
         const options = {
           key: "rzp_test_lTdgjtSRlEwreA", // Replace with your Razorpay key
@@ -93,42 +106,41 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
           order_id: orderId,
           handler: async function (razorpayResponse: any) {
             alert(`Payment successful! Payment ID: ${razorpayResponse.razorpay_payment_id}`);
-            // setSnackbarMessage("Payment successful! Booking confirmed.");
-            // setSnackbarSeverity("success");
-            // setOpenSnackbar(true);
-            console.log("checkout => ",checkout)
+
+            console.log("checkout => ", checkout);
             bookingDetails.serviceProviderId = providerDetails.serviceproviderId;
-    bookingDetails.customerId = customerId;
-    bookingDetails.startDate = bookingTypeFromSelection?.startDate;
-    bookingDetails.endDate = bookingTypeFromSelection?.endDate;
-    bookingDetails.engagements = checkout.selecteditem[0].Service;
-    bookingDetails.paymentMode = "CASH";
-    bookingDetails.bookingType = bookingType.bookingPreference;
-    bookingDetails.serviceeType = checkout.selecteditem[0].Service;
-    bookingDetails.timeslot = [bookingType.morningSelection, bookingType.eveningSelection]
-    .filter(Boolean)
-    .join(', '); 
+            bookingDetails.serviceProviderName=providerFullName;
+            bookingDetails.customerId = customerId;
+            bookingDetails.customerName = customerName;  
+            bookingDetails.address=currentLocation;
+            bookingDetails.startDate = bookingTypeFromSelection?.startDate;
+            bookingDetails.endDate = bookingTypeFromSelection?.endDate;
+            bookingDetails.engagements = checkout.selecteditem[0].Service;
+            bookingDetails.paymentMode = "ONLINE"; 
+            bookingDetails.taskStatus= "NOT_STARTED";
+            bookingDetails.bookingType = bookingType.bookingPreference;
+            bookingDetails.serviceeType = checkout.selecteditem[0].Service;
+            bookingDetails.timeslot = [bookingType.morningSelection, bookingType.eveningSelection]
+              .filter(Boolean)
+              .join(', '); 
 
-    
-    bookingDetails.monthlyAmount = checkout.price;
+            bookingDetails.monthlyAmount = checkout.price;
 
-    const response = await axiosInstance.post(
-      "/api/serviceproviders/engagement/add",
-      bookingDetails,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+            const response = await axiosInstance.post(
+              "/api/serviceproviders/engagement/add",
+              bookingDetails,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
 
-    if(response.status === 201){
-        setSnackbarMessage(response.data || "Booking successful!");
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
-    }
-  
-            // You can call a backend API to confirm the booking here
+            if (response.status === 201) {
+              setSnackbarMessage(response.data || "Booking successful!");
+              setSnackbarSeverity("success");
+              setOpenSnackbar(true);
+            }
           },
           prefill: {
             name: user?.name || "John Doe",
@@ -139,7 +151,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
             color: "#3399cc",
           },
         };
-  
+
         const razorpay = new window.Razorpay(options);
         razorpay.open();
       }
@@ -150,7 +162,6 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
       setOpenSnackbar(true);
     }
   };
-
   const grandTotal = checkout['selecteditem']?.reduce((sum, service) => sum + service['Price /Month (INR)'], 0);
 
   return (
