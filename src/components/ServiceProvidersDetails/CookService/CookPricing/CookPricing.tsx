@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Card, Checkbox, FormControlLabel, FormGroup, Grid, Tab, Tabs, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, Checkbox, FormControlLabel, FormGroup, Grid, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 import './Cookpricing.css'
@@ -129,10 +129,8 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
       }, [mealType, pax, pricing]); // Recalculate when any of these change
 
     return (
-        
-       
-        <Card
-        style={{
+         <Card
+          style={{
           width: '100%',
           padding: '24px',
           borderRadius: '12px',
@@ -154,13 +152,14 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
             {/* <RestaurantMenuIcon color="primary" /> */}
             Service Type
           </Typography>
-    <Tabs
+      <Tabs className="custom-tabs"
       value={serviceType} // Ensure this matches a Tab's value
        // Update the state with the new value
       textColor="primary"
       indicatorColor="primary"
       aria-label="service type tabs"
       sx={{
+        width:"100%",
         backgroundColor: "#f1f1f1",
         borderRadius: "5px 5px 0 0",
         boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
@@ -170,26 +169,13 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
       {typeButtonsSelector.map((button) => (
         <Tab
           key={button.key}
-          value={button.key} // Match the key from typeButtonsSelector
-          label={button.value} // Display the value as the label
+          value={button.key}
+          label={button.value}
           onClick={() => handleForButtonClick(button.key)}
-          sx={{
-            borderRight: button.key !== typeButtonsSelector[typeButtonsSelector.length - 1].key ? "1px solid #ddd" : '',
-            padding: "10px 20px",
-            textTransform: "none",
-            fontWeight: "bold",
-            color: "#444",
-            width: "50%",
-            "&.Mui-selected": {
-              color: "#fff",
-              backgroundColor: "#1E90FF",
-            },
-            "&:hover": {
-              backgroundColor: "#ddd",
-            },
-          }}
+          className="custom-tab"
         />
       ))}
+       
     </Tabs>
      {/* Meal Type Selection */}
      <Typography variant="h6" sx={{ marginBottom: 2, fontWeight: "bold" }}>
@@ -277,14 +263,30 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
         </Typography>
       
       </Card>
+      <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: { xs: "row", sm: "row" }, // Column on mobile, row on bigger screens
+        gap: 1,
+        marginTop:1,
+        width: "100%", // Ensures full width
+        padding: "10px", // Prevents content from touching edges
+      }}
+    >
+
        {/* Add to Cart Button */}
        <Button
         type="submit"
         variant="outlined"
         sx={{
+          flex: 1,
           float: "right",
           margin: "10px",
+          minWidth: "150px",
           height: 50,
+          marginBottom:1,
           textTransform: "none",
           borderRadius: "25px",
           color: "#1e88e5",
@@ -301,16 +303,23 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
       </Button>
 
       <Button
-        type="submit"
-        variant="outlined"
-        style={{ float: 'right', margin: '10px' }}
-        endIcon={<AddShoppingCartIcon />}
-        onClick={handleProceedToCheckout}
-        disabled={!addtoCartSelected} // Disable the button if no items are selected
-      >
-        Proceed to checkout
-      </Button>
-      
+            variant="outlined"
+            sx={{  flex: 1,
+              minWidth: "150px",
+              height: 50,
+              textTransform: "none",
+              borderRadius: "25px", }}
+            endIcon={<AddShoppingCartIcon />}
+            onClick={handleProceedToCheckout}
+            disabled={!addtoCartSelected} // Disable if nothing added to cart
+          >
+            Proceed to Checkout
+          </Button>
+      <h1></h1>
+      <h1></h1>
+      </Box>
+      <h1></h1>
+      <h1></h1>
        </Grid>
     </Grid>
     </Card>
