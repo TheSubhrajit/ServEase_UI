@@ -74,19 +74,38 @@ const ServiceProviderDashboard: React.FC = () => {
     }
   };
 
-  const applyLeave = () => {
+  const applyLeave = async () => {
     if (selectedDate) {
       const dateKey = dayjs(selectedDate).format("YYYY-MM-DD");
-
-      // Mark as absent if it was initially unmarked (dates outside Jan 1-28)
+  
+      // Update local state
       if (!attendanceData[dateKey]) {
         setAttendanceData((prev) => ({
           ...prev,
           [dateKey]: "Absent",
         }));
       }
+  
+      // Prepare leave data
+      const leaveData = {
+        serviceproviderId: 2, // Replace with dynamic ID if needed
+        fromDate: dateKey,
+        toDate: dateKey, // Same as fromDate for a single-day leave
+        leaveType: "PAID",
+      };
+  
+      try {
+        const response = await axiosInstance.post(
+          "/api/serviceproviders/add-leave",
+          leaveData
+        );
+        console.log("Leave applied successfully:", response.data);
+      } catch (error) {
+        console.error("Error applying leave:", error);
+      }
     }
   };
+  
 
 
   // const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
