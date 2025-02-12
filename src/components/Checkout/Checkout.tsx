@@ -1,4 +1,4 @@
-import { Card, Button, Box, Typography, Snackbar, Alert, IconButton, Tooltip } from "@mui/material";
+import { Card, Button, Box, Typography, Snackbar, Alert, IconButton, Tooltip, DialogContent, Dialog } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BookingDetails } from "../../types/engagementRequest";
@@ -7,6 +7,9 @@ import axiosInstance from "../../services/axiosInstance";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import axios from "axios";
+import Login from "../Login/Login";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
 
 // Define the structure of each item in selectedItems
 interface Item {
@@ -32,6 +35,8 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [loggedInUser , setLoggedInUser ] = useState();
 
   const cart = useSelector((state : any) => state.cart?.value);
   const bookingType = useSelector((state : any) => state.bookingType?.value)
@@ -76,6 +81,21 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
     const updatedCheckout = checkout['selecteditem']?.filter((_, i) => i !== index);
     setCheckout(updatedCheckout);
   };
+
+  
+  useEffect(() => {
+   
+      if(user?.role=== 'CUSTOMER'){
+        setLoggedInUser(user);
+      }
+    }, [user]);
+
+    const handleBookingPage = (e : string | undefined) =>{
+      setOpen(false)
+    }
+  const handleLogin = () =>{
+    setOpen(true)
+  }
 
   const handleClose = () => {
     setOpenSnackbar(false);
@@ -267,55 +287,76 @@ Total Price: Rs. {item['Price /Month (INR)']}
 )}
 </Box>
 
-      {/* Fixed Footer */}
-      {checkout['selecteditem']?.length > 0 && (
-        <Box sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: "20px",
-          backgroundColor: "#fff",
-          zIndex: 10,
-          boxShadow: "0 -4px 8px rgba(0, 0, 0, 0.1)",
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          height: '8%', 
-          marginBottom:'65px' // Footer height set to 8%
-        }}>
-          <div style={{
+   {/* Fixed Footer */}
+{checkout['selecteditem']?.length > 0 && (
+  <Box sx={{
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: "20px",
+    backgroundColor: "#fff",
+    zIndex: 10,
+    boxShadow: "0 -4px 8px rgba(0, 0, 0, 0.1)",
+    display: "flex",
+    justifyContent: "end", // Center items horizontally
+    alignItems: "center",
+    height: '8%', 
+    marginBottom: '65px' // Footer height set to 8%
+  }}>
+    <div style={{
+      fontWeight: "600",
+      fontSize: "1.1rem",
+      color: "#2e7d32",
+      backgroundColor: "#e8f5e9",
+      border: "1px solid #2e7d32",
+      padding: "8px 16px",
+      borderRadius: "6px",
+      textAlign: "center",
+      marginRight: "20px",
+    }}>
+      Grand Total: Rs. {grandTotal}
+    </div>
+
+    {!loggedInUser && (
+      <Button onClick={handleLogin} variant="outlined" style={{ marginRight: "20px" }}>
+        Login
+      </Button>
+    )}
+
+    <div style={{ float: 'right', display: 'flex' }}>
+      <Tooltip
+        style={{ display: loggedInUser && checkout['selecteditem'].length > 0 ? 'none' : 'block' }}
+        title="You need to login  to proceed with checkout"
+      >
+        <IconButton>
+          <InfoOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+      
+      <Tooltip title="Proceed to checkout">
+        <Button
+          startIcon={<ShoppingCartCheckoutIcon />}
+          variant="contained"
+          style={{
             fontWeight: "600",
-            fontSize: "1.1rem",
-            color: "#2e7d32",
-            backgroundColor: "#e8f5e9",
-            border: "1px solid #2e7d32",
-            padding: "8px 16px",
-            borderRadius: "6px",
-            textAlign: "center",
-            marginRight: "20px",
-          }}>
-            Grand Total: Rs. {grandTotal}
-          </div>
-          <Tooltip title="Proceed to checkout">
-            <Button
-              startIcon={<ShoppingCartCheckoutIcon />}
-              variant="contained"
-              style={{
-                fontWeight: "600",
-                color: "#fff",
-                background: "linear-gradient(to right, #1a73e8, #1565c0)",
-                border: "1px solid rgb(63, 70, 146)",
-                padding: "10px 24px",
-                borderRadius: "8px",
-              }}
-              onClick={handleCheckout}
-            >
-              Checkout
-            </Button>
-          </Tooltip>
-        </Box>
-      )}
+            color: "#fff",
+            background: loggedInUser ? "linear-gradient(to right, #1a73e8, #1565c0)" : "#b0bec5",  // Grey when disabled
+            border: "1px solid rgb(63, 70, 146)",
+            padding: "10px 24px",
+            borderRadius: "8px",
+          }}
+          onClick={handleCheckout}
+          disabled={!loggedInUser}  // Disable if not logged in or items are not selected
+        >
+          Checkout
+        </Button>
+      </Tooltip>
+    </div>
+  </Box>
+)}
+
+
 
       {/* Snackbar */}
       <Snackbar
@@ -334,7 +375,19 @@ Total Price: Rs. {item['Price /Month (INR)']}
           {snackbarMessage}
         </Alert>
       </Snackbar>
+       <Dialog 
+          style={{padding:'0px'}}
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+              <DialogContent>
+              <Login bookingPage={handleBookingPage}/>
+              </DialogContent>
+            </Dialog>
     </Box>
+    
   );
 };
 

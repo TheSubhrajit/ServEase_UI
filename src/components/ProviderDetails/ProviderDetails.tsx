@@ -384,83 +384,20 @@ if (!hasCheckedRef.current) {
 </div>
 <div>
   
-  {/* Display Missing Time Slots */}
-  {/* {missingSlots.length > 0 ? (
-    <div className="missing-time-slots-section">
-      <h3>Missing Time Slots:</h3>
-      <div className="missing-time-buttons">
-        {missingSlots.map((slot, index) => (
-          <button
-            key={index}
-            className="missing-time-slot-button"
-            style={{
-              backgroundColor: '#f44336', // Red color for missing slots
-              color: 'white',
-              padding: '10px 20px',
-              margin: '5px',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer', // Make it clickable
-            }}
-            onClick={() => {
-              // Handle the click event here
-              console.log(`Clicked on slot: ${slot}`);
-            }}
-          >
-            {slot}
-          </button>
-        ))}
-      </div>
-    </div>
-  ) : (
-    <p>All expected time slots are available.</p>
-  )} */}
+ 
 </div>
 
-
-
-{/* <div className="missing-time-slots">
-  <Typography variant="subtitle1" className="section-title">
-    Missing Time Slots (Unavailable)
-  </Typography>
-
-  <div className="time-slot-container">
-    {missingTimeSlots.map((missingSlot, index) => (
-      <div key={index}>
-        <button
-          className="missing-time-button"
-          disabled // Disable these buttons by default
-          style={{
-            backgroundColor: '#bdbdbd',
-            color: '#888',
-            padding: '12px 24px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'not-allowed',
-            fontSize: '16px',
-            display: 'inline-block',
-            textAlign: 'center',
-            margin: '10px 0',
-          }}
-        >
-          {missingSlot}
-        </button>
-      </div>
-    ))}
-  </div>
-</div> */}
-
               <div style={{ float: 'right', display: 'flex' }}>
-                {!loggedInUser && <Button onClick={handleLogin} variant="outlined">Login</Button>}
-                <Tooltip
+                {/* {!loggedInUser && <Button onClick={handleLogin} variant="outlined">Login</Button>} */}
+                {/* <Tooltip
                   style={{ display: isBookNowEnabled ? 'none' : 'block' }}
                   title="You need to login and select your timings to continue booking"
                 >
                   <IconButton>
                     <InfoOutlinedIcon />
                   </IconButton>
-                </Tooltip>
-                <Button onClick={handleBookNow} disabled={!isBookNowEnabled} variant="outlined">Book Now</Button>
+                </Tooltip> */}
+                <Button onClick={handleBookNow}  variant="outlined">Book Now</Button>
               </div>
 
             </div>
