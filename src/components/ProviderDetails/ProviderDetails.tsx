@@ -60,8 +60,6 @@ const handleSelection = (hour: number, isEvening: boolean, time: number) => {
 
 const [missingSlots, setMissingSlots] = useState<string[]>([]);
 const hasCheckedRef = useRef(false); // Track if the function has been called
-// console.log("Service Provider Data: ", props.serviceproviderId);
-// console.log("Service time: ", props.availableTimeSlots);
 console.log("Service data: ", props);
 // Call this function to check missing time slots
 const checkMissingTimeSlots = () => {
@@ -91,50 +89,6 @@ if (!hasCheckedRef.current) {
   checkMissingTimeSlots(); 
   hasCheckedRef.current = true;
 }
-//for texting 
-// const data = [ 
-//   {
-//       "id": 252,
-//       "availableTimeSlots": [
-//           "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", 
-//           "07:00", "08:00", "09:00", "10:00", "11:00", "13:00", 
-//           "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", 
-//           "20:00", "21:00", "22:00", "23:00"
-//       ]
-//   },
-//   {
-//       "id": 253,
-//       "availableTimeSlots": [
-//           "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", 
-//           "07:00", "08:00", "09:00", "10:00", "11:00", "13:00", 
-//           "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", 
-//           "20:00", "21:00", "22:00", "23:00"
-//       ]
-//   },
-//   {
-//       "id": 302,
-//       "availableTimeSlots": [
-//           "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", 
-//           "06:00", "07:00", "09:00", "10:00", "11:00", "12:00", 
-//           "13:00", "15:00", "16:00", "17:00", "18:00", "19:00", 
-//           "20:00", "21:00", "22:00", "23:00"
-//       ]
-//   }
-// ];
-
-// // Step 1: Generate the full list of time slots (00:00 - 23:00)
-// const fullTimeSlots = Array.from({ length: 24 }, (_, i) => 
-//   `${i.toString().padStart(2, "0")}:00`
-// );
-
-// // Step 2: Find missing time slots for each entry
-// const missingTimeSlotsPerEntry = data.map(entry => {
-//   const missingSlots = fullTimeSlots.filter(slot => !entry.availableTimeSlots.includes(slot));
-//   return { id: entry.id, missingTimeSlots: missingSlots };
-// });
-
-// console.log("Missing Time Slots per ID:", missingTimeSlotsPerEntry);
-
 
   // Toggle expanded content
   const [uniqueMissingSlots, setUniqueMissingSlots] = useState<string[]>([]);
@@ -178,14 +132,14 @@ if (!hasCheckedRef.current) {
               console.log("Processed Slots with Missing Time Slots:", processedSlots);
               console.log("All Missing Time Slots:", processedSlots.map(slot => slot.missingTimeSlots));
   
-              // ✅ Ensure TypeScript correctly identifies it as string[]
+              //  Ensure TypeScript correctly identifies it as string[]
               const uniqueMissingSlots: string[] = Array.from(
                   new Set(processedSlots.flatMap(slot => slot.missingTimeSlots))
               ).sort() as string[];
   
               console.log("Unique Missing Time Slots:", uniqueMissingSlots);
   
-              // ✅ Store unique missing slots in state
+              // Store unique missing slots in state
               setUniqueMissingSlots(uniqueMissingSlots);
   
               setAvailableTimeSlots(processedSlots.map(entry => entry.uniqueAvailableTimeSlots));
@@ -210,6 +164,7 @@ if (!hasCheckedRef.current) {
         eveningSelection : eveningSelectionTime,
         morningSelection : morningSelectionTime,
         ...bookingType
+        
     }
 
     console.log('booking .... ', booking)
@@ -429,83 +384,20 @@ if (!hasCheckedRef.current) {
 </div>
 <div>
   
-  {/* Display Missing Time Slots */}
-  {/* {missingSlots.length > 0 ? (
-    <div className="missing-time-slots-section">
-      <h3>Missing Time Slots:</h3>
-      <div className="missing-time-buttons">
-        {missingSlots.map((slot, index) => (
-          <button
-            key={index}
-            className="missing-time-slot-button"
-            style={{
-              backgroundColor: '#f44336', // Red color for missing slots
-              color: 'white',
-              padding: '10px 20px',
-              margin: '5px',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer', // Make it clickable
-            }}
-            onClick={() => {
-              // Handle the click event here
-              console.log(`Clicked on slot: ${slot}`);
-            }}
-          >
-            {slot}
-          </button>
-        ))}
-      </div>
-    </div>
-  ) : (
-    <p>All expected time slots are available.</p>
-  )} */}
+ 
 </div>
 
-
-
-{/* <div className="missing-time-slots">
-  <Typography variant="subtitle1" className="section-title">
-    Missing Time Slots (Unavailable)
-  </Typography>
-
-  <div className="time-slot-container">
-    {missingTimeSlots.map((missingSlot, index) => (
-      <div key={index}>
-        <button
-          className="missing-time-button"
-          disabled // Disable these buttons by default
-          style={{
-            backgroundColor: '#bdbdbd',
-            color: '#888',
-            padding: '12px 24px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'not-allowed',
-            fontSize: '16px',
-            display: 'inline-block',
-            textAlign: 'center',
-            margin: '10px 0',
-          }}
-        >
-          {missingSlot}
-        </button>
-      </div>
-    ))}
-  </div>
-</div> */}
-
               <div style={{ float: 'right', display: 'flex' }}>
-                {!loggedInUser && <Button onClick={handleLogin} variant="outlined">Login</Button>}
-                <Tooltip
+                {/* {!loggedInUser && <Button onClick={handleLogin} variant="outlined">Login</Button>} */}
+                {/* <Tooltip
                   style={{ display: isBookNowEnabled ? 'none' : 'block' }}
                   title="You need to login and select your timings to continue booking"
                 >
                   <IconButton>
                     <InfoOutlinedIcon />
                   </IconButton>
-                </Tooltip>
-                <Button onClick={handleBookNow} disabled={!isBookNowEnabled} variant="outlined">Book Now</Button>
+                </Tooltip> */}
+                <Button onClick={handleBookNow}  variant="outlined">Book Now</Button>
               </div>
 
             </div>
