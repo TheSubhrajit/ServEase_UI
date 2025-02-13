@@ -136,7 +136,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
             bookingDetails.startDate = bookingTypeFromSelection?.startDate;
             bookingDetails.endDate = bookingTypeFromSelection?.endDate;
             bookingDetails.engagements = checkout.selecteditem[0].Service;
-            bookingDetails.paymentMode = "ONLINE"; 
+            bookingDetails.paymentMode = "CASH"; 
             bookingDetails.taskStatus= "NOT_STARTED";
             bookingDetails.bookingType = bookingType.bookingPreference;
             bookingDetails.serviceeType = checkout.selecteditem[0].Service;

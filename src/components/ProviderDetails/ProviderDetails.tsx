@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormLabel, IconButton, Paper, Slider, TextField, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import "./ProviderDetails.css"; 
 import AddIcon from '@mui/icons-material/Add';
@@ -204,8 +204,40 @@ if (!hasCheckedRef.current) {
       setOpen(false)
     }
 
-
-
+    const [sliderValue, setSliderValue] = useState([8, 12]); // Default start and end values
+    const [selectedHours, setSelectedHours] = useState(4); // Default selected hours (8 AM to 12 PM is 4 hours)
+  
+    // Calculate the selected hours whenever sliderValue changes
+    const calculateHours = (values) => {
+      const start = values[0];
+      const end = values[1];
+      setSelectedHours(end - start); // Subtract start from end to calculate the duration
+    };
+  
+    // Handle the slider value change
+    const handleSliderChange = (event, newValue) => {
+      // Ensure the difference between start and end is at least 4 hours
+      if (newValue[1] - newValue[0] < 4) {
+        // Adjust the end value to maintain a 4-hour gap
+        setSliderValue([newValue[0], newValue[0] + 4]);
+      } else if (newValue[0] < newValue[1] && newValue[1] <= 24) {
+        // If the new value is valid (end is less than or equal to 24)
+        setSliderValue(newValue);
+      }
+    };
+  
+    // Format time in 12-hour format
+    const formatTime = (value) => {
+      const hours = value;
+      const period = hours >= 12 ? "PM" : "AM";
+      const formattedHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours; // 0 should display as 12 AM
+      return `${formattedHours} ${period}`;
+    };
+  
+    // Call calculateHours when sliderValue changes or initially when component mounts
+    useEffect(() => {
+      calculateHours(sliderValue);
+    }, [sliderValue]);
   return (
     <><Paper elevation={3}>
       <div className="container-provider">
@@ -295,96 +327,124 @@ if (!hasCheckedRef.current) {
                   {props.otherServices || "N/A"}
                 </span>
               </Typography>
-
+              
               <div className="availability-section">
-  <div className="availability-header">
-    <Typography variant="subtitle1" className="section-title">
-      Morning Availability (6 AM - 12 PM)
-    </Typography>
+              {(props.housekeepingRole === "MAID" || props.housekeepingRole === "COOK") && (
+  <div>
+    {/* Morning Availability Section */}
+    <div className="availability-header">
+      <Typography variant="subtitle1" className="section-title">
+        Morning Availability (6 AM - 12 PM)
+      </Typography>
 
-    {/* Morning Availability Buttons */}
-    <div className="time-slot-container">
-  {missingSlots
-    .filter((missingSlot) =>
-      [6, 7, 8, 9, 10, 11].some(
-        (hour) => moment({ hour }).format("HH:mm") === missingSlot
-      )
-    )
-    .map((missingSlot, index) => {
-      const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour
-      const startTime = moment({ hour }).format("HH:mm");
-      const endTime = moment({ hour: hour + 1 }).format("HH:mm");
-      const timeRange = `${startTime}-${endTime}`;
+      <div className="time-slot-container">
+        {missingSlots
+          .filter((missingSlot) =>
+            [6, 7, 8, 9, 10, 11].some(
+              (hour) => moment({ hour }).format("HH:mm") === missingSlot
+            )
+          )
+          .map((missingSlot, index) => {
+            const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour
+            const startTime = moment({ hour }).format("HH:mm");
+            const endTime = moment({ hour: hour + 1 }).format("HH:mm");
+            const timeRange = `${startTime}-${endTime}`;
 
-      // ✅ Use uniqueMissingSlots for disabling
-      const isDisabled = uniqueMissingSlots.includes(startTime);
+            // ✅ Use uniqueMissingSlots for disabling
+            const isDisabled = uniqueMissingSlots.includes(startTime);
 
-      return (
-        <div key={index}>
-          <button
-            className={`availability-button ${morningSelection === index ? "selected" : ""}`}
-            onClick={() => handleSelection(index, false, hour)}
-            disabled={isDisabled} // Disable if it's in uniqueMissingSlots
-            style={{
-              backgroundColor: isDisabled ? '#bdbdbd' : '',
-              cursor: isDisabled ? 'not-allowed' : 'pointer',
-              opacity: isDisabled ? 0.6 : 1,
-            }}
-          >
-            {timeRange}
-          </button>
-        </div>
-      );
-    })}
-</div>
+            return (
+              <div key={index}>
+                <button
+                  className={`availability-button ${morningSelection === index ? "selected" : ""}`}
+                  onClick={() => handleSelection(index, false, hour)}
+                  disabled={isDisabled} // Disable if it's in uniqueMissingSlots
+                  style={{
+                    backgroundColor: isDisabled ? '#bdbdbd' : '',
+                    cursor: isDisabled ? 'not-allowed' : 'pointer',
+                    opacity: isDisabled ? 0.6 : 1,
+                  }}
+                >
+                  {timeRange}
+                </button>
+              </div>
+            );
+          })}
+      </div>
+    </div>
 
+    {/* Evening Availability Section */}
+    <div className="availability-header">
+      <Typography variant="subtitle1" className="section-title">
+        Evening Availability (12 PM - 8 PM)
+      </Typography>
+
+      <div className="time-slot-container">
+        {missingSlots
+          .filter((missingSlot) =>
+            [12, 13, 14, 15, 16, 17, 18, 19].some(
+              (hour) => moment({ hour }).format("HH:mm") === missingSlot
+            )
+          )
+          .map((missingSlot, index) => {
+            const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour
+            const startTime = moment({ hour }).format("HH:mm");
+            const endTime = moment({ hour: hour + 1 }).format("HH:mm");
+            const timeRange = `${startTime}-${endTime}`;
+
+            // Check if this time slot should be disabled based on unique missing slots
+            const isDisabled = uniqueMissingSlots.includes(startTime);
+
+            return (
+              <div key={index}>
+                <button
+                  className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
+                  onClick={() => handleSelection(index, true, hour)}
+                  disabled={isDisabled} // Disable if it's in uniqueMissingSlots
+                  style={{
+                    backgroundColor: isDisabled ? '#bdbdbd' : '',
+                    cursor: isDisabled ? 'not-allowed' : 'pointer',
+                    opacity: isDisabled ? 0.6 : 1,
+                  }}
+                >
+                  {timeRange}
+                </button>
+              </div>
+            );
+          })}
+      </div>
+    </div>
   </div>
-
-  <div className="availability-header">
-    <Typography variant="subtitle1" className="section-title">
-      Evening Availability (12 PM - 8 PM)
-    </Typography>
-
-    <div className="time-slot-container">
-    {missingSlots
-    .filter((missingSlot) =>
-      [12, 13, 14, 15, 16, 17, 18, 19].some(
-        (hour) => moment({ hour }).format("HH:mm") === missingSlot
-      )
-    )
-    .map((missingSlot, index) => {
-      const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour
-      const startTime = moment({ hour }).format("HH:mm");
-      const endTime = moment({ hour: hour + 1 }).format("HH:mm");
-      const timeRange = `${startTime}-${endTime}`;
-
-      // Check if this time slot should be disabled based on unique missing slots
-      const isDisabled = uniqueMissingSlots.includes(startTime);
-
-      return (
-        <div key={index}>
-          <button
-            className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
-            onClick={() => handleSelection(index, true, hour)}
-            disabled={isDisabled} // Disable if it's in uniqueMissingSlots
-            style={{
-              backgroundColor: isDisabled ? '#bdbdbd' : '',
-              cursor: isDisabled ? 'not-allowed' : 'pointer',
-              opacity: isDisabled ? 0.6 : 1,
-            }}
-          >
-            {timeRange}
-          </button>
-        </div>
-      );
-    })}
+)}
+{props.housekeepingRole === "NANNY" && (
+     <div className="form-group" style={{ display: "flex" }}>
+     <FormLabel style={{ marginRight: "20px", fontWeight: "bold" }}>
+       Select timing:
+     </FormLabel>
+     <Slider
+       value={sliderValue}
+       onChange={handleSliderChange}
+       valueLabelDisplay="on"
+       valueLabelFormat={(value) => `${formatTime(value)}`}
+       min={0}  // Start from 12 AM (0 hours)
+       max={23} // End at 11 PM (23 hours)
+       step={1}
+       marks={[
+         { value: 0, label: '12 AM' },
+         { value: 6, label: '6 AM' },
+         { value: 12, label: '12 PM' },
+         { value: 18, label: '6 PM' },
+         { value: 23, label: '11 PM' },
+       ]}
+       style={{ width: "600px" }}
+       disableSwap // Prevents the handles from swapping positions
+     />
+   </div>
+   
+)}  <div>
+<p>Selected time range: {formatTime(sliderValue[0])} to {formatTime(sliderValue[1])}</p>
+<p>Number of hours selected: {selectedHours} hours</p>
 </div>
-
-  </div>
-</div>
-<div>
-  
- 
 </div>
 
               <div style={{ float: 'right', display: 'flex' }}>
