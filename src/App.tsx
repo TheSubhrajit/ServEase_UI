@@ -99,6 +99,7 @@ if (userRole === "CUSTOMER") {
   };
 
   const renderContent = () => {
+    
     if (!selection) {
       return <ServiceProviderContext.Provider value={selectedBookingTypeValue}>
         <Landingpage sendDataToParent={handleDataFromChild} bookingType={handleSelectedBookingType} />
@@ -134,7 +135,8 @@ if (userRole === "CUSTOMER") {
       <div className="header-class">
         <Header sendDataToParent={handleDataFromChild} />
       </div>
-      <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
+     {/* <ServiceProviderDashboard />  */}
+       <section className="flex-grow flex justify-center items-center px-4 py-6 relative">
         {renderContent()}
       </section>
       <footer className="footer-container">

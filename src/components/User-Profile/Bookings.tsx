@@ -29,6 +29,16 @@ interface Booking {
   role: string;
   timeSlot: string;
   date: string;
+  startDate: string;
+  endDate: string;
+  bookingType: string;
+  monthlyAmount: number;
+  paymentMode: string;
+  address: string;
+  customerName: string;
+  serviceProviderName: string;
+  taskStatus: string;
+  bookingDate: string;
 }
 
 const Booking: React.FC = () => {
@@ -37,7 +47,6 @@ const Booking: React.FC = () => {
   const [pastBookings, setPastBookings] = useState<Booking[]>([]);
   const [futureBookings, setFutureBookings] = useState<Booking[]>([]);
 
-  // Get user data from Redux store
   const user = useSelector((state: RootState) => state.user as UserState);
   const customerId = user?.value?.customerDetails?.customerId ?? null;
 
@@ -47,21 +56,30 @@ const Booking: React.FC = () => {
   useEffect(() => {
     if (customerId !== null) {
       axiosInstance
-        .get(`http://43.205.212.94:8080/api/serviceproviders/get-sp-booking-history`)
+        .get(`api/serviceproviders/get-sp-booking-history`)
         .then((response) => {
           const { past = [], current = [], future = [] } = response.data || {};
 
-          // Ensure data is an array before filtering
           const mapBookingData = (data: any[]) =>
             Array.isArray(data)
               ? data
-                  .filter((item) => item.customerId === customerId) // Filter for this customer
+                  .filter((item) => item.customerId === customerId)
                   .map((item) => ({
                     id: item.requestId,
-                    name: item.customerId.toString(),
-                    role: item.housekeepingRole,
-                    timeSlot: item.timeSlotlist,
+                    name: item.customerName,
+                    role: item.serviceeType,
+                    timeSlot: item.timeslot,
                     date: new Date(item.startDate).toLocaleDateString(),
+                    startDate: item.startDate,
+                    endDate: item.endDate,
+                    bookingType: item.bookingType,
+                    monthlyAmount: item.monthlyAmount,
+                    paymentMode: item.paymentMode,
+                    address: item.address,
+                    customerName: item.customerName,
+                    serviceProviderName: item.serviceProviderName,
+                    taskStatus: item.taskStatus,
+                    bookingDate: new Date(item.bookingDate).toLocaleString(),
                   }))
               : [];
 
@@ -86,7 +104,7 @@ const Booking: React.FC = () => {
           <Card key={booking.id} elevation={3} sx={{ width: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                {booking.name}
+              Service Provider: {booking.serviceProviderName}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 Role: {booking.role}
@@ -95,7 +113,34 @@ const Booking: React.FC = () => {
                 Time Slot: {booking.timeSlot}
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                Date: {booking.date}
+                Start Date: {booking.startDate}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                End Date: {booking.endDate}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Booking Type: {booking.bookingType}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Monthly Amount: ₹{booking.monthlyAmount}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Payment Mode: {booking.paymentMode}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Address: {booking.address}
+              </Typography>
+              {/* <Typography variant="body2" color="textSecondary">
+                Customer: {booking.customerName}
+              </Typography> */}
+              {/* <Typography variant="body2" color="textSecondary">
+                Service Provider: {booking.serviceProviderName}
+              </Typography> */}
+              <Typography variant="body2" color="textSecondary">
+                Task Status: {booking.taskStatus}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Booking Date: {booking.bookingDate}
               </Typography>
             </CardContent>
           </Card>
