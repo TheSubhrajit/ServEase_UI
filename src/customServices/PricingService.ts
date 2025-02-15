@@ -1,4 +1,4 @@
-export const getPriceByvalue = ( data , pax ) =>{
+export const getPriceByvalue = ( data : any | undefined , pax : any | undefined ) =>{
     const paxToNumber = Number(pax);
     const rate = Number(data["Price /Month (INR)"])
     let increasedPrice = 0;
@@ -11,9 +11,6 @@ export const getPriceByvalue = ( data , pax ) =>{
         const basePrice = rate;
         const extraPeople = paxToNumber - 3;
         increasedPrice = Number(basePrice) + ( basePrice * 0.2 * extraPeople);
-        console.log("base price => ", basePrice)
-        console.log("extraPeople => ", extraPeople)
-        console.log("increased price => ", increasedPrice)
         return increasedPrice;
       } 
       else if (paxToNumber > 6 && paxToNumber <= 9) {
