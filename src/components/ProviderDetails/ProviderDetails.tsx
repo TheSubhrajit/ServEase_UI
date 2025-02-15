@@ -11,6 +11,10 @@ import { add } from "../../features/bookingType/bookingTypeSlice";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Login from "../Login/Login";
 import axiosInstance from "../../services/axiosInstance";
+import TimeRange from 'react-time-range';
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
 
 const ProviderDetails = (props) => {
 const [isExpanded, setIsExpanded] = useState(false);
@@ -23,6 +27,10 @@ const [isExpanded, setIsExpanded] = useState(false);
   const [engagementData, setEngagementData] = useState(null);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [missingTimeSlots, setMissingTimeSlots] = useState<string[]>([]);
+  const [startTime, setStartTime] = useState("08:00");
+  const [endTime, setEndTime] = useState("12:00");
+  const [warning, setWarning] = useState("");
+  
 
   const dietImages = {
     VEG: "veg.png",
@@ -160,14 +168,24 @@ if (!hasCheckedRef.current) {
   };
 
   const handleBookNow = () => {
-    const booking: Bookingtype = {
+    let booking : Bookingtype;
+    if(props.housekeepingRole !== "NANNY"){
+       booking = {
         eveningSelection : eveningSelectionTime,
         morningSelection : morningSelectionTime,
         ...bookingType
         
     }
+    } else {
+      booking = {
+        timeRange: `${startTime} - ${endTime}`,
+        ...bookingType
+    };
+     
+    }
 
-    console.log('booking .... ', booking)
+    
+
     dispatch(add(booking)) 
 
     const providerDetails = {
@@ -185,6 +203,8 @@ if (!hasCheckedRef.current) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  
 
   const dietImage = dietImages[props.diet];
 
@@ -204,6 +224,30 @@ if (!hasCheckedRef.current) {
       setOpen(false)
     }
 
+    const handleStartTimeChange = (newStartTime) => {
+      setStartTime(newStartTime);
+      validateTimeRange(newStartTime, endTime);
+    };
+  
+    const handleEndTimeChange = (newEndTime) => {
+      setEndTime(newEndTime);
+      validateTimeRange(startTime, newEndTime);
+    };
+  
+    const validateTimeRange = (start, end) => {
+      const [startHours, startMinutes] = start.split(":").map(Number);
+      const [endHours, endMinutes] = end.split(":").map(Number);
+      
+      const startTotalMinutes = startHours * 60 + startMinutes;
+      const endTotalMinutes = endHours * 60 + endMinutes;
+      
+      if (endTotalMinutes - startTotalMinutes < 240) {
+        setWarning("The time range must be at least 4 hours.");
+      } else {
+        setWarning("");
+      }
+    };
+  
 
 
   return (
@@ -296,6 +340,8 @@ if (!hasCheckedRef.current) {
                 </span>
               </Typography>
 
+              {props.housekeepingRole !== "NANNY" && (
+
               <div className="availability-section">
   <div className="availability-header">
     <Typography variant="subtitle1" className="section-title">
@@ -382,6 +428,34 @@ if (!hasCheckedRef.current) {
 
   </div>
 </div>
+)}
+{props.housekeepingRole === "NANNY" && (
+ <div className="flex flex-col items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md w-80" style={{width:'100%'}}>
+ <h2 className="text-xl font-semibold">Select Time Range</h2>
+ <div className="flex items-center gap-2">
+   <label className="text-gray-700">Start:</label>
+   <TimePicker
+     onChange={handleStartTimeChange}
+     value={startTime}
+     disableClock
+     format="HH:mm"
+     className="border p-2 rounded"
+   />
+ </div>
+ <div className="flex items-center gap-2">
+   <label className="text-gray-700">End:</label>
+   <TimePicker
+     value={endTime}
+     onChange={handleEndTimeChange}
+     disableClock
+     format="HH:mm"
+     className="border p-2 rounded"
+   />
+ </div>
+ <p className="text-gray-600">Selected Time: {startTime} - {endTime}</p>
+</div>
+
+)}
 <div>
   
  
@@ -397,7 +471,8 @@ if (!hasCheckedRef.current) {
                     <InfoOutlinedIcon />
                   </IconButton>
                 </Tooltip> */}
-                <Button onClick={handleBookNow}  variant="outlined">Book Now</Button>
+                {warning && <p className="text-red-500">{warning}</p>}
+                {!warning && <Button onClick={handleBookNow}  variant="outlined">Book Now</Button>}
               </div>
 
             </div>
