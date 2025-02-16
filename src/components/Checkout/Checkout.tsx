@@ -181,8 +181,9 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
-  };
-  const grandTotal = checkout['selecteditem']?.reduce((sum, service) => sum + service['Price /Month (INR)'], 0);
+  };  
+  const grandTotal = checkout.price;
+  
 
   return (
     <Box sx={{
@@ -269,18 +270,7 @@ alignItems: "center",
 {/* <Typography variant="body1"><strong>People Range:</strong> {item.entry.peopleRange}</Typography>
 <Typography variant="body1"><strong>Frequency:</strong> {item.entry.frequency} times a week</Typography>
 <Typography variant="body1"><strong>Price per Month:</strong> Rs.{item.entry.pricePerMonth}</Typography> */}
-<Typography variant="body1" sx={{
-color: "#2e7d32",
-backgroundColor: "#e8f5e9",
-border: "1px solid #2e7d32",
-padding: "6px",
-borderRadius: "6px",
-textAlign: "center",
-fontWeight: "600",
-marginTop: "12px",
-}}>
-Total Price: Rs. {item['Price /Month (INR)']}
-</Typography>
+
 </Card>
 </Box>
 ))
