@@ -5,5 +5,6 @@ export type Bookingtype = {
     morningSelection ? : any;
     eveningSelection ? : any;
     timeRange ? : any;
+    duration ? : any;
     
 }

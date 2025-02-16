@@ -179,6 +179,7 @@ if (!hasCheckedRef.current) {
     } else {
       booking = {
         timeRange: `${startTime} - ${endTime}`,
+        duration: getHoursDifference(startTime, endTime),
         ...bookingType
     };
      
@@ -195,6 +196,16 @@ if (!hasCheckedRef.current) {
     };
     props.selectedProvider(providerDetails); // Send selected provider back to parent
   };
+
+  const getHoursDifference = (start, end) => {
+    const [startHours, startMinutes] = start.split(":").map(Number);
+    const [endHours, endMinutes] = end.split(":").map(Number);
+
+    const startTotalMinutes = startHours * 60 + startMinutes;
+    const endTotalMinutes = endHours * 60 + endMinutes;
+
+    return (endTotalMinutes - startTotalMinutes) / 60; // Convert minutes to hours
+};
 
   const handleLogin = () =>{
     setOpen(true)

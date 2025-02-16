@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Box, Button, Card, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, Tab, Tabs, Typography } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { add } from '../../../../features/cart/cartSlice';
 import { CHECKOUT } from '../../../../Constants/pagesConstants';
 import './NannyPricing.css'
+import { getNannyPrices } from '../../../../customServices/PricingService';
 interface NannyPricingProps {
   onPriceChange: (priceData: { price: number, entry: any }) => void;
   onAddToCart: (priceData: { price: number, selecteditem: any }) => void;
@@ -22,6 +23,8 @@ const NannyPricing = ({ onPriceChange, onAddToCart, pricing, sendToParent }: Nan
   const [selectedTab, setSelectedTab] = useState<number>(1); // Start with the first tab value (1)
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubCategoryValue, setSelectedSubCategoryValue] = useState("");
+
+  const bookingType = useSelector((state : any) => state.bookingType?.value)
   
   const pric = pricing.reduce((acc: Record<string, any[]>, item: { Categories: string }) => {
     if (!acc[item.Categories]) {
@@ -38,15 +41,12 @@ const NannyPricing = ({ onPriceChange, onAddToCart, pricing, sendToParent }: Nan
     if (selectedItemFromNanny.length > 0) {
       dispatch(add({ price, selecteditem: selectedItemFromNanny }));
       setAddtoCartSelected(true);
-      console.log('Added to Cart:', { price, selecteditem: selectedItemFromNanny });
     }
   };
 
   const handleOnChange = (event) => {
     const selectedCategoryValue = event.target.value;
     const selectedData = pric[selectedCategoryValue] || [];
-  
-    console.log("Selected Category:", selectedCategoryValue);
   
     if (selectedCategory !== selectedCategoryValue) {
       // Reset states when category changes
@@ -68,8 +68,7 @@ const NannyPricing = ({ onPriceChange, onAddToCart, pricing, sendToParent }: Nan
   
     if (selectedItem) {
       setSelectedItemFromNanny([selectedItem]);
-      setPrice(selectedItem["Price /Month (INR)"]);
-      console.log("Selected Item:", selectedItem);
+      setPrice(getNannyPrices(selectedItem , bookingType.duration , bookingType.bookingPreference));
     } else {
       setSelectedItemFromNanny([]);
       setPrice(0);

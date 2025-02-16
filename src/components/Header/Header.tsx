@@ -29,7 +29,7 @@ import MapComponent from "../MapComponent/MapComponent";
 import { useSelector } from "react-redux";
 import { useDispatch } from 'react-redux'
 import { remove } from "../../features/user/userSlice";
-import { ADMIN, BOOKINGS, LOGIN, PROFILE } from "../../Constants/pagesConstants";
+import { ADMIN, BOOKINGS, DASHBOARD, LOGIN, PROFILE } from "../../Constants/pagesConstants";
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
@@ -317,6 +317,14 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
                 }}
               >
                 Bookings
+              </MenuItem> )}
+              {user && ( <MenuItem
+                onClick={() => {
+                  handleClick(DASHBOARD);
+                  handleAccountMenuClose();
+                }}
+              >
+                DASHBOARD
               </MenuItem> )}
               {user && ( <MenuItem
                 onClick={() => {

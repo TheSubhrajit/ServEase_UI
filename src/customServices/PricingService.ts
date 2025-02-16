@@ -70,5 +70,38 @@ export const getPriceByNumber = (data , pax) =>{
     else {
         return increasedPrice;
     }
+}
+
+export const getNannyPrices = (data , time , bookingPreference ) =>{
+
+  let basePrice = 0;
+  let updatedPrice = 0;
+  basePrice = data['Price /Month (INR)'];
+  if(time <= 8){
+    if(time === 4){
+      updatedPrice = (basePrice * 65) / 100; 
+    }
+    else if(time >= 5 && time < 8){
+      const diff =  time - 4;
+      updatedPrice = (basePrice * 65) / 100 + diff * (basePrice * 10) / 100;
+    } else {
+      updatedPrice = basePrice;
+    }    
+  } else if (time > 8 && time <= 16){
+    console.log("I am here ....")
+      const diff =  time - 8  ;
+      console.log("diff ", diff)
+      console.log("base price => ", basePrice)
+      updatedPrice = basePrice + diff * (basePrice * 5) / 100;
+      console.log("updated price ", updatedPrice)
+  } else {
+    updatedPrice = 22400
+  }
+
+  if(bookingPreference === "Monthly"){
+    updatedPrice = updatedPrice + (26 * 100); 
+  }
+
+return updatedPrice;
 
 }

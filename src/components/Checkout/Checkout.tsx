@@ -163,9 +163,9 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
             }
           },
           prefill: {
-            name: user?.name || "John Doe",
-            email: user?.email || "johndoe@example.com",
-            contact: user?.phone || "9999999999",
+            name: customerName || "",
+            email: user?.email || "",
+            contact: user?.mobileNo || "",
           },
           theme: {
             color: "#3399cc",

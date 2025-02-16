@@ -246,7 +246,7 @@ const ServiceProviderDashboard: React.FC = () => {
   return isEditing ? (
     <EditProvider goBack={() => setIsEditing(false)} />
   ) : (
-    <>
+    <div style={{display:'grid'}} >
      <ProfileHeader>
    {/* Profile Section: Avatar, Name & Icons */}
    <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -641,7 +641,7 @@ const ServiceProviderDashboard: React.FC = () => {
           Cashout
         </Button>
       </Box>
-    </>
+    </div>
   );
 };
 
