@@ -2,7 +2,7 @@ import { Alert, Box, Button, Card, Checkbox, FormControlLabel, FormGroup, Grid, 
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CategoryIcon from '@mui/icons-material/Category';
 import PaymentIcon from "@mui/icons-material/Payment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getPriceByNumber, getPriceByvalue } from "../../../customServices/PricingService";
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch } from "react-redux";
@@ -155,6 +155,7 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
           }
           setServices(updatedServices);
       });
+      
   };
   
   
@@ -189,6 +190,10 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
     onAddToCart({ price, selecteditem })
     dispatch(add({ price, selecteditem }));
   }
+
+  useEffect(() =>{
+    handleAddToCart();
+  },[services])
 
   const handleProceedToCheckout = () =>{
         sendToParent(CHECKOUT)
@@ -371,20 +376,18 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
     variant="outlined" 
     onClick={() => addSelectedItemToCart(selectedCategory[1][0]['Sub-Categories'])} 
 >
-    <AddIcon />
-</Button>
+    <ShoppingCartIcon />
+</Button> 
 
     </div>
 )}
 
 {selectedCategory && selectedCategory[0] === "Regular Add-on" && (
     Object.entries(selectedCategory[1]).map((button, index) => (
-         <div style={{display:'flex'}}>          
-        <FormGroup>
-        <FormControlLabel control={<Checkbox  />} label={getLabel(button)} onChange={() => handleCheck(button)}/>
-      </FormGroup>
-
+         <div style={{display:'flex' , justifyContent:'space-around' , paddingBottom:'10px'}}>          
+      <p>{getLabel(button)}</p>
       <TextField
+      style={{width : '60%'}}
     type="number"
     value={getNumberOfPersons(selectedCategory?.[1]?.[index] ?? {})} 
     onChange={(e) => handleNumberOfPersons(e.target.value , getLabel(button))}
@@ -398,7 +401,7 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
     variant="outlined" 
     onClick={() => addSelectedItemToCart(getLabel(button))} 
 >
-    <AddIcon />
+<ShoppingCartIcon />
 </Button>
 
       </div>
@@ -414,7 +417,7 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
                  
                
                 <Snackbar
-                //   open={snackbarOpen}
+                //   \\open={snackbarOpen}
                   autoHideDuration={6000}
                 //   onClose={handleSnackbarClose}
                   anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -453,23 +456,13 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
                     <Grid item xs={12} md={3}>
                       <Card sx={{ padding: 3, textAlign: "center", boxShadow: 3 }}>
                         <Typography variant="h5" sx={{ marginBottom: 2, fontWeight: "bold" }}>
-                          Total Price
+                          Selected Price
                         </Typography>
                         <Typography variant="h4" color="green" sx={{ fontWeight: "bold" }}>
                           Rs. {Price} / month
                         </Typography>
                       </Card>
-          
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<ShoppingCartIcon />}
-                        fullWidth
-                        sx={{ marginY: 2, height: 50 }}
-                        onClick={handleAddToCart}
-                      >
-                        Add to Cart
-                      </Button>
+        
                       <Button
                         variant="contained"
                         color="success"

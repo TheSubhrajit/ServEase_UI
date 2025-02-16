@@ -15,6 +15,7 @@ import {
   useMediaQuery,
   useTheme,
   InputAdornment,
+  Badge,
 } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -30,6 +31,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from 'react-redux'
 import { remove } from "../../features/user/userSlice";
 import { ADMIN, BOOKINGS, DASHBOARD, LOGIN, PROFILE } from "../../Constants/pagesConstants";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 interface ChildComponentProps {
   sendDataToParent: (data: string) => void;
@@ -44,6 +46,10 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
       sendDataToParent(e);
     }
   };
+
+  const cart = useSelector((state : any) => state.cart?.value);
+
+  console.log("Cart in header ... ", cart)
 
   const user = useSelector((state : any) => state.user?.value);
   const dispatch = useDispatch();
@@ -231,6 +237,9 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
                 cursor: "pointer",
               }}
             />
+            <Badge badgeContent={cart?.selecteditem?.length  ? cart?.selecteditem?.length  : 0} color="primary">
+  <ShoppingCartIcon color="action" />
+</Badge>
             <IconButton
   size="large"
   edge="end"
