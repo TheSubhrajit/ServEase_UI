@@ -43,28 +43,38 @@ const [isExpanded, setIsExpanded] = useState(false);
 
 // Handle selection for morning or evening availability
 const handleSelection = (hour: number, isEvening: boolean, time: number) => {
-  // Format the start and end times in HH:mm format (without seconds)
   const startTime = moment({ hour: time, minute: 0 }).format("HH:mm");
   const endTime = moment({ hour: time + 1, minute: 0 }).format("HH:mm");
-
   const formattedTime = `${startTime}-${endTime}`;
-  console.log(`Start Time: ${startTime}, End Time: ${endTime}`); // Should show "06:00-07:00"
 
-  // For morning or evening availability selection
+  console.log(`Start Time: ${startTime}, End Time: ${endTime}`);
+
   if (isEvening) {
-    setEveningSelection(hour);
-    setEveningSelectionTime(formattedTime); // Store "06:00-07:00"
+    if (eveningSelection === hour) {
+      // Unselect if the same button is clicked again
+      setEveningSelection(null);
+      setEveningSelectionTime(null);
+    } else {
+      setEveningSelection(hour);
+      setEveningSelectionTime(formattedTime);
+    }
   } else {
-    setMorningSelection(hour);
-    setMorningSelectionTime(formattedTime); // Store "06:00-07:00"
+    if (morningSelection === hour) {
+      // Unselect if the same button is clicked again
+      setMorningSelection(null);
+      setMorningSelectionTime(null);
+    } else {
+      setMorningSelection(hour);
+      setMorningSelectionTime(formattedTime);
+    }
   }
 
-  // Ensure you are sending the formatted data to the payload correctly.
   const payload = {
-    timeslot: `${startTime}-${endTime}`, // Make sure the payload uses the correctly formatted time
+    timeslot: formattedTime,
   };
-  console.log("Payload being sent:", payload); // Check if this logs the correct format without seconds
+  console.log("Payload being sent:", payload);
 };
+
 
 const [missingSlots, setMissingSlots] = useState<string[]>([]);
 const hasCheckedRef = useRef(false); // Track if the function has been called
