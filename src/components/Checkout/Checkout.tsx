@@ -54,7 +54,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
   const customerName = `${firstName} ${lastName}`;
  
 
-  const providerFullName = `${providerDetails.firstName} ${providerDetails.lastName}`;
+  const providerFullName = `${providerDetails?.firstName} ${providerDetails?.lastName}`;
  
   
   // Declare customerName in bookingDetails
@@ -188,7 +188,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
       setOpenSnackbar(true);
     }
   };  
-  const grandTotal = checkout.price;
+  const grandTotal = checkout?.price ? checkout?.price : 0;
 
   const handleBackClick = () =>{
     sendDataToParent(CONFIRMATION)
@@ -240,7 +240,7 @@ height: "84%", // This section should take the remaining 84% of the height
 display: 'flex',
 flexDirection: "column",
 }}>
-{checkout['selecteditem']?.length === 0 ? (
+{ !checkout || checkout?.selecteditem?.length === 0 ? (
 <Typography variant="h6">No items selected</Typography>
 ) : (
   checkout['selecteditem']?.map((item, index) => (
