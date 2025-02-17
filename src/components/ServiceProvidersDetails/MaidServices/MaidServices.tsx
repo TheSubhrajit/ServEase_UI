@@ -1,13 +1,14 @@
-import { Alert, Box, Button, Card, Checkbox, FormControlLabel, FormGroup, Grid,  Snackbar, Tab, Tabs, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, Checkbox, FormControlLabel, FormGroup, Grid,  Snackbar, SnackbarCloseReason, Tab, Tabs, TextField, Tooltip, Typography } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CategoryIcon from '@mui/icons-material/Category';
 import PaymentIcon from "@mui/icons-material/Payment";
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { getPriceByNumber, getPriceByvalue } from "../../../customServices/PricingService";
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch } from "react-redux";
 import { add } from "../../../features/cart/cartSlice";
 import { CHECKOUT } from "../../../Constants/pagesConstants";
+import MuiAlert from "@mui/material/Alert";
 
 interface CookPricingProps {
     onPriceChange: (priceData: { price: number, selecteditem: any }) => void; 
@@ -109,7 +110,7 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
       setPrice(newPrice)
       
   }
-    
+  const [openSnackbar, setOpenSnackbar] = useState(false);
     const addSelectedItemToCart = (data) => {
         if (selectedCategory) {
             const updatedCart = [...cartItem];
@@ -123,9 +124,21 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
             setCartItems(updatedCart);
 
             mapCartItemsWithGroupedItem(groupedServices,updatedCart , data)
-        }
+            setOpenSnackbar(true);
+          }
     };
 
+    
+    const handleCloseSnackbar = (
+      event: Event | SyntheticEvent<any, Event>, 
+      reason?: SnackbarCloseReason 
+    ) => {
+      if (reason === "clickaway") {
+        return; // Ignore clicks outside Snackbar
+      }
+      setOpenSnackbar(false);
+    };
+    
     const mapCartItemsWithGroupedItem = (groupedServices, cartItem, data) => {
       let updatedServices = JSON.parse(JSON.stringify(services)); // Deep clone
 
@@ -410,31 +423,22 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
 
 )
 }
-   
-            
-    
-                 
-                 
+
+
+            {/* Snackbar Component */}
+      <Snackbar 
+           open={openSnackbar}
+           autoHideDuration={6000}
+           onClose={handleCloseSnackbar} 
+           anchorOrigin={{ vertical: 'top', horizontal: 'right' }} 
+           sx={{ marginTop: '60px' }}  
+         >
+        <MuiAlert onClose={handleCloseSnackbar} severity="success" sx={{ width: "100%" }}>
+          Item added to cart successfully!
+        </MuiAlert>
+      </Snackbar>   
                
-                <Snackbar
-                //   \\open={snackbarOpen}
-                  autoHideDuration={6000}
-                //   onClose={handleSnackbarClose}
-                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                  sx={{ marginTop: '60px' }}
-                >
-                 <Alert
-            //   onClose={handleSnackbarClose}
-            //   severity={snackbarSeverity}
-              variant="filled"
-              sx={{
-                width: '100%',
-                
-              }}
-            >
-              {/* {snackbarMessage || 'An error occurred, please try again.'} */}
-            </Alert>
-            </Snackbar>  
+          
             </div> 
                   </Grid>
               

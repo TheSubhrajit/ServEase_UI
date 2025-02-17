@@ -30,7 +30,7 @@ import MapComponent from "../MapComponent/MapComponent";
 import { useSelector } from "react-redux";
 import { useDispatch } from 'react-redux'
 import { remove } from "../../features/user/userSlice";
-import { ADMIN, BOOKINGS, DASHBOARD, LOGIN, PROFILE } from "../../Constants/pagesConstants";
+import { ADMIN, BOOKINGS, CHECKOUT, DASHBOARD, LOGIN, PROFILE } from "../../Constants/pagesConstants";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 interface ChildComponentProps {
@@ -188,6 +188,10 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
     setOpen(false);
   };
 
+  const handleProceedToCheckout = () => {
+   sendDataToParent(CHECKOUT);
+  };
+  
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -237,9 +241,11 @@ export const Header: React.FC<ChildComponentProps> = ({ sendDataToParent }) => {
                 cursor: "pointer",
               }}
             />
-            <Badge badgeContent={cart?.selecteditem?.length  ? cart?.selecteditem?.length  : 0} color="primary">
-  <ShoppingCartIcon color="action" />
-</Badge>
+       <IconButton onClick={handleProceedToCheckout}>
+  <Badge badgeContent={cart?.selecteditem?.length ? cart?.selecteditem?.length : 0} color="primary">
+    <ShoppingCartIcon color="action" />
+  </Badge>
+</IconButton>
             <IconButton
   size="large"
   edge="end"
