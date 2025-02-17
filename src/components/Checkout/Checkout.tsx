@@ -9,8 +9,8 @@ import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import axios from "axios";
 import Login from "../Login/Login";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { CONFIRMATION } from "../../Constants/pagesConstants";
-import { add } from "../../features/cart/cartSlice";
+import { BOOKINGS, CONFIRMATION } from "../../Constants/pagesConstants";
+import { add, remove } from "../../features/cart/cartSlice";
 
 
 // Define the structure of each item in selectedItems
@@ -164,6 +164,8 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
               setSnackbarMessage(response.data || "Booking successful!");
               setSnackbarSeverity("success");
               setOpenSnackbar(true);
+              sendDataToParent(BOOKINGS)
+              dispatch(remove())
             }
           },
           prefill: {
