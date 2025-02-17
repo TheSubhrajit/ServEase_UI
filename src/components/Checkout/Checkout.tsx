@@ -136,7 +136,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
             bookingDetails.startDate = bookingTypeFromSelection?.startDate;
             bookingDetails.endDate = bookingTypeFromSelection?.endDate;
             bookingDetails.engagements = checkout.selecteditem[0].Service;
-            bookingDetails.paymentMode = "CASH"; 
+            bookingDetails.paymentMode = "UPI"; 
             bookingDetails.taskStatus= "NOT_STARTED";
             bookingDetails.bookingType = bookingType.bookingPreference;
             bookingDetails.serviceeType = checkout.selecteditem[0].Service;
@@ -163,9 +163,9 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
             }
           },
           prefill: {
-            name: user?.name || "John Doe",
-            email: user?.email || "johndoe@example.com",
-            contact: user?.phone || "9999999999",
+            name: customerName || "",
+            email: user?.email || "",
+            contact: user?.mobileNo || "",
           },
           theme: {
             color: "#3399cc",
@@ -181,8 +181,9 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
-  };
-  const grandTotal = checkout['selecteditem']?.reduce((sum, service) => sum + service['Price /Month (INR)'], 0);
+  };  
+  const grandTotal = checkout.price;
+  
 
   return (
     <Box sx={{
@@ -269,18 +270,7 @@ alignItems: "center",
 {/* <Typography variant="body1"><strong>People Range:</strong> {item.entry.peopleRange}</Typography>
 <Typography variant="body1"><strong>Frequency:</strong> {item.entry.frequency} times a week</Typography>
 <Typography variant="body1"><strong>Price per Month:</strong> Rs.{item.entry.pricePerMonth}</Typography> */}
-<Typography variant="body1" sx={{
-color: "#2e7d32",
-backgroundColor: "#e8f5e9",
-border: "1px solid #2e7d32",
-padding: "6px",
-borderRadius: "6px",
-textAlign: "center",
-fontWeight: "600",
-marginTop: "12px",
-}}>
-Total Price: Rs. {item['Price /Month (INR)']}
-</Typography>
+
 </Card>
 </Box>
 ))
@@ -318,21 +308,38 @@ Total Price: Rs. {item['Price /Month (INR)']}
       Grand Total: Rs. {grandTotal}
     </div>
 
-    {!loggedInUser && (
-      <Button onClick={handleLogin} variant="outlined" style={{ marginRight: "20px" }}>
-        Login
-      </Button>
-    )}
-
     <div style={{ float: 'right', display: 'flex' }}>
-      <Tooltip
+      {/* <Tooltip
         style={{ display: loggedInUser && checkout['selecteditem'].length > 0 ? 'none' : 'block' }}
         title="You need to login  to proceed with checkout"
       >
         <IconButton>
           <InfoOutlinedIcon />
         </IconButton>
+      </Tooltip> */}
+
+{!loggedInUser && (
+      
+      <Tooltip title="Proceed to checkout">
+        <Button
+          startIcon={<ShoppingCartCheckoutIcon />}
+          variant="contained"
+          style={{
+            fontWeight: "600",
+            color: "#fff",
+            background: loggedInUser ? "linear-gradient(to right, #1a73e8, #1565c0)" : "#b0bec5",  // Grey when disabled
+            border: "1px solid rgb(63, 70, 146)",
+            padding: "10px 24px",
+            borderRadius: "8px",
+          }}
+          onClick={handleLogin}  // Disable if not logged in or items are not selected
+        >
+          Login
+        </Button>
       </Tooltip>
+)}
+
+{loggedInUser && (
       
       <Tooltip title="Proceed to checkout">
         <Button
@@ -347,11 +354,11 @@ Total Price: Rs. {item['Price /Month (INR)']}
             borderRadius: "8px",
           }}
           onClick={handleCheckout}
-          disabled={!loggedInUser}  // Disable if not logged in or items are not selected
         >
           Checkout
         </Button>
       </Tooltip>
+)}
     </div>
   </Box>
 )}

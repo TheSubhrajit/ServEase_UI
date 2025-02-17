@@ -73,7 +73,6 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
    const [clickedIndex, setClickedIndex] = useState<number | null>(null);
    const pricing = useSelector((state : any) => state.pricing?.groupedServices)
-   console.log("Pricng 123 ====> ", pricing)
   // Callback function to update the price in the parent component
   const handlePriceChange = (data) => {
   // setData(data.entry)

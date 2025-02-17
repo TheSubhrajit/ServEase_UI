@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormLabel, IconButton, Paper, Slider, TextField, Tooltip, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import "./ProviderDetails.css"; 
 import AddIcon from '@mui/icons-material/Add';
@@ -11,6 +11,10 @@ import { add } from "../../features/bookingType/bookingTypeSlice";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Login from "../Login/Login";
 import axiosInstance from "../../services/axiosInstance";
+import TimeRange from 'react-time-range';
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
 
 const ProviderDetails = (props) => {
 const [isExpanded, setIsExpanded] = useState(false);
@@ -23,6 +27,10 @@ const [isExpanded, setIsExpanded] = useState(false);
   const [engagementData, setEngagementData] = useState(null);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [missingTimeSlots, setMissingTimeSlots] = useState<string[]>([]);
+  const [startTime, setStartTime] = useState("08:00");
+  const [endTime, setEndTime] = useState("12:00");
+  const [warning, setWarning] = useState("");
+  
 
   const dietImages = {
     VEG: "veg.png",
@@ -160,14 +168,25 @@ if (!hasCheckedRef.current) {
   };
 
   const handleBookNow = () => {
-    const booking: Bookingtype = {
+    let booking : Bookingtype;
+    if(props.housekeepingRole !== "NANNY"){
+       booking = {
         eveningSelection : eveningSelectionTime,
         morningSelection : morningSelectionTime,
         ...bookingType
         
     }
+    } else {
+      booking = {
+        timeRange: `${startTime} - ${endTime}`,
+        duration: getHoursDifference(startTime, endTime),
+        ...bookingType
+    };
+     
+    }
 
-    console.log('booking .... ', booking)
+    
+
     dispatch(add(booking)) 
 
     const providerDetails = {
@@ -178,6 +197,16 @@ if (!hasCheckedRef.current) {
     props.selectedProvider(providerDetails); // Send selected provider back to parent
   };
 
+  const getHoursDifference = (start, end) => {
+    const [startHours, startMinutes] = start.split(":").map(Number);
+    const [endHours, endMinutes] = end.split(":").map(Number);
+
+    const startTotalMinutes = startHours * 60 + startMinutes;
+    const endTotalMinutes = endHours * 60 + endMinutes;
+
+    return (endTotalMinutes - startTotalMinutes) / 60; // Convert minutes to hours
+};
+
   const handleLogin = () =>{
     setOpen(true)
   }
@@ -185,6 +214,8 @@ if (!hasCheckedRef.current) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  
 
   const dietImage = dietImages[props.diet];
 
@@ -204,40 +235,32 @@ if (!hasCheckedRef.current) {
       setOpen(false)
     }
 
-    const [sliderValue, setSliderValue] = useState([8, 12]); // Default start and end values
-    const [selectedHours, setSelectedHours] = useState(4); // Default selected hours (8 AM to 12 PM is 4 hours)
-  
-    // Calculate the selected hours whenever sliderValue changes
-    const calculateHours = (values) => {
-      const start = values[0];
-      const end = values[1];
-      setSelectedHours(end - start); // Subtract start from end to calculate the duration
+    const handleStartTimeChange = (newStartTime) => {
+      setStartTime(newStartTime);
+      validateTimeRange(newStartTime, endTime);
     };
   
-    // Handle the slider value change
-    const handleSliderChange = (event, newValue) => {
-      // Ensure the difference between start and end is at least 4 hours
-      if (newValue[1] - newValue[0] < 4) {
-        // Adjust the end value to maintain a 4-hour gap
-        setSliderValue([newValue[0], newValue[0] + 4]);
-      } else if (newValue[0] < newValue[1] && newValue[1] <= 24) {
-        // If the new value is valid (end is less than or equal to 24)
-        setSliderValue(newValue);
+    const handleEndTimeChange = (newEndTime) => {
+      setEndTime(newEndTime);
+      validateTimeRange(startTime, newEndTime);
+    };
+  
+    const validateTimeRange = (start, end) => {
+      const [startHours, startMinutes] = start.split(":").map(Number);
+      const [endHours, endMinutes] = end.split(":").map(Number);
+      
+      const startTotalMinutes = startHours * 60 + startMinutes;
+      const endTotalMinutes = endHours * 60 + endMinutes;
+      
+      if (endTotalMinutes - startTotalMinutes < 240) {
+        setWarning("The time range must be at least 4 hours.");
+      } else {
+        setWarning("");
       }
     };
   
-    // Format time in 12-hour format
-    const formatTime = (value) => {
-      const hours = value;
-      const period = hours >= 12 ? "PM" : "AM";
-      const formattedHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours; // 0 should display as 12 AM
-      return `${formattedHours} ${period}`;
-    };
-  
-    // Call calculateHours when sliderValue changes or initially when component mounts
-    useEffect(() => {
-      calculateHours(sliderValue);
-    }, [sliderValue]);
+
+
   return (
     <><Paper elevation={3}>
       <div className="container-provider">
@@ -327,124 +350,126 @@ if (!hasCheckedRef.current) {
                   {props.otherServices || "N/A"}
                 </span>
               </Typography>
-              
+
+              {props.housekeepingRole !== "NANNY" && (
+
               <div className="availability-section">
-              {(props.housekeepingRole === "MAID" || props.housekeepingRole === "COOK") && (
-  <div>
-    {/* Morning Availability Section */}
-    <div className="availability-header">
-      <Typography variant="subtitle1" className="section-title">
-        Morning Availability (6 AM - 12 PM)
-      </Typography>
+  <div className="availability-header">
+    <Typography variant="subtitle1" className="section-title">
+      Morning Availability (6 AM - 12 PM)
+    </Typography>
 
-      <div className="time-slot-container">
-        {missingSlots
-          .filter((missingSlot) =>
-            [6, 7, 8, 9, 10, 11].some(
-              (hour) => moment({ hour }).format("HH:mm") === missingSlot
-            )
-          )
-          .map((missingSlot, index) => {
-            const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour
-            const startTime = moment({ hour }).format("HH:mm");
-            const endTime = moment({ hour: hour + 1 }).format("HH:mm");
-            const timeRange = `${startTime}-${endTime}`;
+    {/* Morning Availability Buttons */}
+    <div className="time-slot-container">
+  {missingSlots
+    .filter((missingSlot) =>
+      [6, 7, 8, 9, 10, 11].some(
+        (hour) => moment({ hour }).format("HH:mm") === missingSlot
+      )
+    )
+    .map((missingSlot, index) => {
+      const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour
+      const startTime = moment({ hour }).format("HH:mm");
+      const endTime = moment({ hour: hour + 1 }).format("HH:mm");
+      const timeRange = `${startTime}-${endTime}`;
 
-            // ✅ Use uniqueMissingSlots for disabling
-            const isDisabled = uniqueMissingSlots.includes(startTime);
+      // ✅ Use uniqueMissingSlots for disabling
+      const isDisabled = uniqueMissingSlots.includes(startTime);
 
-            return (
-              <div key={index}>
-                <button
-                  className={`availability-button ${morningSelection === index ? "selected" : ""}`}
-                  onClick={() => handleSelection(index, false, hour)}
-                  disabled={isDisabled} // Disable if it's in uniqueMissingSlots
-                  style={{
-                    backgroundColor: isDisabled ? '#bdbdbd' : '',
-                    cursor: isDisabled ? 'not-allowed' : 'pointer',
-                    opacity: isDisabled ? 0.6 : 1,
-                  }}
-                >
-                  {timeRange}
-                </button>
-              </div>
-            );
-          })}
-      </div>
-    </div>
+      return (
+        <div key={index}>
+          <button
+            className={`availability-button ${morningSelection === index ? "selected" : ""}`}
+            onClick={() => handleSelection(index, false, hour)}
+            disabled={isDisabled} // Disable if it's in uniqueMissingSlots
+            style={{
+              backgroundColor: isDisabled ? '#bdbdbd' : '',
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
+              opacity: isDisabled ? 0.6 : 1,
+            }}
+          >
+            {timeRange}
+          </button>
+        </div>
+      );
+    })}
+</div>
 
-    {/* Evening Availability Section */}
-    <div className="availability-header">
-      <Typography variant="subtitle1" className="section-title">
-        Evening Availability (12 PM - 8 PM)
-      </Typography>
-
-      <div className="time-slot-container">
-        {missingSlots
-          .filter((missingSlot) =>
-            [12, 13, 14, 15, 16, 17, 18, 19].some(
-              (hour) => moment({ hour }).format("HH:mm") === missingSlot
-            )
-          )
-          .map((missingSlot, index) => {
-            const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour
-            const startTime = moment({ hour }).format("HH:mm");
-            const endTime = moment({ hour: hour + 1 }).format("HH:mm");
-            const timeRange = `${startTime}-${endTime}`;
-
-            // Check if this time slot should be disabled based on unique missing slots
-            const isDisabled = uniqueMissingSlots.includes(startTime);
-
-            return (
-              <div key={index}>
-                <button
-                  className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
-                  onClick={() => handleSelection(index, true, hour)}
-                  disabled={isDisabled} // Disable if it's in uniqueMissingSlots
-                  style={{
-                    backgroundColor: isDisabled ? '#bdbdbd' : '',
-                    cursor: isDisabled ? 'not-allowed' : 'pointer',
-                    opacity: isDisabled ? 0.6 : 1,
-                  }}
-                >
-                  {timeRange}
-                </button>
-              </div>
-            );
-          })}
-      </div>
-    </div>
   </div>
+
+  <div className="availability-header">
+    <Typography variant="subtitle1" className="section-title">
+      Evening Availability (12 PM - 8 PM)
+    </Typography>
+
+    <div className="time-slot-container">
+    {missingSlots
+    .filter((missingSlot) =>
+      [12, 13, 14, 15, 16, 17, 18, 19].some(
+        (hour) => moment({ hour }).format("HH:mm") === missingSlot
+      )
+    )
+    .map((missingSlot, index) => {
+      const hour = parseInt(moment(missingSlot, "HH:mm").format("H"), 10); // Extract hour
+      const startTime = moment({ hour }).format("HH:mm");
+      const endTime = moment({ hour: hour + 1 }).format("HH:mm");
+      const timeRange = `${startTime}-${endTime}`;
+
+      // Check if this time slot should be disabled based on unique missing slots
+      const isDisabled = uniqueMissingSlots.includes(startTime);
+
+      return (
+        <div key={index}>
+          <button
+            className={`availability-button ${eveningSelection === index ? "selected" : ""}`}
+            onClick={() => handleSelection(index, true, hour)}
+            disabled={isDisabled} // Disable if it's in uniqueMissingSlots
+            style={{
+              backgroundColor: isDisabled ? '#bdbdbd' : '',
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
+              opacity: isDisabled ? 0.6 : 1,
+            }}
+          >
+            {timeRange}
+          </button>
+        </div>
+      );
+    })}
+</div>
+
+  </div>
+</div>
 )}
 {props.housekeepingRole === "NANNY" && (
-     <div className="form-group" style={{ display: "flex" }}>
-     <FormLabel style={{ marginRight: "20px", fontWeight: "bold" }}>
-       Select timing:
-     </FormLabel>
-     <Slider
-       value={sliderValue}
-       onChange={handleSliderChange}
-       valueLabelDisplay="on"
-       valueLabelFormat={(value) => `${formatTime(value)}`}
-       min={0}  // Start from 12 AM (0 hours)
-       max={23} // End at 11 PM (23 hours)
-       step={1}
-       marks={[
-         { value: 0, label: '12 AM' },
-         { value: 6, label: '6 AM' },
-         { value: 12, label: '12 PM' },
-         { value: 18, label: '6 PM' },
-         { value: 23, label: '11 PM' },
-       ]}
-       style={{ width: "600px" }}
-       disableSwap // Prevents the handles from swapping positions
-     />
-   </div>
-   
-)}  <div>
-<p>Selected time range: {formatTime(sliderValue[0])} to {formatTime(sliderValue[1])}</p>
-<p>Number of hours selected: {selectedHours} hours</p>
+ <div className="flex flex-col items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md w-80" style={{width:'100%'}}>
+ <h2 className="text-xl font-semibold">Select Time Range</h2>
+ <div className="flex items-center gap-2">
+   <label className="text-gray-700">Start:</label>
+   <TimePicker
+     onChange={handleStartTimeChange}
+     value={startTime}
+     disableClock
+     format="HH:mm"
+     className="border p-2 rounded"
+   />
+ </div>
+ <div className="flex items-center gap-2">
+   <label className="text-gray-700">End:</label>
+   <TimePicker
+     value={endTime}
+     onChange={handleEndTimeChange}
+     disableClock
+     format="HH:mm"
+     className="border p-2 rounded"
+   />
+ </div>
+ <p className="text-gray-600">Selected Time: {startTime} - {endTime}</p>
 </div>
+
+)}
+<div>
+  
+ 
 </div>
 
               <div style={{ float: 'right', display: 'flex' }}>
@@ -457,7 +482,8 @@ if (!hasCheckedRef.current) {
                     <InfoOutlinedIcon />
                   </IconButton>
                 </Tooltip> */}
-                <Button onClick={handleBookNow}  variant="outlined">Book Now</Button>
+                {warning && <p className="text-red-500">{warning}</p>}
+                {!warning && <Button onClick={handleBookNow}  variant="outlined">Book Now</Button>}
               </div>
 
             </div>

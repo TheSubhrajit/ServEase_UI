@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Grid, Card, CardContent, Typography, Button, Avatar, IconButton, Rating, Tab, Tabs, Switch, CircularProgress, Badge, Chip } from "@mui/material";
-import { styled, useMediaQuery } from "@mui/system";
+import { styled } from "@mui/system";
 import CallIcon from '@mui/icons-material/Call';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
@@ -242,83 +242,53 @@ const ServiceProviderDashboard: React.FC = () => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
   };
-  const isMobile = useMediaQuery('(max-width:600px)');
+
   return isEditing ? (
     <EditProvider goBack={() => setIsEditing(false)} />
   ) : (
-    <>
- <ProfileHeader sx={{ padding: '8px 16px' }}>
-  {/* Profile Section */}
-  <Box 
-    sx={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: isMobile ? 'center' : 'flex-start',
-      textAlign: isMobile ? 'center' : 'left',
-      width: '100%'
-    }}
-  >
-    {/* Name */}
-    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-      {`${serviceProvider?.firstName || "Diyasha"} ${serviceProvider?.lastName || "Singha Roy"}`}
-      <Badge badgeContent={bookings.length} color="primary">
-        <EventIcon fontSize="medium" sx={{ color: '#1976d2' }} />
-      </Badge>
-      <Badge badgeContent={bookings.filter((b) => b.status === 'Confirmed').length} color="primary">
-        <CheckCircleIcon fontSize="medium" sx={{ color: '#388e3c' }} />
-      </Badge>
-      <Badge badgeContent={bookings.filter((b) => b.status === 'Pending').length} color="secondary">
-        <WarningIcon fontSize="medium" sx={{ color: '#f57c00' }} />
-      </Badge>
-      <Rating value={4} precision={0.5} readOnly sx={{ marginLeft: '10px' }} />
-    </Typography>
+    <div style={{display:'grid'}} >
+     <ProfileHeader>
+   {/* Profile Section: Avatar, Name & Icons */}
+   <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <Avatar sx={{ width: 60, height: 60, bgcolor: '#0056b3', color: 'white' }}>
+        <AccountCircleIcon fontSize="large" />
+      </Avatar>
+      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+  {`${serviceProvider?.firstName || "Diyasha"} ${serviceProvider?.lastName || "Singha Roy"}`}
+</Typography>
 
-    {/* Tabs below Name (ONLY for Mobile) */}
-    {isMobile && (
-      <Box sx={{ width: '100%', marginTop: '8px' }}>
-        <Tabs 
-          value={selectedTab} 
-          onChange={handleTabChange} 
-          aria-label="service recap tabs" 
-          variant="scrollable" 
-          scrollButtons="auto" 
-          centered
-          sx={{
-            width: '100%',
-            '& .MuiTab-root': {
-              fontSize: '0.9rem',
-              minWidth: 'auto',
-              textAlign: 'center',
-            }
-          }}
-        >
+
+      {/* Icons beside name */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Badge badgeContent={bookings.length} color="primary">
+          <EventIcon fontSize="medium" sx={{ color: '#1976d2' }} />
+        </Badge>
+        <Badge badgeContent={bookings.filter((b) => b.status === 'Confirmed').length} color="primary">
+          <CheckCircleIcon fontSize="medium" sx={{ color: '#388e3c' }} />
+        </Badge>
+        <Badge badgeContent={bookings.filter((b) => b.status === 'Pending').length} color="secondary">
+          <WarningIcon fontSize="medium" sx={{ color: '#f57c00' }} />
+        </Badge>
+      </Box>
+    </Box>
+
+ 
+   <Box sx={{ marginTop: '20px' }}>
+        <Tabs value={selectedTab} onChange={handleTabChange} aria-label="service recap tabs" centered>
           <Tab label="Profile" />
           <Tab label="Service Recap" />
-          <Tab label="Attendance Calendar" />
+          <Tab label="Attendance Calender" />
           <Tab label="Earnings Summary" />
         </Tabs>
       </Box>
-    )}
-  </Box>
-
-  {/* Tabs for Desktop (unchanged) */}
-  {!isMobile && (
-  <Box sx={{ marginTop: '15px', width: '100%', marginLeft: '10px' }}>
-    <Tabs 
-      value={selectedTab} 
-      onChange={handleTabChange} 
-      aria-label="service recap tabs" 
-      centered
-    >
-      <Tab label="Profile" />
-      <Tab label="Service Recap" />
-      <Tab label="Attendance Calendar" />
-      <Tab label="Earnings Summary" />
-    </Tabs>
-  </Box>
-)}
-
-</ProfileHeader>
+        {/* Add the Rating component beside the profile name */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Rating value={4} precision={0.5} readOnly sx={{ marginRight: '10px' }} /> {/* Example rating */}
+          {/* <Button variant="outlined" sx={{ color: '#0056b3', fontWeight: 'bold' }} onClick={handleEditClick}>
+            Edit
+          </Button> */}
+        </Box>
+      </ProfileHeader>
 
       {/* Tabs to toggle between Profile and Service Recap */}
       {/* <Box sx={{ marginTop: '20px' }}>
@@ -671,7 +641,7 @@ const ServiceProviderDashboard: React.FC = () => {
           Cashout
         </Button>
       </Box>
-    </>
+    </div>
   );
 };
 
