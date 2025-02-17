@@ -10,6 +10,7 @@ import axios from "axios";
 import Login from "../Login/Login";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { CONFIRMATION } from "../../Constants/pagesConstants";
+import { add } from "../../features/cart/cartSlice";
 
 
 // Define the structure of each item in selectedItems
@@ -82,6 +83,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
   const handleRemoveItem = (index: number) => {
     const updatedCheckout = checkout['selecteditem']?.filter((_, i) => i !== index);
     setCheckout(updatedCheckout);
+    dispatch(add({ grandTotal, selecteditem: updatedCheckout }));
   };
 
   
