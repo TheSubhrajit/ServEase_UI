@@ -9,6 +9,7 @@ import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import axios from "axios";
 import Login from "../Login/Login";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { CONFIRMATION } from "../../Constants/pagesConstants";
 
 
 // Define the structure of each item in selectedItems
@@ -27,9 +28,10 @@ interface Item {
 
 interface ChildComponentProps {
   providerDetails : any;
+  sendDataToParent : (data : any) => void;
 }
 
-const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
+const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataToParent }) => {
   const [checkout, setCheckout] = useState<any>([]);
   const [bookingTypeFromSelection , setBookingTypeFromSelection] = useState<Bookingtype>();
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -183,9 +185,15 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
     }
   };  
   const grandTotal = checkout.price;
+
+  const handleBackClick = () =>{
+    sendDataToParent(CONFIRMATION)
+   
+  }
   
 
   return (
+    <>
     <Box sx={{
       display: "flex",
       flexDirection: "column",
@@ -205,10 +213,13 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
         textAlign: "center",
         height: "8%",  // Header height set to 8%
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
         marginTop:'65px'
       }}>
+        <Button variant="outlined" style={{marginRight:'30%'}} onClick={handleBackClick}>
+                        Back
+                      </Button>
         <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "1.5rem" }}>
           Selected Services
         </Typography>
@@ -394,7 +405,7 @@ alignItems: "center",
               </DialogContent>
             </Dialog>
     </Box>
-    
+    </>
   );
 };
 
