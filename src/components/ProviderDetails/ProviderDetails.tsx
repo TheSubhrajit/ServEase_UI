@@ -15,6 +15,7 @@ import TimeRange from 'react-time-range';
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
+import { FaTimes } from "react-icons/fa";
 
 const ProviderDetails = (props) => {
 const [isExpanded, setIsExpanded] = useState(false);
@@ -43,39 +44,38 @@ const [isExpanded, setIsExpanded] = useState(false);
 
 // Handle selection for morning or evening availability
 const handleSelection = (hour: number, isEvening: boolean, time: number) => {
+  // Format the start and end times in HH:mm format (without seconds)
   const startTime = moment({ hour: time, minute: 0 }).format("HH:mm");
   const endTime = moment({ hour: time + 1, minute: 0 }).format("HH:mm");
+
   const formattedTime = `${startTime}-${endTime}`;
+  console.log(`Start Time: ${startTime}, End Time: ${endTime}`); // Should show "06:00-07:00"
 
-  console.log(`Start Time: ${startTime}, End Time: ${endTime}`);
-
+  // For morning or evening availability selection
   if (isEvening) {
-    if (eveningSelection === hour) {
-      // Unselect if the same button is clicked again
-      setEveningSelection(null);
-      setEveningSelectionTime(null);
-    } else {
-      setEveningSelection(hour);
-      setEveningSelectionTime(formattedTime);
-    }
+    setEveningSelection(hour);
+    setEveningSelectionTime(formattedTime); // Store "06:00-07:00"
   } else {
-    if (morningSelection === hour) {
-      // Unselect if the same button is clicked again
-      setMorningSelection(null);
-      setMorningSelectionTime(null);
-    } else {
-      setMorningSelection(hour);
-      setMorningSelectionTime(formattedTime);
-    }
+    setMorningSelection(hour);
+    setMorningSelectionTime(formattedTime); // Store "06:00-07:00"
   }
 
+  // Ensure you are sending the formatted data to the payload correctly.
   const payload = {
-    timeslot: formattedTime,
+    timeslot: `${startTime}-${endTime}`, // Make sure the payload uses the correctly formatted time
   };
-  console.log("Payload being sent:", payload);
+  console.log("Payload being sent:", payload); // Check if this logs the correct format without seconds
 };
 
-
+const clearSelection = (isEvening: boolean) => {
+  if (isEvening) {
+    setEveningSelection(null);
+    setEveningSelectionTime(null);
+  } else {
+    setMorningSelection(null);
+    setMorningSelectionTime(null);
+  }
+};
 const [missingSlots, setMissingSlots] = useState<string[]>([]);
 const hasCheckedRef = useRef(false); // Track if the function has been called
 console.log("Service data: ", props);
@@ -446,6 +446,58 @@ if (!hasCheckedRef.current) {
       );
     })}
 </div>
+{morningSelectionTime && (
+  <div
+    style={{
+      marginTop: "10px",
+      padding: "10px",
+      backgroundColor: "#f0f0f0",
+      borderRadius: "5px",
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      fontSize: "16px",
+    }}
+  >
+    <span style={{ fontWeight: "bold" }}>Morning selected time:</span>
+    <span>{morningSelectionTime}</span>
+    <FaTimes
+      onClick={() => clearSelection(false)}
+      style={{
+        color: "red",
+        cursor: "pointer",
+        fontSize: "18px",
+      }}
+    />
+  </div>
+)}
+
+{eveningSelectionTime && (
+  <div
+    style={{
+      marginTop: "10px",
+      padding: "10px",
+      backgroundColor: "#f0f0f0",
+      borderRadius: "5px",
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      fontSize: "16px",
+    }}
+  >
+    <span style={{ fontWeight: "bold" }}>Evening selected time:</span>
+    <span>{eveningSelectionTime}</span>
+    <FaTimes
+      onClick={() => clearSelection(true)}
+      style={{
+        color: "red",
+        cursor: "pointer",
+        fontSize: "18px",
+      }}
+    />
+  </div>
+)}
+
 
   </div>
 </div>
