@@ -7,6 +7,7 @@ import {
   Paper,
   Card,
   CardContent,
+  Button,
 } from '@mui/material';
 import axiosInstance from '../../services/axiosInstance';
 import { useSelector } from 'react-redux';
@@ -27,8 +28,20 @@ interface Booking {
   id: number;
   name: string;
   role: string;
+  serviceProviderId: number;
   timeSlot: string;
   date: string;
+  startDate: string;
+  endDate: string;
+  bookingType: string;
+  monthlyAmount: number;
+  paymentMode: string;
+  address: string;
+  customerName: string;
+  serviceProviderName: string;
+  taskStatus: string;
+  bookingDate: string;
+  engagements:string;
 }
 
 const Booking: React.FC = () => {
@@ -37,7 +50,6 @@ const Booking: React.FC = () => {
   const [pastBookings, setPastBookings] = useState<Booking[]>([]);
   const [futureBookings, setFutureBookings] = useState<Booking[]>([]);
 
-  // Get user data from Redux store
   const user = useSelector((state: RootState) => state.user as UserState);
   const customerId = user?.value?.customerDetails?.customerId ?? null;
 
@@ -46,47 +58,146 @@ const Booking: React.FC = () => {
 
   useEffect(() => {
     if (customerId !== null) {
+      const page = 0; // Default page
+      const size = 100; // Default size
+  
       axiosInstance
-        .get(`http://43.205.212.94:8080/api/serviceproviders/get-sp-booking-history`)
+        .get(`api/serviceproviders/get-sp-booking-history?page=${page}&size=${size}`)
         .then((response) => {
           const { past = [], current = [], future = [] } = response.data || {};
-
-          // Ensure data is an array before filtering
+          console.log('Past Bookings:', past);
           const mapBookingData = (data: any[]) =>
             Array.isArray(data)
               ? data
-                  .filter((item) => item.customerId === customerId) // Filter for this customer
-                  .map((item) => ({
-                    id: item.requestId,
-                    name: item.customerId.toString(),
-                    role: item.housekeepingRole,
-                    timeSlot: item.timeSlotlist,
-                    date: new Date(item.startDate).toLocaleDateString(),
-                  }))
+                  .filter((item) => item.customerId === customerId)
+                  .map((item) => {
+                    console.log("Service Provider ID:", item.serviceProviderId); 
+  
+                    return {
+                      id: item.id, 
+                      customerId: item.customerId, 
+                      serviceProviderId: item.serviceProviderId, 
+                      name: item.customerName,
+                      role: item.serviceeType,
+                      timeSlot: item.timeslot,
+                      date: new Date(item.startDate).toLocaleDateString(),
+                      startDate: item.startDate,
+                      endDate: item.endDate,
+                      bookingType: item.bookingType,
+                      monthlyAmount: item.monthlyAmount,
+                      paymentMode: item.paymentMode,
+                      address: item.address,
+                      customerName: item.customerName,
+                      serviceProviderName: item.serviceProviderName,
+                      taskStatus: item.taskStatus,
+                      engagements:item.engagements,
+                      bookingDate: item.bookingDate,
+                    };
+                  })
               : [];
-
+  
           setPastBookings(mapBookingData(past));
+          console.log('Past :', setPastBookings);
           setCurrentBookings(mapBookingData(current));
           setFutureBookings(mapBookingData(future));
         })
         .catch((error) => {
-          console.error('Error fetching booking details:', error);
+          console.error("Error fetching booking details:", error);
         });
     }
   }, [customerId]);
+  
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
   };
-
+  const handleModifyBooking = (bookingId: number) => {
+    console.log(`Modify booking with ID: ${bookingId}`);
+    // Add logic for modifying the booking
+  };
+  
+  const handleCancelBooking = async (booking: Booking) => {
+    const updatedStatus = "CANCELLED";
+  
+    const updatePayload = {
+      id: booking.id,
+      serviceProviderId: booking.serviceProviderId,
+      customerId: customerId,
+      startDate: booking.startDate,
+      endDate: booking.endDate,
+      engagements:booking.engagements, 
+      timeslot: booking.timeSlot,
+      bookingDate: booking.bookingDate,
+      customerName: booking.customerName,
+      serviceProviderName: booking.serviceProviderName,
+      taskStatus: updatedStatus,
+    };
+  
+    try {
+      console.log(`Updating engagement with ID ${booking.id} to status ${updatedStatus}`);
+      const response = await axiosInstance.put(
+        `/api/serviceproviders/update/engagement/${booking.id}`,
+        updatePayload
+      );
+  
+      console.log("Update Response:", response.data);
+  
+      // Update state to reflect the change
+      setCurrentBookings((prev) =>
+        prev.map((b) =>
+          b.id === booking.id ? { ...b, taskStatus: updatedStatus } : b
+        )
+      );
+      setFutureBookings((prev) =>
+        prev.map((b) =>
+          b.id === booking.id ? { ...b, taskStatus: updatedStatus } : b
+        )
+      );
+    } catch (error: any) {
+      console.error("Error updating task status:", error);
+      if (error.response) {
+        console.error("Full error response:", error.response.data);
+      } else if (error.message) {
+        console.error("Error message:", error.message);
+      } else {
+        console.error("Unknown error occurred");
+      }
+    }
+  };
+  
   const renderBookings = (bookings: Booking[]) => (
     <Box display="flex" flexDirection="column" gap={2} width="100%">
       {bookings.length > 0 ? (
         bookings.map((booking) => (
           <Card key={booking.id} elevation={3} sx={{ width: '100%' }}>
             <CardContent>
+            {booking.taskStatus === "CANCELLED" && (
+  <Typography
+    variant="body2"
+    color="white"
+    sx={{
+      backgroundColor: "rgba(255, 0, 0, 0.5)", 
+      color: "rgba(255, 255, 255, 0.9)", 
+      padding: "8px 16px",
+      borderRadius: "4px",
+      fontWeight: "bold",
+      marginBottom: "16px",
+      textAlign: "center",  
+    }}
+    gutterBottom
+  >
+    Task Status: CANCELLED
+  </Typography>
+)}
+
+            {/* <Typography variant="body2" color="textSecondary">
+                Booking ID: {booking.id}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+  Service Provider ID: {booking.serviceProviderId}
+</Typography> */}
               <Typography variant="h6" gutterBottom>
-                {booking.name}
+              Service Provider: {booking.serviceProviderName}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 Role: {booking.role}
@@ -95,8 +206,67 @@ const Booking: React.FC = () => {
                 Time Slot: {booking.timeSlot}
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                Date: {booking.date}
+                Start Date: {booking.startDate}
               </Typography>
+              <Typography variant="body2" color="textSecondary">
+                End Date: {booking.endDate}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Booking Type: {booking.bookingType}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Monthly Amount: ₹{booking.monthlyAmount}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Payment Mode: {booking.paymentMode}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Address: {booking.address}
+              </Typography>
+              {/* <Typography variant="body2" color="textSecondary">
+                Customer: {booking.customerName}
+              </Typography> */}
+              {/* <Typography variant="body2" color="textSecondary">
+                Service Provider: {booking.serviceProviderName}
+              </Typography> */}
+              <Typography variant="body2" color="textSecondary">
+                Task Status: {booking.taskStatus}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Booking Date: {booking.bookingDate}
+              </Typography>
+               {/* Buttons Section */}
+            <Box display="flex" justifyContent="space-between" marginTop={2}>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={() => handleModifyBooking(booking.id)}
+                style={{
+                  padding: "8px 16px",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",}}
+              >
+                Modify
+              </Button>
+                {/* Cancel Button */}
+            {booking.taskStatus !== "CANCELLED" && (
+                <button
+                  onClick={() => handleCancelBooking(booking)}
+                  style={{
+                    backgroundColor: "red",
+                    color: "white",
+                    padding: "8px 16px",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+            
+            )}
+            </Box>
             </CardContent>
           </Card>
         ))
