@@ -15,6 +15,7 @@ import TimeRange from 'react-time-range';
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
+import { FaTimes } from "react-icons/fa";
 
 const ProviderDetails = (props) => {
 const [isExpanded, setIsExpanded] = useState(false);
@@ -66,6 +67,15 @@ const handleSelection = (hour: number, isEvening: boolean, time: number) => {
   console.log("Payload being sent:", payload); // Check if this logs the correct format without seconds
 };
 
+const clearSelection = (isEvening: boolean) => {
+  if (isEvening) {
+    setEveningSelection(null);
+    setEveningSelectionTime(null);
+  } else {
+    setMorningSelection(null);
+    setMorningSelectionTime(null);
+  }
+};
 const [missingSlots, setMissingSlots] = useState<string[]>([]);
 const hasCheckedRef = useRef(false); // Track if the function has been called
 console.log("Service data: ", props);
@@ -436,6 +446,58 @@ if (!hasCheckedRef.current) {
       );
     })}
 </div>
+{morningSelectionTime && (
+  <div
+    style={{
+      marginTop: "10px",
+      padding: "10px",
+      backgroundColor: "#f0f0f0",
+      borderRadius: "5px",
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      fontSize: "16px",
+    }}
+  >
+    <span style={{ fontWeight: "bold" }}>Morning selected time:</span>
+    <span>{morningSelectionTime}</span>
+    <FaTimes
+      onClick={() => clearSelection(false)}
+      style={{
+        color: "red",
+        cursor: "pointer",
+        fontSize: "18px",
+      }}
+    />
+  </div>
+)}
+
+{eveningSelectionTime && (
+  <div
+    style={{
+      marginTop: "10px",
+      padding: "10px",
+      backgroundColor: "#f0f0f0",
+      borderRadius: "5px",
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      fontSize: "16px",
+    }}
+  >
+    <span style={{ fontWeight: "bold" }}>Evening selected time:</span>
+    <span>{eveningSelectionTime}</span>
+    <FaTimes
+      onClick={() => clearSelection(true)}
+      style={{
+        color: "red",
+        cursor: "pointer",
+        fontSize: "18px",
+      }}
+    />
+  </div>
+)}
+
 
   </div>
 </div>

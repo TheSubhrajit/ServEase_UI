@@ -637,9 +637,9 @@ const ServiceProviderDashboard: React.FC = () => {
   </Box>
 )}
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-        <Button variant="contained" sx={{ padding: '10px 20px', fontWeight: 'bold', backgroundColor: '#f57c00', color: 'white' }}>
+        {/* <Button variant="contained" sx={{ padding: '10px 20px', fontWeight: 'bold', backgroundColor: '#f57c00', color: 'white' }}>
           Cashout
-        </Button>
+        </Button> */}
       </Box>
     </div>
   );
