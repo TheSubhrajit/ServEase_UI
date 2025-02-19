@@ -4,9 +4,11 @@ import { SyntheticEvent, useEffect, useState } from "react";
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 import './Cookpricing.css'
 import { CHECKOUT } from "../../../../Constants/pagesConstants";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { add } from "../../../../features/cart/cartSlice";
 import MuiAlert from "@mui/material/Alert";
+import { FaTimes } from "react-icons/fa";
+import { update } from "../../../../features/bookingType/bookingTypeSlice";
 interface CookPricingProps {
   onPriceChange: (priceData: { price: number, selecteditem: any }) => void; 
   onAddToCart:(priceData: { price: number, selecteditem: any }) => void; // Add the onPriceChange function as a prop
@@ -134,7 +136,40 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
           return increasedPrice;
         }
       };
+      const bookingType = useSelector((state: any) => state.bookingType?.value);
+
+      const [morningSelectionTime, setMorningSelectionTime] = useState(null);
+      const [eveningSelectionTime, setEveningSelectionTime] = useState(null);
     
+      useEffect(() => {
+        console.log("Booking Type from Redux Store:", bookingType);
+        console.log("Morning Time Slot:", bookingType?.morningSelection);
+        console.log("Evening Time Slot:", bookingType?.eveningSelection);
+    
+        setMorningSelectionTime(bookingType?.morningSelection || null);
+        setEveningSelectionTime(bookingType?.eveningSelection || null);
+      }, [bookingType]);
+    
+      const handleTimeChange = (time, isEvening) => {
+        if (isEvening) {
+          setEveningSelectionTime(time);
+          dispatch(update({ eveningSelection: time })); // Update Redux store
+        } else {
+          setMorningSelectionTime(time);
+          dispatch(update({ morningSelection: time })); // Update Redux store
+        }
+      };
+    
+      const clearSelection = (isEvening) => {
+        if (isEvening) {
+          setEveningSelectionTime(null);
+          dispatch(update({ eveningSelection: null })); // Clear from Redux store
+        } else {
+          setMorningSelectionTime(null);
+          dispatch(update({ morningSelection: null })); // Clear from Redux store
+        }
+      };
+
     useEffect(() => {
         calculatePriceAndEntry(); 
       }, [mealType, pax, pricing]); // Recalculate when any of these change
@@ -150,9 +185,63 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
         }}
       >
       <Grid container spacing={3}>
+     
       {/* Left Section (Meal Service Info) */}
       <Grid item xs={12} md={8}>
         <Card sx={{ padding: 3, boxShadow: 3 }}>
+        <div>
+      {morningSelectionTime && (
+        <div
+          style={{
+            marginTop: "10px",
+            padding: "10px",
+            backgroundColor: "#f0f0f0",
+            borderRadius: "5px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontSize: "16px",
+          }}
+        >
+          <span style={{ fontWeight: "bold" }}>Morning selected time:</span>
+          <span>{morningSelectionTime}</span>
+          <FaTimes
+            onClick={() => clearSelection(false)}
+            style={{
+              color: "red",
+              cursor: "pointer",
+              fontSize: "18px",
+            }}
+          />
+        </div>
+      )}
+
+      {eveningSelectionTime && (
+        <div
+          style={{
+            marginTop: "10px",
+            padding: "10px",
+            backgroundColor: "#f0f0f0",
+            borderRadius: "5px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontSize: "16px",
+          }}
+        >
+          <span style={{ fontWeight: "bold" }}>Evening selected time:</span>
+          <span>{eveningSelectionTime}</span>
+          <FaTimes
+            onClick={() => clearSelection(true)}
+            style={{
+              color: "red",
+              cursor: "pointer",
+              fontSize: "18px",
+            }}
+          />
+        </div>
+      )}
+    </div>
           <Typography
             variant="h6"
             fontWeight="bold"

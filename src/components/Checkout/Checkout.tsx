@@ -195,7 +195,16 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
    
   }
   
+  const bookingTypes = useSelector((state: any) => state.bookingType?.value);
+  
+  useEffect(() => {
+    console.log("Booking Type from Redux Store for checkout:", bookingTypes);
+    
+    console.log("Morning checkout:", bookingTypes?.morningSelection);
+    console.log("Evening chekout:", bookingTypes?.eveningSelection);
 
+   
+  }, [bookingType]);
   return (
     <>
     <Box sx={{
