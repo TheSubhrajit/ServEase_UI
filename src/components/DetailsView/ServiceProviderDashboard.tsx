@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid, Card, CardContent, Typography, Button, Avatar, IconButton, Rating, Tab, Tabs, Switch, CircularProgress, Badge, Chip } from "@mui/material";
+import { Box, Grid, Card, CardContent, Typography, Button, Avatar, IconButton, Rating, Tab, Tabs, Switch, CircularProgress, Badge, Chip, Tooltip, Snackbar, Alert } from "@mui/material";
 import { styled } from "@mui/system";
 import CallIcon from '@mui/icons-material/Call';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -15,6 +15,8 @@ import EventIcon from '@mui/icons-material/Event'; // for Total Appointments
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // for Confirmed
 import WarningIcon from '@mui/icons-material/Warning'; // for Pending
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/userStore";
 
 const ProfileHeader = styled(Box)({
   display: 'flex',
@@ -38,23 +40,36 @@ const DashboardCard = styled(Card)({
     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
   },
 });
+type UserState = {
+  value?: {
+    role?: string;
+    serviceProviderDetails?: any;
+    // serviceProviderId?:any;
+  } | null;
+};
 
 const ServiceProviderDashboard: React.FC = () => {
-  const [serviceProvider, setServiceProvider] = useState({
-    firstName: "",
-    lastName: "",
-    age: "",
-    housekeepingRole: "",
-    cookingSpeciality: "",
-    diet: "",
-  });
 
+  
+  const user = useSelector((state: RootState) => state.user as UserState);
+
+  // Ensure `value` is not null before accessing properties
+  const userRole = user?.value?.role ?? "No Role";
+  const serviceProviderDetails = user?.value?.serviceProviderDetails ?? {};
+  const serviceProviderIdd = user?.value?.serviceProviderDetails ?.serviceproviderId ?? "Not Available";
+  const firstName=user?.value?.serviceProviderDetails ?. firstName;
+  const lastName=user?.value?.serviceProviderDetails ?.lastName;
+  // Log values
+  console.log("User State DASHBOARD:", user);
+  console.log("Role:", userRole);
+  console.log("Service Provider Details:", serviceProviderDetails);
+  console.log("Service Provider ID:", serviceProviderIdd);
+  console.log("FIRST NAME:",firstName);
+  console.log("lastname::",lastName);
   const [bookings, setBookings] = useState<any[]>([]);
-  const [allBookings, setAllBookings] = useState(bookings);
-  const [showMoreBookings, setShowMoreBookings] = useState(false); 
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(0); // State to manage selected tab (Service Recap or Profile)
-  const [activeSwitch, setActiveSwitch] = useState<number | null>(null); // Tracks the currently active switch by ID
+  const [selectedTab, setSelectedTab] = useState(0); 
+  const [activeSwitch, setActiveSwitch] = useState<number | null>(null); 
   
   const initialAttendance: { [key: string]: string } = {};
   for (let day = 1; day <= 28; day++) {
@@ -88,11 +103,12 @@ const ServiceProviderDashboard: React.FC = () => {
   
       // Prepare leave data
       const leaveData = {
-        serviceproviderId: 2, // Replace with dynamic ID if needed
+        serviceproviderId: serviceProviderIdd !== "Not Available" ? serviceProviderIdd : null,
         fromDate: dateKey,
-        toDate: dateKey, // Same as fromDate for a single-day leave
+        toDate: dateKey,
         leaveType: "PAID",
       };
+      
   
       try {
         const response = await axiosInstance.post(
@@ -111,7 +127,7 @@ const ServiceProviderDashboard: React.FC = () => {
   // const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
   //   setActiveSwitch(prevState => (prevState === id ? null : id)); // Toggle active switch
   // };
-  const serviceProviderId = 2;
+  // const serviceProviderId =  402;
   const [currentAndFutureBookings, setCurrentAndFutureBookings] = useState([]);
   const [pastBookings, setPastBookings] = useState([]);
   useEffect(() => {
@@ -127,9 +143,9 @@ const ServiceProviderDashboard: React.FC = () => {
   
           // Extracting bookings and setting engagementId
           const filteredBookings = [
-            ...response.data.current.filter(booking => booking.serviceProviderId === serviceProviderId),
-            ...response.data.future.filter(booking => booking.serviceProviderId === serviceProviderId),
-            ...response.data.past.filter(booking => booking.serviceProviderId === serviceProviderId)
+            ...response.data.current.filter(booking => booking.serviceProviderId === serviceProviderIdd),
+            ...response.data.future.filter(booking => booking.serviceProviderId === serviceProviderIdd),
+            ...response.data.past.filter(booking => booking.serviceProviderId === serviceProviderIdd)
           ].map(booking => ({
             ...booking,
             engagementId: booking.id, // Set engagementId from API response id
@@ -149,92 +165,125 @@ const ServiceProviderDashboard: React.FC = () => {
     fetchBookingHistory();
   }, []);
    // The empty dependency array ensures this effect runs once on component mount
-   
-   const handleSwitchChange = async (event, index) => {
-    let updatedStatus = "";
-  
-    // Update task status in the local state
-    setBookings(prevBookings =>
-      prevBookings.map((booking, i) => {
-        if (i === index) {
-          updatedStatus =
-            booking.taskStatus === "NOT_STARTED" ? "STARTED" :
-            booking.taskStatus === "STARTED" ? "COMPLETED" : "STARTED";
-  
-          console.log(`Booking ID ${booking.id}: Task Status changed to ${updatedStatus}`);
-          return { ...booking, taskStatus: updatedStatus };
-        }
-        return booking;
-      })
-    );
-  
-    setActiveSwitch(index);
-  
-    // Get the booking data from the current index
-    const booking = bookings[index];
-  
-    if (!booking) {
-      console.error("Error: Booking not found!");
-      return;
-    }
-  
-    const {
-      id,
-      serviceProviderId,
-      customerId,
-      startDate,
-      endDate,
-      engagements,
-      timeslot,
-      bookingDate,
-      customerName,
-      serviceProviderName,
-      taskStatus
-    } = booking;
-  
-    // Prepare the payload with all required fields for the PUT request
-    const updatePayload = {
-      id,
-      serviceProviderId,
-      customerId,
-      startDate,
-      endDate,
-      engagements,
-      timeslot,
-      bookingDate,
-      customerName,
-      serviceProviderName,
-      taskStatus: updatedStatus // Update the status here
-    };
-  
-    try {
-      console.log(`Updating engagement with ID ${id} and status ${updatedStatus}`);
-      const response = await axiosInstance.put(
-        `/api/serviceproviders/update/engagement/${id}`, 
-        updatePayload // Send the full payload with all the required fields
-      );
-  
-      console.log("Update Response:", response.data);
-    } catch (error: any) {
-      console.error("Error updating task status:", error);
-      
-      // Safely access error response and log more details
-      if (error.response) {
-        console.error("Full error response:", error.response.data);
-      } else if (error.message) {
-        console.error("Error message:", error.message);
-      } else {
-        console.error("Unknown error occurred");
+   const [snackbarOpen, setSnackbarOpen] = useState(false);
+   const [snackbarMessage, setSnackbarMessage] = useState("");
+   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+const handleSnackbarClose = () => {
+  setSnackbarOpen(false);
+};
+
+const handleSwitchChange = async (event, index) => {
+  let updatedStatus = "";
+
+  setBookings(prevBookings =>
+    prevBookings.map((booking, i) => {
+      if (i === index) {
+        updatedStatus =
+          booking.taskStatus === "NOT_STARTED" ? "STARTED" :
+          booking.taskStatus === "STARTED" ? "COMPLETED" : "STARTED";
+
+        console.log(`Booking ID ${booking.id}: Task Status changed to ${updatedStatus}`);
+        return { ...booking, taskStatus: updatedStatus };
       }
-    }
-  };
-  
-  
-  
-  const loadMoreBookings = () => {
-    setShowMoreBookings(!showMoreBookings);
+      return booking;
+    })
+  );
+
+  setActiveSwitch(index);
+
+  const booking = bookings[index];
+
+  if (!booking) {
+    console.error("Error: Booking not found!");
+    setSnackbarMessage("Error: Booking not found!");
+    setSnackbarSeverity("error");
+    setSnackbarOpen(true);
+    return;
+  }
+
+  const { id, serviceProviderId, customerId, startDate, endDate, engagements, timeslot, bookingDate, customerName, serviceProviderName } = booking;
+
+  const updatePayload = {
+    id,
+    serviceProviderId,
+    customerId,
+    startDate,
+    endDate,
+    engagements,
+    timeslot,
+    bookingDate,
+    customerName,
+    serviceProviderName,
+    taskStatus: updatedStatus, 
+   
   };
 
+  try {
+    console.log(`Updating engagement with ID ${id} and status ${updatedStatus}`);
+    const response = await axiosInstance.put(
+      `/api/serviceproviders/update/engagement/${id}`, 
+      updatePayload
+    );
+
+    console.log("Update Response:", response.data);
+    
+    setSnackbarMessage(`Task Status updated to ${updatedStatus}`);
+    setSnackbarSeverity("success");
+  } catch (error) {
+    console.error("Error updating task status:", error);
+
+    setSnackbarMessage("Failed to update task status. Please try again.");
+    setSnackbarSeverity("error");
+  }
+
+  setSnackbarOpen(true);
+};
+
+// ✅ Cancel Booking Function
+const handleCancelBooking = async (index) => {
+  const booking = bookings[index];
+  const updatedStatus = "CANCELLED"; 
+
+  const updatePayload = {
+    id: booking.id,
+    serviceProviderId: booking.serviceProviderId,
+    customerId: booking.customerId,
+    startDate: booking.startDate,
+    endDate: booking.endDate,
+    engagements: booking.engagements,
+    timeslot: booking.timeslot,
+    bookingDate: booking.bookingDate,
+    customerName: booking.customerName,
+    serviceProviderName: booking.serviceProviderName,
+    taskStatus: updatedStatus,
+    
+  };
+
+  try {
+    console.log(`Cancelling booking with ID ${booking.id}`);
+    const response = await axiosInstance.put(
+      `/api/serviceproviders/update/engagement/${booking.id}`,
+      updatePayload
+    );
+
+    console.log("Cancel Response:", response.data);
+
+    const updatedBookings = [...bookings];
+    updatedBookings[index].taskStatus = updatedStatus;
+    setBookings(updatedBookings);
+
+    setSnackbarMessage("Booking successfully cancelled!");
+    setSnackbarSeverity("success");
+  } catch (error) {
+    console.error("Error cancelling booking:", error);
+    setSnackbarMessage("Failed to cancel booking. Please try again.");
+    setSnackbarSeverity("error");
+  }
+
+  setSnackbarOpen(true);
+};
+  
   const handleEditClick = () => {
     setIsEditing(true);
   };
@@ -254,22 +303,31 @@ const ServiceProviderDashboard: React.FC = () => {
         <AccountCircleIcon fontSize="large" />
       </Avatar>
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-  {`${serviceProvider?.firstName || "Diyasha"} ${serviceProvider?.lastName || "Singha Roy"}`}
+  {`${firstName } ${lastName }`}
 </Typography>
 
 
       {/* Icons beside name */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <Badge badgeContent={bookings.length} color="primary">
-          <EventIcon fontSize="medium" sx={{ color: '#1976d2' }} />
-        </Badge>
-        <Badge badgeContent={bookings.filter((b) => b.status === 'Confirmed').length} color="primary">
-          <CheckCircleIcon fontSize="medium" sx={{ color: '#388e3c' }} />
-        </Badge>
-        <Badge badgeContent={bookings.filter((b) => b.status === 'Pending').length} color="secondary">
-          <WarningIcon fontSize="medium" sx={{ color: '#f57c00' }} />
-        </Badge>
-      </Box>
+  <Tooltip title="Total Bookings">
+    <Badge badgeContent={bookings.length} color="primary">
+      <EventIcon fontSize="medium" sx={{ color: '#1976d2' }} />
+    </Badge>
+  </Tooltip>
+
+  <Tooltip title="Confirmed Bookings">
+    <Badge badgeContent={bookings.filter((b) => b.status === 'Confirmed').length} color="primary">
+      <CheckCircleIcon fontSize="medium" sx={{ color: '#388e3c' }} />
+    </Badge>
+  </Tooltip>
+
+  <Tooltip title="Pending Bookings">
+    <Badge badgeContent={bookings.filter((b) => b.status === 'Pending').length} color="secondary">
+      <WarningIcon fontSize="medium" sx={{ color: '#f57c00' }} />
+    </Badge>
+  </Tooltip>
+</Box>
+
     </Box>
 
  
@@ -302,83 +360,150 @@ const ServiceProviderDashboard: React.FC = () => {
 
 
       {selectedTab === 0 && (
-        <Box sx={{ marginTop: '20px' }}>
-          <Grid container spacing={3}>
-            {/* Booking Cards Section */}
-            <Grid item xs={12}>
-              <Grid container spacing={3} justifyContent="center">
-                {bookings.map((booking, index) => (
-                  <Grid item xs={12} md={4} key={index}>
-                    <DashboardCard>
-                      <CardContent>
-                      <Typography variant="subtitle1" color="#555">Customer</Typography>
-                      <Typography variant="h5" color="#0056b3">{booking.customerName}</Typography>
+  <Box sx={{ marginTop: '20px' }}>
+    <Grid container spacing={3}>
+      {/* Booking Cards Section */}
+      <Grid item xs={12}>
+        <Grid container spacing={3} justifyContent="center">
+          {bookings.map((booking, index) => (
+            <Grid item xs={12} md={4} key={index}>
+              <DashboardCard>
+      
+                  
+                  {/* Task Status at the Top */}
+                  
+                    <CardContent>
+  {/* Centered Task Status Section */}
+  <Box sx={{ display: "flex", justifyContent: "center", marginY: "16px" }}>
+    <Typography
+      variant="body2"
+      sx={{
+        padding: "8px 16px",
+        borderRadius: "6px",
+        fontWeight: "bold",
+        textAlign: "center",
+        textTransform: "uppercase",
+        letterSpacing: "0.5px",
+        backgroundColor:
+          booking.taskStatus === "NOT_STARTED"
+            ? "rgba(200, 200, 200, 0.3)"
+            : booking.taskStatus === "STARTED"
+            ? "rgba(255, 215, 0, 0.3)"
+            : booking.taskStatus === "IN_PROGRESS"
+            ? "rgba(30, 144, 255, 0.3)"
+            : booking.taskStatus === "CANCELLED"
+            ? "rgba(255, 0, 0, 0.5)"
+            : booking.taskStatus === "COMPLETED"
+            ? "rgba(50, 205, 50, 0.5)"
+            : "#ccc",
+        color:
+          booking.taskStatus === "NOT_STARTED"
+            ? "#555"
+            : booking.taskStatus === "STARTED"
+            ? "#8B6508"
+            : booking.taskStatus === "IN_PROGRESS"
+            ? "#007BFF"
+            : booking.taskStatus === "CANCELLED"
+            ? "#fff"
+            : booking.taskStatus === "COMPLETED"
+            ? "#fff"
+            : "#000",
+        boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      Task Status: {booking.taskStatus}
+    </Typography>
+  </Box>
+                  
 
-                      <Typography variant="subtitle1" color="#555">Time Slot</Typography>
-                      <Typography variant="h6" color="#2a7f62">{booking.timeslot}</Typography>
+                  {/* Booking Details */}
+                  <Typography variant="subtitle1" color="#555">Customer</Typography>
+                  <Typography variant="h5" color="#0056b3">{booking.customerName}</Typography>
 
-                      <Typography variant="subtitle1" color="#555">Booking Start Date</Typography>
-                      <Typography variant="h6" color="#2a7f62">{new Date(booking.startDate).toLocaleDateString()}</Typography>
+                  <Typography variant="subtitle1" color="#555">Time Slot</Typography>
+                  <Typography variant="h6" color="#2a7f62">{booking.timeslot}</Typography>
 
-                      {booking.endDate && (
-                        <>
-                       <Typography variant="subtitle1" color="#555">Booking End Date</Typography>
-                       <Typography variant="h6" color="#2a7f62">{new Date(booking.endDate).toLocaleDateString()}</Typography>
-                        </>
-                        )}
+                  <Typography variant="subtitle1" color="#555">Booking Start Date</Typography>
+                  <Typography variant="h6" color="#2a7f62">{new Date(booking.startDate).toLocaleDateString()}</Typography>
 
-                      <Typography variant="subtitle1" color="#555">Address</Typography>
-                      <Typography variant="body2" color="#555">{booking.address}</Typography>
-                      <Typography variant="subtitle1" color="#555">taskStatus</Typography>
-                      <Typography variant="body2" color="#555">{booking.taskStatus}</Typography>
+                  {booking.endDate && (
+                    <>
+                      <Typography variant="subtitle1" color="#555">Booking End Date</Typography>
+                      <Typography variant="h6" color="#2a7f62">{new Date(booking.endDate).toLocaleDateString()}</Typography>
+                    </>
+                  )}
 
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
-                          <IconButton color="primary" href={`tel:${booking.phone}`} sx={{ fontSize: 26 }}>
-                            <CallIcon />
-                          </IconButton>
-                          <Box>
-                            <Button
-                              variant={booking.status === 'Pending' ? 'outlined' : 'contained'}
-                              sx={{
-                                color: booking.status === 'Pending' ? 'orange' : 'green',
-                                fontWeight: 'bold',
-                                borderRadius: '5px',
-                              }}
-                            >
-                              Confirmed {booking.status}
-                            </Button>
-                          </Box>
-                          <Box>
-                          <Switch
+                  <Typography variant="subtitle1" color="#555">Address</Typography>
+                  <Typography variant="body2" color="#555">{booking.address}</Typography>
+
+                  {/* Action Buttons */}
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+                    <IconButton color="primary" href={`tel:${booking.phone}`} sx={{ fontSize: 26 }}>
+                      <CallIcon />
+                    </IconButton>
+
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button
+                        variant={booking.status === 'Pending' ? 'outlined' : 'contained'}
+                        sx={{
+                          color: booking.status === 'Pending' ? 'orange' : 'white',
+                          backgroundColor: booking.status === 'Pending' ? 'transparent' : 'green',
+                          borderColor: booking.status === 'Pending' ? 'orange' : 'green',
+                          fontWeight: 'bold',
+                          borderRadius: '8px',
+                          padding: '6px 16px',
+                          fontSize: '14px',
+                          boxShadow: booking.status !== 'Pending' ? '0px 4px 10px rgba(0, 128, 0, 0.3)' : 'none',
+                          transition: '0.3s ease-in-out',
+                          '&:hover': {
+                            backgroundColor: booking.status === 'Pending' ? 'orange' : 'darkgreen',
+                            color: 'white',
+                            borderColor: 'darkgreen',
+                          },
+                        }}
+                      >
+                        {booking.status === 'Pending' ? 'Confirm Booking' : 'Confirmed'}
+                      </Button>
+
+                      <Button
+  variant="outlined"
+  sx={{
+    color: 'red',
+    borderColor: 'red',
+    fontWeight: 'bold',
+    borderRadius: '5px',
+    transition: '0.3s',
+    '&:hover': {
+      backgroundColor: 'red',
+      color: 'white',
+    },
+  }}
+  onClick={() => handleCancelBooking(index)}
+  disabled={["STARTED", "IN_PROGRESS", "COMPLETED"].includes(booking.taskStatus)}
+>
+  Cancel
+</Button>
+                    </Box>
+
+                    <Box>
+                    <Switch
   checked={bookings[index].taskStatus === "STARTED"}
   onChange={(e) => handleSwitchChange(e, index)}
+  disabled={bookings[index].taskStatus === "CANCELLED"} // Disable switch when task is cancelled
 />
 
-
-</Box>
-
-
-                        </Box>
-                      </CardContent>
-                    </DashboardCard>
-                  </Grid>
-                ))}
-              </Grid>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </DashboardCard>
             </Grid>
+          ))}
+        </Grid>
+      </Grid>
+    </Grid>
+  </Box>
+)}
 
-            {/* Load More / Go Back Button */}
-            <Grid item xs={12} sx={{ textAlign: 'center', marginTop: '20px' }}>
-              <Button 
-                variant="contained" 
-                onClick={loadMoreBookings}
-                sx={{ backgroundColor: '#f57c00', color: 'white' }}
-              >
-                {showMoreBookings ? "Go Back" : "More"}
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-      )}
 
 
       {/* Show Service Recap Section if Service Recap Tab is Selected */}
@@ -636,6 +761,29 @@ const ServiceProviderDashboard: React.FC = () => {
     </Box>
   </Box>
 )}
+{/* Snackbar Component */}
+<Snackbar
+  open={snackbarOpen}
+  autoHideDuration={4000}
+  onClose={handleSnackbarClose}
+  anchorOrigin={{ vertical: "top", horizontal: "right" }}
+  sx={{ marginTop: '60px' }} 
+>
+  <Alert onClose={handleSnackbarClose}  sx={{ width: '100%' }}>
+    {snackbarMessage}
+  </Alert>
+</Snackbar>
+       {/* <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000} // Snackbar disappears after 3 seconds
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} 
+        sx={{ marginTop: '60px' }} 
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity="success">
+          Booking successfully canceled!
+        </Alert>
+      </Snackbar> */}
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
         {/* <Button variant="contained" sx={{ padding: '10px 20px', fontWeight: 'bold', backgroundColor: '#f57c00', color: 'white' }}>
           Cashout

@@ -49,7 +49,6 @@ interface Booking {
   experience:string;
   noOfPersons:string;
   mealType:string;
- 
   responsibilities:string;
 }
 
