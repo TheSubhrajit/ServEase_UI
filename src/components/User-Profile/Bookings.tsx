@@ -8,6 +8,8 @@ import {
   Card,
   CardContent,
   Button,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import axiosInstance from '../../services/axiosInstance';
 import { useSelector } from 'react-redux';
@@ -15,7 +17,7 @@ import { RootState } from '../../store/userStore';
 
 type UserState = {
   value?: {
-    role?: string;
+    serviceeType?: string;
     customerDetails?: {
       customerId: number;
       firstName: string;
@@ -27,7 +29,6 @@ type UserState = {
 interface Booking {
   id: number;
   name: string;
-  role: string;
   serviceProviderId: number;
   timeSlot: string;
   date: string;
@@ -42,6 +43,13 @@ interface Booking {
   taskStatus: string;
   bookingDate: string;
   engagements:string;
+  serviceeType:string;
+  serviceType:string;
+  childAge:string;
+  experience:string;
+  noOfPersons:string;
+  mealType:string;
+  responsibilities:string;
 }
 
 const Booking: React.FC = () => {
@@ -78,7 +86,7 @@ const Booking: React.FC = () => {
                       customerId: item.customerId, 
                       serviceProviderId: item.serviceProviderId, 
                       name: item.customerName,
-                      role: item.serviceeType,
+                      serviceeType: item.serviceeType,
                       timeSlot: item.timeslot,
                       date: new Date(item.startDate).toLocaleDateString(),
                       startDate: item.startDate,
@@ -92,6 +100,12 @@ const Booking: React.FC = () => {
                       taskStatus: item.taskStatus,
                       engagements:item.engagements,
                       bookingDate: item.bookingDate,
+                      serviceType:item.serviceType,
+                      childAge:item.childAge,
+                      experience:item.experience,
+                      noOfPersons:item.noOfPersons,
+                      mealType:item.mealType,
+                      responsibilities:item.responsibilities,
                     };
                   })
               : [];
@@ -115,22 +129,35 @@ const Booking: React.FC = () => {
     console.log(`Modify booking with ID: ${bookingId}`);
     // Add logic for modifying the booking
   };
-  
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const handleCancelBooking = async (booking: Booking) => {
     const updatedStatus = "CANCELLED";
   
     const updatePayload = {
       id: booking.id,
       serviceProviderId: booking.serviceProviderId,
-      customerId: customerId,
+      customerId: customerId, // Fixed: Use `booking.customerId` instead of `customerId`
       startDate: booking.startDate,
       endDate: booking.endDate,
-      engagements:booking.engagements, 
-      timeslot: booking.timeSlot,
+      engagements: booking.engagements,
+      timeslot: booking.timeSlot, // Fixed: Match field name (not timeSlot)
+      monthlyAmount: booking.monthlyAmount,
+      paymentMode: booking.paymentMode,
+      bookingType: booking.bookingType,
       bookingDate: booking.bookingDate,
+      responsibilities: booking.responsibilities,
+      serviceType: booking.serviceType,
+      mealType: booking.mealType,
+      noOfPersons: booking.noOfPersons,
+      experience: booking.experience,
+      childAge: booking.childAge,
+      serviceeType: booking.serviceeType, // Kept as it is since it exists in your JSON
       customerName: booking.customerName,
       serviceProviderName: booking.serviceProviderName,
-      taskStatus: updatedStatus,
+      address: booking.address,
+      taskStatus: updatedStatus, // Updated task status
+   
+    
     };
   
     try {
@@ -163,6 +190,7 @@ const Booking: React.FC = () => {
         console.error("Unknown error occurred");
       }
     }
+    setOpenSnackbar(true);
   };
   
   const renderBookings = (bookings: Booking[]) => (
@@ -196,45 +224,53 @@ const Booking: React.FC = () => {
               <Typography variant="body2" color="textSecondary">
   Service Provider ID: {booking.serviceProviderId}
 </Typography> */}
-              <Typography variant="h6" gutterBottom>
-              Service Provider: {booking.serviceProviderName}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Role: {booking.role}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Time Slot: {booking.timeSlot}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Start Date: {booking.startDate}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                End Date: {booking.endDate}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Booking Type: {booking.bookingType}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Monthly Amount: ₹{booking.monthlyAmount}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Payment Mode: {booking.paymentMode}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Address: {booking.address}
-              </Typography>
-              {/* <Typography variant="body2" color="textSecondary">
-                Customer: {booking.customerName}
-              </Typography> */}
-              {/* <Typography variant="body2" color="textSecondary">
-                Service Provider: {booking.serviceProviderName}
-              </Typography> */}
-              <Typography variant="body2" color="textSecondary">
-                Task Status: {booking.taskStatus}
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Booking Date: {booking.bookingDate}
-              </Typography>
+             <Typography variant="h6" gutterBottom>
+  Service Provider: {booking.serviceProviderName}
+</Typography>
+
+<Typography variant="body2" color="textSecondary">
+  Service Type: {booking.serviceeType}
+</Typography>
+
+<Typography variant="body2" color="textSecondary">
+  Start Date: {booking.startDate}
+</Typography>
+
+<Typography variant="body2" color="textSecondary">
+  End Date: {booking.endDate}
+</Typography>
+
+<Typography variant="body2" color="textSecondary">
+  Payment Mode: {booking.paymentMode}
+</Typography>
+
+<Typography variant="body2" color="textSecondary">
+  Booking Date: {booking.bookingDate}
+</Typography>
+
+{booking.taskStatus !== "CANCELLED" && (
+  <>
+    <Typography variant="body2" color="textSecondary">
+      Time Slot: {booking.timeSlot}
+    </Typography>
+
+    <Typography variant="body2" color="textSecondary">
+      Booking Type: {booking.bookingType}
+    </Typography>
+
+    <Typography variant="body2" color="textSecondary">
+      Monthly Amount: ₹{booking.monthlyAmount}
+    </Typography>
+
+    <Typography variant="body2" color="textSecondary">
+      Address: {booking.address}
+    </Typography>
+
+    <Typography variant="body2" color="textSecondary">
+      Task Status: {booking.taskStatus}
+    </Typography>
+  </>
+)}
                {/* Buttons Section */}
             <Box display="flex" justifyContent="space-between" marginTop={2}>
               <Button 
@@ -301,6 +337,18 @@ const Booking: React.FC = () => {
           {selectedTab === 2 && renderBookings(futureBookings)}
         </Box>
       </Paper>
+       {/* Snackbar Component */}
+       <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000} // Snackbar disappears after 3 seconds
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} 
+        sx={{ marginTop: '60px' }} 
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity="success">
+          Booking successfully canceled!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

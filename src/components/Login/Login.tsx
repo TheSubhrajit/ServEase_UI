@@ -92,7 +92,7 @@ export const Login: React.FC<ChildComponentProps> = ({
         const { message, role,customerDetails } = response.data;
         const firstName = customerDetails?.firstName || "Unknown";
        
-        console.log("First Name:", firstName);
+        // console.log("First Name:", firstName);
         dispatch(add(response.data));
 
         // Display success message
