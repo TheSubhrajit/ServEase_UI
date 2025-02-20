@@ -90,7 +90,6 @@ if (userRole === "CUSTOMER") {
     getPricingData();
   });
 
-  
   const getPricingData = () => {
     axios.get('http://3.110.168.35:3000/records').then(function (response) {
       console.log(response.data);
