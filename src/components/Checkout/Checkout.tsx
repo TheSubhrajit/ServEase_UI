@@ -108,7 +108,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
   const handleCheckout = async () => {
     try {
       const response = await axios.post(
-        "http://3.110.168.35:3000/create-order",
+        "http://13.127.47.159:3000/create-order",
         { amount: grandTotal }, // Amount in paise
         {
           headers: {
