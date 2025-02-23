@@ -41,9 +41,9 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
   const [open, setOpen] = useState(false);
   const [loggedInUser , setLoggedInUser ] = useState();
 
-  const cart = useSelector((state : any) => state.cart?.value);
-  const bookingType = useSelector((state : any) => state.bookingType?.value)
-  const user = useSelector((state : any) => state.user?.value);
+  const cart = useSelector((state: any) => state.cart?.value);
+  const bookingType = useSelector((state: any) => state.bookingType?.value)
+  const user = useSelector((state: any) => state.user?.value);
   const dispatch = useDispatch();
   const customerId = user?.customerDetails?.customerId || null;
   // console.log('customer details:',user)
@@ -78,7 +78,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
   useEffect(() => {
     setCheckout(cart);
     setBookingTypeFromSelection(bookingType);
-  }, [cart , bookingType]);
+  }, [cart, bookingType]);
 
   const handleRemoveItem = (index: number) => {
     const updatedCheckout = checkout['selecteditem']?.filter((_, i) => i !== index);
@@ -228,7 +228,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
         display: "flex",
         justifyContent: "flex-start",
         alignItems: "center",
-        marginTop:'65px'
+        marginTop: '65px'
       }}>
         <Button variant="outlined" style={{marginRight:'30%'}} onClick={handleBackClick}>
                         Back
@@ -423,3 +423,46 @@ alignItems: "center",
 };
 
 export default Checkout;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Extract necessary details for the email
+      // const emailData = {
+      //   userName: user?.customerDetails?.firstName,
+      //   serviceType: checkout[0].entry.type,
+      //   spName: providerDetails.name,  
+      //   dateTime: bookingDetails.startDate,
+      //   //confirmCode: response.data.confirmationCode,
+      //   confirmCode: "123456", 
+      //   phoneNumber: "+91 1234567890", 
+      //   email: user?.customerDetails?.email,
+      // };
+
+      // //send email
+      // await axiosInstance.post(
+      //   "/send-booking-email",
+      //   emailData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
