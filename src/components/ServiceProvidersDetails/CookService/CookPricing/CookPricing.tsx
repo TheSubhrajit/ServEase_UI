@@ -32,13 +32,8 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
       ];
 
       const [ serviceType, setServiceType ] = useState(typeButtonsSelector[0].key);
+      const bookingType = useSelector((state: any) => state.bookingType?.value);
 
-
-      const peopleButtonsSelector = [
-        { key: 1, value: '1-2' },
-        { key: 2, value: '3-5' },
-        { key: 3, value: '6-9' }
-      ];
 
     function handleButtonClick(value: string): void {
         setMealType((prevState : any) => 
@@ -68,7 +63,8 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
     
 
     const handleForButtonClick = ( newValue) =>{
-      setServiceType(newValue)
+      console.log("new value ", newValue)
+      setServiceType(newValue);
     }
 
     const handleProceedToCheckout = () =>{
@@ -95,7 +91,29 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
             );
           }
         });
-        setPrice(Number(totalPrice));
+        if(mealType.length === 1){
+          setPrice(Number(totalPrice));
+        } else if(mealType.length === 2){
+          totalPrice = (Number(totalPrice)) -  Number(totalPrice) * 10 / 100;
+          setPrice(totalPrice);
+        }
+        else if(mealType.length === 3){
+          totalPrice = (Number(totalPrice)) -  Number(totalPrice) * 20 / 100;
+          setPrice(totalPrice);
+        }
+
+        if(bookingType?.morningSelection && bookingType?.eveningSelection){
+          totalPrice = (Number(totalPrice)) * 2;
+          setPrice((Number(totalPrice)));
+        } else {
+          setPrice(totalPrice);
+        }
+
+        console.log("serviceType ", serviceType)
+        if(serviceType === 2){
+          totalPrice = totalPrice = (Number(totalPrice)) +  Number(totalPrice) * 30 / 100;
+          setPrice(totalPrice);
+        }
       }
 
       const getPeopleCount = (data) => {
@@ -136,19 +154,16 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
           return increasedPrice;
         }
       };
-      const bookingType = useSelector((state: any) => state.bookingType?.value);
+      
 
       const [morningSelectionTime, setMorningSelectionTime] = useState(null);
       const [eveningSelectionTime, setEveningSelectionTime] = useState(null);
     
       useEffect(() => {
-        console.log("Booking Type from Redux Store:", bookingType);
-        console.log("Morning Time Slot:", bookingType?.morningSelection);
-        console.log("Evening Time Slot:", bookingType?.eveningSelection);
-    
         setMorningSelectionTime(bookingType?.morningSelection || null);
         setEveningSelectionTime(bookingType?.eveningSelection || null);
-      }, [bookingType]);
+        calculatePriceAndEntry();
+      }, [bookingType , serviceType]);
     
       const handleTimeChange = (time, isEvening) => {
         if (isEvening) {
