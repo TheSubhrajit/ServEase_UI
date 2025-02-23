@@ -132,8 +132,13 @@ const ServiceProviderDashboard: React.FC = () => {
   const [pastBookings, setPastBookings] = useState([]);
   useEffect(() => {
     const fetchBookingHistory = async () => {
-      try {
-        const response = await axiosInstance.get("/api/serviceproviders/get-sp-booking-history");
+       try {
+          const page = 0; // Default page
+          const size = 100; // Default size
+
+          const response = await axiosInstance.get(
+            `/api/serviceproviders/get-sp-booking-history?page=${page}&size=${size}`
+          );
         console.log("API Response:", response.data);
   
         if (response.data && response.data.current && response.data.future && response.data.past) {
