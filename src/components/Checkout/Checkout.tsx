@@ -108,7 +108,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
   const handleCheckout = async () => {
     try {
       const response = await axios.post(
-        "http://3.110.168.35:3000/create-order",
+        "http://13.127.47.159:3000/create-order",
         { amount: grandTotal }, // Amount in paise
         {
           headers: {
@@ -195,7 +195,16 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataTo
    
   }
   
+  const bookingTypes = useSelector((state: any) => state.bookingType?.value);
+  
+  useEffect(() => {
+    console.log("Booking Type from Redux Store for checkout:", bookingTypes);
+    
+    console.log("Morning checkout:", bookingTypes?.morningSelection);
+    console.log("Evening chekout:", bookingTypes?.eveningSelection);
 
+   
+  }, [bookingType]);
   return (
     <>
     <Box sx={{

@@ -63,7 +63,7 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --host 0.0.0.0",
     "start-legacy": "react-scripts --openssl-legacy-provider start",
     "build": "npm run lint --no-verify && react-scripts build",
     "test": "react-scripts test",

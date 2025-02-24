@@ -3,24 +3,24 @@ import { createSlice } from '@reduxjs/toolkit'
 export const bookingTypeSlice = createSlice({
   name: 'bookingType',
   initialState: {
-    value: null,
+    value: null as Record<string, any> | null, // Ensure value is an object or null
   },
   reducers: {
-    add: (state , action) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes.
-      // Also, no return statement is required from these functions.
-      state.value = action.payload
+    add: (state, action) => {
+      state.value = action.payload;
     },
     remove: (state) => {
-      state.value = null
+      state.value = null;
+    },
+    update: (state, action) => {
+      if (state.value && typeof state.value === 'object') {
+        state.value = { ...state.value, ...action.payload }; // Safely merge existing state with new updates
+      }
     }
   },
 })
 
-// Action creators are generated for each case reducer function
-export const { add, remove } = bookingTypeSlice.actions
+// Action creators
+export const { add, remove, update } = bookingTypeSlice.actions;
 
 export default bookingTypeSlice.reducer;

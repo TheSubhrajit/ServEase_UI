@@ -4,9 +4,11 @@ import { SyntheticEvent, useEffect, useState } from "react";
 import AddShoppingCartIcon  from '@mui/icons-material/AddShoppingCart';
 import './Cookpricing.css'
 import { CHECKOUT } from "../../../../Constants/pagesConstants";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { add } from "../../../../features/cart/cartSlice";
 import MuiAlert from "@mui/material/Alert";
+import { FaTimes } from "react-icons/fa";
+import { update } from "../../../../features/bookingType/bookingTypeSlice";
 interface CookPricingProps {
   onPriceChange: (priceData: { price: number, selecteditem: any }) => void; 
   onAddToCart:(priceData: { price: number, selecteditem: any }) => void; // Add the onPriceChange function as a prop
@@ -30,13 +32,8 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
       ];
 
       const [ serviceType, setServiceType ] = useState(typeButtonsSelector[0].key);
+      const bookingType = useSelector((state: any) => state.bookingType?.value);
 
-
-      const peopleButtonsSelector = [
-        { key: 1, value: '1-2' },
-        { key: 2, value: '3-5' },
-        { key: 3, value: '6-9' }
-      ];
 
     function handleButtonClick(value: string): void {
         setMealType((prevState : any) => 
@@ -66,7 +63,8 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
     
 
     const handleForButtonClick = ( newValue) =>{
-      setServiceType(newValue)
+      console.log("new value ", newValue)
+      setServiceType(newValue);
     }
 
     const handleProceedToCheckout = () =>{
@@ -93,7 +91,29 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
             );
           }
         });
-        setPrice(Number(totalPrice));
+        if(mealType.length === 1){
+          setPrice(Number(totalPrice));
+        } else if(mealType.length === 2){
+          totalPrice = (Number(totalPrice)) -  Number(totalPrice) * 10 / 100;
+          setPrice(totalPrice);
+        }
+        else if(mealType.length === 3){
+          totalPrice = (Number(totalPrice)) -  Number(totalPrice) * 20 / 100;
+          setPrice(totalPrice);
+        }
+
+        if(bookingType?.morningSelection && bookingType?.eveningSelection){
+          totalPrice = (Number(totalPrice)) * 2;
+          setPrice((Number(totalPrice)));
+        } else {
+          setPrice(totalPrice);
+        }
+
+        console.log("serviceType ", serviceType)
+        if(serviceType === 2){
+          totalPrice = totalPrice = (Number(totalPrice)) +  Number(totalPrice) * 30 / 100;
+          setPrice(totalPrice);
+        }
       }
 
       const getPeopleCount = (data) => {
@@ -134,7 +154,37 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
           return increasedPrice;
         }
       };
+      
+
+      const [morningSelectionTime, setMorningSelectionTime] = useState(null);
+      const [eveningSelectionTime, setEveningSelectionTime] = useState(null);
     
+      useEffect(() => {
+        setMorningSelectionTime(bookingType?.morningSelection || null);
+        setEveningSelectionTime(bookingType?.eveningSelection || null);
+        calculatePriceAndEntry();
+      }, [bookingType , serviceType]);
+    
+      const handleTimeChange = (time, isEvening) => {
+        if (isEvening) {
+          setEveningSelectionTime(time);
+          dispatch(update({ eveningSelection: time })); // Update Redux store
+        } else {
+          setMorningSelectionTime(time);
+          dispatch(update({ morningSelection: time })); // Update Redux store
+        }
+      };
+    
+      const clearSelection = (isEvening) => {
+        if (isEvening) {
+          setEveningSelectionTime(null);
+          dispatch(update({ eveningSelection: null })); // Clear from Redux store
+        } else {
+          setMorningSelectionTime(null);
+          dispatch(update({ morningSelection: null })); // Clear from Redux store
+        }
+      };
+
     useEffect(() => {
         calculatePriceAndEntry(); 
       }, [mealType, pax, pricing]); // Recalculate when any of these change
@@ -150,9 +200,63 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
         }}
       >
       <Grid container spacing={3}>
+     
       {/* Left Section (Meal Service Info) */}
       <Grid item xs={12} md={8}>
         <Card sx={{ padding: 3, boxShadow: 3 }}>
+        <div>
+      {morningSelectionTime && (
+        <div
+          style={{
+            marginTop: "10px",
+            padding: "10px",
+            backgroundColor: "#f0f0f0",
+            borderRadius: "5px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontSize: "16px",
+          }}
+        >
+          <span style={{ fontWeight: "bold" }}>Morning selected time:</span>
+          <span>{morningSelectionTime}</span>
+          <FaTimes
+            onClick={() => clearSelection(false)}
+            style={{
+              color: "red",
+              cursor: "pointer",
+              fontSize: "18px",
+            }}
+          />
+        </div>
+      )}
+
+      {eveningSelectionTime && (
+        <div
+          style={{
+            marginTop: "10px",
+            padding: "10px",
+            backgroundColor: "#f0f0f0",
+            borderRadius: "5px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontSize: "16px",
+          }}
+        >
+          <span style={{ fontWeight: "bold" }}>Evening selected time:</span>
+          <span>{eveningSelectionTime}</span>
+          <FaTimes
+            onClick={() => clearSelection(true)}
+            style={{
+              color: "red",
+              cursor: "pointer",
+              fontSize: "18px",
+            }}
+          />
+        </div>
+      )}
+    </div>
           <Typography
             variant="h6"
             fontWeight="bold"

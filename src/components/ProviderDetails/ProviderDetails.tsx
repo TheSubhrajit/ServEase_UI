@@ -113,7 +113,7 @@ if (!hasCheckedRef.current) {
 
   const toggleExpand = async () => {
       setIsExpanded(!isExpanded);
-  
+
       if (!isExpanded) {
           try {
               console.log("Service Provider Details:", props);

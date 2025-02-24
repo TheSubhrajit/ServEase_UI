@@ -132,7 +132,7 @@ const  Confirmationpage: React.FC<ChildComponentProps> = ({ providerDetails , ro
     const handleBackClick = () =>{
       sendDataToParent(DETAILS)
     }
-  
+    
     
   return (
     <div className="details-container">
