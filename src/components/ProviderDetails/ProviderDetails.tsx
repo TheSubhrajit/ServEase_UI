@@ -268,7 +268,9 @@ const toggleExpand = async () => {
   const dietImage = dietImages[props.diet];
 
   // Enable the Book Now button if any time is selected
-  const isBookNowEnabled = (morningSelection !== null || eveningSelection !== null) && loggedInUser;
+  const isBookNowEnabled = 
+  (morningSelection !== null || eveningSelection !== null) || 
+  (matchedMorningSelection !== null || matchedEveningSelection !== null) ;
 
   const user = useSelector((state : any) => state.user?.value);
 
@@ -644,19 +646,23 @@ const toggleExpand = async () => {
  
 </div>
 
-              <div style={{ float: 'right', display: 'flex' }}>
-                {/* {!loggedInUser && <Button onClick={handleLogin} variant="outlined">Login</Button>} */}
-                {/* <Tooltip
-                  style={{ display: isBookNowEnabled ? 'none' : 'block' }}
-                  title="You need to login and select your timings to continue booking"
-                >
-                  <IconButton>
-                    <InfoOutlinedIcon />
-                  </IconButton>
-                </Tooltip> */}
-                {warning && <p className="text-red-500">{warning}</p>}
-                {!warning && <Button onClick={handleBookNow}  variant="outlined">Book Now</Button>}
-              </div>
+<div style={{ float: 'right', display: 'flex' }}>
+    {warning && <p className="text-red-500">{warning}</p>}
+
+    <Button 
+      onClick={handleBookNow} 
+      variant="outlined"
+      disabled={!isBookNowEnabled} // ✅ Uses state instead of inline condition
+      style={{
+        opacity: isBookNowEnabled ? 1 : 0.6, 
+        cursor: isBookNowEnabled ? "pointer" : "not-allowed"
+      }}
+    >
+      Book Now
+    </Button>
+  </div>
+
+
 
             </div>
           )}
