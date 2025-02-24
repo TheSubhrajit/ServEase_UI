@@ -11,7 +11,7 @@ import Confirmationpage from "./components/ServiceProvidersDetails/Confirmationp
 import Checkout from "./components/Checkout/Checkout";
 import UserProfile from "./components/User-Profile/UserProfile";
 import Booking from "./components/User-Profile/Bookings";
-import { ADMIN, BOOKINGS, CHECKOUT, CONFIRMATION, DETAILS, LOGIN, PROFILE } from "./Constants/pagesConstants";
+import { ADMIN, BOOKINGS, CHECKOUT, CONFIRMATION, DASHBOARD, DETAILS, LOGIN, PROFILE } from "./Constants/pagesConstants";
 import { ServiceProviderContext } from "./context/ServiceProviderContext";
 import AddToCart from "./components/add/AddToCart";
 import New from "./components/add/New";
@@ -110,7 +110,7 @@ if (userRole === "CUSTOMER") {
         console.log("selected details -> ", serviceProviderDetails);
         return <Confirmationpage role={selectedBookingType} providerDetails={serviceProviderDetails} sendDataToParent={handleDataFromChild} />;
       } else if (selection === CHECKOUT) {
-        return <Checkout providerDetails={serviceProviderDetails} />;
+        return <Checkout providerDetails={serviceProviderDetails} sendDataToParent={handleDataFromChild}/>;
       } else if (selection === LOGIN) {
         return (
           <div className="w-full max-w-4xl h-[75%]">
@@ -119,7 +119,11 @@ if (userRole === "CUSTOMER") {
         );
       } else if (selection === BOOKINGS) {
         return <Booking />;
-      } else if (selection === PROFILE) {
+      }
+      else if (selection === DASHBOARD) {
+        return <ServiceProviderDashboard />;
+      }
+       else if (selection === PROFILE) {
         return <UserProfile goBack={() => { throw new Error("Function not implemented."); }} />;
       } else if (selection === ADMIN) {
         console.log("I am in admin");

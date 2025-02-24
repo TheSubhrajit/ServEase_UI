@@ -9,6 +9,8 @@ import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import axios from "axios";
 import Login from "../Login/Login";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { BOOKINGS, CONFIRMATION } from "../../Constants/pagesConstants";
+import { add, remove } from "../../features/cart/cartSlice";
 
 
 // Define the structure of each item in selectedItems
@@ -27,9 +29,10 @@ interface Item {
 
 interface ChildComponentProps {
   providerDetails : any;
+  sendDataToParent : (data : any) => void;
 }
 
-const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
+const Checkout : React.FC<ChildComponentProps> = ({ providerDetails , sendDataToParent }) => {
   const [checkout, setCheckout] = useState<any>([]);
   const [bookingTypeFromSelection , setBookingTypeFromSelection] = useState<Bookingtype>();
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -38,9 +41,9 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   const [open, setOpen] = useState(false);
   const [loggedInUser , setLoggedInUser ] = useState();
 
-  const cart = useSelector((state : any) => state.cart?.value);
-  const bookingType = useSelector((state : any) => state.bookingType?.value)
-  const user = useSelector((state : any) => state.user?.value);
+  const cart = useSelector((state: any) => state.cart?.value);
+  const bookingType = useSelector((state: any) => state.bookingType?.value)
+  const user = useSelector((state: any) => state.user?.value);
   const dispatch = useDispatch();
   const customerId = user?.customerDetails?.customerId || null;
   // console.log('customer details:',user)
@@ -51,7 +54,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   const customerName = `${firstName} ${lastName}`;
  
 
-  const providerFullName = `${providerDetails.firstName} ${providerDetails.lastName}`;
+  const providerFullName = `${providerDetails?.firstName} ${providerDetails?.lastName}`;
  
   
   // Declare customerName in bookingDetails
@@ -75,11 +78,12 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
   useEffect(() => {
     setCheckout(cart);
     setBookingTypeFromSelection(bookingType);
-  }, [cart , bookingType]);
+  }, [cart, bookingType]);
 
   const handleRemoveItem = (index: number) => {
     const updatedCheckout = checkout['selecteditem']?.filter((_, i) => i !== index);
     setCheckout(updatedCheckout);
+    dispatch(add({ grandTotal, selecteditem: updatedCheckout }));
   };
 
   
@@ -136,7 +140,7 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
             bookingDetails.startDate = bookingTypeFromSelection?.startDate;
             bookingDetails.endDate = bookingTypeFromSelection?.endDate;
             bookingDetails.engagements = checkout.selecteditem[0].Service;
-            bookingDetails.paymentMode = "ONLINE"; 
+            bookingDetails.paymentMode = "UPI"; 
             bookingDetails.taskStatus= "NOT_STARTED";
             bookingDetails.bookingType = bookingType.bookingPreference;
             bookingDetails.serviceeType = checkout.selecteditem[0].Service;
@@ -160,12 +164,14 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
               setSnackbarMessage(response.data || "Booking successful!");
               setSnackbarSeverity("success");
               setOpenSnackbar(true);
+              sendDataToParent(BOOKINGS)
+              dispatch(remove())
             }
           },
           prefill: {
-            name: user?.name || "John Doe",
-            email: user?.email || "johndoe@example.com",
-            contact: user?.phone || "9999999999",
+            name: customerName || "",
+            email: user?.email || "",
+            contact: user?.mobileNo || "",
           },
           theme: {
             color: "#3399cc",
@@ -181,10 +187,17 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
-  };
-  const grandTotal = checkout['selecteditem']?.reduce((sum, service) => sum + service['Price /Month (INR)'], 0);
+  };  
+  const grandTotal = checkout?.price ? checkout?.price : 0;
+
+  const handleBackClick = () =>{
+    sendDataToParent(CONFIRMATION)
+   
+  }
+  
 
   return (
+    <>
     <Box sx={{
       display: "flex",
       flexDirection: "column",
@@ -204,10 +217,13 @@ const Checkout : React.FC<ChildComponentProps> = ({ providerDetails }) => {
         textAlign: "center",
         height: "8%",  // Header height set to 8%
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
-        marginTop:'65px'
+        marginTop: '65px'
       }}>
+        <Button variant="outlined" style={{marginRight:'30%'}} onClick={handleBackClick}>
+                        Back
+                      </Button>
         <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "1.5rem" }}>
           Selected Services
         </Typography>
@@ -224,7 +240,7 @@ height: "84%", // This section should take the remaining 84% of the height
 display: 'flex',
 flexDirection: "column",
 }}>
-{checkout['selecteditem']?.length === 0 ? (
+{ !checkout || checkout?.selecteditem?.length === 0 ? (
 <Typography variant="h6">No items selected</Typography>
 ) : (
   checkout['selecteditem']?.map((item, index) => (
@@ -269,18 +285,7 @@ alignItems: "center",
 {/* <Typography variant="body1"><strong>People Range:</strong> {item.entry.peopleRange}</Typography>
 <Typography variant="body1"><strong>Frequency:</strong> {item.entry.frequency} times a week</Typography>
 <Typography variant="body1"><strong>Price per Month:</strong> Rs.{item.entry.pricePerMonth}</Typography> */}
-<Typography variant="body1" sx={{
-color: "#2e7d32",
-backgroundColor: "#e8f5e9",
-border: "1px solid #2e7d32",
-padding: "6px",
-borderRadius: "6px",
-textAlign: "center",
-fontWeight: "600",
-marginTop: "12px",
-}}>
-Total Price: Rs. {item['Price /Month (INR)']}
-</Typography>
+
 </Card>
 </Box>
 ))
@@ -318,21 +323,38 @@ Total Price: Rs. {item['Price /Month (INR)']}
       Grand Total: Rs. {grandTotal}
     </div>
 
-    {!loggedInUser && (
-      <Button onClick={handleLogin} variant="outlined" style={{ marginRight: "20px" }}>
-        Login
-      </Button>
-    )}
-
     <div style={{ float: 'right', display: 'flex' }}>
-      <Tooltip
+      {/* <Tooltip
         style={{ display: loggedInUser && checkout['selecteditem'].length > 0 ? 'none' : 'block' }}
         title="You need to login  to proceed with checkout"
       >
         <IconButton>
           <InfoOutlinedIcon />
         </IconButton>
+      </Tooltip> */}
+
+{!loggedInUser && (
+      
+      <Tooltip title="Proceed to checkout">
+        <Button
+          startIcon={<ShoppingCartCheckoutIcon />}
+          variant="contained"
+          style={{
+            fontWeight: "600",
+            color: "#fff",
+            background: loggedInUser ? "linear-gradient(to right, #1a73e8, #1565c0)" : "#b0bec5",  // Grey when disabled
+            border: "1px solid rgb(63, 70, 146)",
+            padding: "10px 24px",
+            borderRadius: "8px",
+          }}
+          onClick={handleLogin}  // Disable if not logged in or items are not selected
+        >
+          Login
+        </Button>
       </Tooltip>
+)}
+
+{loggedInUser && (
       
       <Tooltip title="Proceed to checkout">
         <Button
@@ -347,11 +369,11 @@ Total Price: Rs. {item['Price /Month (INR)']}
             borderRadius: "8px",
           }}
           onClick={handleCheckout}
-          disabled={!loggedInUser}  // Disable if not logged in or items are not selected
         >
           Checkout
         </Button>
       </Tooltip>
+)}
     </div>
   </Box>
 )}
@@ -387,8 +409,51 @@ Total Price: Rs. {item['Price /Month (INR)']}
               </DialogContent>
             </Dialog>
     </Box>
-    
+    </>
   );
 };
 
 export default Checkout;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Extract necessary details for the email
+      // const emailData = {
+      //   userName: user?.customerDetails?.firstName,
+      //   serviceType: checkout[0].entry.type,
+      //   spName: providerDetails.name,  
+      //   dateTime: bookingDetails.startDate,
+      //   //confirmCode: response.data.confirmationCode,
+      //   confirmCode: "123456", 
+      //   phoneNumber: "+91 1234567890", 
+      //   email: user?.customerDetails?.email,
+      // };
+
+      // //send email
+      // await axiosInstance.post(
+      //   "/send-booking-email",
+      //   emailData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
