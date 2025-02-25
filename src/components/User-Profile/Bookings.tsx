@@ -22,8 +22,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/userStore';
 import { update } from "../../features/bookingType/bookingTypeSlice";
 import ProviderDetails from '../ProviderDetails/ProviderDetails';
-// import { useDispatch } from "react-redux";
-// import { add } from "../../features/cart/cartSlice";
 
 type UserState = {
   value?: {
@@ -74,22 +72,48 @@ const Booking: React.FC = () => {
   const [timeSlots, setTimeSlots] = useState<string[]>([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [uniqueMissingSlots, setUniqueMissingSlots] = useState<string[]>([]);
 
+  // Fetch available time slots for a service provider
+  const generateTimeSlots = async (serviceProviderId: number): Promise<string[]> => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/serviceproviders/get/engagement/by/serviceProvider/${serviceProviderId}`
+      );
 
-  // const generateTimeSlots = (): string[] => {
-  //   const slots: string[] = [];
-  //   for (let hour = 6; hour <= 20; hour++) {
-  //     slots.push(`${hour}:00 - ${hour + 1}:00`);
-  //   }
-  //   return slots;
-  // };
+      const engagementData = response.data.map((engagement: { id?: number; availableTimeSlots?: string[] }) => ({
+        id: engagement.id ?? Math.random(),
+        availableTimeSlots: engagement.availableTimeSlots || [],
+      }));
 
-  
-  // useEffect(() => {
-    
-  //   setTimeSlots(generateTimeSlots());
-  // }, []);
-  
+      const fullTimeSlots: string[] = Array.from({ length: 15 }, (_, i) =>
+        `${(i + 6).toString().padStart(2, "0")}:00`
+      );
+      
+
+      const processedSlots = engagementData.map(entry => {
+        const uniqueAvailableTimeSlots = Array.from(new Set(entry.availableTimeSlots)).sort();
+        const missingTimeSlots = fullTimeSlots.filter(slot => !uniqueAvailableTimeSlots.includes(slot));
+
+        return {
+          id: entry.id,
+          uniqueAvailableTimeSlots,
+          missingTimeSlots,
+        };
+      });
+
+      const uniqueMissingSlots: string[] = Array.from(
+        new Set(processedSlots.flatMap(slot => slot.missingTimeSlots))
+      ).sort() as string[];
+
+      setUniqueMissingSlots(uniqueMissingSlots);
+
+      return fullTimeSlots.filter(slot => !uniqueMissingSlots.includes(slot));
+    } catch (error) {
+      console.error("Error fetching engagement data:", error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     if (customerId !== null) {
@@ -152,26 +176,16 @@ const Booking: React.FC = () => {
     setSelectedTab(newValue);
   };
 
-  // const handleModifyBooking = (booking: Booking) => {
-  //   setSelectedBooking(booking);
-  //   setSelectedTimeSlot(booking.timeSlot);
-  //   setOpenDialog(true);
-  
-  // };
   const handleModifyBooking = async (booking: Booking) => {
     setSelectedBooking(booking);
     setSelectedTimeSlot(booking.timeSlot);
-    setOpenDialog(true);
 
-    try {
-        const response = await axiosInstance.get(
-            `/api/serviceproviders/get/engagement/by/serviceProvider/${booking.serviceProviderId}`
-        );
-        console.log(response.data); // Log the response data
-    } catch (error) {
-        console.error("Error fetching engagement data:", error);
-    }
-};
+    // Fetch available time slots for the service provider
+    const availableSlots = await generateTimeSlots(booking.serviceProviderId);
+    setTimeSlots(availableSlots);
+
+    setOpenDialog(true);
+  };
 
   const handleDialogClose = () => {
     setOpenDialog(false);
@@ -437,53 +451,52 @@ const Booking: React.FC = () => {
           <Tab label="Future Bookings" />
         </Tabs>
         <Box sx={{ marginTop: 2 }}>
-                    {selectedTab === 0 && renderBookings(currentBookings)}
-                    {selectedTab === 1 && renderBookings(pastBookings)}
-                    {selectedTab === 2 && renderBookings(futureBookings)}
-                  </Box>
-                </Paper>
-          
-                {/* Dialog for modifying bookings */}
-                <Dialog open={openDialog} onClose={handleDialogClose}>
-                  <DialogTitle>Modify Booking</DialogTitle>
-                  <DialogContent>
-                    <Typography variant="body2" gutterBottom>
-                      Change the time slot for your booking:
-                    </Typography>
-                    <TextField
-                      select
-                      fullWidth
-                      value={selectedTimeSlot}
-                      onChange={handleTimeSlotChange}
-                    >
-                      {timeSlots.map((slot) => (
-                        <MenuItem key={slot} value={slot}>
-                          {slot}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleDialogClose} color="secondary">
-                      Cancel
-                    </Button>
-                    <Button onClick={handleSave} color="primary">
-                      Save
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-          
-                {/* Snackbar for notifications */}
-                <Snackbar
-                  open={openSnackbar}
-                  autoHideDuration={3000}
-                  onClose={() => setOpenSnackbar(false)}
-                >
-                  <Alert severity="success">Booking updated successfully!</Alert>
-                </Snackbar>
-              </Box>
-            );
-          };
-          
-          export default Booking;
-          
+          {selectedTab === 0 && renderBookings(currentBookings)}
+          {selectedTab === 1 && renderBookings(pastBookings)}
+          {selectedTab === 2 && renderBookings(futureBookings)}
+        </Box>
+      </Paper>
+
+      {/* Dialog for modifying bookings */}
+      <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle>Modify Booking</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" gutterBottom>
+            Change the time slot for your booking:
+          </Typography>
+          <TextField
+            select
+            fullWidth
+            value={selectedTimeSlot}
+            onChange={handleTimeSlotChange}
+          >
+            {timeSlots.map((slot) => (
+              <MenuItem key={slot} value={slot}>
+                {slot}
+              </MenuItem>
+            ))}
+          </TextField>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleSave} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert severity="success">Booking updated successfully!</Alert>
+      </Snackbar>
+    </Box>
+  );
+};
+
+export default Booking;
