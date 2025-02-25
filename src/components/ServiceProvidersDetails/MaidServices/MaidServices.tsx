@@ -28,7 +28,7 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
     const [ cartItem , setCartItems ] = useState<any>([])
     const [isAddedToCart, setIsAddedToCart] = useState(false);
     
-    const groupedServices = pricing.reduce((acc, item) => {
+    const groupedServices = pricing?.reduce((acc, item) => {
         const groupKey = item.Type === "Regular Add-on" ? "Regular Add-on" : item.Categories;
         if (!acc[groupKey]) {
           acc[groupKey] = [];
@@ -36,8 +36,9 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
         acc[groupKey].push(item);
         return acc;
       }, {});
+      
+      const [services, setServices] = useState(groupedServices ?? {});
 
-      const [services , setServices] = useState(groupedServices)
 
       const getImage = ( category) => {
         if(category === 'Utensil Cleaning'){

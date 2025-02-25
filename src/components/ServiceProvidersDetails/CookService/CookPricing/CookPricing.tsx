@@ -178,10 +178,10 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
       const clearSelection = (isEvening) => {
         if (isEvening) {
           setEveningSelectionTime(null);
-          dispatch(update({ eveningSelection: null })); // Clear from Redux store
+          dispatch(update({ eveningSelection: null })); 
         } else {
           setMorningSelectionTime(null);
-          dispatch(update({ morningSelection: null })); // Clear from Redux store
+          dispatch(update({ morningSelection: null }));
         }
       };
 
@@ -297,7 +297,7 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
         Meal Type
       </Typography>
       <FormGroup row sx={{ gap: 2, justifyContent: "center" }}>
-        {pricing.map((button : any) => (
+        {pricing?.map((button : any) => (
           <FormControlLabel
             key={button._id}
             control={
