@@ -20,6 +20,10 @@ import {
 import axiosInstance from '../../services/axiosInstance';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/userStore';
+import { update } from "../../features/bookingType/bookingTypeSlice";
+import ProviderDetails from '../ProviderDetails/ProviderDetails';
+// import { useDispatch } from "react-redux";
+// import { add } from "../../features/cart/cartSlice";
 
 type UserState = {
   value?: {
@@ -71,17 +75,20 @@ const Booking: React.FC = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const generateTimeSlots = (): string[] => {
-    const slots: string[] = [];
-    for (let hour = 6; hour <= 20; hour++) {
-      slots.push(`${hour}:00 - ${hour + 1}:00`);
-    }
-    return slots;
-  };
+
+  // const generateTimeSlots = (): string[] => {
+  //   const slots: string[] = [];
+  //   for (let hour = 6; hour <= 20; hour++) {
+  //     slots.push(`${hour}:00 - ${hour + 1}:00`);
+  //   }
+  //   return slots;
+  // };
+
   
-  useEffect(() => {
-    setTimeSlots(generateTimeSlots());
-  }, []);
+  // useEffect(() => {
+    
+  //   setTimeSlots(generateTimeSlots());
+  // }, []);
   
 
   useEffect(() => {
@@ -145,11 +152,26 @@ const Booking: React.FC = () => {
     setSelectedTab(newValue);
   };
 
-  const handleModifyBooking = (booking: Booking) => {
+  // const handleModifyBooking = (booking: Booking) => {
+  //   setSelectedBooking(booking);
+  //   setSelectedTimeSlot(booking.timeSlot);
+  //   setOpenDialog(true);
+  
+  // };
+  const handleModifyBooking = async (booking: Booking) => {
     setSelectedBooking(booking);
     setSelectedTimeSlot(booking.timeSlot);
     setOpenDialog(true);
-  };
+
+    try {
+        const response = await axiosInstance.get(
+            `/api/serviceproviders/get/engagement/by/serviceProvider/${booking.serviceProviderId}`
+        );
+        console.log(response.data); // Log the response data
+    } catch (error) {
+        console.error("Error fetching engagement data:", error);
+    }
+};
 
   const handleDialogClose = () => {
     setOpenDialog(false);
