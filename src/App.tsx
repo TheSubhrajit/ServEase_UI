@@ -18,7 +18,7 @@ import New from "./components/add/New";
 import AgentRegistrationForm from "./components/Registration/AgentRegistrationForm";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux"; // Import useSelector
-import { add } from "./features/pricing/pricingSlice";
+import { add, pricingSlice } from "./features/pricing/pricingSlice";
 import ServiceProviderDashboard from "./components/DetailsView/ServiceProviderDashboard";
 import { RootState } from './store/userStore'; 
 
@@ -110,7 +110,7 @@ if (userRole === "CUSTOMER") {
         console.log("selected details -> ", serviceProviderDetails);
         return <Confirmationpage role={selectedBookingType} providerDetails={serviceProviderDetails} sendDataToParent={handleDataFromChild} />;
       } else if (selection === CHECKOUT) {
-        return <Checkout providerDetails={serviceProviderDetails} sendDataToParent={handleDataFromChild}/>;
+        return <Checkout providerDetails={serviceProviderDetails} sendDataToParent={handleDataFromChild}  />;
       } else if (selection === LOGIN) {
         return (
           <div className="w-full max-w-4xl h-[75%]">

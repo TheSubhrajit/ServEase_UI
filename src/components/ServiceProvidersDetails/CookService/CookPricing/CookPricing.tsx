@@ -9,6 +9,7 @@ import { add } from "../../../../features/cart/cartSlice";
 import MuiAlert from "@mui/material/Alert";
 import { FaTimes } from "react-icons/fa";
 import { update } from "../../../../features/bookingType/bookingTypeSlice";
+
 interface CookPricingProps {
   onPriceChange: (priceData: { price: number, selecteditem: any }) => void; 
   onAddToCart:(priceData: { price: number, selecteditem: any }) => void; // Add the onPriceChange function as a prop
@@ -34,14 +35,11 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
       const [ serviceType, setServiceType ] = useState(typeButtonsSelector[0].key);
       const bookingType = useSelector((state: any) => state.bookingType?.value);
 
-
-      
       if(bookingType.bookingPreference != "Date"){
         pricing = pricing.filter((item) => item.BookingType === "Regular")
       } else{
         pricing = pricing.filter((item) => item.BookingType === "On Demand")
       }
-
 
     function handleButtonClick(value: string): void {
         setMealType((prevState : any) => 
@@ -169,7 +167,6 @@ const CookPricing = ({ onPriceChange , onAddToCart , pricing , sendToParent }: C
           return increasedPrice;
         }
       };
-      
 
       const [morningSelectionTime, setMorningSelectionTime] = useState(null);
       const [eveningSelectionTime, setEveningSelectionTime] = useState(null);
