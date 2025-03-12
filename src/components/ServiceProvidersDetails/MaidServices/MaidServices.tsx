@@ -144,7 +144,6 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
           }
     };
 
-    
     const handleCloseSnackbar = (
       event: Event | SyntheticEvent<any, Event>, 
       reason?: SnackbarCloseReason 
@@ -160,7 +159,7 @@ const MaidServices = ({ onPriceChange , onAddToCart , pricing , sendToParent }: 
 
 
       console.log(updatedServices)
-  
+
       cartItem.forEach(([category, items]) => {
   
           if (updatedServices[category]) {
