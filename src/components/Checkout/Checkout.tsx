@@ -234,9 +234,9 @@ const Checkout: React.FC<ChildComponentProps> = ({
         ? "Price /Month (INR)"
         : "Price /Day (INR)";
     const basePrice = data[field];
-  
+
     let totalPrice = basePrice;
-  
+
     if (pax > 3 && pax <= 6) {
       totalPrice += basePrice * 0.2 * (pax - 3);
     } else if (pax > 6 && pax <= 9) {
@@ -247,11 +247,11 @@ const Checkout: React.FC<ChildComponentProps> = ({
         basePrice * 0.1 * 3 +
         basePrice * 0.05 * (pax - 9);
     }
-  
+
     if (serviceType === 2) {
       totalPrice += totalPrice * 0.3; // Premium service adds 30%
     }
-  
+
     return totalPrice;
   };
   const [filteredMaidPricing, setFilteredMaidPricing] = useState<any[]>([]);
@@ -317,10 +317,19 @@ const Checkout: React.FC<ChildComponentProps> = ({
     }
   }, [filteredMaidPricing]);
 
+  const [startTime, setStartTime] = useState<string>("");
+  const [endTime, setEndTime] = useState<string>("");
+
   const [filteredNannyPricing, setFilteredNannyPricing] = useState<any[]>([]);
-  const [nannyStates, setNannyStates] = useState<
-    Record<string, { serviceType: number }>
-  >({});
+  const [nannyStates, setNannyStates] = useState<{
+    serviceType: number;
+    serviceCategory: string;
+    age: string;
+  }>({
+    serviceType: 1, // Default to Regular
+    serviceCategory: filteredNannyPricing[0]?.Categories || "", // Default to first category
+    age: filteredNannyPricing[0]?.["Numbers/Size"] || "", // Default to first age
+  });
 
   // Filter Nanny data based on booking type
   useEffect(() => {
@@ -337,12 +346,40 @@ const Checkout: React.FC<ChildComponentProps> = ({
       });
 
       console.log("Filtered Nanny Pricing:", filteredNanny); // Log filtered Nanny data
-      const subCategories = filteredNanny.map((item) => item["Sub-Categories"]);
-      console.log("All Sub-Categories:", subCategories);
+      // Get all categories from filteredNannyPricing
+      const allCategories = filteredNannyPricing.map(
+        (service) => service.Categories
+      );
+      console.log("All Categories:", allCategories);
+      // Remove duplicates
+      const uniqueCategories = Array.from(new Set(allCategories));
+
+      console.log("Unique Categories for Dropdown:", uniqueCategories);
+
+      // const subCategories = filteredNanny.map(item => item["Sub-Categories"]);
+      // console.log("All Sub-Categories:", subCategories);
+
       const numbersSizeArray = filteredNanny.map(
         (item) => item["Numbers/Size"]
       );
       console.log("All Numbers/Size:", numbersSizeArray);
+      const uniquenumbersSizeArray = Array.from(new Set(numbersSizeArray));
+
+      console.log("Unique numbersSizeArray:", uniquenumbersSizeArray);
+
+      // ✅ Pick the correct price field based on bookingPreference
+      const priceField =
+        bookingType.bookingPreference !== "Date"
+          ? "Price /Month (INR)"
+          : "Price /Day (INR)";
+
+      // ✅ Map the prices using the selected field
+      const pricesArray = filteredNanny.map((item) => item[priceField]);
+
+      console.log("Prices (${priceField}):", pricesArray);
+
+      const basePrice = Math.min(...pricesArray);
+      console.log("Base Price (${priceField}):", basePrice);
 
       setFilteredNannyPricing(filteredNanny);
     }
@@ -357,21 +394,51 @@ const Checkout: React.FC<ChildComponentProps> = ({
           serviceType: 1, // Default to Regular
         };
       });
-      setNannyStates(initialNannyStates);
+      // setNannyStates(initialNannyStates);
     }
   }, [filteredNannyPricing]);
+  const calculateTotalPrice = () => {
+    // Step 1: Find the selected service based on category and age
+    const selectedService = filteredNannyPricing.find(
+      (item) =>
+        item.Categories === nannyStates.serviceCategory &&
+        item["Numbers/Size"] === nannyStates.age
+    );
 
-  // Handle service type change for a specific service
-  // const handleServiceTypeChange = (serviceType: string, newServiceType: number) => {
-  //   setNannyStates((prev) => ({
-  //     ...prev,
-  //     [serviceType]: {
-  //       serviceType: newServiceType,
-  //     },
-  //   }));
-  // };
+    if (!selectedService) {
+      return 0; // Return 0 if no matching service is found
+    }
 
+    // Step 2: Determine the price field based on booking preference
+    const priceField =
+      bookingType.bookingPreference !== "Date"
+        ? "Price /Month (INR)"
+        : "Price /Day (INR)";
 
+    // Step 3: Get the base price from the selected service
+    let price = selectedService[priceField];
+
+    // Step 4: Ensure price is a valid number
+    if (typeof price !== "number" || isNaN(price)) {
+      console.error("Invalid price value");
+      return 0;
+    }
+
+    // Step 5: Apply service type multiplier
+    if (nannyStates.serviceType === 2) {
+      // Premium
+      price *= 1.5; // Example multiplier for Premium
+    }
+
+    // Step 6: Handle date-based booking (if applicable)
+    if (bookingType.bookingPreference === "Date") {
+      // Step 7: Calculate total price for date-based booking
+      return price;
+    }
+
+    // Step 8: Return monthly price for non-date-based booking
+    return price;
+  };
 
   // Calculate price based on service type
   const getPrice = (data: any, serviceType: number) => {
@@ -518,21 +585,8 @@ const Checkout: React.FC<ChildComponentProps> = ({
       },
     }));
   };
-  
 
-  const calculateNannySubtotal = () => {
-    let subtotal = 0;
-
-    filteredNannyPricing.forEach((service) => {
-      if (selectedServices.includes(service.Categories)) {
-        const selectedServiceType =
-          nannyStates?.[service.Categories]?.serviceType || 1;
-        subtotal += getPrice(service, selectedServiceType);
-      }
-    });
-
-    return subtotal;
-  };
+  // Calculate subtotal for all selected services
   const calculateSubtotal = () => {
     let subtotal = 0;
 
@@ -565,7 +619,85 @@ const Checkout: React.FC<ChildComponentProps> = ({
 
     return subtotal;
   };
-  const grandTotal = checkout?.price ? checkout?.price : 0;
+
+  // Calculate Nanny subtotal
+  const calculateNannySubtotal = () => {
+    let subtotal = 0;
+
+    if (nannyStates.serviceCategory && nannyStates.age) {
+      const selectedService = filteredNannyPricing.find(
+        (item) =>
+          item.Categories === nannyStates.serviceCategory &&
+          item["Numbers/Size"] === nannyStates.age
+      );
+
+      if (selectedService) {
+        const priceField =
+          bookingType.bookingPreference !== "Date"
+            ? "Price /Month (INR)"
+            : "Price /Day (INR)";
+        let price = selectedService[priceField];
+
+        if (nannyStates.serviceType === 2) {
+          price *= 1.5; // Premium service adds 50%
+        }
+
+        subtotal += price;
+      }
+    }
+
+    return subtotal;
+  };
+
+  // Calculate grand total
+  const grandTotal = calculateSubtotal() + calculateSubtotal() * 0.18 + 10;
+  // const calculateNannySubtotal = () => {
+  //   let subtotal = 0;
+
+  //   filteredNannyPricing.forEach((service) => {
+  //     if (selectedServices.includes(service.Categories)) {
+  //       const selectedServiceType =
+  //         nannyStates?.[service.Categories]?.serviceType || 1;
+  //       subtotal += getPrice(service, selectedServiceType);
+  //     }
+  //   });
+
+  //   return subtotal;
+  // };
+
+  // const calculateSubtotal = () => {
+  //   let subtotal = 0;
+
+  //   // Calculate Cook subtotal
+  //   filteredCookPricing.forEach((meal) => {
+  //     if (selectedMeals.includes(meal.Categories)) {
+  //       const { serviceType, pax } = mealStates[meal.Categories] || {
+  //         serviceType: 1,
+  //         pax: 3,
+  //       };
+  //       subtotal += getPeopleCount(meal, pax, serviceType);
+  //     }
+  //   });
+
+  //   // Calculate Maid subtotal
+  //   filteredMaidPricing.forEach((service) => {
+  //     if (selectedServices.includes(service.Categories)) {
+  //       const { serviceType: selectedServiceType, pax } = maidStates[
+  //         service.Categories
+  //       ] || {
+  //         serviceType: 1,
+  //         pax: 3,
+  //       };
+  //       subtotal += getPeopleCount(service, pax, selectedServiceType);
+  //     }
+  //   });
+
+  //   // Calculate Nanny subtotal
+  //   subtotal += calculateNannySubtotal();
+
+  //   return subtotal;
+  // };
+  // const grandTotal = checkout?.price ? checkout?.price : 0;
 
   const handleBackClick = () => {
     sendDataToParent(CONFIRMATION);
@@ -652,7 +784,8 @@ const Checkout: React.FC<ChildComponentProps> = ({
                   background: "#f8f9fa",
                 }}
               >
-                {/* Left Section - Service Cart */}
+                {/* Left Section - Service Cart  Cook*/}
+
                 {bookingTypes?.role === "cook" && (
                   <div
                     style={{
@@ -699,8 +832,7 @@ const Checkout: React.FC<ChildComponentProps> = ({
                             fontWeight: "bold",
                           }}
                         >
-                          <th style={{ padding: "15px 10px" }}>Select</th>{" "}
-                          {/* New column for checkboxes */}
+                          <th style={{ padding: "15px 10px" }}>Select</th>
                           <th style={{ padding: "15px 10px" }}>Meal Type</th>
                           <th style={{ padding: "15px 10px" }}>Service Type</th>
                           <th style={{ padding: "15px 10px" }}>No of Person</th>
@@ -725,7 +857,6 @@ const Checkout: React.FC<ChildComponentProps> = ({
                                 height: "50px",
                               }}
                             >
-                              {/* Checkbox for selecting meal */}
                               <td style={{ padding: "15px 10px" }}>
                                 <input
                                   type="checkbox"
@@ -759,92 +890,29 @@ const Checkout: React.FC<ChildComponentProps> = ({
                                   <option value="Premium">Premium</option>
                                 </select>
                               </td>
-                              <td
-                                style={{
-                                  padding: "15px 10px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <button
+                              <td style={{ padding: "15px 10px" }}>
+                                <select
+                                  value={pax || 1}
+                                  onChange={(e) =>
+                                    updatePax(
+                                      mealType,
+                                      parseInt(e.target.value, 10)
+                                    )
+                                  }
                                   style={{
-                                    margin: "0 10px",
-                                    cursor: "pointer",
-                                    padding: "5px 10px",
-                                    borderRadius: "5px",
-                                    border: "1px solid #0288D1",
-                                    background: "#E3F2FD",
-                                  }}
-                                  onClick={() => decrementPax(mealType)}
-                                >
-                                  -
-                                </button>
-
-                                {/* <input
-                                  type="number"
-                                  value={pax}
-                                  onChange={(e) => {
-                                    const newValue = parseInt(
-                                      e.target.value,
-                                      10
-                                    );
-                                    if (!isNaN(newValue) && newValue > 0) {
-                                      updatePax(mealType, newValue);
-                                    }
-                                  }} */}
-                                {/*                                   
-                                  style={{
-                                    width: "50px",
-                                    textAlign: "center",
                                     padding: "5px",
                                     borderRadius: "5px",
                                     border: "1px solid #0288D1",
                                     background: "#E3F2FD",
-                                  }}
-                                /> */}
-                                <input
-                                  type="text" // Change to text input
-                                  value={pax || 0} // Default to 0 if pax is undefined or null
-                                  onChange={(e) => {
-                                    const inputValue = e.target.value;
-                                    // Allow only numeric input
-                                    if (/^\d*$/.test(inputValue)) {
-                                      // Regex to allow only digits
-                                      const newValue =
-                                        inputValue === ""
-                                          ? 0
-                                          : parseInt(inputValue, 10); // Default to 0 if empty
-                                      updatePax(mealType, newValue);
-                                    }
-                                  }}
-                                  onKeyPress={(e) => {
-                                    // Prevent non-numeric characters from being entered
-                                    if (!/[0-9]/.test(e.key)) {
-                                      e.preventDefault();
-                                    }
-                                  }}
-                                  style={{
-                                    width: "50px",
-                                    textAlign: "center",
-                                    padding: "5px",
-                                    borderRadius: "5px",
-                                    border: "1px solid #0288D1",
-                                    background: "#E3F2FD",
-                                  }}
-                                />
-                                <button
-                                  style={{
-                                    margin: "0 10px",
                                     cursor: "pointer",
-                                    padding: "5px 10px",
-                                    borderRadius: "5px",
-                                    border: "1px solid #0288D1",
-                                    background: "#E3F2FD",
                                   }}
-                                  onClick={() => incrementPax(mealType)}
                                 >
-                                  +
-                                </button>
+                                  {Array.from({ length: 10 }, (_, i) => (
+                                    <option key={i + 1} value={i + 1}>
+                                      {i + 1}
+                                    </option>
+                                  ))}
+                                </select>
                               </td>
                               <td style={{ padding: "15px 10px" }}>
                                 {mealType.includes(meal.Categories) && (
@@ -875,215 +943,228 @@ const Checkout: React.FC<ChildComponentProps> = ({
 
                 {/* MAID Table */}
                 {bookingTypes?.role === "maid" && (
-  <div
-    style={{
-      width: "60%",
-      background: "#fff",
-      padding: "30px",
-      borderRadius: "12px",
-      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-    }}
-  >
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "20px",
-      }}
-    >
-      <h2 style={{ fontSize: "26px", fontWeight: "bold" }}>MAID</h2>
-      <Tooltip title="Remove this service">
-        <IconButton
-          sx={{ color: "#d32f2f" }}
-          onClick={() => handleRemoveItem(index)}
-        >
-          <DeleteOutlineIcon />
-        </IconButton>
-      </Tooltip>
-    </div>
-    <table
-      style={{
-        width: "100%",
-        marginTop: "10px",
-        borderCollapse: "collapse",
-      }}
-    >
-      <thead>
-        <tr
-          style={{
-            textAlign: "left",
-            borderBottom: "2px solid #ddd",
-            fontSize: "18px",
-            fontWeight: "bold",
-          }}
-        >
-          <th style={{ padding: "15px 10px" }}>Select</th>
-          <th style={{ padding: "15px 10px" }}>Service Type</th>
-          <th style={{ padding: "15px 10px" }}>Service Category</th>
-          <th style={{ padding: "15px 10px" }}>Sub-Category</th>
-          <th style={{ padding: "15px 10px" }}>Numbers/Size</th>
-          <th style={{ padding: "15px 10px" }}>Time Slot</th>
-          <th style={{ padding: "15px 10px" }}>Total Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredMaidPricing.map((service, index) => {
-          const serviceType = service.Categories;
-          const subCategory = service["Sub-Categories"] || "N/A";
-          const numbersSize = service["Numbers/Size"] || "N/A";
-          const { serviceType: selectedServiceType, pax } =
-            maidStates[serviceType] || { serviceType: 1, pax: 3 };
-
-          // Check if the current service is a major option
-          const isMajorOption = index < 3;
-
-          // Check if a major option is selected
-          const isMajorSelected = selectedServices.some((selected) =>
-            filteredMaidPricing.slice(0, 3).map((s) => s.Categories).includes(selected)
-          );
-
-          // Render only major options or add-ons if a major option is selected
-          if (isMajorOption || isMajorSelected) {
-            return (
-              <tr
-                key={`${serviceType}-${selectedServiceType}`}
-                style={{
-                  borderBottom: "1px solid #ddd",
-                  fontSize: "16px",
-                  height: "50px",
-                }}
-              >
-                {/* Checkbox for selecting service */}
-                <td style={{ padding: "15px 10px" }}>
-                  <input
-                    type="checkbox"
-                    checked={selectedServices.includes(serviceType)}
-                    onChange={() => toggleServiceSelection(serviceType)}
-                  />
-                </td>
-                <td style={{ padding: "15px 10px" }}>{serviceType}</td>
-                <td style={{ padding: "15px 10px" }}>
-                  <select
-                    value={
-                      selectedServiceType === 1 ? "Regular" : "Premium"
-                    }
-                    onChange={(e) =>
-                      handleMaidServiceTypeChange(
-                        serviceType,
-                        e.target.value === "Regular" ? 1 : 2
-                      )
-                    }
+                  <div
                     style={{
-                      padding: "5px",
-                      borderRadius: "5px",
-                      border: "1px solid #0288D1",
-                      background: "#E3F2FD",
-                      cursor: "pointer",
+                      width: "60%",
+                      background: "#fff",
+                      padding: "30px",
+                      borderRadius: "12px",
+                      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
                     }}
                   >
-                    <option value="Regular">Regular</option>
-                    <option value="Premium">Premium</option>
-                  </select>
-                </td>
-                <td style={{ padding: "15px 10px" }}>{subCategory}</td>
-                <td style={{ padding: "15px 10px" }}>
-                  {subCategory === "People" || subCategory === "Number" ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <button
-                        style={{
-                          cursor: "pointer",
-                          padding: "5px 10px",
-                          borderRadius: "5px",
-                          border: "1px solid #0288D1",
-                          background: "#E3F2FD",
-                        }}
-                        onClick={() => decrementNo(serviceType)}
-                      >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        value={pax}
-                        onChange={(e) => {
-                          const newValue = parseInt(e.target.value, 10);
-                          if (!isNaN(newValue)) {
-                            updatePax(serviceType, newValue);
-                          }
-                        }}
-                        style={{
-                          width: "50px",
-                          textAlign: "center",
-                          padding: "5px",
-                          borderRadius: "5px",
-                          border: "1px solid #0288D1",
-                          background: "#E3F2FD",
-                        }}
-                      />
-                      <button
-                        style={{
-                          cursor: "pointer",
-                          padding: "5px 10px",
-                          borderRadius: "5px",
-                          border: "1px solid #0288D1",
-                          background: "#E3F2FD",
-                        }}
-                        onClick={() => incrementNO(serviceType)}
-                      >
-                        +
-                      </button>
-                    </div>
-                  ) : subCategory === "House" ? (
-                    <select
-                      value={numbersSize}
-                      onChange={(e) =>
-                        handleNumbersSizeChange(serviceType, e.target.value)
-                      }
+                    <div
                       style={{
-                        padding: "5px",
-                        borderRadius: "5px",
-                        border: "1px solid #0288D1",
-                        background: "#E3F2FD",
-                        cursor: "pointer",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: "20px",
                       }}
                     >
-                      {Array.from({ length: 10 }, (_, i) => (
-                        <option key={i + 1} value={`${i + 1} BHK`}>
-                          {i + 1} BHK
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    numbersSize
-                  )}
-                </td>
-                <td style={{ padding: "15px 10px" }}>
-                  {serviceType.includes(service.Categories) && (
-                    <>
-                      {bookingType.morningSelection && (
-                        <span>{bookingType.morningSelection}</span>
-                      )}
-                      {bookingType.eveningSelection && (
-                        <span>{bookingType.eveningSelection}</span>
-                      )}
-                    </>
-                  )}
-                </td>
-                <td style={{ padding: "15px 10px" }}>
-                  ₹
-                  {getPeopleCount(service, pax, selectedServiceType)}
-                </td>
-              </tr>
-            );
-          } else {
-            return null; // Hide add-ons if no major option is selected
-          }
-        })}
-      </tbody>
-    </table>
-  </div>
-)}
+                      <h2 style={{ fontSize: "26px", fontWeight: "bold" }}>
+                        MAID
+                      </h2>
+                      <Tooltip title="Remove this service">
+                        <IconButton
+                          sx={{ color: "#d32f2f" }}
+                          onClick={() => handleRemoveItem(index)}
+                        >
+                          <DeleteOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                    <table
+                      style={{
+                        width: "100%",
+                        marginTop: "10px",
+                        borderCollapse: "collapse",
+                      }}
+                    >
+                      <thead>
+                        <tr
+                          style={{
+                            textAlign: "left",
+                            borderBottom: "2px solid #ddd",
+                            fontSize: "18px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          <th style={{ padding: "15px 10px" }}>Select</th>
+                          <th style={{ padding: "15px 10px" }}>Service Type</th>
+                          <th style={{ padding: "15px 10px" }}>
+                            Service Category
+                          </th>
+                          <th style={{ padding: "15px 10px" }}>Sub-Category</th>
+                          <th
+                            style={{
+                              padding: "15px 10px",
+                              textAlign: "center",
+                            }}
+                          >
+                            Numbers/Size
+                          </th>
+                          <th style={{ padding: "15px 10px" }}>Time Slot</th>
+                          <th style={{ padding: "15px 10px" }}>Total Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredMaidPricing.map((service, index) => {
+                          const serviceType = service.Categories;
+                          const subCategory =
+                            service["Sub-Categories"] || "N/A";
+                          const numbersSize = service["Numbers/Size"] || "N/A";
+                          const { serviceType: selectedServiceType, pax } =
+                            maidStates[serviceType] || {
+                              serviceType: 1,
+                              pax: 3,
+                            };
 
+                          const isMajorOption = index < 3;
+                          const isMajorSelected = selectedServices.some(
+                            (selected) =>
+                              filteredMaidPricing
+                                .slice(0, 3)
+                                .map((s) => s.Categories)
+                                .includes(selected)
+                          );
+
+                          if (isMajorOption || isMajorSelected) {
+                            return (
+                              <tr
+                                key={`${serviceType}-${selectedServiceType}`}
+                                style={{
+                                  borderBottom: "1px solid #ddd",
+                                  fontSize: "16px",
+                                  height: "50px",
+                                }}
+                              >
+                                <td style={{ padding: "15px 10px" }}>
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedServices.includes(
+                                      serviceType
+                                    )}
+                                    onChange={() =>
+                                      toggleServiceSelection(serviceType)
+                                    }
+                                  />
+                                </td>
+                                <td style={{ padding: "15px 10px" }}>
+                                  {serviceType}
+                                </td>
+                                <td style={{ padding: "15px 10px" }}>
+                                  <select
+                                    value={
+                                      selectedServiceType === 1
+                                        ? "Regular"
+                                        : "Premium"
+                                    }
+                                    onChange={(e) =>
+                                      handleMaidServiceTypeChange(
+                                        serviceType,
+                                        e.target.value === "Regular" ? 1 : 2
+                                      )
+                                    }
+                                    style={{
+                                      padding: "5px",
+                                      borderRadius: "5px",
+                                      border: "1px solid #0288D1",
+                                      background: "#E3F2FD",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    <option value="Regular">Regular</option>
+                                    <option value="Premium">Premium</option>
+                                  </select>
+                                </td>
+                                <td style={{ padding: "15px 10px" }}>
+                                  {subCategory}
+                                </td>
+                                <td
+                                  style={{
+                                    padding: "15px 10px",
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      gap: "10px",
+                                    }}
+                                  >
+                                    <button
+                                      style={{
+                                        cursor: "pointer",
+                                        padding: "5px 10px",
+                                        borderRadius: "5px",
+                                        border: "1px solid #0288D1",
+                                        background: "#E3F2FD",
+                                      }}
+                                      onClick={() => decrementNo(serviceType)}
+                                    >
+                                      -
+                                    </button>
+                                    <span
+                                      style={{
+                                        minWidth: "50px",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      {subCategory === "House"
+                                        ? `${pax} BHK`
+                                        : pax}
+                                    </span>
+                                    <button
+                                      style={{
+                                        cursor: "pointer",
+                                        padding: "5px 10px",
+                                        borderRadius: "5px",
+                                        border: "1px solid #0288D1",
+                                        background: "#E3F2FD",
+                                      }}
+                                      onClick={() => incrementNO(serviceType)}
+                                    >
+                                      +
+                                    </button>
+                                  </div>
+                                </td>
+                                <td style={{ padding: "15px 10px" }}>
+                                  {serviceType.includes(service.Categories) && (
+                                    <>
+                                      {bookingType.morningSelection && (
+                                        <span>
+                                          {bookingType.morningSelection}
+                                        </span>
+                                      )}
+                                      {bookingType.eveningSelection && (
+                                        <span>
+                                          {bookingType.eveningSelection}
+                                        </span>
+                                      )}
+                                    </>
+                                  )}
+                                </td>
+                                <td style={{ padding: "15px 10px" }}>
+                                  ₹
+                                  {getPeopleCount(
+                                    service,
+                                    pax,
+                                    selectedServiceType
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          } else {
+                            return null;
+                          }
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* NANNY Table */}
                 {/* NANNY Table */}
                 {bookingTypes?.role === "nanny" && (
                   <div
@@ -1131,8 +1212,6 @@ const Checkout: React.FC<ChildComponentProps> = ({
                             fontWeight: "bold",
                           }}
                         >
-                          <th style={{ padding: "15px 10px" }}>Select</th>{" "}
-                          {/* Checkbox Column */}
                           <th style={{ padding: "15px 10px" }}>Service Type</th>
                           <th style={{ padding: "15px 10px" }}>
                             Service Category
@@ -1143,47 +1222,54 @@ const Checkout: React.FC<ChildComponentProps> = ({
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredNannyPricing.map((service, index) => {
-                          const serviceType = service.Categories;
-                          const selectedServiceType =
-                            nannyStates?.[serviceType]?.serviceType || 1;
-
-                          return (
-                            <tr
-                              key={`${serviceType}-${selectedServiceType}`}
+                        <tr
+                          style={{
+                            borderBottom: "1px solid #ddd",
+                            fontSize: "16px",
+                            height: "50px",
+                          }}
+                        >
+                          {/* Service Type Dropdown */}
+                          <td style={{ padding: "15px 10px" }}>
+                            <select
+                              value={nannyStates?.serviceType || 1}
+                              onChange={(e) =>
+                                setNannyStates((prev) => ({
+                                  ...prev,
+                                  serviceType: parseInt(e.target.value, 10),
+                                }))
+                              }
                               style={{
-                                borderBottom: "1px solid #ddd",
-                                fontSize: "16px",
-                                height: "50px",
+                                padding: "5px",
+                                borderRadius: "5px",
+                                border: "1px solid #0288D1",
+                                background: "#E3F2FD",
+                                cursor: "pointer",
                               }}
                             >
-                              {/* Checkbox for selecting service */}
-                              <td style={{ padding: "15px 10px" }}>
-                                <input
-                                  type="checkbox"
-                                  checked={selectedServices.includes(
-                                    serviceType
-                                  )}
-                                  onChange={() =>
-                                    toggleServiceSelection(serviceType)
-                                  }
-                                />
-                              </td>
-                              <td style={{ padding: "15px 10px" }}>
-                                {serviceType}
-                              </td>
-                              <td style={{ padding: "15px 10px" }}>
+                              <option value={1}>Regular</option>
+                              <option value={2}>Premium</option>
+                            </select>
+                          </td>
+
+                          {/* Service Category Dropdown */}
+                          <td style={{ padding: "15px 10px" }}>
+                            {(() => {
+                              const allCategories = filteredNannyPricing.map(
+                                (service) => service.Categories
+                              );
+                              const uniqueCategories = Array.from(
+                                new Set(allCategories)
+                              );
+
+                              return (
                                 <select
-                                  value={
-                                    selectedServiceType === 1
-                                      ? "Regular"
-                                      : "Premium"
-                                  }
+                                  value={nannyStates?.serviceCategory || ""}
                                   onChange={(e) =>
-                                    handleNannyServiceTypeChange(
-                                      serviceType,
-                                      e.target.value === "Regular" ? 1 : 2
-                                    )
+                                    setNannyStates((prev) => ({
+                                      ...prev,
+                                      serviceCategory: e.target.value,
+                                    }))
                                   }
                                   style={{
                                     padding: "5px",
@@ -1193,37 +1279,104 @@ const Checkout: React.FC<ChildComponentProps> = ({
                                     cursor: "pointer",
                                   }}
                                 >
-                                  <option value="Regular">Regular</option>
-                                  <option value="Premium">Premium</option>
+                                  <option value="" disabled>
+                                    Select Category
+                                  </option>
+                                  {uniqueCategories.map((category, index) => (
+                                    <option key={index} value={category}>
+                                      {category}
+                                    </option>
+                                  ))}
                                 </select>
-                              </td>
-                              <td style={{ padding: "15px 10px" }}>
-                                {service["Numbers/Size"]}
-                              </td>
-                              <td style={{ padding: "15px 10px" }}>
-                                {String(serviceType).includes(
-                                  service.Categories
-                                ) && (
-                                  <>
-                                    {bookingType?.morningSelection && (
-                                      <span>
-                                        {bookingType.morningSelection}
-                                      </span>
-                                    )}
-                                    {bookingType?.eveningSelection && (
-                                      <span>
-                                        {bookingType.eveningSelection}
-                                      </span>
-                                    )}
-                                  </>
-                                )}
-                              </td>
-                              <td style={{ padding: "15px 10px" }}>
-                                ₹{getPrice(service, selectedServiceType)}
-                              </td>
-                            </tr>
-                          );
-                        })}
+                              );
+                            })()}
+                          </td>
+
+                          {/* Age Dropdown */}
+                          <td style={{ padding: "15px 10px" }}>
+                            {(() => {
+                              // Determine age options based on selected service category
+                              const ageOptions =
+                                nannyStates?.serviceCategory?.includes(
+                                  "Baby care "
+                                )
+                                  ? ["<=3", ">3"]
+                                  : nannyStates?.serviceCategory?.includes(
+                                      "Baby Care "
+                                    )
+                                  ? ["<=3", ">3"]
+                                  : nannyStates?.serviceCategory?.includes(
+                                      "Elderly Care"
+                                    )
+                                  ? ["<=65", ">65"]
+                                  : nannyStates?.serviceCategory?.includes(
+                                      "Elderly care"
+                                    )
+                                  ? ["<=65", ">65"]
+                                  : [];
+
+                              return (
+                                <select
+                                  value={nannyStates?.age || ""}
+                                  onChange={(e) =>
+                                    setNannyStates((prev) => ({
+                                      ...prev,
+                                      age: e.target.value,
+                                    }))
+                                  }
+                                  style={{
+                                    padding: "5px",
+                                    borderRadius: "5px",
+                                    border: "1px solid #0288D1",
+                                    background: "#E3F2FD",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <option value="" disabled>
+                                    Select Age
+                                  </option>
+                                  {ageOptions.map((age, index) => (
+                                    <option key={index} value={age}>
+                                      {age}
+                                    </option>
+                                  ))}
+                                </select>
+                              );
+                            })()}
+                          </td>
+
+                          {/* Time Slot Input */}
+                          <td style={{ padding: "15px 10px" }}>
+                            <input
+                              type="time"
+                              value={startTime}
+                              onChange={(e) => setStartTime(e.target.value)}
+                              style={{
+                                padding: "5px",
+                                borderRadius: "5px",
+                                border: "1px solid #0288D1",
+                                background: "#E3F2FD",
+                              }}
+                            />
+                            <span> to </span>
+                            <input
+                              type="time"
+                              value={endTime}
+                              onChange={(e) => setEndTime(e.target.value)}
+                              style={{
+                                padding: "5px",
+                                borderRadius: "5px",
+                                border: "1px solid #0288D1",
+                                background: "#E3F2FD",
+                              }}
+                            />
+                          </td>
+
+                          {/* Total Price */}
+                          <td style={{ padding: "15px 10px" }}>
+                            {calculateTotalPrice().toFixed(2)} INR
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -1246,13 +1399,13 @@ const Checkout: React.FC<ChildComponentProps> = ({
                     <div className="flex justify-between text-lg">
                       <span>Subtotal:</span>
                       <span className="font-semibold">
-                        ₹{calculateSubtotal()}
+                        ₹{calculateSubtotal().toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between text-lg">
                       <span>GST (18%):</span>
                       <span className="font-semibold">
-                        ₹{calculateSubtotal() * 0.18}
+                        ₹{(calculateSubtotal() * 0.18).toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between text-lg">
@@ -1268,8 +1421,7 @@ const Checkout: React.FC<ChildComponentProps> = ({
                           marginTop: "20px",
                         }}
                       >
-                        Grand Total: ₹
-                        {calculateSubtotal() + calculateSubtotal() * 0.18 + 10}
+                        Grand Total: ₹{grandTotal.toFixed(2)}
                       </p>
                     </div>
                   </div>
