@@ -24,6 +24,8 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent, b
   
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
+  const [startTime, setStartTime] = useState<string | null>(null);
+  const [endTime, setEndTime] = useState<string | null>(null);
 
   const { selectedBookingType, setSelectedBookingType } = useContext(ServiceProviderContext);
 
@@ -52,13 +54,25 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent, b
   const handleSave = () => {
     console.log("Selected Start Date:", startDate);
     console.log("Selected End Date:", endDate);
+    console.log("Selected Start Time:", startTime);
+    console.log("Selected End Time:", endTime);
 
     const booking: Bookingtype = {
       startDate, // Use the state directly
-      endDate,   // Use the state directly
+      endDate, // Use the state directly
       bookingPreference: selectedRadioButtonValue,
-      role: selectedType, // Include the selected role
+      role: selectedType,
+      endTime: "",
+      startTime: ""
     };
+
+    // Add startTime and endTime only if they are defined
+    if (startTime) {
+      booking.startTime = startTime;
+    }
+    if (endTime) {
+      booking.endTime = endTime;
+    }
 
     if (selectedRadioButtonValue === "Date") {
       bookingType(selectedType);
@@ -208,6 +222,73 @@ export const Landingpage: React.FC<ChildComponentProps> = ({ sendDataToParent, b
             </div>
           </LocalizationProvider>
         )}
+        {selectedType === NANNY && (selectedRadioButtonValue === "Short term" || selectedRadioButtonValue === "Monthly") && (
+  <div className="time-container">
+    <div className="time-block">
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <input
+          type="time"
+          id="startTime"
+          value={startTime || ''}
+          onChange={(e) => setStartTime(e.target.value)}
+          style={{
+            padding: "5px",
+            borderRadius: "5px",
+            border: "1px solid #0288D1",
+            background: "#E3F2FD",
+            width: "150px", // Adjust width as needed
+          }}
+        />
+        {!startTime && (
+          <span
+            style={{
+              position: "absolute",
+              left: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              pointerEvents: "none",
+              color: "#757575",
+              fontSize: "14px",
+            }}
+          >
+            Start Time
+          </span>
+        )}
+      </div>
+      <span style={{ margin: "0 10px" }}> to </span>
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <input
+          type="time"
+          id="endTime"
+          value={endTime || ''}
+          onChange={(e) => setEndTime(e.target.value)}
+          style={{
+            padding: "5px",
+            borderRadius: "5px",
+            border: "1px solid #0288D1",
+            background: "#E3F2FD",
+            width: "150px", // Adjust width as needed
+          }}
+        />
+        {!endTime && (
+          <span
+            style={{
+              position: "absolute",
+              left: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              pointerEvents: "none",
+              color: "#757575",
+              fontSize: "14px",
+            }}
+          >
+            End Time
+          </span>
+        )}
+      </div>
+    </div>
+  </div>
+)}
       </DialogComponent>
     </section>
   );

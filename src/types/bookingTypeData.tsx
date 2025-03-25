@@ -1,4 +1,6 @@
 export type Bookingtype = {
+    endTime: string;
+    startTime: string;
     startDate? : any;
     endDate? : any;
     bookingPreference? : string;
